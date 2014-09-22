@@ -1,0 +1,22 @@
+{define title}{_messages.team.list.title}{/define}
+
+{block content}
+{control teamListFilterForm}
+{if count($teams)}
+<table class="table table-striped table-bordered table-hover table-condensed">
+<tr><th>#</th><th>{_messages.team.list.name}</th><th>{_messages.team.list.timestamp}</th><th>{_messages.team.list.category}</th><th>{_messages.team.list.members}</th><th>{_messages.team.list.status}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.admin}</th></tr>
+<tr n:foreach="$teams as $team">
+	<td>{$team->id}</td>
+	<td>{$team->name}</td>
+	<td>{!$team->timestamp|date:'%-d. %-m. %Y<br>%H:%M:%S'}</td>
+	<td>{$team->genderclass,$team->ageclass|categoryFormat}</td>
+	<td><p n:foreach="$team->related('person') as $person"><span class="flag flag-{$countries[$person->country_id]->code}" title="{$countries[$person->country_id]->name}"></span> {if $person->gender == 'male'}♂{else}♀{/if} <span title="{if $person->sportident == null}Need to rent{else}{$person->sportident}{/if}">{$person->firstname} {$person->lastname}</span></p></td><td>{if $team->status == 'registered'}{_messages.team.list.entry.status.registered}{elseif $team->status == 'paid'}<span class="glyphicon glyphicon-ok" title="{_messages.team.list.entry.status.paid}"></span> {_messages.team.list.entry.status.accepted}{else}N/A{/if}</td><td n:if="$user->isInRole('admin')">{if $team->status == 'registered'}<a n:href="confirm $team->id">{_messages.team.list.entry.action.confirm}</a> {/if}<a n:href="edit $team->id">{_messages.team.list.entry.action.edit}</a></td>
+</tr>
+</table>
+
+<a n:if="$user->isInRole('admin')" n:href="export">{_messages.team.list.export.csv}</a>
+<h3>{_messages.team.list.stats}</h3>
+<p>{_messages.team.list.stats.count, $stats['count']}</p>
+{else}
+<p>{_messages.team.list.empty}</p>
+{/if}

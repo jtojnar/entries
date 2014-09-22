@@ -1,0 +1,15 @@
+{block content}
+<a n:href="this locale => cs">Česky</a> <a n:href="this locale => en">English</a>
+<ul>
+<li><a n:href="team:register">{_messages.home.registration}</a></li>
+<li><a n:href="team:list">{_messages.home.list}</a></li>
+{if $user->isLoggedIn()}
+{if $status === 'registered'}
+<li><a n:href="team:edit">{_messages.home.edit}</a></li>
+{/if}
+<li><a n:href="sign:out">{_messages.home.sign_out}</a></li>
+{else}
+<li><a n:href="sign:in">{_messages.home.sign_in}</a></li>
+{/if}
+</ul>
+<p>{_messages.home.contact_instructions} <a href="mailto:{$mail}">{$mail}</a></p>

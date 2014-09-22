@@ -1,0 +1,25 @@
+{
+	"name": "entries",
+	"description": "Entry registration system for rogaining",
+	"homepage": "http://github.com/jtojnar/entries",
+	"type": "project",
+	"version": "1.0-beta",
+	"license": "BSD",
+	"authors": [
+		{
+			"name": "Jan Tojnar",
+			"homepage": "http://ogion.cz"
+		}
+	],
+	"require": {
+		"php": ">= 5.3.7",
+		"nette/nette": "~2.2.0",
+		"kdyby/translation": "~2.0",
+		"nextras/forms": "dev-master",
+		"kdyby/forms-replicator": "@dev"
+	},
+	"require-dev": {
+		"nette/tester": "~1.0"
+	},
+	"minimum-stability": "stable"
+}

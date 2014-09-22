@@ -1,0 +1,41 @@
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+#
+# If you don't protect this directory from direct web access, anybody will be able to see your passwords.
+# http://nette.org/security-warning
+#
+parameters:
+	entries:
+		maxMembers: 0
+		minMembers: 0
+		fees: []
+		categories:
+			age: []
+			duration: []
+
+nette:
+	application:
+		errorPresenter: Error
+		mapping:
+			*: App\*Module\Presenters\*Presenter
+
+	session:
+		expiration: 31 days
+
+	forms:
+		messages:
+			FILLED: messages.general.error.not_filled
+			EMAIL: messages.general.error.not_integer
+			INTEGER: messages.general.error.not_email
+
+extensions:
+	translation: Kdyby\Translation\DI\TranslationExtension
+
+
+services:
+	database: @nette.database.default.context
+	- App\Model\TeamManager(@database, %entries.admin%)
+	- App\RouterFactory
+	- App\Model\CountryModel(@database)
+	- App\Model\TeamModel(@database)
+	router: @App\RouterFactory::createRouter
