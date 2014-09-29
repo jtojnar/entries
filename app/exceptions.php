@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Nette;
+
 class LimitedAccessException extends Nette\Application\BadRequestException {
 	const SOON = 400;
 	const LATE = 401;
