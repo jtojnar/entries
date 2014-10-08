@@ -25,8 +25,8 @@ nette:
 	forms:
 		messages:
 			FILLED: messages.general.error.not_filled
-			EMAIL: messages.general.error.not_integer
-			INTEGER: messages.general.error.not_email
+			INTEGER: messages.general.error.not_integer
+			EMAIL: messages.general.error.not_email
 
 extensions:
 	translation: Kdyby\Translation\DI\TranslationExtension
