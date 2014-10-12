@@ -3,7 +3,7 @@
 	"description": "Entry registration system for rogaining",
 	"homepage": "http://github.com/jtojnar/entries",
 	"type": "project",
-	"version": "1.0-beta",
+	"version": "0.2.0",
 	"license": "BSD",
 	"authors": [
 		{
