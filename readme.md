@@ -14,6 +14,6 @@ or download package.
 
 Run SQL from *install.sql*.
 
-Configure app in *app/config/config.local.neon*.
+Configure app in *app/config/config.local.neon.default* and rename it to *config.local.neon*.
 
 Change e-mail templates in *app/templates/Mail*.

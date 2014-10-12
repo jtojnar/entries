@@ -1,0 +1,46 @@
+php:
+	date.timezone: Europe/Prague
+
+parameters:
+	siteTitle:
+		cs: Nějaký závod
+		en: Some event
+	entries:
+		maxMembers: 5
+		minMembers: 2
+		eventDate: 2012-06-23 # used for age calculations
+		opening: 2012-04-01T01:00:00
+		closing: 2015-06-23T01:00:00
+		fees:
+			person: 650.0
+			si: 50.0
+		categories:
+			age:
+				youth:
+					short: 'Y'
+					max: 23
+				open:
+					short: 'O'
+				veteran:
+					short: 'V'
+					min: 40
+				superveteran:
+					short: 'SV'
+					min: 55
+				ultraveteran:
+					short: 'UV'
+					min: 65
+			duration:
+				- 24
+				- 12
+
+		admin: password
+	webmasterEmail: email@example.com
+
+nette:
+	database:
+		dsn: 'mysql:host=127.0.0.1;dbname=entries'
+		user: root
+		password:
+		options:
+			lazy: yes
