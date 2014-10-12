@@ -3,6 +3,13 @@ entries
 
 Entry registration system for [Rogaining](http://en.wikipedia.org/wiki/Rogaining).
 
+Requirements
+------------
+
+* PHP 5.4
+* MySQL or other similar database
+* composer dependencies
+
 Installation
 ------------
 Run following commands
