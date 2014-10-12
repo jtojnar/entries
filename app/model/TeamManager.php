@@ -6,8 +6,7 @@ use Nette;
 use Nette\Utils\Strings;
 use Nette\Security\Passwords;
 
-class TeamManager extends Nette\Object implements Nette\Security\IAuthenticator {
-	const TABLE_NAME = 'team';
+class TeamManager extends BaseModel implements Nette\Security\IAuthenticator {
 	const COLUMN_ID = 'id';
 	const COLUMN_PASSWORD_HASH = 'password';
 
@@ -35,7 +34,7 @@ class TeamManager extends Nette\Object implements Nette\Security\IAuthenticator 
 			return new Nette\Security\Identity('admin', 'admin', ['status' => 'admin']);
 		}
 
-		$row = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $teamid)->fetch();
+		$row = $this->database->table(self::TABLE_TEAM)->where(self::COLUMN_ID, $teamid)->fetch();
 
 		if (!$row) {
 			throw new Nette\Security\AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);

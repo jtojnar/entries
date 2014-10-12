@@ -138,7 +138,7 @@ class TeamPresenter extends BasePresenter {
 			foreach ($teams as $team) {
 				$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat($team->genderclass, $team->ageclass));
 				$i = 0;
-				foreach ($team->related('person') as $person) {
+				foreach ($team->related(BaseModel::TEAM_PERSON) as $person) {
 					$i++;
 					$row[] = $person->lastname;
 					$row[] = $person->firstname;
