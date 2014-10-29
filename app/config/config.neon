@@ -10,6 +10,13 @@ parameters:
 		minMembers: 0
 		fees: []
 		categories:
+			gender:
+				male:
+					short: M
+				female:
+					short: F
+				mixed:
+					short: M
 			age: []
 			duration: []
 

@@ -1,0 +1,37 @@
+php:
+	date.timezone: Europe/Prague
+
+parameters:
+	siteTitle:
+		cs: Nějaký závod
+		en: Some event
+	entries:
+		maxMembers: 5
+		minMembers: 2
+		eventDate: 2012-06-23 # used for age calculations
+		opening: 2012-04-01T01:00:00
+		closing: 2015-06-23T01:00:00
+		fees:
+			person: 650.0
+			si: 50.0
+		categories:
+			gender:
+				male:
+					short: HH
+				female:
+					short: DD
+				mixed:
+					short: HD
+				tur:
+					short: TUR
+
+		admin: password
+	webmasterEmail: email@example.com
+
+nette:
+	database:
+		dsn: 'mysql:host=127.0.0.1;dbname=entries'
+		user: root
+		password:
+		options:
+			lazy: yes

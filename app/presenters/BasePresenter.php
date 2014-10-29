@@ -51,18 +51,18 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	}
 
 	public function categoryFormat($gender, $age) {
-		if (Nette\Utils\Strings::compare($age, 'open')) {
-			$age = 'O';
+		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
+		if(count($ages_data) > 1) {
+			$age = isset($ages_data[$age]) ? $ages_data[$age]['short'] : '?';
 		} else {
-			$age = 'V';
+			$age = '';
 		}
-		
-		if (Nette\Utils\Strings::compare($gender, 'male')) {
-			$gender = 'M';
-		} elseif (Nette\Utils\Strings::compare($gender, 'female')) {
-			$gender = 'W';
+
+		$gender_data = $this->presenter->context->parameters['entries']['categories']['gender'];
+		if(count($gender_data) > 1) {
+			$gender = isset($gender_data[$gender]) ? $gender_data[$gender]['short'] : '?';
 		} else {
-			$gender = 'X';
+			$gender = '';
 		}
 		return $gender . $age;
 	}

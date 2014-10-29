@@ -27,7 +27,13 @@ class TeamForm extends UI\Form {
 		$this->addProtection();
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
-		$this->addRadioList('genderclass', 'messages.team.gender.label', array('female' => 'messages.team.gender.female', 'male' => 'messages.team.gender.male', 'mixed' => 'messages.team.gender.mixed'))->addRule(callback('\App\Components\TeamForm::genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue('mixed');
+
+		$genders = array_keys($this->presenter->context->parameters['entries']['categories']['gender']);
+		if(count($genders) > 1) {
+			$this->addRadioList('genderclass', 'messages.team.gender.label', array_combine($genders, array_map(function($a) {
+				return 'messages.team.gender.' . $a;
+			}, $genders)))->addRule(callback('\App\Components\TeamForm::genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
+		}
 
 		$translator = $this->translator;
 		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
@@ -142,7 +148,7 @@ class TeamForm extends UI\Form {
 				}
 			}
 		}
-		if (($male && !$female && $class == 'male') || (!$male && $female && $class == 'female') || ($male && $female && $class == 'mixed')) {
+		if (($male && !$female && $class == 'male') || (!$male && $female && $class == 'female') || ($male && $female && $class == 'mixed') || !in_array($class, ['male', 'female', 'mixed'])) {
 			return true;
 		}
 		return false;

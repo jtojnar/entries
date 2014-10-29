@@ -234,7 +234,7 @@ DROP TABLE IF EXISTS `team`;
 CREATE TABLE `team` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `genderclass` enum('male','female','mixed') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `genderclass` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ageclass` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `duration` int(11) unsigned NOT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,

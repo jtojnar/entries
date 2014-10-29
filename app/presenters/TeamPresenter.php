@@ -219,7 +219,16 @@ class TeamPresenter extends BasePresenter {
 				$template = $this->template;
 				$i = 0;
 				try {
-					$teamdata = array('name' => $form['name']->getValue(), 'genderclass' => $form['genderclass']->getValue(), 'ageclass' => $form['ageclass']->getValue(), 'message' => $form['message']->getValue());
+					$teamdata = array('name' => $form['name']->getValue(), 'message' => $form['message']->getValue());
+					if(isset($form['genderclass'])) {
+						$teamdata['genderclass'] = $form['genderclass']->getValue();
+					}
+					if(isset($form['ageclass'])) {
+						$teamdata['ageclass'] = $form['ageclass']->getValue();
+					}
+					if(isset($form['duration'])) {
+						$teamdata['duration'] = $form['duration']->getValue();
+					}
 					$ids = $this->teams->getPersonsIds($id);
 					$members = array();
 					$newmembers = array();
@@ -273,7 +282,16 @@ class TeamPresenter extends BasePresenter {
 			$i = 0;
 			try {
 				$password = $this->teams->generatePassword();
-				$teamdata = array('name' => $form['name']->getValue(), 'genderclass' => $form['genderclass']->getValue(), 'ageclass' => $form['ageclass']->getValue(), 'message' => $form['message']->getValue(), 'ip' => $this->context->httpRequest->getRemoteAddress(), 'password' => $password);
+				$teamdata = array('name' => $form['name']->getValue(), 'message' => $form['message']->getValue(), 'ip' => $this->context->httpRequest->getRemoteAddress(), 'password' => $password);
+				if(isset($form['genderclass'])) {
+					$teamdata['genderclass'] = $form['genderclass']->getValue();
+				}
+				if(isset($form['ageclass'])) {
+					$teamdata['ageclass'] = $form['ageclass']->getValue();
+				}
+				if(isset($form['duration'])) {
+					$teamdata['duration'] = $form['duration']->getValue();
+				}
 				$members = array();
 				$sicount = 0;
 				foreach ($form['persons']->values as $person) {
