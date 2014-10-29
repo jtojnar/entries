@@ -6,6 +6,8 @@ use Nette;
 use App\Model;
 
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
+	const DEFAULT_LANG = 'cs';
+
 	/** @persistent @var string */
 	public $locale;
 
