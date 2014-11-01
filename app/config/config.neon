@@ -27,6 +27,7 @@ nette:
 			*: App\*Module\Presenters\*Presenter
 
 	session:
+		autoStart: true
 		expiration: 31 days
 
 	forms:
