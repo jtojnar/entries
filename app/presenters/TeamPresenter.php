@@ -82,7 +82,7 @@ class TeamPresenter extends BasePresenter {
 
 			$team = $this->teams->getById($id);
 			if (!$team) {
-				$this->error($this->translator->translate('This team does not exist.'));
+				$this->error($this->translator->translate('messages.team.edit.error.404'));
 			}
 			if (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'error');
@@ -103,7 +103,7 @@ class TeamPresenter extends BasePresenter {
 					$this->teams->persistAndFlush($team);
 					$this->redirect('list');
 				} else{
-					$this->flashMessage($this->translator->translate('This team has already paid entry fee.'), 'info');
+					$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'info');
 					$this->redirect('Homepage:');
 				}
 			} else {
