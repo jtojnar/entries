@@ -210,7 +210,7 @@ class TeamPresenter extends BasePresenter {
 		if (isset($this->parameters['id'])) {
 			$id = $this->parameters['id'];
 			if (!$this->user->isInRole('admin') && $this->teams->getStatus($id) == 'paid') {
-				$form->addError('This team has already paid. Please contact organiser.');
+				$form->addError('messages.team.edit.error.already_paid');
 			} elseif (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->getApplication()->storeRequest('+ 48 hours');
 				$this->redirect('sign:in', $backlink);
