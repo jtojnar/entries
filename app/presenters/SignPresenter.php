@@ -6,6 +6,9 @@ use Nette;
 use App;
 
 class SignPresenter extends BasePresenter {
+	/** @persistent */
+	public $backlink = '';
+
 	/**
 	 * Sign-in form factory.
 	 * @return Nette\Application\UI\Form
@@ -33,22 +36,23 @@ class SignPresenter extends BasePresenter {
 
 	public function signInFormSucceeded($form, $values) {
 		if ($values->remember) {
-			$this->getUser()->setExpiration('30 days', false);
+			$this->user->setExpiration('30 days', false);
 		} else {
-			$this->getUser()->setExpiration('20 minutes', true);
+			$this->user->setExpiration('20 minutes', true);
 		}
 
 		try {
-			$this->getUser()->login($values->teamid, $values->password);
+			$this->user->login($values->teamid, $values->password);
+			$this->restoreRequest($this->backlink);
 			$this->redirect('Homepage:');
 		} catch (Nette\Security\AuthenticationException $e) {
-			$form->addError($e->getMessage());
+			$form->addError($e->message);
 		}
 	}
 
 
 	public function actionOut() {
-		$this->getUser()->logout();
+		$this->user->logout();
 		$this->flashMessage($this->translator->translate('messages.sign.out.notice'));
 		$this->redirect('in');
 	}

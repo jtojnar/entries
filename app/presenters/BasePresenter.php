@@ -18,7 +18,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		parent::startup();
 
 		if ($this->locale === null) {
-			$detectedLocale = $this->template->locale = $this->getHttpRequest()->detectLanguage(array('cs', 'en'));
+			$detectedLocale = $this->template->locale = $this->httpRequest->detectLanguage(array('cs', 'en'));
 
 			$this->locale = $detectedLocale ? $detectedLocale : self::DEFAULT_LANG;
 			$this->canonicalize();

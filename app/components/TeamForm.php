@@ -89,14 +89,14 @@ class TeamForm extends UI\Form {
 			$container->addText('sportident', 'messages.team.person.si.label')->setType('number');
 			$container->addCheckBox('needsportident', 'messages.team.person.si.rent');
 			$container['sportident']->addConditionOn($container['needsportident'], Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
-			$container['needsportident']->addCondition(Form::EQUAL, true)->toggle($container['sportident']->getHtmlId(), false);
+			$container['needsportident']->addCondition(Form::EQUAL, true)->toggle($container['sportident']->htmlId, false);
 
 			$container->addText('email', 'messages.team.person.email.label')->setType('email');
 			$container->addDatePicker('birth', 'messages.team.person.birth.label')->setRequired();
 
 			if ($i === 1) {
 				$container['email']->setRequired()->addRule(Form::EMAIL);
-				$container->getCurrentGroup()->setOption('description', 'messages.team.person.isContact');
+				$container->currentGroup->setOption('description', 'messages.team.person.isContact');
 			}
 		}, $minMembers, true);
 
@@ -137,7 +137,7 @@ class TeamForm extends UI\Form {
 	public static function genderClassValidator(Nette\Forms\IControl $input, Nette\Forms\Form $form) {
 		$male = false;
 		$female = false;
-		$class = $input->getValue();
+		$class = $input->value;
 		foreach ($form['persons']->values as $person) {
 			if ($person['firstname']) {
 				if ($person['gender'] == 'male') {
@@ -156,7 +156,7 @@ class TeamForm extends UI\Form {
 
 	public static function ageClassValidator(Nette\Forms\IControl $input, array $args) {
 		list($form, $eventDate, $ages_data) = $args;
-		$class = $input->getValue();
+		$class = $input->value;
 		$ages = array();
 
 		foreach ($form['persons']->values as $person) {

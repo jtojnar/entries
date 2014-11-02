@@ -35,7 +35,7 @@ class TeamPresenter extends BasePresenter {
 		$where = array();
 		$category = $this->context->httpRequest->getQuery('category');
 		if ($category !== null) {
-			$categories = $this->getCategories();
+			$categories = $this->categories;
 			if(isset($categories[$category])) {
 				$where = $categories[$category];
 			}
@@ -76,8 +76,8 @@ class TeamPresenter extends BasePresenter {
 				$this->redirect('edit', array('id' => $this->user->identity->id));
 			}
 			if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
-				$backlink = $this->getApplication()->storeRequest('+ 48 hours');
-				$this->redirect('sign:in', $backlink);
+				$backlink = $this->storeRequest('+ 48 hours');
+				$this->redirect('sign:in', ['backlink' => $backlink]);
 			}
 
 			$team = $this->teams->getById($id);
@@ -116,8 +116,8 @@ class TeamPresenter extends BasePresenter {
 
 	public function actionExport() {
 		if (!$this->user->isInRole('admin')) {
-			$backlink = $this->getApplication()->storeRequest('+ 48 hours');
-			$this->redirect('sign:in', $backlink);
+			$backlink = $this->storeRequest('+ 48 hours');
+			$this->redirect('sign:in', ['backlink' => $backlink]);
 		}
 
 		$teams = $this->teams->findAll();
@@ -212,7 +212,7 @@ class TeamPresenter extends BasePresenter {
 
 
 	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button) {
-		$form = $button->getForm();
+		$form = $button->form;
 
 		if ($this->action === 'edit') {
 			$id = $this->parameters['id'];
@@ -222,8 +222,8 @@ class TeamPresenter extends BasePresenter {
 			} else if (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
 			} elseif (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
-				$backlink = $this->getApplication()->storeRequest('+ 48 hours');
-				$this->redirect('sign:in', $backlink);
+				$backlink = $this->storeRequest('+ 48 hours');
+				$this->redirect('sign:in', ['backlink' => $backlink]);
 			}
 		} else {
 			$team = new App\Model\Team;
@@ -321,12 +321,12 @@ class TeamPresenter extends BasePresenter {
 
 	public function createComponentTeamListFilterForm() {
 		$form = new Form;
-		$renderer = $form->getRenderer();
+		$renderer = $form->renderer;
 		$form->setTranslator($this->translator);
 		$form->setMethod("GET");
 		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer;
 		$form->setRenderer($renderer);
-		$form->getElementPrototype()->removeClass('form-horizontal')->addClass('form-inline');
+		$form->elementPrototype->removeClass('form-horizontal')->addClass('form-inline');
 		$renderer->wrappers['controls']['container'] = 'p';
 		$renderer->wrappers['pair']['container'] = null;
 		$renderer->wrappers['label']['container'] = null;
@@ -335,13 +335,13 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['form']['errors'] = false;
 		$renderer->wrappers['hidden']['container'] = null;
 
-		$categories = array_keys($this->getCategories());
+		$categories = array_keys($this->categories);
 		$category = $form->addSelect('category', 'messages.team.list.filter.category.label', array_combine($categories, $categories))->setPrompt('messages.team.list.filter.category.all')->setAttribute('style', 'width:auto;');
 
 		if ($this->context->httpRequest->getQuery('category')) {
 			$category->setValue($this->context->httpRequest->getQuery('category'));
 		}
-		$category->getControlPrototype()->onchange('this.form.submit();');
+		$category->controlPrototype->onchange('this.form.submit();');
 
 		$durations = $this->context->parameters['entries']['categories']['duration'];
 		if(count($durations) > 1) {
@@ -349,7 +349,7 @@ class TeamPresenter extends BasePresenter {
 			if ($this->context->httpRequest->getQuery('duration')) {
 				$duration->setValue($this->context->httpRequest->getQuery('duration'));
 			}
-			$duration->getControlPrototype()->onchange('this.form.submit();');
+			$duration->controlPrototype->onchange('this.form.submit();');
 		}
 
 		if ($this->user->isInRole('admin')) {
@@ -357,11 +357,11 @@ class TeamPresenter extends BasePresenter {
 			if ($this->context->httpRequest->getQuery('status')) {
 				$status->setValue($this->context->httpRequest->getQuery('status'));
 			}
-			$status->getControlPrototype()->onchange('this.form.submit();');
+			$status->controlPrototype->onchange('this.form.submit();');
 		}
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
-		$submit->getControlPrototype()->onload("this.setAttribute('style', 'display: none');");
+		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
 		$form->onValidate[] = callback($this, 'filterRedir');
 		return $form;
 	}
