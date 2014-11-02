@@ -3,7 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
-use App\Model;
+use App;
 
 class SignPresenter extends BasePresenter {
 	/**

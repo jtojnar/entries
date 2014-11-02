@@ -14,7 +14,7 @@ use Nette\Forms\Form;
 use Nette\Utils\Html;
 
 class TeamForm extends UI\Form {
-	public function __construct(App\Model\CountryModel $countries, $parent, $name) {
+	public function __construct(array $countries, $parent, $name) {
 		parent::__construct($parent, $name);
 
 		$minMembers = $this->presenter->context->parameters['entries']['minMembers'];
@@ -66,7 +66,6 @@ class TeamForm extends UI\Form {
 		}
 
 		$this->addTextArea('message', 'messages.team.message.label');
-		$countries = $countries->getCountriesPairs();
 
 		$this->setCurrentGroup();
 		$this->addSubmit('save', 'messages.team.action.register');

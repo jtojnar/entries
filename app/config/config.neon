@@ -26,6 +26,9 @@ nette:
 		mapping:
 			*: App\*Module\Presenters\*Presenter
 
+	container:
+		accessors: true
+
 	session:
 		autoStart: true
 		expiration: 31 days
@@ -38,12 +41,14 @@ nette:
 
 extensions:
 	translation: Kdyby\Translation\DI\TranslationExtension
+	orm: Nextras\Orm\DI\OrmExtension
+
+orm:
+	model: App\Model\Orm
 
 
 services:
 	database: @nette.database.default.context
-	- App\Model\TeamManager(@database, %entries.admin%)
+	- App\Model\TeamManager(@App\Model\TeamRepository, %entries.admin%)
 	- App\RouterFactory
-	- App\Model\CountryModel(@database)
-	- App\Model\TeamModel(@database)
 	router: @App\RouterFactory::createRouter

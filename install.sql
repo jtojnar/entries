@@ -221,7 +221,7 @@ CREATE TABLE `person` (
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `country_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
-  `contact` bit(1) NOT NULL,
+  `contact` tinyint(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY (`id`),
   KEY `team_id` (`team_id`),
   KEY `country_id` (`country_id`),

@@ -3,7 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
-use App\Model;
+use App;
 
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	const DEFAULT_LANG = 'cs';
@@ -13,7 +13,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 	/** @var \Kdyby\Translation\Translator @inject */
 	public $translator;
-
 
 	protected function startup() {
 		parent::startup();

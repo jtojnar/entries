@@ -3,7 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
-use Nette\DateTime;
+use Nette\Utils\DateTime;
 use Tracy\Debugger;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -12,10 +12,14 @@ use Nette\Mail\SendmailMailer;
 use App;
 
 class TeamPresenter extends BasePresenter {
-	/** @var App\Model\CountryModel @inject */
+	/** @var App\Model\CountryRepository @inject */
 	public $countries;
-	/** @var App\Model\TeamModel @inject */
+
+	/** @var App\Model\TeamRepository @inject */
 	public $teams;
+
+	/** @var App\Model\PersonRepository @inject */
+	public $persons;
 
 	public function startup() {
 		parent::startup();
@@ -55,12 +59,11 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		if ($where === null) {
-			$this->template->teams = $this->teams->getTeams();
+			$this->template->teams = $this->teams->findAll();
 		} else {
-			$this->template->teams = $this->teams->getTeams()->where($where);
+			$this->template->teams = $this->teams->findBy($where);
 		}
 
-		$this->template->countries = $this->countries->getCountries();
 		$this->template->stats = array('count' => count($this->template->teams));
 	}
 
@@ -69,19 +72,21 @@ class TeamPresenter extends BasePresenter {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('sign:in', array('return' => 'edit'));
 		} else {
-			if ($id == null) {
-				$this->redirect('edit', array('id'=>$this->user->identity->id));
+			if ($id === null) {
+				$this->redirect('edit', array('id' => $this->user->identity->id));
 			}
 			if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->getApplication()->storeRequest('+ 48 hours');
 				$this->redirect('sign:in', $backlink);
 			}
-			if (!$this->user->isInRole('admin') && $this->teams->getStatus($id) == 'paid') {
+
+			$team = $this->teams->getById($id);
+			if (!$team) {
+				$this->error($this->translator->translate('This team does not exist.'));
+			}
+			if (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'error');
 				$this->redirect('Homepage:');
-			}
-			if ($this->teams->getTeam($id) == null) {
-				$this->error($this->translator->translate('This team does not exist.'));
 			}
 		}
 	}
@@ -92,8 +97,10 @@ class TeamPresenter extends BasePresenter {
 		if (isset($this->parameters['id'])) {
 			$id = $this->parameters['id'];
 			if ($this->user->isInRole('admin')) {
-				if ($this->teams->getStatus($id) == 'registered') {
-					$this->teams->updateStatus($id, 'paid');
+				$team = $this->teams->getById($id);
+				if ($team->status == 'registered') {
+					$team->status = 'paid';
+					$this->teams->persistAndFlush($team);
 					$this->redirect('list');
 				} else{
 					$this->flashMessage($this->translator->translate('This team has already paid entry fee.'), 'info');
@@ -113,8 +120,7 @@ class TeamPresenter extends BasePresenter {
 			$this->redirect('sign:in', $backlink);
 		}
 
-		$teams = $this->teams->getTeams();
-		$countries = $this->countries->getCountries();
+		$teams = $this->teams->findAll();
 		$maxMembers = $this->context->parameters['entries']['maxMembers'];
 
 		if (count($teams)) {
@@ -138,15 +144,16 @@ class TeamPresenter extends BasePresenter {
 			foreach ($teams as $team) {
 				$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat($team->genderclass, $team->ageclass));
 				$i = 0;
-				foreach ($team->related(BaseModel::TEAM_PERSON) as $person) {
+				$remaining = $maxMembers;
+				foreach ($team->persons as $person) {
 					$i++;
 					$row[] = $person->lastname;
 					$row[] = $person->firstname;
 					$row[] = $person->gender;
-					$row[] = $countries[$person->country_id]->name;
+					$row[] = $person->country->name;
 					$row[] = $person->sportident;
 					$row[] = $person->birth;
-					$remaining = $maxMembers-$i;
+					$remaining--;
 				}
 				if ($remaining > 0) {
 					for ($i = 0; $i < $remaining; $i++) {
@@ -171,28 +178,27 @@ class TeamPresenter extends BasePresenter {
 
 
 	protected function createComponentTeamForm($name) {
-		$form = new App\Components\TeamForm($this->countries, $this, $name);
+		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this, $name);
 		if (isset($this->parameters['id']) && !$form->submitted) {
 			$id = $this->parameters['id'];
-			$team = $this->teams->getTeam($id);
+			$team = $this->teams->getById($id);
 			$default = array();
 			$default['name'] = $team->name;
 			$default['ageclass'] = $team->ageclass;
 			$default['genderclass'] = $team->genderclass;
 			$default['message'] = $team->message;
 
-			$persons = $this->teams->getPersons($team->id);
 			$i = 0;
-			foreach ($persons as $person) {
+			foreach ($team->persons as $person) {
 				$form['persons'][$i++]->setValues(array(
 					'firstname' => $person->firstname,
 					'lastname' => $person->lastname,
 					'gender' => $person->gender,
-					'country' => $person->country_id,
+					'country' => $person->country->id,
 					'sportident' => $person->sportident,
 					'needsportident' => $person->sportident === null ? true : false,
 					'email' => $person->email,
-					'birth' => $person->birth->format('Y-m-d')
+					'birth' => $person->birth
 				));
 			}
 			$form->setValues($default);
@@ -207,157 +213,114 @@ class TeamPresenter extends BasePresenter {
 
 	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button) {
 		$form = $button->getForm();
-		if (isset($this->parameters['id'])) {
+
+		if ($this->action === 'edit') {
 			$id = $this->parameters['id'];
-			if (!$this->user->isInRole('admin') && $this->teams->getStatus($id) == 'paid') {
+			$team = $this->teams->getById($id);
+			if (!$team) {
+				$form->addError('messages.team.edit.error.404');
+			} else if (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
 			} elseif (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->getApplication()->storeRequest('+ 48 hours');
 				$this->redirect('sign:in', $backlink);
-			} else {
-				$this->teams->beginTransaction();
-				$template = $this->template;
-				$i = 0;
-				try {
-					$teamdata = array('name' => $form['name']->getValue(), 'message' => $form['message']->getValue());
-					if(isset($form['genderclass'])) {
-						$teamdata['genderclass'] = $form['genderclass']->getValue();
-					}
-					if(isset($form['ageclass'])) {
-						$teamdata['ageclass'] = $form['ageclass']->getValue();
-					}
-					if(isset($form['duration'])) {
-						$teamdata['duration'] = $form['duration']->getValue();
-					}
-					$ids = $this->teams->getPersonsIds($id);
-					$members = array();
-					$newmembers = array();
-					foreach ($form['persons']->values as $person) {
-						$firstname = $person['firstname'];
-						if (!empty($firstname)) {
-							if (!isset($address)) {
-								$address = $person['email'];
-							}
-							if (!isset($name)) {
-								$name = $person['firstname'].' '.$person['lastname'];
-							}
-							$person = array('firstname' => $firstname, 'lastname' => $person['lastname'], 'gender' => $person['gender'], 'country_id' => $person['country'], 'sportident' => ($person['needsportident'] ? null : $person['sportident']), 'birth' => $person['birth'], 'email' => $person['email']);
-						$person['contact'] = chr(0);
-						if ($i == 0) {
-							$person['contact'] = chr(1);
-						}
-							if (isset($ids[$i]) && $this->teams->personExists($ids[$i])) {
-								$members[$ids[$i]] = $person;
-							} else {
-								$person['team_id'] = $id;
-								$newmembers[] = $person;
-							}
-						} else {
-							if (isset($ids[$i]) && $this->teams->personExists($ids[$i])) {
-								$members[$ids[$i]] = null;
-							}
-						}
-						$i++;
-					}
-					if ((count($ids) - $i) > 0) {
-						for ($x = $i; $x <= count($ids) - 1; $x++) {
-							$members[$ids[$x]] = null;
-						}
-					}
-					$team = $this->teams->updateTeam($id, $teamdata, $members, $newmembers);
-					$this->teams->commit();
-					$this->flashMessage($this->translator->translate('messages.team.success.edit'));
-					$this->redirect('Homepage:');
-				} catch (Exception $e) {
-					if ($e instanceof Nette\Application\AbortException) {
-						throw $e;
-					}
-					Debugger::log($e);
-					$form->addError('messages.team.error.edit_general');
-				}
 			}
 		} else {
-			$template = $this->template;
-			$this->teams->beginTransaction();
-			$i = 0;
-			try {
-				$password = $this->teams->generatePassword();
-				$teamdata = array('name' => $form['name']->getValue(), 'message' => $form['message']->getValue(), 'ip' => $this->context->httpRequest->getRemoteAddress(), 'password' => $password);
-				if(isset($form['genderclass'])) {
-					$teamdata['genderclass'] = $form['genderclass']->getValue();
+			$team = new App\Model\Team;
+			$password = Nette\Utils\Strings::random();
+			$team->password = Nette\Security\Passwords::hash($password);
+			$team->ip = $this->context->httpRequest->remoteAddress;
+		}
+
+		try {
+			$sicount = 0;
+			$team->name = $form['name']->value;
+			$team->message = $form['message']->value;
+
+			$team->genderclass = isset($form['genderclass']) ? $form['genderclass']->value : '';
+			$team->ageclass = isset($form['ageclass']) ? $form['ageclass']->value : '';
+			$team->duration = isset($form['duration']) ? $form['duration']->value : '';
+			$this->teams->persistAndFlush($team);
+
+			$members = [];
+			foreach ($form['persons']->values as $member) {
+				$firstname = $member['firstname'];
+				if (!isset($address)) {
+					$address = $member['email'];
 				}
-				if(isset($form['ageclass'])) {
-					$teamdata['ageclass'] = $form['ageclass']->getValue();
+				if (!isset($name)) {
+					$name = $member['firstname'].' '.$member['lastname'];
 				}
-				if(isset($form['duration'])) {
-					$teamdata['duration'] = $form['duration']->getValue();
+				$person = new App\Model\Person;
+
+				$person->firstname = $firstname;
+				$person->lastname = $member['lastname'];
+				$person->gender = $member['gender'];
+				$person->country = $this->countries->getById($member['country']);
+				$person->sportident = ($member['needsportident'] ? null : $member['sportident']);
+				$person->birth = $member['birth'];
+				$person->email = $member['email'];
+				$person->team = $team;
+
+				if (isset($member['needsportident'])) {
+					$sicount++;
 				}
-				$members = array();
-				$sicount = 0;
-				foreach ($form['persons']->values as $person) {
-					$firstname = $person['firstname'];
-					if (!empty($firstname)) {
-						if (!isset($address)) {
-							$address = $person['email'];
-						}
-						if (!isset($name)) {
-							$name = $person['firstname'].' '.$person['lastname'];
-						}
-						$person = array('firstname' => $firstname, 'lastname' => $person['lastname'], 'gender' => $person['gender'], 'country_id' => $person['country'], 'sportident' => ($person['needsportident'] ? null : $person['sportident']), 'birth' => $person['birth'], 'email' => $person['email']);
-						$person['contact'] = chr(0);
-						if ($i == 0) {
-							$person['contact'] = chr(1);
-						}
-						if (isset($person['needsportident'])) {
-							$sicount++;
-						}
-						$members[] = $person;
-					}
-					$i++;
+
+				if (count($members) === 0) {
+					$person->contact = true;
 				}
-				$team = $this->teams->addTeam($teamdata, $members);
+				$members[] = $person;
+			}
+
+			$team->persons = $members;
+			$this->teams->persistAndFlush($team);
+
+			if($this->action === 'edit') {
+				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
+			} else {
 				$mtemplate = $this->createTemplate();
-				$mtemplate->registerHelper('cost', callback($this, 'cost'));
 				$mtemplate->registerHelper('categoryFormat', callback($this, 'categoryFormat'));
-				
+
 				$appDir = $this->context->parameters['appDir'];
 				if (file_exists($appDir . '/templates/Mail/verification.' . $this->locale . '.latte')) {
 					$mtemplate->setFile($appDir . '/templates/Mail/verification.' . $this->locale . '.latte');
 				} else {
 					$mtemplate->setFile($appDir . '/templates/Mail/verification.latte');
 				}
+
 				$mtemplate->team = $team;
-				$mtemplate->people = $this->teams->getPersons($team['id']);
-				$mtemplate->id = $team['id'];
+				$mtemplate->people = $team->persons;
+				$mtemplate->id = $team->id;
 				$mtemplate->name = $name;
 				$mtemplate->password = $password;
-				$mtemplate->peoplecount = count($members);
-				$mtemplate->sicount = $sicount;
+				$mtemplate->cost = $this->cost(count($members), $sicount);
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
-				$mail =new Message;
-				$mail->setFrom($mtemplate->organiserMail)
-				->addTo($address)
-				->setHtmlBody($mtemplate);
-				
+				$mail = new Message;
+				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mtemplate);
+
 				$mailer = new SendmailMailer;
 				$mailer->send($mail);
-				
-				$this->teams->commit();
+
 				$this->flashMessage($this->translator->translate('messages.team.success.add', null, array('password' => $password)));
-				$this->redirect('Homepage:');
-			} catch (Exception $e) {
-				if ($e instanceof Nette\Application\AbortException) {
-					throw $e;
-				}
-				Debugger::log($e);
+			}
+			$this->redirect('Homepage:');
+		} catch (Exception $e) {
+			if ($e instanceof Nette\Application\AbortException) {
+				throw $e;
+			}
+			Debugger::log($e);
+			if($this->action === 'edit') {
+				$form->addError('messages.team.error.edit_general');
+			} else {
 				$form->addError('messages.team.error.add_general');
 			}
 		}
+
 	}
 
 
-	public function createComponentTeamListFilterForm($name) {
-		$form = new Form($this, $name);
+	public function createComponentTeamListFilterForm() {
+		$form = new Form;
 		$renderer = $form->getRenderer();
 		$form->setTranslator($this->translator);
 		$form->setMethod("GET");
