@@ -391,13 +391,20 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	public function getCategories() {
-		$sexes = array('male' => 'M', 'mixed' => 'X', 'female' => 'W');
+		$sexes = $this->presenter->context->parameters['entries']['categories']['gender'];
 		$ages = $this->context->parameters['entries']['categories']['age'];
 		$categories = array();
 
 		foreach(array_keys($sexes) as $sex) {
 			foreach (array_keys($ages) as $age) {
-				$categories[$sexes[$sex] . $ages[$age]['short']] = array('genderclass' => $sex, 'ageclass' => $age);
+				$category = [];
+				if($sex !== 'any') {
+					$category['genderclass'] = $sex;
+				}
+				if($age !== 'any') {
+					$category['ageclass'] = $age;
+				}
+				$categories[$sexes[$sex]['short'] . $ages[$age]['short']] = $category;
 			}
 		}
 

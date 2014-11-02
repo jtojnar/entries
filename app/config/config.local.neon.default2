@@ -24,6 +24,9 @@ parameters:
 					short: HD
 				tur:
 					short: TUR
+			age:
+				any:
+					short:
 
 		admin: password
 	webmasterEmail: email@example.com
