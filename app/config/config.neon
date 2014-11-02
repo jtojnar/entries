@@ -16,7 +16,7 @@ parameters:
 				female:
 					short: F
 				mixed:
-					short: M
+					short: X
 			age: []
 			duration: []
 
