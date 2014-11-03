@@ -6,8 +6,8 @@
 #
 parameters:
 	entries:
-		maxMembers: 0
 		minMembers: 0
+		maxMembers: 0
 		fees: []
 		categories:
 			gender:

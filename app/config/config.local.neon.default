@@ -6,8 +6,8 @@ parameters:
 		cs: Nějaký závod
 		en: Some event
 	entries:
-		maxMembers: 5
 		minMembers: 2
+		maxMembers: 5
 		eventDate: 2012-06-23 # used for age calculations
 		opening: 2012-04-01T01:00:00
 		closing: 2015-06-23T01:00:00
