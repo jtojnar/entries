@@ -22,7 +22,7 @@
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Zpráva:</th><td>{$team->message}</td></tr>
 </table>
 {foreach $people as $person}
-<h4>{$iterator->counter}. člen týmu{if $person->contact} {_team.contactPerson}{/if}</h4>
+<h4>{$iterator->counter}. člen týmu{if $person->contact} {_messages.team.person.isContact}{/if}</h4>
 <table class="teamlist" style="border-collapse: collapse; min-width: 30%; margin: 0.5em 0; border: 0.25em solid #333333;">
 <tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Jméno:</th><td>{$person->firstname} {$person->lastname}</td></tr>
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Pohlaví:</th><td>{if $person->gender=='male'}♂ Muž{else}♀ Žena{/if}</td></tr>
