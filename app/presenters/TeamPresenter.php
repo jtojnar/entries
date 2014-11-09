@@ -522,6 +522,10 @@ class TeamPresenter extends BasePresenter {
 				$label = $name . ':';
 			}
 
+			if(!$this->user->isInRole('admin') && isset($field['private']) && $field['private']) {
+				continue;
+			}
+
 			if ($field['type'] === 'sportident') {
 				if (!isset($data->$name) || $data->$name === null) {
 					$ret[] = $label . ' ' . $this->translator->translate('messages.team.person.si.rent');
