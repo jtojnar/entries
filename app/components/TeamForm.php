@@ -146,6 +146,12 @@ class TeamForm extends UI\Form {
 					if (isset($field['default'])) {
 						$country->setDefaultValue($field['default']);
 					}
+				} else if ($field['type'] === 'phone') {
+					$label = isset($field['label'][$this->presenter->locale]) ? Html::el()->setText($field['label'][$this->presenter->locale]) : 'messages.team.phone.label';
+					$input = $this->addText($name, $label)->setType('tel')->setRequired();
+				} else {
+					$label = Html::el()->setText(isset($field['label'][$this->presenter->locale]) ? $field['label'][$this->presenter->locale] : $name);
+					$input = $this->addText($name, $label)->setRequired();
 				}
 			}
 		}
