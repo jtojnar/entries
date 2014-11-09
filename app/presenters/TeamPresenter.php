@@ -240,11 +240,15 @@ class TeamPresenter extends BasePresenter {
 			$team->genderclass = isset($form['genderclass']) ? $form['genderclass']->value : '';
 			$team->ageclass = isset($form['ageclass']) ? $form['ageclass']->value : '';
 			$team->duration = isset($form['duration']) ? $form['duration']->value : '';
+
+			foreach ($team->persons as $person) {
+				$this->persons->remove($person);
+			}
+
+			$this->persons->flush();
 			$this->teams->persistAndFlush($team);
 
-			$members = [];
 			foreach ($form['persons']->values as $member) {
-				$firstname = $member['firstname'];
 				if (!isset($address)) {
 					$address = $member['email'];
 				}
@@ -253,7 +257,7 @@ class TeamPresenter extends BasePresenter {
 				}
 				$person = new App\Model\Person;
 
-				$person->firstname = $firstname;
+				$person->firstname = $member['firstname'];
 				$person->lastname = $member['lastname'];
 				$person->gender = $member['gender'];
 				$person->country = $this->countries->getById($member['country']);
@@ -266,14 +270,14 @@ class TeamPresenter extends BasePresenter {
 					$sicount++;
 				}
 
-				if (count($members) === 0) {
+				if (count($team->persons) === 0) {
 					$person->contact = true;
 				}
-				$members[] = $person;
+
+				$this->persons->persist($person);
 			}
 
-			$team->persons = $members;
-			$this->teams->persistAndFlush($team);
+			$this->persons->flush();
 
 			if($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
