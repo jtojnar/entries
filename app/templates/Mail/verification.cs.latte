@@ -27,7 +27,6 @@
 <tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Jméno:</th><td>{$person->firstname} {$person->lastname}</td></tr>
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Pohlaví:</th><td>{if $person->gender=='male'}♂ Muž{else}♀ Žena{/if}</td></tr>
 <tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Datum narození:</th><td>{$person->birth|date:'%-d. %-m. %Y'}</td></tr>
-<tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Číslo čipu SI:</th><td>{if $person->sportident==null}Potřebuje půjčit{else}{$person->sportident}{/if}</td></tr>
 <tr style="background-color: #ffffff;" bgcolor="#ffffff" n:if="$person->email"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">E-Mail:</th><td>{$person->email}</td></tr>
 </table>
 {/foreach} <br>

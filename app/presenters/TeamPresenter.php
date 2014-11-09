@@ -4,6 +4,7 @@ namespace App\Presenters;
 
 use Nette;
 use Nette\Utils\DateTime;
+use Nette\Utils\Html;
 use Tracy\Debugger;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -64,6 +65,9 @@ class TeamPresenter extends BasePresenter {
 			$this->template->teams = $this->teams->findBy($where);
 		}
 
+		$this->template->registerHelper('personData', callback($this, 'personData'));
+		$this->template->registerHelper('teamData', callback($this, 'teamData'));
+
 		$this->template->stats = array('count' => count($this->template->teams));
 	}
 
@@ -123,18 +127,26 @@ class TeamPresenter extends BasePresenter {
 		$teams = $this->teams->findAll();
 		$maxMembers = $this->context->parameters['entries']['maxMembers'];
 
+		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
+		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
+
 		if (count($teams)) {
 			$response = $this->context->getByType('Nette\Http\Response');
 			$response->setContentType('text/csv', 'UTF-8');
 			$fp = fOpen('php://output', 'a');
 			$headers = array('#', 'name', 'registered', 'category');
 
+			foreach ($teamFields as $name => $field) {
+				$headers[] = $name;
+			}
+
 			for ($i =1; $i <= $maxMembers; $i++) {
 				$headers[] = 'm' . $i . 'lastname';
 				$headers[] = 'm' . $i . 'firstname';
 				$headers[] = 'm' . $i . 'gender';
-				$headers[] = 'm' . $i . 'country';
-				$headers[] = 'm' . $i . 'si';
+				foreach ($personFields as $name => $field) {
+					$headers[] = 'm' . $i . $name;
+				}
 				$headers[] = 'm' . $i . 'birth';
 			}
 
@@ -143,6 +155,19 @@ class TeamPresenter extends BasePresenter {
 
 			foreach ($teams as $team) {
 				$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat($team->genderclass, $team->ageclass));
+				foreach ($teamFields as $name => $field) {
+					$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
+					if ($f) {
+						if ($field['type'] === 'country') {
+							$row[] = $this->countries->getById($f)->name;
+						} else {
+							$row[] = $f;
+						}
+					} else {
+						$row[] = '';
+					}
+				}
+
 				$i = 0;
 				$remaining = $maxMembers;
 				foreach ($team->persons as $person) {
@@ -150,8 +175,18 @@ class TeamPresenter extends BasePresenter {
 					$row[] = $person->lastname;
 					$row[] = $person->firstname;
 					$row[] = $person->gender;
-					$row[] = $person->country->name;
-					$row[] = $person->sportident;
+					foreach ($personFields as $name => $field) {
+						$f = isset($person->getJsonData()->$name) ? $person->getJsonData()->$name : null;
+						if ($f) {
+							if ($field['type'] === 'country') {
+								$row[] = $this->countries->getById($f)->name;
+							} else {
+								$row[] = $f;
+							}
+						} else {
+							$row[] = '';
+						}
+					}
 					$row[] = $person->birth;
 					$remaining--;
 				}
@@ -160,8 +195,9 @@ class TeamPresenter extends BasePresenter {
 						$row[] = '';
 						$row[] = '';
 						$row[] = '';
-						$row[] = '';
-						$row[] = '';
+						foreach ($personFields as $name => $field) {
+							$row[] = '';
+						}
 						$row[] = '';
 					}
 				}
@@ -188,18 +224,35 @@ class TeamPresenter extends BasePresenter {
 			$default['genderclass'] = $team->genderclass;
 			$default['message'] = $team->message;
 
+			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+			foreach ($fields as $name => $field) {
+				if (isset($team->getJsonData()->$name)) {
+					$default[$name] = $team->getJsonData()->$name;
+				} else if ($field['type'] === 'sportident') {
+					$default[$name . 'Needed'] = true;
+				}
+			}
+
 			$i = 0;
+			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 			foreach ($team->persons as $person) {
-				$form['persons'][$i++]->setValues(array(
+				$personDefault = array(
 					'firstname' => $person->firstname,
 					'lastname' => $person->lastname,
 					'gender' => $person->gender,
-					'country' => $person->country->id,
-					'sportident' => $person->sportident,
-					'needsportident' => $person->sportident === null ? true : false,
 					'email' => $person->email,
 					'birth' => $person->birth
-				));
+				);
+
+				foreach ($fields as $name => $field) {
+					if (isset($person->getJsonData()->$name)) {
+						$personDefault[$name] = $person->getJsonData()->$name;
+					} else if ($field['type'] === 'sportident') {
+						$default[$name . 'Needed'] = true;
+					}
+				}
+
+				$form['persons'][$i++]->setValues($personDefault);
 			}
 			$form->setValues($default);
 		}
@@ -233,7 +286,7 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		try {
-			$sicount = 0;
+			$invoice = new App\Model\Invoice;
 			$team->name = $form['name']->value;
 			$team->message = $form['message']->value;
 
@@ -241,14 +294,34 @@ class TeamPresenter extends BasePresenter {
 			$team->ageclass = isset($form['ageclass']) ? $form['ageclass']->value : '';
 			$team->duration = isset($form['duration']) ? $form['duration']->value : '';
 
-			foreach ($team->persons as $person) {
-				$this->persons->remove($person);
+			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+			$jsonData = [];
+			foreach ($fields as $name => $field) {
+				if ($field['type'] === 'sportident' && $form[$name . 'Needed']->value) {
+					$jsonData[$name] = null;
+				} else {
+					$jsonData[$name] = $form[$name]->value;
+				}
+
+				if (isset($field['fee']) && $jsonData[$name] === null) {
+					$invoice->addItem($name, $field['fee']);
+				}
+			}
+			$team->setJsonData($jsonData);
+
+			if ($this->action === 'edit') {
+				foreach ($team->persons as $person) {
+					$this->persons->remove($person);
+				}
+				$this->persons->flush();
 			}
 
-			$this->persons->flush();
 			$this->teams->persistAndFlush($team);
 
+			$invoice->createItem('person', $this->context->parameters['entries']['fees']['person']);
+			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 			foreach ($form['persons']->values as $member) {
+				$firstname = $member['firstname'];
 				if (!isset($address)) {
 					$address = $member['email'];
 				}
@@ -257,27 +330,36 @@ class TeamPresenter extends BasePresenter {
 				}
 				$person = new App\Model\Person;
 
-				$person->firstname = $member['firstname'];
+				$person->firstname = $firstname;
 				$person->lastname = $member['lastname'];
 				$person->gender = $member['gender'];
-				$person->country = $this->countries->getById($member['country']);
-				$person->sportident = ($member['needsportident'] ? null : $member['sportident']);
 				$person->birth = $member['birth'];
 				$person->email = $member['email'];
 				$person->team = $team;
 
-				if ($member['needsportident']) {
-					$sicount++;
+				$jsonData = [];
+				foreach ($fields as $name => $field) {
+					if ($field['type'] === 'sportident' && $member[$name . 'Needed']) {
+						$jsonData[$name] = null;
+					} else {
+						$jsonData[$name] = $member[$name];
+					}
+					if (isset($field['fee']) && $jsonData[$name] === null) {
+						$invoice->addItem($name, $field['fee']);
+					}
 				}
 
 				if (count($team->persons) === 0) {
 					$person->contact = true;
 				}
+				$person->setJsonData($jsonData);
 
+				$invoice->addItem('person');
 				$this->persons->persist($person);
 			}
 
 			$this->persons->flush();
+			$this->teams->persistAndFlush($team);
 
 			if($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
@@ -297,7 +379,7 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->id = $team->id;
 				$mtemplate->name = $name;
 				$mtemplate->password = $password;
-				$mtemplate->cost = $this->cost(count($members), $sicount);
+				$mtemplate->cost = $invoice->getTotal();
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
 				$mail = new Message;
 				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mtemplate);
@@ -413,5 +495,40 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		return $categories;
+	}
+
+	public function personData($data) {
+		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+		return $this->formatData($data, $fields);
+	}
+
+	public function teamData($data) {
+		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+		return $this->formatData($data, $fields);
+	}
+
+	public function formatData($data, $fields) {
+		$ret = [];
+		foreach ($fields as $name => $field) {
+			if ($field['type'] === 'sportident') {
+				if (!isset($data->$name) || $data->$name === null) {
+					$ret[] = $this->translator->translate('messages.team.person.si.rent');
+					continue;
+				}
+			} else if ($field['type'] === 'country') {
+				$country = isset($data->$name) ? $this->countries->getById($data->$name) : null;
+				if (!$country) {
+					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
+					continue;
+				}
+				$ret[] = (string) Html::el('span', ['class' => 'flag flag-'. $country->code]) . ' ' . $country->name;
+				continue;
+			}
+			if (isset($data->$name)) {
+				$ret[] = $data->$name;
+			}
+		}
+
+		return $ret;
 	}
 }

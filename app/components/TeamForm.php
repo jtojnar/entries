@@ -14,8 +14,12 @@ use Nette\Forms\Form;
 use Nette\Utils\Html;
 
 class TeamForm extends UI\Form {
+	/** @var array */
+	private $countries;
+
 	public function __construct(array $countries, $parent, $name) {
 		parent::__construct($parent, $name);
+		$this->countries = $countries;
 
 		$minMembers = $this->presenter->context->parameters['entries']['minMembers'];
 		$maxMembers = $this->presenter->context->parameters['entries']['maxMembers'];
@@ -65,15 +69,19 @@ class TeamForm extends UI\Form {
 			->setDefaultValue($durations[0]);
 		}
 
+		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+		$this->addCustomFields($fields, $this);
+
 		$this->addTextArea('message', 'messages.team.message.label');
 
 		$this->setCurrentGroup();
 		$this->addSubmit('save', 'messages.team.action.register');
 		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = callback($this, 'addMemberClicked');
 		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = callback($this, 'removeMemberClicked');
-		
+
+		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 		$i = 0;
-		$this->addDynamic('persons', function(Container $container) use(&$i, &$countries) {
+		$this->addDynamic('persons', function(Container $container) use(&$i, $fields) {
 			$i++;
 			$group = $this->addGroup();
 			$group->setOption('label', Html::el()->setText($this->translator->translate('messages.team.person.label', $i)));
@@ -84,12 +92,7 @@ class TeamForm extends UI\Form {
 			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
 			$container->addRadioList('gender', 'messages.team.person.gender.label', array('female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'))->setDefaultValue('male')->setRequired();
 
-			$container->addSelect('country', 'messages.team.person.country.label', $countries)->setPrompt('messages.team.person.country.default')->setRequired();
-
-			$container->addText('sportident', 'messages.team.person.si.label')->setType('number');
-			$container->addCheckBox('needsportident', 'messages.team.person.si.rent');
-			$container['sportident']->addConditionOn($container['needsportident'], Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
-			$container['needsportident']->addCondition(Form::EQUAL, true)->toggle($container['sportident']->htmlId, false);
+			$this->addCustomFields($fields, $container);
 
 			$container->addText('email', 'messages.team.person.email.label')->setType('email');
 			$container->addDatePicker('birth', 'messages.team.person.birth.label')->setRequired();
@@ -133,6 +136,27 @@ class TeamForm extends UI\Form {
 			}
 		}
 
+	public function addCustomFields($fields, $container) {
+		foreach ($fields as $name => $field) {
+			if (isset($field['type'])) {
+				if ($field['type'] === 'sportident') {
+					$this->addSportident($name, $container);
+				} else if ($field['type'] === 'country') {
+					$country = $container->addSelect($name, 'messages.team.person.country.label', $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
+					if(isset($field['default'])) {
+						$country->setDefaultValue($field['default']);
+					}
+				}
+			}
+		}
+	}
+
+	public function addSportident($name, $container) {
+		$si = $container->addText($name, 'messages.team.person.si.label')->setType('number');
+		$container->addCheckBox($name . 'Needed', 'messages.team.person.si.rent');
+		$container[$name]->addConditionOn($container[$name . 'Needed'], Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
+		$container[$name . 'Needed']->addCondition(Form::EQUAL, true)->toggle($container[$name]->htmlId, false);
+	}
 
 	public static function genderClassValidator(Nette\Forms\IControl $input, Nette\Forms\Form $form) {
 		$male = false;

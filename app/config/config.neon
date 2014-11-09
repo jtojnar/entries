@@ -19,6 +19,9 @@ parameters:
 					short: X
 			age: []
 			duration: []
+		fields:
+			person: []
+			team: []
 
 nette:
 	application:

@@ -26,7 +26,6 @@
 <tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Name:</th><td>{$person->firstname} {$person->lastname}</td></tr>
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Gender:</th><td>{if $person->gender=='male'}♂ Male{else}♀ Female{/if}</td></tr>
 <tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Date of birth:</th><td>{$person->birth|date:'%b/%d/%Y'}</td></tr>
-<tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">SI card number:</th><td>{if $person->sportident==null}Need to rent{else}{$person->sportident}{/if}</td></tr>
 <tr style="background-color: #ffffff;" bgcolor="#ffffff" n:if="$person->email"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">E-Mail address:</th><td>{$person->email}</td></tr>
 </table>
 {/foreach}

@@ -11,8 +11,6 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $code
  * @property string $aliases
  * @property bool $europe
- *
- * @property OneHasMany|Person[] $persons {1:m PersonRepository $country}
  */
 class Country extends Entity {
 }

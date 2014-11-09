@@ -13,7 +13,6 @@ parameters:
 		closing: 2015-06-23T01:00:00
 		fees:
 			person: 650.0
-			si: 50.0
 		categories:
 			age:
 				youth:
@@ -33,6 +32,14 @@ parameters:
 			duration:
 				- 24
 				- 12
+		fields:
+			person:
+				country:
+					type: country
+					default: 46
+				sportident:
+					type: sportident
+					fee: 50
 
 		admin: password
 	webmasterEmail: email@example.com

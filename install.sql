@@ -217,16 +217,13 @@ CREATE TABLE `person` (
   `lastname` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `gender` enum('male','female') COLLATE utf8mb4_unicode_ci NOT NULL,
   `birth` date NOT NULL,
-  `sportident` int(11) DEFAULT NULL,
+  `details` text NOT NULL,
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
   `contact` tinyint(1) DEFAULT 0 NOT NULL,
   PRIMARY KEY (`id`),
   KEY `team_id` (`team_id`),
-  KEY `country_id` (`country_id`),
   CONSTRAINT `person_ibfk_6` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `person_ibfk_7` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -240,6 +237,7 @@ CREATE TABLE `team` (
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` enum('registered','paid') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'registered',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `details` text NOT NULL,
   `ip` varchar(39) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)

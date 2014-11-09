@@ -13,7 +13,6 @@ parameters:
 		closing: 2015-06-23T01:00:00
 		fees:
 			person: 650.0
-			si: 50.0
 		categories:
 			gender:
 				male:
@@ -27,6 +26,11 @@ parameters:
 			age:
 				any:
 					short:
+		fields:
+			team:
+				sportident:
+					type: sportident
+					fee: 50.0
 
 		admin: password
 	webmasterEmail: email@example.com

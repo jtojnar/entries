@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Nette\Utils\DateTime;
+use Nette\Utils\Json;
 use Nextras\Orm\Entity\Entity;
 use Nextras\Orm\Relationships\OneHasMany;
 
@@ -10,15 +11,23 @@ use Nextras\Orm\Relationships\OneHasMany;
  * Person
  * @property Team|null $team {m:1 TeamRepository $persons}
  * @property string $firstname
- * @property Country $country {m:1 CountryRepository $persons}
  * @property string $lastname
  * @property string $gender {enum self::MALE self::FEMALE}
  * @property DateTime $birth
- * @property int|null $sportident
+ * @property array $jsonData {virtual}
+ * @property string $details
  * @property string $email
  * @property bool $contact {default false}
  */
 class Person extends Entity {
 	const MALE = 'male';
 	const FEMALE = 'female';
+
+	public function getJsonData() {
+		return Json::decode($this->details);
+	}
+
+	public function setJsonData($data) {
+		$this->details = Json::encode($data);
+	}
 }

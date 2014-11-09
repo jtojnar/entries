@@ -33,20 +33,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		}
 
 		$this->template->registerHelper('categoryFormat', callback($this, 'categoryFormat'));
-	}
-
-	public function cost($persons, $chips) {
-		$parameters = $this->context->parameters;
-		if (isset($parameters['entries']['fees'])) {
-			$fees = $parameters['entries']['fees'];
-			if (isset($fees['si']) && isset($fees['person'])) {
-				return $fees['si'] * intVal($chips) + $fees['person'] * intVal($persons);
-			} else {
-				throw new Exception('Fees incorrectly defined');
-			}
-		} else {
-			throw new Exception('Fees not defined');
-		}
+		$this->template->registerHelper('wrapInParagraphs', callback($this, 'wrapInParagraphs'));
 	}
 
 	public function categoryFormat($gender, $age) {
@@ -64,5 +51,11 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			$gender = '';
 		}
 		return $gender . $age;
+	}
+
+	public function wrapInParagraphs(array $arr) {
+		return implode('', array_map(function($e) {
+			return '<p>' . $e . '</p>';
+		}, $arr));
 	}
 }
