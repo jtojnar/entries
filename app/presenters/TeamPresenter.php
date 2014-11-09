@@ -262,7 +262,7 @@ class TeamPresenter extends BasePresenter {
 				$person->email = $member['email'];
 				$person->team = $team;
 
-				if (isset($member['needsportident'])) {
+				if ($member['needsportident']) {
 					$sicount++;
 				}
 
