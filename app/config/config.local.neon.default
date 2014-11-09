@@ -43,6 +43,8 @@ parameters:
 
 		admin: password
 	webmasterEmail: email@example.com
+	database:
+		prefix: ''
 
 nette:
 	database:

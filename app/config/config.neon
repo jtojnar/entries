@@ -22,6 +22,8 @@ parameters:
 		fields:
 			person: []
 			team: []
+	database:
+		prefix: ''
 
 nette:
 	application:
@@ -48,6 +50,7 @@ extensions:
 
 orm:
 	model: App\Model\Orm
+	options: 'popo'
 
 
 services:
