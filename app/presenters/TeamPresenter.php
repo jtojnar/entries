@@ -26,7 +26,7 @@ class TeamPresenter extends BasePresenter {
 		parent::startup();
 		if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
 			throw new App\TooLateForAccessException;
-		} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+		} else if ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
 			throw new App\TooSoonForAccessException;
 		}
 	}
@@ -37,7 +37,7 @@ class TeamPresenter extends BasePresenter {
 		$category = $this->context->httpRequest->getQuery('category');
 		if ($category !== null) {
 			$categories = $this->categories;
-			if(isset($categories[$category])) {
+			if (isset($categories[$category])) {
 				$where = $categories[$category];
 			}
 		}
@@ -48,7 +48,7 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		if ($this->context->httpRequest->getQuery('status') !== null) {
-			switch($this->context->httpRequest->getQuery('status')) {
+			switch ($this->context->httpRequest->getQuery('status')) {
 				case 'paid':
 					$where['status'] = 'paid';
 					break;
@@ -256,7 +256,7 @@ class TeamPresenter extends BasePresenter {
 			}
 			$form->setValues($default);
 		}
-		if(isset($this->parameters['id'])) {
+		if (isset($this->parameters['id'])) {
 			$form['save']->caption = 'messages.team.action.edit';
 		}
 		$form['save']->onClick[] = callback($this, 'processTeamForm');
@@ -274,7 +274,7 @@ class TeamPresenter extends BasePresenter {
 				$form->addError('messages.team.edit.error.404');
 			} else if (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
-			} elseif (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
+			} else if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('sign:in', ['backlink' => $backlink]);
 			}
@@ -361,7 +361,7 @@ class TeamPresenter extends BasePresenter {
 			$this->persons->flush();
 			$this->teams->persistAndFlush($team);
 
-			if($this->action === 'edit') {
+			if ($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 			} else {
 				$mtemplate = $this->createTemplate();
@@ -395,7 +395,7 @@ class TeamPresenter extends BasePresenter {
 				throw $e;
 			}
 			Debugger::log($e);
-			if($this->action === 'edit') {
+			if ($this->action === 'edit') {
 				$form->addError('messages.team.error.edit_general');
 			} else {
 				$form->addError('messages.team.error.add_general');
@@ -430,7 +430,7 @@ class TeamPresenter extends BasePresenter {
 		$category->controlPrototype->onchange('this.form.submit();');
 
 		$durations = $this->context->parameters['entries']['categories']['duration'];
-		if(count($durations) > 1) {
+		if (count($durations) > 1) {
 			$duration = $form->addSelect('duration', null, array_combine($durations, $durations))->setPrompt('messages.team.list.filter.duration.all')->setAttribute('style', 'width:auto;');
 			if ($this->context->httpRequest->getQuery('duration')) {
 				$duration->setValue($this->context->httpRequest->getQuery('duration'));
@@ -481,13 +481,13 @@ class TeamPresenter extends BasePresenter {
 		$ages = $this->context->parameters['entries']['categories']['age'];
 		$categories = array();
 
-		foreach(array_keys($sexes) as $sex) {
+		foreach (array_keys($sexes) as $sex) {
 			foreach (array_keys($ages) as $age) {
 				$category = [];
-				if($sex !== 'any') {
+				if ($sex !== 'any') {
 					$category['genderclass'] = $sex;
 				}
-				if($age !== 'any') {
+				if ($age !== 'any') {
 					$category['ageclass'] = $age;
 				}
 				$categories[$sexes[$sex]['short'] . $ages[$age]['short']] = $category;

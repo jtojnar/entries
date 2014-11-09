@@ -33,7 +33,7 @@ class TeamForm extends UI\Form {
 		$this->addText('name', 'messages.team.name.label')->setRequired();
 
 		$genders = array_keys($this->presenter->context->parameters['entries']['categories']['gender']);
-		if(count($genders) > 1) {
+		if (count($genders) > 1) {
 			$this->addRadioList('genderclass', 'messages.team.gender.label', array_combine($genders, array_map(function($a) {
 				return 'messages.team.gender.' . $a;
 			}, $genders)))->addRule(callback('\App\Components\TeamForm::genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
@@ -42,14 +42,14 @@ class TeamForm extends UI\Form {
 		$translator = $this->translator;
 		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
 		$ages = array_keys($ages_data);
-		if(count($ages) > 1) {
+		if (count($ages) > 1) {
 			$this->addRadioList('ageclass', 'messages.team.age.label', array_combine($ages, array_map(function($a) use (&$translator, $ages_data) {
 				$info = '';
-				if(isset($ages_data[$a]['min'])) {
+				if (isset($ages_data[$a]['min'])) {
 					$info .= ' ' . $translator->translate('messages.team.age.min', null, array('age' => $ages_data[$a]['min']));
 				}
 
-				if(isset($ages_data[$a]['max'])) {
+				if (isset($ages_data[$a]['max'])) {
 					$info .= ' ' . $translator->translate('messages.team.age.max', null, array('age' => $ages_data[$a]['max']));
 				}
 				return Html::el()->setText($translator->translate('messages.team.age.' . $a) . $info);
@@ -61,7 +61,7 @@ class TeamForm extends UI\Form {
 		}
 
 		$durations = $this->presenter->context->parameters['entries']['categories']['duration'];
-		if(count($durations) > 1) {
+		if (count($durations) > 1) {
 			$this->addRadioList('duration', 'messages.team.duration.label', array_combine($durations, array_map(function($d) {
 				return 'messages.team.duration.' . $d;
 			}, $durations)))
@@ -104,17 +104,17 @@ class TeamForm extends UI\Form {
 		}, $minMembers, true);
 
 		$count = $i;
-		if($this['add']->submittedBy) {
+		if ($this['add']->submittedBy) {
 			$count++;
 		} else if ($this['remove']->submittedBy) {
 			$count--;
 		}
 
-		if($count >= $maxMembers) {
+		if ($count >= $maxMembers) {
 			$this['add']->setDisabled();
 		}
 
-		if($count <= $minMembers) {
+		if ($count <= $minMembers) {
 			$this['remove']->setDisabled();
 		}
 	}
@@ -131,7 +131,7 @@ class TeamForm extends UI\Form {
 			foreach ($button->parent['persons']->containers as $p) {
 				$lastPerson = $p;
 			}
-			if($lastPerson) {
+			if ($lastPerson) {
 				$button->parent['persons']->remove($lastPerson, TRUE);
 			}
 		}
@@ -143,7 +143,7 @@ class TeamForm extends UI\Form {
 					$this->addSportident($name, $container);
 				} else if ($field['type'] === 'country') {
 					$country = $container->addSelect($name, 'messages.team.person.country.label', $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
-					if(isset($field['default'])) {
+					if (isset($field['default'])) {
 						$country->setDefaultValue($field['default']);
 					}
 				}
@@ -198,14 +198,14 @@ class TeamForm extends UI\Form {
 
 
 	public static function validateAgeClass($class, $ages, $classes) {
-		if(!isset($classes[$class])) {
+		if (!isset($classes[$class])) {
 			throw new Exception('Validating against unknown age class');
 		}
 
 		$min = isset($classes[$class]['min']) ? $classes[$class]['min'] : null;
 		$max = isset($classes[$class]['max']) ? $classes[$class]['max'] : null;
 
-		if($min || $max) {
+		if ($min || $max) {
 			foreach ($ages as $age) {
 				if ($max && $age > $max) {
 					return false;

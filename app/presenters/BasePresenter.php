@@ -38,14 +38,14 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 	public function categoryFormat($gender, $age) {
 		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
-		if(count($ages_data) > 1) {
+		if (count($ages_data) > 1) {
 			$age = isset($ages_data[$age]) ? $ages_data[$age]['short'] : '?';
 		} else {
 			$age = '';
 		}
 
 		$gender_data = $this->presenter->context->parameters['entries']['categories']['gender'];
-		if(count($gender_data) > 1) {
+		if (count($gender_data) > 1) {
 			$gender = isset($gender_data[$gender]) ? $gender_data[$gender]['short'] : '?';
 		} else {
 			$gender = '';

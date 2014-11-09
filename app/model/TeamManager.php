@@ -27,7 +27,7 @@ class TeamManager implements Nette\Security\IAuthenticator {
 	public function authenticate(array $credentials) {
 		list($teamid, $password) = $credentials;
 
-		if($teamid === 'admin' && $password === $this->password) {
+		if ($teamid === 'admin' && $password === $this->password) {
 			return new Nette\Security\Identity('admin', 'admin', ['status' => 'admin']);
 		}
 
