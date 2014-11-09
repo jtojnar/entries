@@ -139,18 +139,28 @@ class TeamForm extends UI\Form {
 	public function addCustomFields($fields, $container) {
 		foreach ($fields as $name => $field) {
 			if (isset($field['type'])) {
+				if (isset($field['label'][$this->presenter->locale])) {
+					$label = Html::el()->setText($field['label'][$this->presenter->locale]);
+				} else if ($field['type'] === 'country') {
+					$label = 'messages.team.person.country.label';
+				} else if ($field['type'] === 'phone') {
+					$label = 'messages.team.phone.label';
+				} else if ($field['type'] === 'sportident') {
+					$label = 'messages.team.person.si.label';
+				} else {
+					$label = $name . ':';
+				}
+
 				if ($field['type'] === 'sportident') {
 					$this->addSportident($name, $container);
 				} else if ($field['type'] === 'country') {
-					$country = $container->addSelect($name, 'messages.team.person.country.label', $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
+					$country = $container->addSelect($name, $label, $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
 					if (isset($field['default'])) {
 						$country->setDefaultValue($field['default']);
 					}
 				} else if ($field['type'] === 'phone') {
-					$label = isset($field['label'][$this->presenter->locale]) ? Html::el()->setText($field['label'][$this->presenter->locale]) : 'messages.team.phone.label';
 					$input = $this->addText($name, $label)->setType('tel')->setRequired();
 				} else {
-					$label = Html::el()->setText(isset($field['label'][$this->presenter->locale]) ? $field['label'][$this->presenter->locale] : $name);
 					$input = $this->addText($name, $label)->setRequired();
 				}
 			}

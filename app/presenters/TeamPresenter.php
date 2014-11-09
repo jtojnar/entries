@@ -510,9 +510,21 @@ class TeamPresenter extends BasePresenter {
 	public function formatData($data, $fields) {
 		$ret = [];
 		foreach ($fields as $name => $field) {
+			if (isset($field['label'][$this->locale])) {
+				$label = $field['label'][$this->locale];
+			} else if ($field['type'] === 'country') {
+				$label = $this->translator->translate('messages.team.person.country.label');
+			} else if ($field['type'] === 'phone') {
+				$label = $this->translator->translate('messages.team.phone.label');
+			} else if ($field['type'] === 'sportident') {
+				$label = $this->translator->translate('messages.team.person.si.label');
+			} else {
+				$label = $name . ':';
+			}
+
 			if ($field['type'] === 'sportident') {
 				if (!isset($data->$name) || $data->$name === null) {
-					$ret[] = $this->translator->translate('messages.team.person.si.rent');
+					$ret[] = $label . ' ' . $this->translator->translate('messages.team.person.si.rent');
 					continue;
 				}
 			} else if ($field['type'] === 'country') {
@@ -525,7 +537,7 @@ class TeamPresenter extends BasePresenter {
 				continue;
 			}
 			if (isset($data->$name)) {
-				$ret[] = $data->$name;
+				$ret[] = $label . ' ' . $data->$name;
 			}
 		}
 
