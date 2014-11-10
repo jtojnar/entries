@@ -767,12 +767,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/http.git",
-                "reference": "8c063fafe9714cb56062a0d4cafb3cabbc6d4858"
+                "reference": "1552e9c40b2c2e6b5c502c737d8e591d39ea29be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/http/zipball/8c063fafe9714cb56062a0d4cafb3cabbc6d4858",
-                "reference": "8c063fafe9714cb56062a0d4cafb3cabbc6d4858",
+                "url": "https://api.github.com/repos/nette/http/zipball/1552e9c40b2c2e6b5c502c737d8e591d39ea29be",
+                "reference": "1552e9c40b2c2e6b5c502c737d8e591d39ea29be",
                 "shasum": ""
             },
             "require": {
@@ -817,7 +817,7 @@
             ],
             "description": "Nette HTTP Component",
             "homepage": "http://nette.org",
-            "time": "2014-10-28 17:26:28"
+            "time": "2014-11-09 21:27:13"
         },
         {
             "name": "nette/mail",
@@ -1471,12 +1471,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextras/orm.git",
-                "reference": "401f8dde25762eedbef214d2ebfe10eead621601"
+                "reference": "609a4e3cd9267c2e80e2e0d77b4b4cb629ec3fbf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextras/orm/zipball/401f8dde25762eedbef214d2ebfe10eead621601",
-                "reference": "401f8dde25762eedbef214d2ebfe10eead621601",
+                "url": "https://api.github.com/repos/nextras/orm/zipball/609a4e3cd9267c2e80e2e0d77b4b4cb629ec3fbf",
+                "reference": "609a4e3cd9267c2e80e2e0d77b4b4cb629ec3fbf",
                 "shasum": ""
             },
             "require": {
@@ -1526,7 +1526,7 @@
                 "nextras",
                 "orm"
             ],
-            "time": "2014-11-05 12:43:22"
+            "time": "2014-11-10 13:59:46"
         },
         {
             "name": "oodle/inflect",
