@@ -37,6 +37,28 @@ parameters:
 						cs: 'Telefon:'
 						en: 'Phone:'
 					private: true
+			person:
+				accommodation:
+					type: enum
+					label:
+						en: 'Accommodation:'
+						cs: 'Ubytování:'
+					options:
+						sunday:
+							label:
+								en: 'Friday – Sunday'
+								cs: 'Pátek – Neděle'
+							fee: 500
+						saturday:
+							label:
+								en: 'Saturday – Sunday'
+								cs: 'Sobota – Neděle'
+							fee: 250
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 
 		admin: password
 	webmasterEmail: email@example.com

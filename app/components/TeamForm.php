@@ -160,6 +160,8 @@ class TeamForm extends UI\Form {
 					}
 				} else if ($field['type'] === 'phone') {
 					$input = $this->addText($name, $label)->setType('tel')->setRequired();
+				} else if ($field['type'] === 'enum') {
+					$input = $this->addEnum($name, $container, $field)->setRequired();
 				} else {
 					$input = $this->addText($name, $label)->setRequired();
 				}
@@ -172,6 +174,28 @@ class TeamForm extends UI\Form {
 		$container->addCheckBox($name . 'Needed', 'messages.team.person.si.rent');
 		$container[$name]->addConditionOn($container[$name . 'Needed'], Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
 		$container[$name . 'Needed']->addCondition(Form::EQUAL, true)->toggle($container[$name]->htmlId, false);
+	}
+
+	public function addEnum($name, $container, $field) {
+		if (isset($field['label'][$this->presenter->locale])) {
+			$label = Html::el()->setText($field['label'][$this->presenter->locale]);
+		} else {
+			$label = $name . ':';
+		}
+		$options = array_map(function($option) {
+			return $option['label'][$this->presenter->locale];
+		}, $field['options']);
+
+		$full_options = $field['options'];
+
+		$default = array_reduce(array_keys($field['options']), function($carry, $key) use ($full_options) {
+			$item = $full_options[$key];
+			if(isset($item['default']) && $item['default'] === true) {
+				return $key;
+			}
+			return $carry;
+		});
+		return $container->addRadioList($name, $label, $options)->setDefaultValue($default);
 	}
 
 	public static function genderClassValidator(Nette\Forms\IControl $input, Nette\Forms\Form $form) {
