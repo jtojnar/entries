@@ -308,7 +308,7 @@ class TeamPresenter extends BasePresenter {
 				}
 
 				if ($field['type'] === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
-					$invoice->addItem($name, $field['options'][$form[$name]->value]['fee']);
+					$invoice->addItem($name . '-' . $form[$name]->value, $field['options'][$form[$name]->value]['fee']);
 				}
 			}
 			$team->setJsonData($jsonData);
@@ -353,7 +353,7 @@ class TeamPresenter extends BasePresenter {
 					}
 
 					if ($field['type'] === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
-						$invoice->addItem($name, $field['options'][$member[$name]]['fee']);
+						$invoice->addItem($name . '-' . $member[$name], $field['options'][$member[$name]]['fee']);
 					}
 				}
 
