@@ -28,7 +28,7 @@ class SignPresenter extends BasePresenter {
 		$form->addCheckbox('remember', 'messages.sign.in.remember');
 
 		$form->addSubmit('send', 'messages.sign.in.action');
-		
+
 		$form->onSuccess[] = $this->signInFormSucceeded;
 		return $form;
 	}

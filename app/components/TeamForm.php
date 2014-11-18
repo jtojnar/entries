@@ -87,8 +87,7 @@ class TeamForm extends UI\Form {
 			$group->setOption('label', Html::el()->setText($this->translator->translate('messages.team.person.label', $i)));
 			$container->setCurrentGroup($group);
 			$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
-			
-			
+
 			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
 			$container->addRadioList('gender', 'messages.team.person.gender.label', array('female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'))->setDefaultValue('male')->setRequired();
 
