@@ -35,7 +35,7 @@ nette:
 		accessors: true
 
 	session:
-		autoStart: true
+		save_path: "%tempDir%/sessions"
 		expiration: 31 days
 
 	forms:
@@ -46,11 +46,10 @@ nette:
 
 extensions:
 	translation: Kdyby\Translation\DI\TranslationExtension
-	orm: Nextras\Orm\DI\OrmExtension
+	orm: Nextras\Orm\Bridge\NetteDI\OrmExtension
 
 orm:
 	model: App\Model\Orm
-	options: 'popo'
 
 
 services:

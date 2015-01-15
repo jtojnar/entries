@@ -2,9 +2,7 @@
 
 namespace App\Model;
 
-use Nextras\Orm\Model\DIModel;
-use Nette\Caching\IStorage;
-use Nette\DI\Container;
+use Nextras\Orm\Model\Model;
 
 /**
  * Model
@@ -12,12 +10,5 @@ use Nette\DI\Container;
  * @property-read TeamRepository $teams
  * @property-read countryRepository $countries
  */
-class Orm extends DIModel {
-	/** @var string */
-	public $prefix;
-
-	public function __construct(Container $container, IStorage $cacheStorage, array $repositories) {
-		parent::__construct($container, $cacheStorage, $repositories);
-		$this->prefix = $container->parameters['database']['prefix'];
-	}
+class Orm extends Model {
 }
