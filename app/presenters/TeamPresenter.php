@@ -23,14 +23,15 @@ class TeamPresenter extends BasePresenter {
 	public $persons;
 
 	public function startup() {
-		parent::startup();
-		if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
-			throw new App\TooLateForAccessException;
-		} else if ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
-			throw new App\TooSoonForAccessException;
+		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
+			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
+				throw new App\TooLateForAccessException;
+			} else if ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+				throw new App\TooSoonForAccessException;
+			}
 		}
+		parent::startup();
 	}
-
 
 	public function renderList() {
 		$where = array();
@@ -265,6 +266,14 @@ class TeamPresenter extends BasePresenter {
 
 
 	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button) {
+		if (!$this->user->isInRole('admin')) {
+			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
+				throw new App\TooLateForAccessException;
+			} else if ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+				throw new App\TooSoonForAccessException;
+			}
+		}
+
 		$form = $button->form;
 
 		if ($this->action === 'edit') {

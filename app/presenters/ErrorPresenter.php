@@ -4,6 +4,7 @@ namespace App\Presenters;
 
 use Nette;
 use App\Model;
+use App\LimitedAccessException;
 use Tracy\Debugger;
 
 class ErrorPresenter extends BasePresenter {
@@ -12,7 +13,16 @@ class ErrorPresenter extends BasePresenter {
 	 * @return void
 	 */
 	public function renderDefault($exception) {
-		if ($exception instanceof Nette\Application\BadRequestException) {
+		if ($exception instanceof LimitedAccessException) {
+			$code = $exception->getCode();
+			$errorType = $code === LimitedAccessException::LATE ? 'late' : 'early';
+
+			$this->setView('access');
+
+			$this->template->openingDate = $this->context->parameters['entries']['opening'];
+
+			$this->template->errorType = $errorType;
+		} else if ($exception instanceof Nette\Application\BadRequestException) {
 			$code = $exception->getCode();
 			// load template 403.latte or 404.latte or ... 4xx.latte
 			$this->setView(in_array($code, array(403, 404, 405, 410, 500)) ? $code : '4xx');
