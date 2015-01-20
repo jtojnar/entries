@@ -32,9 +32,14 @@ class TeamForm extends UI\Form {
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
 
-		$genders = array_keys($this->presenter->context->parameters['entries']['categories']['gender']);
+		$genders_data = $this->presenter->context->parameters['entries']['categories']['gender'];
+		$genders = array_keys($genders_data);
 		if (count($genders) > 1) {
-			$this->addRadioList('genderclass', 'messages.team.gender.label', array_combine($genders, array_map(function($a) {
+			$this->addRadioList('genderclass', 'messages.team.gender.label', array_combine($genders, array_map(function($a) use ($genders_data) {
+				if (isset($genders_data[$a]['label']) && isset($genders_data[$a]['label'][$this->presenter->locale])) {
+					return Html::el()->setText($genders_data[$a]['label'][$this->presenter->locale]);
+				}
+
 				return 'messages.team.gender.' . $a;
 			}, $genders)))->addRule(callback('\App\Components\TeamForm::genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
 		}
@@ -44,6 +49,10 @@ class TeamForm extends UI\Form {
 		$ages = array_keys($ages_data);
 		if (count($ages) > 1) {
 			$this->addRadioList('ageclass', 'messages.team.age.label', array_combine($ages, array_map(function($a) use (&$translator, $ages_data) {
+				if (isset($ages_data[$a]['label']) && isset($ages_data[$a]['label'][$this->presenter->locale])) {
+					return Html::el()->setText($ages_data[$a]['label'][$this->presenter->locale]);
+				}
+
 				$info = '';
 				if (isset($ages_data[$a]['min'])) {
 					$info .= ' ' . $translator->translate('messages.team.age.min', null, array('age' => $ages_data[$a]['min']));
@@ -52,6 +61,7 @@ class TeamForm extends UI\Form {
 				if (isset($ages_data[$a]['max'])) {
 					$info .= ' ' . $translator->translate('messages.team.age.max', null, array('age' => $ages_data[$a]['max']));
 				}
+
 				return Html::el()->setText($translator->translate('messages.team.age.' . $a) . $info);
 			}, $ages)))
 			->setRequired()
