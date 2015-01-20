@@ -331,7 +331,12 @@ class TeamPresenter extends BasePresenter {
 
 			$this->teams->persistAndFlush($team);
 
-			$invoice->createItem('person', $this->context->parameters['entries']['fees']['person']);
+			$personFee = $this->context->parameters['entries']['fees']['person'];
+			if (isset($this->context->parameters['entries']['categories']['age']) && isset($this->context->parameters['entries']['categories']['age'][$team->ageclass]) && isset($this->context->parameters['entries']['categories']['age'][$team->ageclass]['fee'])) {
+				$personFee = $this->context->parameters['entries']['categories']['age'][$team->ageclass]['fee'];
+			}
+			$invoice->createItem('person', $personFee);
+
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 			foreach ($form['persons']->values as $member) {
 				$firstname = $member['firstname'];
