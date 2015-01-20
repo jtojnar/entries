@@ -10,8 +10,11 @@ class Invoice extends Nette\Object {
 	private $items = [];
 
 	public function createItem($name, $price) {
-		if (isset($this->items[$name]) && $price !== $this->items[$name]['price']) {
-			throw new \Exception('This invoice item already exists.');
+		if (isset($this->items[$name])) {
+			if ($price !== $this->items[$name]['price']) {
+				throw new \Exception('This invoice item already exists.');
+			}
+			return $this;
 		}
 
 		$this->items[$name] = ['price' => $price, 'amount' => 0];
