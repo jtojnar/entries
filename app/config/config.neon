@@ -22,38 +22,35 @@ parameters:
 		fields:
 			person: []
 			team: []
-	database:
-		prefix: ''
 
-nette:
-	application:
-		errorPresenter: Error
-		mapping:
-			*: App\*Module\Presenters\*Presenter
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
 
-	container:
-		accessors: true
+di:
+	accessors: true
 
-	session:
-		save_path: "%tempDir%/sessions"
-		expiration: 31 days
+session:
+	save_path: "%tempDir%/sessions"
+	expiration: 31 days
 
-	forms:
-		messages:
-			FILLED: messages.general.error.not_filled
-			INTEGER: messages.general.error.not_integer
-			EMAIL: messages.general.error.not_email
+forms:
+	messages:
+		FILLED: messages.general.error.not_filled
+		INTEGER: messages.general.error.not_integer
+		EMAIL: messages.general.error.not_email
 
 extensions:
 	translation: Kdyby\Translation\DI\TranslationExtension
-	orm: Nextras\Orm\Bridge\NetteDI\OrmExtension
+	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
+	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
 
 orm:
 	model: App\Model\Orm
 
 
 services:
-	database: @nette.database.default.context
 	- App\Model\TeamManager(@App\Model\TeamRepository, %entries.admin%)
 	- App\RouterFactory
 	router: @App\RouterFactory::createRouter

@@ -63,10 +63,12 @@ parameters:
 		admin: password
 	webmasterEmail: email@example.com
 
-nette:
-	database:
-		dsn: 'mysql:host=127.0.0.1;dbname=entries'
-		user: root
-		password:
-		options:
-			lazy: yes
+dbal:
+	driver: mysqli
+	host: localhost
+	dbname: entries
+	username: root
+	password:
+	connectionTz: +01:00
+	options:
+		charset: utf8mb4

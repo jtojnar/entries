@@ -18,8 +18,6 @@ $configurator->createRobotLoader()
 $configurator->addConfig(__DIR__ . '/config/config.neon');
 $configurator->addConfig(__DIR__ . '/config/config.local.neon');
 
-Kdyby\Translation\DI\TranslationExtension::register($configurator);
-
 Kdyby\Replicator\Container::register();
 
 Container::extensionMethod('addDatePicker', function (Container $container, $name, $label = NULL) {
