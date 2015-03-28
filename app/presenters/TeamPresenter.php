@@ -155,7 +155,7 @@ class TeamPresenter extends BasePresenter {
 			fPutCsv($fp, $headers);
 
 			foreach ($teams as $team) {
-				$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat($team->genderclass, $team->ageclass));
+				$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat($team));
 				foreach ($teamFields as $name => $field) {
 					$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
 					if ($f) {

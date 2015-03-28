@@ -37,7 +37,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		$this->template->registerHelper('wrapInParagraphs', callback($this, 'wrapInParagraphs'));
 	}
 
-	public function categoryFormat($gender, $age) {
+	public function categoryFormat(App\Model\Team $team) {
+		if(isset($this->presenter->context->parameters['entries']['categories']['detect'])) {
+			return $this->presenter->context->parameters['entries']['categories']['detect']($team, $this);
+		}
+
+		$gender = $team->genderclass;
+		$age = $team->ageclass;
 		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
 		if (count($ages_data) > 1) {
 			$age = isset($ages_data[$age]) ? $ages_data[$age]['short'] : '?';

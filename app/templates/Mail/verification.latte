@@ -17,7 +17,7 @@
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Registration ID:</th><td>{$id}</td></tr>
 <tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Team name:</th><td>{$team->name}</td></tr>
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Password:</th><td>{$password}</td></tr>
-<tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Team category:</th><td>{$team->genderclass,$team->ageclass|categoryFormat}</td></tr>
+<tr style="background-color: #ffffff;" bgcolor="#ffffff"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Team category:</th><td>{$team|categoryFormat}</td></tr>
 <tr style="background-color: #eeeeee;" bgcolor="#eeeeee"><th style="color: #ffffff; text-align: left; background-color: #3484d2; padding: 0.25em 0.5em 0.5em 0.8em;" align="left" bgcolor="#3484d2">Message:</th><td>{$team->message}</td></tr>
 </table>
 {foreach $people as $person}

@@ -15,6 +15,7 @@ parameters:
 			person: 650.0
 		categories:
 			gender:
+				detect: [App\Customization, detect]
 				male:
 					short: HH
 				female:
