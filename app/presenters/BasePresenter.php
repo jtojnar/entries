@@ -6,8 +6,6 @@ use Nette;
 use App;
 
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
-	const DEFAULT_LANG = 'cs';
-
 	/** @persistent @var string */
 	public $locale;
 
@@ -17,10 +15,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	protected function startup() {
 		parent::startup();
 
-		if ($this->locale === null) {
-			$detectedLocale = $this->template->locale = $this->context->httpRequest->detectLanguage(array('cs', 'en'));
+		$locales = $this->context->parameters['locales'];
+		$defaultLocale = $this->context->parameters['defaultLocale'];
 
-			$this->locale = $detectedLocale ? $detectedLocale : self::DEFAULT_LANG;
+		if ($this->locale === null) {
+			$detectedLocale = $this->template->locale = $this->context->httpRequest->detectLanguage(array_keys($locales));
+
+			$this->locale = $detectedLocale ? $detectedLocale : $defaultLocale;
 			$this->canonicalize();
 		}
 
@@ -28,7 +29,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			if (isset($this->context->parameters['siteTitle'][$this->locale])) {
 				$this->template->siteTitle = $this->context->parameters['siteTitle'][$this->locale];
 			} else {
-				$this->template->siteTitle = $this->context->parameters['siteTitle'][self::DEFAULT_LANG];
+				$this->template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
 			}
 		}
 

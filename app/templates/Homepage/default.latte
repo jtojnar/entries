@@ -1,5 +1,5 @@
 {block content}
-<a n:href="this locale => cs">Česky</a> <a n:href="this locale => en">English</a>
+<a n:foreach="$locales as $code => $locale" n:href="this locale => $code">{$locale}</a>
 <ul>
 <li n:if="$registrationOpen"><a n:href="Team:register">{_messages.home.registration}</a></li>
 <li><a n:href="Team:list">{_messages.home.list}</a></li>
