@@ -38,8 +38,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	}
 
 	public function categoryFormat(App\Model\Team $team) {
-		if(isset($this->presenter->context->parameters['entries']['categories']['detect'])) {
-			return $this->presenter->context->parameters['entries']['categories']['detect']($team, $this);
+		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
+			return callback($this->presenter->context->parameters['entries']['categories']['custom'], 'detectCategory')->invoke($team, $this);
 		}
 
 		$gender = $team->genderclass;

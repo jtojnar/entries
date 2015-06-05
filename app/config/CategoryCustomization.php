@@ -4,8 +4,8 @@ namespace App;
 
 use Nette;
 
-class Customization extends Nette\Object {
-	public static function detect(Model\Team $team, $presenter) {
+class CategoryCustomization extends Nette\Object {
+	public static function detectCategory(Model\Team $team, $presenter) {
 		$members = $team->persons->get()->fetchAll();
 		if (count($members) === 1) {
 			if ($members[0]->gender === 'female') {
@@ -24,5 +24,9 @@ class Customization extends Nette\Object {
 				return 'MD' . $plus;
 			}
 		}
+	}
+
+	public static function getCategories() {
+		return ['D', 'M', 'DD', 'MM', 'MD', 'DD+', 'MM+', 'MD+'];
 	}
 }

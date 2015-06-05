@@ -443,7 +443,12 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['form']['errors'] = false;
 		$renderer->wrappers['hidden']['container'] = null;
 
-		$categories = array_keys($this->categories);
+		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
+			$categories = callback($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')->invoke();
+		} else {
+			$categories = array_keys($this->categories);
+		}
+
 		$category = $form->addSelect('category', 'messages.team.list.filter.category.label', array_combine($categories, $categories))->setPrompt('messages.team.list.filter.category.all')->setAttribute('style', 'width:auto;');
 
 		if ($this->context->httpRequest->getQuery('category')) {
