@@ -6,7 +6,7 @@
 <table class="table table-striped table-bordered table-hover table-condensed">
 <tr><th>#</th><th>{_messages.team.list.name}</th><th>{_messages.team.list.timestamp}</th><th>{_messages.team.list.category}</th><th>{_messages.team.list.members}</th><th>{_messages.team.list.status}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.admin}</th></tr>
 {foreach $teams as $team}
-<tr n:if="!$presenter->context->httpRequest->getQuery('category') || $template->categoryFormat($team) === $presenter->context->httpRequest->getQuery('category')" data-content="{$team->getJsonData()|teamData|wrapInParagraphs}">
+<tr n:if="!$currentCategory || call_user_func($this->filters->categoryformat, $team) === $currentCategory" data-content="{$team->getJsonData()|teamData|wrapInParagraphs}">
 	<td>{$team->id}</td>
 	<td>{$team->name}</td>
 	<td>{$team->timestamp|date:'%-d. %-m. %Y<br>%H:%M:%S'|noescape}</td>

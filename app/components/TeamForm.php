@@ -21,8 +21,8 @@ class TeamForm extends UI\Form {
 		parent::__construct($parent, $name);
 		$this->countries = $countries;
 
-		$minMembers = $this->presenter->context->parameters['entries']['minMembers'];
-		$maxMembers = $this->presenter->context->parameters['entries']['maxMembers'];
+		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
+		$maxMembers = $this->getPresenter()->context->parameters['entries']['maxMembers'];
 
 		$this->setTranslator($this->parent->translator);
 		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer;
@@ -32,25 +32,25 @@ class TeamForm extends UI\Form {
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
 
-		$genders_data = $this->presenter->context->parameters['entries']['categories']['gender'];
+		$genders_data = $this->getPresenter()->context->parameters['entries']['categories']['gender'];
 		$genders = array_keys($genders_data);
 		if (count($genders) > 1) {
 			$this->addRadioList('genderclass', 'messages.team.gender.label', array_combine($genders, array_map(function($a) use ($genders_data) {
-				if (isset($genders_data[$a]['label']) && isset($genders_data[$a]['label'][$this->presenter->locale])) {
-					return Html::el()->setText($genders_data[$a]['label'][$this->presenter->locale]);
+				if (isset($genders_data[$a]['label']) && isset($genders_data[$a]['label'][$this->getPresenter()->locale])) {
+					return Html::el()->setText($genders_data[$a]['label'][$this->getPresenter()->locale]);
 				}
 
 				return 'messages.team.gender.' . $a;
-			}, $genders)))->addRule(callback('\App\Components\TeamForm::genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
+			}, $genders)))->addRule(\App\Components\TeamForm::genderClassValidator, 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
 		}
 
-		$translator = $this->translator;
-		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
+		$translator = $this->getTranslator();
+		$ages_data = $this->getPresenter()->context->parameters['entries']['categories']['age'];
 		$ages = array_keys($ages_data);
 		if (count($ages) > 1) {
 			$this->addRadioList('ageclass', 'messages.team.age.label', array_combine($ages, array_map(function($a) use (&$translator, $ages_data) {
-				if (isset($ages_data[$a]['label']) && isset($ages_data[$a]['label'][$this->presenter->locale])) {
-					return Html::el()->setText($ages_data[$a]['label'][$this->presenter->locale]);
+				if (isset($ages_data[$a]['label']) && isset($ages_data[$a]['label'][$this->getPresenter()->locale])) {
+					return Html::el()->setText($ages_data[$a]['label'][$this->getPresenter()->locale]);
 				}
 
 				$info = '';
@@ -65,12 +65,12 @@ class TeamForm extends UI\Form {
 				return Html::el()->setText($translator->translate('messages.team.age.' . $a) . $info);
 			}, $ages)))
 			->setRequired()
-			->addRule(callback('\App\Components\TeamForm::ageClassValidator'), 'messages.team.error.age_mismatch', array($this, $this->presenter->context->parameters['entries']['eventDate'], $this->presenter->context->parameters['entries']['categories']['age']))
+			->addRule(\App\Components\TeamForm::ageClassValidator, 'messages.team.error.age_mismatch', array($this, $this->getPresenter()->context->parameters['entries']['eventDate'], $this->getPresenter()->context->parameters['entries']['categories']['age']))
 			->setDefaultValue($ages[0])
 			->setOption('description', 'messages.team.age.help');
 		}
 
-		$durations = $this->presenter->context->parameters['entries']['categories']['duration'];
+		$durations = $this->getPresenter()->context->parameters['entries']['categories']['duration'];
 		if (count($durations) > 1) {
 			$this->addRadioList('duration', 'messages.team.duration.label', array_combine($durations, array_map(function($d) {
 				return 'messages.team.duration.' . $d;
@@ -79,22 +79,22 @@ class TeamForm extends UI\Form {
 			->setDefaultValue($durations[0]);
 		}
 
-		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+		$fields = $this->getPresenter()->context->parameters['entries']['fields']['team'];
 		$this->addCustomFields($fields, $this);
 
 		$this->addTextArea('message', 'messages.team.message.label');
 
 		$this->setCurrentGroup();
 		$this->addSubmit('save', 'messages.team.action.register');
-		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = callback($this, 'addMemberClicked');
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = callback($this, 'removeMemberClicked');
+		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = [$this, 'addMemberClicked'];
+		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = [$this, 'removeMemberClicked'];
 
-		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+		$fields = $this->getPresenter()->context->parameters['entries']['fields']['person'];
 		$i = 0;
-		$this->addDynamic('persons', function(Container $container) use(&$i, $fields) {
+		$this->addDynamic('persons', function(Container $container) use(&$i, $fields, $translator) {
 			$i++;
 			$group = $this->addGroup();
-			$group->setOption('label', Html::el()->setText($this->translator->translate('messages.team.person.label', $i)));
+			$group->setOption('label', Html::el()->setText($translator->translate('messages.team.person.label', $i)));
 			$container->setCurrentGroup($group);
 			$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
 
@@ -137,7 +137,7 @@ class TeamForm extends UI\Form {
 
 		public function removeMemberClicked(SubmitButton $button) {
 			$lastPerson = null;
-			foreach ($button->parent['persons']->containers as $p) {
+			foreach ($button->parent['persons']->getContainers() as $p) {
 				$lastPerson = $p;
 			}
 			if ($lastPerson) {
@@ -148,8 +148,8 @@ class TeamForm extends UI\Form {
 	public function addCustomFields($fields, $container) {
 		foreach ($fields as $name => $field) {
 			if (isset($field['type'])) {
-				if (isset($field['label'][$this->presenter->locale])) {
-					$label = Html::el()->setText($field['label'][$this->presenter->locale]);
+				if (isset($field['label'][$this->getPresenter()->locale])) {
+					$label = Html::el()->setText($field['label'][$this->getPresenter()->locale]);
 				} else if ($field['type'] === 'country') {
 					$label = 'messages.team.person.country.label';
 				} else if ($field['type'] === 'phone') {
@@ -186,13 +186,13 @@ class TeamForm extends UI\Form {
 	}
 
 	public function addEnum($name, $container, $field) {
-		if (isset($field['label'][$this->presenter->locale])) {
-			$label = Html::el()->setText($field['label'][$this->presenter->locale]);
+		if (isset($field['label'][$this->getPresenter()->locale])) {
+			$label = Html::el()->setText($field['label'][$this->getPresenter()->locale]);
 		} else {
 			$label = $name . ':';
 		}
 		$options = array_map(function($option) {
-			return $option['label'][$this->presenter->locale];
+			return $option['label'][$this->getPresenter()->locale];
 		}, $field['options']);
 
 		$full_options = $field['options'];

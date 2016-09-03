@@ -2,7 +2,7 @@
 {define title}{_messages.team.error.$errorType.title}{/define}
 
 <p>{if $errorType === 'early'}
-{_messages.team.error.early, null, ['date' => $openingDate->format($template->translate('messages.date'))]}
+{_messages.team.error.early, null, ['date' => $openingDate->format(call_user_func($this->filters->translate, 'messages.date'))]}
 {else}
 {_messages.team.error.$errorType}
 {/if}</p>

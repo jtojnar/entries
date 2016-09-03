@@ -35,21 +35,21 @@ class TeamPresenter extends BasePresenter {
 
 	public function renderList() {
 		$where = array();
-		$category = $this->context->httpRequest->getQuery('category');
+		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
 		if ($category !== null) {
-			$categories = $this->categories;
+			$categories = $this->getCategories();
 			if (isset($categories[$category])) {
 				$where = $categories[$category];
 			}
 		}
 
-		$duration = $this->context->httpRequest->getQuery('duration');
+		$duration = $this->context->getByType('Nette\Http\Request')->getQuery('duration');
 		if ($duration !== null && intVal($duration) > 0) {
 			$where['duration'] = $duration;
 		}
 
-		if ($this->context->httpRequest->getQuery('status') !== null) {
-			switch ($this->context->httpRequest->getQuery('status')) {
+		if ($this->context->getByType('Nette\Http\Request')->getQuery('status') !== null) {
+			switch ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
 				case 'paid':
 					$where['status'] = 'paid';
 					break;
@@ -66,9 +66,10 @@ class TeamPresenter extends BasePresenter {
 			$this->template->teams = $this->teams->findBy($where);
 		}
 
-		$this->template->registerHelper('personData', callback($this, 'personData'));
-		$this->template->registerHelper('teamData', callback($this, 'teamData'));
+		$this->template->getLatte()->addFilter('personData', [$this, 'personData']);
+		$this->template->getLatte()->addFilter('teamData', [$this, 'teamData']);
 
+		$this->template->currentCategory = $category;
 		$this->template->stats = array('count' => count($this->template->teams));
 	}
 
@@ -99,8 +100,8 @@ class TeamPresenter extends BasePresenter {
 
 	public function actionConfirm($id) {
 		$id = null;
-		if (isset($this->parameters['id'])) {
-			$id = $this->parameters['id'];
+		if ($this->getParameter('id')) {
+			$id = $this->getParameter('id');
 			if ($this->user->isInRole('admin')) {
 				$team = $this->teams->getById($id);
 				if ($team->status == 'registered') {
@@ -216,8 +217,8 @@ class TeamPresenter extends BasePresenter {
 
 	protected function createComponentTeamForm($name) {
 		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this, $name);
-		if (isset($this->parameters['id']) && !$form->submitted) {
-			$id = $this->parameters['id'];
+		if ($this->getParameter('id') && !$form->isSubmitted()) {
+			$id = $this->getParameter('id');
 			$team = $this->teams->getById($id);
 			$default = array();
 			$default['name'] = $team->name;
@@ -257,10 +258,10 @@ class TeamPresenter extends BasePresenter {
 			}
 			$form->setValues($default);
 		}
-		if (isset($this->parameters['id'])) {
+		if ($this->getParameter('id')) {
 			$form['save']->caption = 'messages.team.action.edit';
 		}
-		$form['save']->onClick[] = callback($this, 'processTeamForm');
+		$form['save']->onClick[] = [$this, 'processTeamForm'];
 		return $form;
 	}
 
@@ -277,7 +278,7 @@ class TeamPresenter extends BasePresenter {
 		$form = $button->form;
 
 		if ($this->action === 'edit') {
-			$id = $this->parameters['id'];
+			$id = $this->getParameter('id');
 			$team = $this->teams->getById($id);
 			if (!$team) {
 				$form->addError('messages.team.edit.error.404');
@@ -289,9 +290,9 @@ class TeamPresenter extends BasePresenter {
 			}
 		} else {
 			$team = new App\Model\Team;
-			$password = Nette\Utils\Strings::random();
+			$password = Nette\Utils\Random::generate();
 			$team->password = Nette\Security\Passwords::hash($password);
-			$team->ip = $this->context->httpRequest->remoteAddress;
+			$team->ip = $this->context->getByType('Nette\Http\Request')->remoteAddress;
 		}
 
 		try {
@@ -387,7 +388,7 @@ class TeamPresenter extends BasePresenter {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 			} else {
 				$mtemplate = $this->createTemplate();
-				$mtemplate->registerHelper('categoryFormat', callback($this, 'categoryFormat'));
+				$mtemplate->getLatte()->addFilter('categoryFormat', [$this, 'categoryFormat']);
 
 				$appDir = $this->context->parameters['appDir'];
 				if (file_exists($appDir . '/templates/Mail/verification.' . $this->locale . '.latte')) {
@@ -444,38 +445,38 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['hidden']['container'] = null;
 
 		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			$categories = callback($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')->invoke();
+			$categories = call_user_func([$this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories']);
 		} else {
 			$categories = array_keys($this->categories);
 		}
 
 		$category = $form->addSelect('category', 'messages.team.list.filter.category.label', array_combine($categories, $categories))->setPrompt('messages.team.list.filter.category.all')->setAttribute('style', 'width:auto;');
 
-		if ($this->context->httpRequest->getQuery('category')) {
-			$category->setValue($this->context->httpRequest->getQuery('category'));
+		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
+			$category->setValue($this->context->getByType('Nette\Http\Request')->getQuery('category'));
 		}
 		$category->controlPrototype->onchange('this.form.submit();');
 
 		$durations = $this->context->parameters['entries']['categories']['duration'];
 		if (count($durations) > 1) {
 			$duration = $form->addSelect('duration', null, array_combine($durations, $durations))->setPrompt('messages.team.list.filter.duration.all')->setAttribute('style', 'width:auto;');
-			if ($this->context->httpRequest->getQuery('duration')) {
-				$duration->setValue($this->context->httpRequest->getQuery('duration'));
+			if ($this->context->getByType('Nette\Http\Request')->getQuery('duration')) {
+				$duration->setValue($this->context->getByType('Nette\Http\Request')->getQuery('duration'));
 			}
 			$duration->controlPrototype->onchange('this.form.submit();');
 		}
 
 		if ($this->user->isInRole('admin')) {
 			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', array('registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'))->setPrompt('messages.team.list.filter.status.all')->setAttribute('style', 'width:auto;');
-			if ($this->context->httpRequest->getQuery('status')) {
-				$status->setValue($this->context->httpRequest->getQuery('status'));
+			if ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
+				$status->setValue($this->context->getByType('Nette\Http\Request')->getQuery('status'));
 			}
 			$status->controlPrototype->onchange('this.form.submit();');
 		}
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
 		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
-		$form->onValidate[] = callback($this, 'filterRedir');
+		$form->onValidate[] = [$this, 'filterRedir'];
 		return $form;
 	}
 
@@ -484,16 +485,16 @@ class TeamPresenter extends BasePresenter {
 		$parameters = array();
 
 		$durations = $this->context->parameters['entries']['categories']['duration'];
-		if ($this->context->httpRequest->getQuery('category')) {
-			$parameters['category'] = $this->context->httpRequest->getQuery('category');
+		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
+			$parameters['category'] = $this->context->getByType('Nette\Http\Request')->getQuery('category');
 		}
 
-		if (in_array($this->context->httpRequest->getQuery('duration'), $durations)) {
-			$parameters['duration'] = $this->context->httpRequest->getQuery('duration');
+		if (in_array($this->context->getByType('Nette\Http\Request')->getQuery('duration'), $durations)) {
+			$parameters['duration'] = $this->context->getByType('Nette\Http\Request')->getQuery('duration');
 		}
 
-		if ($this->context->httpRequest->getQuery('status')) {
-			$parameters['status'] = $this->context->httpRequest->getQuery('status');
+		if ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
+			$parameters['status'] = $this->context->getByType('Nette\Http\Request')->getQuery('status');
 		}
 
 		if (count($parameters) == 0) {

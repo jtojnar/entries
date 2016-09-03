@@ -2,9 +2,9 @@ language: php
 sudo: false
 
 php:
+  - 7.1
+  - 7.0
   - 5.6
-  - 5.5
-  - 5.4
   - hhvm
 
 matrix:
@@ -19,4 +19,4 @@ before_script:
   # Install Nette Tester & Code Checker
   - mv app/config/config.local.neon.default app/config/config.local.neon
   - composer install --no-interaction --dev --prefer-source
-  - composer create-project nette/code-checker code-checker ~2.3 --no-interaction --prefer-source
+  - composer create-project nette/code-checker code-checker ^2.7 --no-interaction --prefer-source

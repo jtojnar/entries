@@ -9,10 +9,11 @@ use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Person
- * @property Team|null $team {m:1 TeamRepository $persons}
+ * @property int $id {primary}
+ * @property Team|null $team {m:1 Team::$persons}
  * @property string $firstname
  * @property string $lastname
- * @property string $gender {enum self::MALE self::FEMALE}
+ * @property string $gender {enum self::MALE, self::FEMALE}
  * @property DateTime $birth
  * @property array $jsonData {virtual}
  * @property string $details

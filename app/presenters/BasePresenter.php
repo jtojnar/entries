@@ -19,7 +19,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		$defaultLocale = $this->context->parameters['defaultLocale'];
 
 		if ($this->locale === null) {
-			$detectedLocale = $this->template->locale = $this->context->httpRequest->detectLanguage(array_keys($locales));
+			$detectedLocale = $this->template->locale = $this->context->getByType('Nette\Http\Request')->detectLanguage(array_keys($locales));
 
 			$this->locale = $detectedLocale ? $detectedLocale : $defaultLocale;
 			$this->canonicalize();
@@ -33,13 +33,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			}
 		}
 
-		$this->template->registerHelper('categoryFormat', callback($this, 'categoryFormat'));
-		$this->template->registerHelper('wrapInParagraphs', callback($this, 'wrapInParagraphs'));
+		$this->template->getLatte()->addFilter('categoryFormat', [$this, 'categoryFormat']);
+		$this->template->getLatte()->addFilter('wrapInParagraphs', [$this, 'wrapInParagraphs']);
 	}
 
 	public function categoryFormat(App\Model\Team $team) {
 		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			return callback($this->presenter->context->parameters['entries']['categories']['custom'], 'detectCategory')->invoke($team, $this);
+			return call_user_func([$this->presenter->context->parameters['entries']['categories']['custom'], 'detectCategory'], $team, $this);
 		}
 
 		$gender = $team->genderclass;
