@@ -77,14 +77,14 @@ class TeamPresenter extends BasePresenter {
 
 	public function renderEdit($id) {
 		if (!$this->user->isLoggedIn()) {
-			$this->redirect('sign:in', array('return' => 'edit'));
+			$this->redirect('Sign:in', array('return' => 'edit'));
 		} else {
 			if ($id === null) {
 				$this->redirect('edit', array('id' => $this->user->identity->id));
 			}
 			if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
-				$this->redirect('sign:in', ['backlink' => $backlink]);
+				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
 
 			$team = $this->teams->getById($id);
@@ -124,7 +124,7 @@ class TeamPresenter extends BasePresenter {
 	public function actionExport() {
 		if (!$this->user->isInRole('admin')) {
 			$backlink = $this->storeRequest('+ 48 hours');
-			$this->redirect('sign:in', ['backlink' => $backlink]);
+			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}
 
 		$teams = $this->teams->findAll();
@@ -287,7 +287,7 @@ class TeamPresenter extends BasePresenter {
 				$form->addError('messages.team.edit.error.already_paid');
 			} else if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
-				$this->redirect('sign:in', ['backlink' => $backlink]);
+				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
 		} else {
 			$team = new App\Model\Team;
