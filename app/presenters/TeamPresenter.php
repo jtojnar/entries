@@ -250,7 +250,7 @@ class TeamPresenter extends BasePresenter {
 					if (isset($person->getJsonData()->$name)) {
 						$personDefault[$name] = $person->getJsonData()->$name;
 					} else if ($field['type'] === 'sportident') {
-						$default[$name . 'Needed'] = true;
+						$personDefault[$name . 'Needed'] = true;
 					}
 				}
 
