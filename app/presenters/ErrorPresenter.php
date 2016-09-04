@@ -19,7 +19,8 @@ class ErrorPresenter extends BasePresenter {
 
 			$this->setView('access');
 
-			$this->template->openingDate = $this->context->parameters['entries']['opening'];
+			$fmt = $this->translator->translate('messages.date');
+			$this->template->openingDate = $this->context->parameters['entries']['opening']->format($fmt);
 
 			$this->template->errorType = $errorType;
 		} else if ($exception instanceof Nette\Application\BadRequestException) {

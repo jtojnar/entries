@@ -12,6 +12,7 @@ use App\Presenters\BasePresenter;
 use Nette\Forms\Container;
 use Nette\Forms\Form;
 use Nette\Utils\Html;
+use Nette\Utils\Callback;
 
 class TeamForm extends UI\Form {
 	/** @var array */
@@ -85,8 +86,8 @@ class TeamForm extends UI\Form {
 
 		$this->setCurrentGroup();
 		$this->addSubmit('save', 'messages.team.action.register');
-		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = [$this, 'addMemberClicked'];
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = [$this, 'removeMemberClicked'];
+		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = Callback::closure($this, 'addMemberClicked');
+		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = Callback::closure($this, 'removeMemberClicked');
 
 		$fields = $this->getPresenter()->context->parameters['entries']['fields']['person'];
 		$i = 0;

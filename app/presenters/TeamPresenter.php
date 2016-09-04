@@ -5,6 +5,7 @@ namespace App\Presenters;
 use Nette;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
+use Nette\Utils\Callback;
 use Tracy\Debugger;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -66,8 +67,8 @@ class TeamPresenter extends BasePresenter {
 			$this->template->teams = $this->teams->findBy($where);
 		}
 
-		$this->template->getLatte()->addFilter('personData', [$this, 'personData']);
-		$this->template->getLatte()->addFilter('teamData', [$this, 'teamData']);
+		$this->template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
+		$this->template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
 
 		$this->template->currentCategory = $category;
 		$this->template->stats = array('count' => count($this->template->teams));
@@ -261,7 +262,7 @@ class TeamPresenter extends BasePresenter {
 		if ($this->getParameter('id')) {
 			$form['save']->caption = 'messages.team.action.edit';
 		}
-		$form['save']->onClick[] = [$this, 'processTeamForm'];
+		$form['save']->onClick[] = Callback::closure($this, 'processTeamForm');
 		return $form;
 	}
 
@@ -388,7 +389,7 @@ class TeamPresenter extends BasePresenter {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 			} else {
 				$mtemplate = $this->createTemplate();
-				$mtemplate->getLatte()->addFilter('categoryFormat', [$this, 'categoryFormat']);
+				$mtemplate->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
 
 				$appDir = $this->context->parameters['appDir'];
 				if (file_exists($appDir . '/templates/Mail/verification.' . $this->locale . '.latte')) {
@@ -445,7 +446,7 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['hidden']['container'] = null;
 
 		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			$categories = call_user_func([$this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories']);
+			$categories = Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')();
 		} else {
 			$categories = array_keys($this->categories);
 		}
@@ -476,7 +477,7 @@ class TeamPresenter extends BasePresenter {
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
 		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
-		$form->onValidate[] = [$this, 'filterRedir'];
+		$form->onValidate[] = Callback::closure($this, 'filterRedir');
 		return $form;
 	}
 

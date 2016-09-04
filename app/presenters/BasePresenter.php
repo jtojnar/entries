@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
+use Nette\Utils\Callback;
 use App;
 
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
@@ -33,13 +34,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			}
 		}
 
-		$this->template->getLatte()->addFilter('categoryFormat', [$this, 'categoryFormat']);
-		$this->template->getLatte()->addFilter('wrapInParagraphs', [$this, 'wrapInParagraphs']);
+		$this->template->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
+		$this->template->getLatte()->addFilter('wrapInParagraphs', Callback::closure($this, 'wrapInParagraphs'));
 	}
 
 	public function categoryFormat(App\Model\Team $team) {
 		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			return call_user_func([$this->presenter->context->parameters['entries']['categories']['custom'], 'detectCategory'], $team, $this);
+			return Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'detectCategory')($team, $this);
 		}
 
 		$gender = $team->genderclass;

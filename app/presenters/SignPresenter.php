@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use Nette;
+use Nette\Utils\Callback;
 use App;
 
 class SignPresenter extends BasePresenter {
@@ -29,7 +30,7 @@ class SignPresenter extends BasePresenter {
 
 		$form->addSubmit('send', 'messages.sign.in.action');
 
-		$form->onSuccess[] = [$this, 'signInFormSucceeded'];
+		$form->onSuccess[] = Callback::closure($this, 'signInFormSucceeded');
 		return $form;
 	}
 
