@@ -1443,29 +1443,29 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextras/forms.git",
-                "reference": "2c42d31cfd46acebb9eedd15cc16b9568a352c5f"
+                "reference": "24d18e279e0d99e421916a86691a01e3993d2b6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextras/forms/zipball/2c42d31cfd46acebb9eedd15cc16b9568a352c5f",
-                "reference": "2c42d31cfd46acebb9eedd15cc16b9568a352c5f",
+                "url": "https://api.github.com/repos/nextras/forms/zipball/24d18e279e0d99e421916a86691a01e3993d2b6c",
+                "reference": "24d18e279e0d99e421916a86691a01e3993d2b6c",
                 "shasum": ""
             },
             "require": {
-                "nette/application": "~2.2",
-                "nette/component-model": "~2.2",
-                "nette/forms": "~2.2",
-                "nette/utils": "~2.2",
-                "php": ">=5.4"
+                "latte/latte": "~2.4",
+                "nette/application": "~2.4",
+                "nette/component-model": "~2.3",
+                "nette/forms": "~2.4",
+                "nette/utils": "~2.4",
+                "php": ">=5.6"
             },
             "require-dev": {
-                "latte/latte": "~2.2",
                 "nette/tester": "~1.4"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -1475,30 +1475,20 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD-3-Clause",
-                "GPL-2.0",
-                "GPL-3.0"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "David Grudl",
-                    "homepage": "http://davidgrudl.com"
-                },
-                {
                     "name": "Nextras Community",
                     "homepage": "https://github.com/nextras/forms/graphs/contributors"
-                },
-                {
-                    "name": "Jan Škrášek",
-                    "homepage": "http://jan.skrasek.com"
                 }
             ],
-            "description": "Extra form components for Nette Framework.",
+            "description": "Form components for Nette Framework.",
             "keywords": [
                 "form",
                 "nette"
             ],
-            "time": "2016-07-12 11:15:27"
+            "time": "2016-09-04 11:58:57"
         },
         {
             "name": "nextras/orm",

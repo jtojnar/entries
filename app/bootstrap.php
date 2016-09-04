@@ -1,8 +1,5 @@
 <?php
 
-use Nette\Forms\Container;
-use Nextras\Forms\Controls;
-
 require __DIR__ . '/../vendor/autoload.php';
 
 $configurator = new Nette\Configurator;
@@ -17,12 +14,6 @@ $configurator->createRobotLoader()
 
 $configurator->addConfig(__DIR__ . '/config/config.neon');
 $configurator->addConfig(__DIR__ . '/config/config.local.neon');
-
-Kdyby\Replicator\Container::register();
-
-Container::extensionMethod('addDatePicker', function (Container $container, $name, $label = NULL) {
-	return $container[$name] = new Controls\DatePicker($label);
-});
 
 $container = $configurator->createContainer();
 
