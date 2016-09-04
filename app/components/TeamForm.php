@@ -22,7 +22,6 @@ class TeamForm extends UI\Form {
 		$this->countries = $countries;
 
 		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
-		$maxMembers = $this->getPresenter()->context->parameters['entries']['maxMembers'];
 
 		$this->setTranslator($this->parent->translator);
 		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer;
@@ -111,13 +110,12 @@ class TeamForm extends UI\Form {
 				$container->currentGroup->setOption('description', 'messages.team.person.isContact');
 			}
 		}, $minMembers, true);
+	}
 
-		$count = $i;
-		if ($this['add']->submittedBy) {
-			$count++;
-		} else if ($this['remove']->submittedBy) {
-			$count--;
-		}
+	public function onRender() {
+		$count = iterator_count($this['persons']->getContainers());
+		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
+		$maxMembers = $this->getPresenter()->context->parameters['entries']['maxMembers'];
 
 		if ($count >= $maxMembers) {
 			$this['add']->setDisabled();
