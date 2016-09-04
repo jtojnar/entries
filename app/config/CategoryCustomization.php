@@ -27,6 +27,6 @@ class CategoryCustomization extends Nette\Object {
 	}
 
 	public static function getCategories() {
-		return ['D', 'M', 'DD', 'MM', 'MD', 'DD+', 'MM+', 'MD+'];
+		return ['D' => [], 'M' => [], 'DD' => [], 'MM' => [], 'MD' => [], 'DD+' => [], 'MM+' => [], 'MD+' => []];
 	}
 }

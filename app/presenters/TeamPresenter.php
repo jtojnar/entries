@@ -445,11 +445,7 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['form']['errors'] = false;
 		$renderer->wrappers['hidden']['container'] = null;
 
-		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			$categories = Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')();
-		} else {
-			$categories = array_keys($this->getCategories());
-		}
+		$categories = array_keys($this->getCategories());
 
 		$category = $form->addSelect('category', 'messages.team.list.filter.category.label', array_combine($categories, $categories))->setPrompt('messages.team.list.filter.category.all')->setAttribute('style', 'width:auto;');
 
@@ -506,6 +502,10 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	public function getCategories() {
+		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
+			return Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')();
+		}
+
 		$sexes = $this->presenter->context->parameters['entries']['categories']['gender'];
 		$ages = $this->context->parameters['entries']['categories']['age'];
 		$categories = array();

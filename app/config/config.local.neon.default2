@@ -14,8 +14,8 @@ parameters:
 		fees:
 			person: 650.0
 		categories:
+			custom: App\CategoryCustomization
 			gender:
-				custom: App\CategoryCustomization
 				male:
 					short: HH
 				female:
