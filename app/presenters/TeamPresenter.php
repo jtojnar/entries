@@ -225,6 +225,7 @@ class TeamPresenter extends BasePresenter {
 			$default['ageclass'] = $team->ageclass;
 			$default['genderclass'] = $team->genderclass;
 			$default['message'] = $team->message;
+			$default['persons'] = [];
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 			foreach ($fields as $name => $field) {
@@ -235,7 +236,6 @@ class TeamPresenter extends BasePresenter {
 				}
 			}
 
-			$i = 0;
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 			foreach ($team->persons as $person) {
 				$personDefault = array(
@@ -254,7 +254,7 @@ class TeamPresenter extends BasePresenter {
 					}
 				}
 
-				$form['persons'][$i++]->setValues($personDefault);
+				$default['persons'][] = $personDefault;
 			}
 			$form->setValues($default);
 		}
