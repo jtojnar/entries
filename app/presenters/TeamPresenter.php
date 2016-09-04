@@ -568,7 +568,7 @@ class TeamPresenter extends BasePresenter {
 				}
 				$ret[] = (string) Html::el('span', ['class' => 'flag flag-'. $country->code]) . ' ' . $country->name;
 				continue;
-			} else if ($field['type'] === 'enum' && isset($field['options'][$data->$name]['label'][$this->locale])) {
+			} else if ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
 				continue;
 			}
