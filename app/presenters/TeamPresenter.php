@@ -448,7 +448,7 @@ class TeamPresenter extends BasePresenter {
 		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
 			$categories = Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')();
 		} else {
-			$categories = array_keys($this->categories);
+			$categories = array_keys($this->getCategories());
 		}
 
 		$category = $form->addSelect('category', 'messages.team.list.filter.category.label', array_combine($categories, $categories))->setPrompt('messages.team.list.filter.category.all')->setAttribute('style', 'width:auto;');

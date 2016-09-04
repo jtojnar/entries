@@ -41,7 +41,7 @@ class TeamForm extends UI\Form {
 				}
 
 				return 'messages.team.gender.' . $a;
-			}, $genders)))->addRule(\App\Components\TeamForm::genderClassValidator, 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
+			}, $genders)))->addRule(Callback::closure($this, 'genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
 		}
 
 		$translator = $this->getTranslator();
@@ -65,7 +65,7 @@ class TeamForm extends UI\Form {
 				return Html::el()->setText($translator->translate('messages.team.age.' . $a) . $info);
 			}, $ages)))
 			->setRequired()
-			->addRule(\App\Components\TeamForm::ageClassValidator, 'messages.team.error.age_mismatch', array($this, $this->getPresenter()->context->parameters['entries']['eventDate'], $this->getPresenter()->context->parameters['entries']['categories']['age']))
+			->addRule(Callback::closure($this, 'ageClassValidator'), 'messages.team.error.age_mismatch', array($this, $this->getPresenter()->context->parameters['entries']['eventDate'], $this->getPresenter()->context->parameters['entries']['categories']['age']))
 			->setDefaultValue($ages[0])
 			->setOption('description', 'messages.team.age.help');
 		}
