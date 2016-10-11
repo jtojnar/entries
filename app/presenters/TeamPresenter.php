@@ -12,6 +12,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\Mail\Message;
 use Nette\Mail\SendmailMailer;
 use App;
+use App\Exporters;
 
 class TeamPresenter extends BasePresenter {
 	/** @var App\Model\CountryRepository @inject */
@@ -121,7 +122,7 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionExport() {
+	public function actionExport($type='csv') {
 		if (!$this->user->isInRole('admin')) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
@@ -134,81 +135,17 @@ class TeamPresenter extends BasePresenter {
 		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
 
 		if (count($teams)) {
-			$response = $this->context->getByType('Nette\Http\Response');
-			$response->setContentType('text/csv', 'UTF-8');
-			$fp = fOpen('php://output', 'a');
-			$headers = array('#', 'name', 'registered', 'category');
-
-			foreach ($teamFields as $name => $field) {
-				$headers[] = $name;
+			if ($type == 'meos') {
+				$exporter = new Exporters\MeosExporter($teams, Callback::closure($this, 'categoryFormat'));
+				$response = $this->context->getByType('Nette\Http\Response');
+				$response->setContentType($exporter->getMimeType(), 'UTF-8');
+				$exporter->output();
+			} else {
+				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, Callback::closure($this, 'categoryFormat'), $maxMembers);
+				$response = $this->context->getByType('Nette\Http\Response');
+				$response->setContentType('text/plain', 'UTF-8');
+				$exporter->output();
 			}
-
-			for ($i =1; $i <= $maxMembers; $i++) {
-				$headers[] = 'm' . $i . 'lastname';
-				$headers[] = 'm' . $i . 'firstname';
-				$headers[] = 'm' . $i . 'gender';
-				foreach ($personFields as $name => $field) {
-					$headers[] = 'm' . $i . $name;
-				}
-				$headers[] = 'm' . $i . 'birth';
-			}
-
-			$headers[] = 'status';
-			fPutCsv($fp, $headers);
-
-			foreach ($teams as $team) {
-				$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat($team));
-				foreach ($teamFields as $name => $field) {
-					$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
-					if ($f) {
-						if ($field['type'] === 'country') {
-							$row[] = $this->countries->getById($f)->name;
-						} else {
-							$row[] = $f;
-						}
-					} else {
-						$row[] = '';
-					}
-				}
-
-				$i = 0;
-				$remaining = $maxMembers;
-				foreach ($team->persons as $person) {
-					$i++;
-					$row[] = $person->lastname;
-					$row[] = $person->firstname;
-					$row[] = $person->gender;
-					foreach ($personFields as $name => $field) {
-						$f = isset($person->getJsonData()->$name) ? $person->getJsonData()->$name : null;
-						if ($f) {
-							if ($field['type'] === 'country') {
-								$row[] = $this->countries->getById($f)->name;
-							} else {
-								$row[] = $f;
-							}
-						} else {
-							$row[] = '';
-						}
-					}
-					$row[] = $person->birth;
-					$remaining--;
-				}
-				if ($remaining > 0) {
-					for ($i = 0; $i < $remaining; $i++) {
-						$row[] = '';
-						$row[] = '';
-						$row[] = '';
-						foreach ($personFields as $name => $field) {
-							$row[] = '';
-						}
-						$row[] = '';
-					}
-				}
-				$row[] = $team->status;
-				fPutCsv($fp, $row);
-			}
-			fClose($fp);
-			exit;
 		} else {
 			$this->flashMessage('messages.team.list.empty', 'error');
 			$this->redirect('list');
