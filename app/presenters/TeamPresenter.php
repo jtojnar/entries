@@ -128,7 +128,18 @@ class TeamPresenter extends BasePresenter {
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}
 
-		$teams = $this->teams->findAll();
+		$where = [];
+		switch ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
+			case 'paid':
+				$where['status'] = 'paid';
+				break;
+			case 'registered':
+				$where['status'] = 'registered';
+				break;
+			default:
+		}
+
+		$teams = $this->teams->findBy($where);
 		$maxMembers = $this->context->parameters['entries']['maxMembers'];
 
 		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
