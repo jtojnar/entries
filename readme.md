@@ -8,7 +8,7 @@ Entry registration system for [Rogaining](http://en.wikipedia.org/wiki/Rogaining
 Requirements
 ------------
 
-* PHP 5.4
+* PHP 7.0 or newer
 * MySQL or other similar database
 * composer dependencies
 
