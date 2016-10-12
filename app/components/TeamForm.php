@@ -194,16 +194,28 @@ class TeamForm extends UI\Form {
 			return $option['label'][$this->getPresenter()->locale];
 		}, $field['options']);
 
-		$full_options = $field['options'];
+		$default = $this->getDefaultFieldValue($field);
+		return $container->addRadioList($name, $label, $options)->setDefaultValue($default)->setDisabled($field['disabled'] ?? false);
+	}
 
-		$default = array_reduce(array_keys($field['options']), function($carry, $key) use ($full_options) {
-			$item = $full_options[$key];
-			if(isset($item['default']) && $item['default'] === true) {
-				return $key;
-			}
-			return $carry;
-		});
-		return $container->addRadioList($name, $label, $options)->setDefaultValue($default);
+	public function isFieldDisabled($field) {
+		return $field['disabled'] ?? false;
+	}
+
+	public function getDefaultFieldValue($field) {
+		if ($field['type'] == 'enum') {
+			$full_options = $field['options'];
+			return array_reduce(array_keys($field['options']), function($carry, $key) use ($full_options) {
+				$item = $full_options[$key];
+				if(isset($item['default']) && $item['default'] === true) {
+					return $key;
+				}
+				return $carry;
+			});
+		} else {
+			return $field['default'] ?? null;
+			return null;
+		}
 	}
 
 	public static function genderClassValidator(Nette\Forms\IControl $input, Nette\Forms\Form $form) {

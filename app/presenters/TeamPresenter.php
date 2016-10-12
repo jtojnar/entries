@@ -307,10 +307,11 @@ class TeamPresenter extends BasePresenter {
 
 				$jsonData = [];
 				foreach ($fields as $name => $field) {
+					$member[$name] = $member[$name] ?? null;
 					if ($field['type'] === 'sportident' && $member[$name . 'Needed']) {
 						$jsonData[$name] = null;
 					} else {
-						$jsonData[$name] = $member[$name];
+						$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
 					}
 					if (isset($field['fee']) && $jsonData[$name] === null) {
 						$invoice->addItem($name, $field['fee']);
