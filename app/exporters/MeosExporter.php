@@ -2,6 +2,8 @@
 
 namespace App\Exporters;
 
+use Nette\Utils\Strings;
+
 /**
  * Exporter to MeOS format or something
  *
@@ -30,7 +32,7 @@ class MeosExporter implements IExporter {
 
 	private function outputRow($row) {
 		// fPutCsv($this->fp, $row, self::DELIMITER);
-		echo implode(self::DELIMITER, $row) . PHP_EOL;
+		echo Strings::toAscii(implode(self::DELIMITER, $row)) . PHP_EOL;
 	}
 
 	public function output() {
