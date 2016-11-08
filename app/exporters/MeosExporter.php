@@ -44,7 +44,7 @@ class MeosExporter implements IExporter {
 
 			foreach ($team->persons as $person) {
 				$additionalData = $person->getJsonData();
-				$fullName = $person->firstname . ' ' . $person->lastname;
+				$fullName = $person->lastname . ' ' . $person->firstname;
 				$sportident = isset($additionalData->sportident) && $additionalData->sportident !== null ? $additionalData->sportident : '';
 				$club = '';
 				$this->outputRow([$fullName, $sportident, $club, $category]);
