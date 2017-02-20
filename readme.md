@@ -21,7 +21,8 @@ Run following commands
 
 or download package.
 
-Run SQL from *install.sql*. You can change db table prefixes later in your *config.local.neon* (`parameters.database.prefix`).
+
+Run SQL from *install.sql*.
 
 Configure app in *app/config/config.local.neon.default* and rename it to *config.local.neon*.
 
