@@ -1,0 +1,16 @@
+{
+    "package": {
+        "name": "entries",
+        "repo": "entries",
+        "subject": "jtojnar"
+    },
+
+    "version": {
+        "name": "ENTRIES_VERSION"
+    },
+
+    "files": [
+        {"includePattern": "ENTRIES_ZIPBALL", "uploadPattern": "ENTRIES_ZIPBALL"}
+    ],
+    "publish": true
+}
