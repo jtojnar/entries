@@ -14,18 +14,9 @@ Requirements
 
 Installation
 ------------
-Run following commands
-
-	git clone https://github.com/jtojnar/entries.git
-	cd entries
-	composer install
-
-or download package from [BinTray](https://bintray.com/jtojnar/entries/entries) ([latest](https://bintray.com/jtojnar/entries/entries/_latestVersion#files)).
-
-Run SQL from *install.sql*.
-
-Configure app in *app/config/config.local.neon.default* and rename it to *config.local.neon*.
-
-Make *temp* and *log* directories writeable.
-
-Change e-mail templates in *app/templates/Mail*.
+1. Clone this repository and issue `composer install`, or download package from [BinTray](https://bintray.com/jtojnar/entries/entries) ([latest](https://bintray.com/jtojnar/entries/entries/_latestVersion#files)).
+2. Run SQL from `install.sql`.
+3. Configure app in `app/config/config.local.neon.default` and rename the file to `config.local.neon`.
+4. Make `temp` and `log` directories writeable.
+5. Change e-mail templates in `app/templates/Mail`.
+6. The entry point of the application is in the `www` directory, configure your web server accordingly.
