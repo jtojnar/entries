@@ -27,9 +27,9 @@ class TeamPresenter extends BasePresenter {
 	public function startup() {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
-				throw new App\TooLateForAccessException;
-			} else if ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
-				throw new App\TooSoonForAccessException;
+				throw new App\TooLateForAccessException();
+			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+				throw new App\TooSoonForAccessException();
 			}
 		}
 		parent::startup();
@@ -46,7 +46,7 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		$duration = $this->context->getByType('Nette\Http\Request')->getQuery('duration');
-		if ($duration !== null && intVal($duration) > 0) {
+		if ($duration !== null && intval($duration) > 0) {
 			$where['duration'] = $duration;
 		}
 
@@ -75,7 +75,6 @@ class TeamPresenter extends BasePresenter {
 		$this->template->stats = array('count' => count($this->template->teams));
 	}
 
-
 	public function renderEdit($id) {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', array('return' => 'edit'));
@@ -99,7 +98,6 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-
 	public function actionConfirm($id) {
 		$id = null;
 		if ($this->getParameter('id')) {
@@ -110,19 +108,17 @@ class TeamPresenter extends BasePresenter {
 					$team->status = 'paid';
 					$this->teams->persistAndFlush($team);
 					$this->redirect('list');
-				} else{
+				} else {
 					$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'info');
 					$this->redirect('Homepage:');
 				}
 			} else {
-
 			}
 		} else {
-
 		}
 	}
 
-	public function actionExport($type='csv') {
+	public function actionExport($type = 'csv') {
 		if (!$this->user->isInRole('admin')) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
@@ -163,7 +159,6 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-
 	protected function createComponentTeamForm($name) {
 		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this, $name);
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
@@ -180,7 +175,7 @@ class TeamPresenter extends BasePresenter {
 			foreach ($fields as $name => $field) {
 				if (isset($team->getJsonData()->$name)) {
 					$default[$name] = $team->getJsonData()->$name;
-				} else if ($field['type'] === 'sportident') {
+				} elseif ($field['type'] === 'sportident') {
 					$default[$name . 'Needed'] = true;
 				}
 			}
@@ -198,7 +193,7 @@ class TeamPresenter extends BasePresenter {
 				foreach ($fields as $name => $field) {
 					if (isset($person->getJsonData()->$name)) {
 						$personDefault[$name] = $person->getJsonData()->$name;
-					} else if ($field['type'] === 'sportident') {
+					} elseif ($field['type'] === 'sportident') {
 						$personDefault[$name . 'Needed'] = true;
 					}
 				}
@@ -211,16 +206,16 @@ class TeamPresenter extends BasePresenter {
 			$form['save']->caption = 'messages.team.action.edit';
 		}
 		$form['save']->onClick[] = Callback::closure($this, 'processTeamForm');
+
 		return $form;
 	}
-
 
 	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button) {
 		if (!$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
-				throw new App\TooLateForAccessException;
-			} else if ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
-				throw new App\TooSoonForAccessException;
+				throw new App\TooLateForAccessException();
+			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+				throw new App\TooSoonForAccessException();
 			}
 		}
 
@@ -231,21 +226,21 @@ class TeamPresenter extends BasePresenter {
 			$team = $this->teams->getById($id);
 			if (!$team) {
 				$form->addError('messages.team.edit.error.404');
-			} else if (!$this->user->isInRole('admin') && $team->status == 'paid') {
+			} elseif (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
-			} else if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
+			} elseif (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
 		} else {
-			$team = new App\Model\Team;
+			$team = new App\Model\Team();
 			$password = Nette\Utils\Random::generate();
 			$team->password = Nette\Security\Passwords::hash($password);
 			$team->ip = $this->context->getByType('Nette\Http\Request')->remoteAddress;
 		}
 
 		try {
-			$invoice = new App\Model\Invoice;
+			$invoice = new App\Model\Invoice();
 			$team->name = $form['name']->value;
 			$team->message = $form['message']->value;
 
@@ -294,9 +289,9 @@ class TeamPresenter extends BasePresenter {
 					$address = $member['email'];
 				}
 				if (!isset($name)) {
-					$name = $member['firstname'].' '.$member['lastname'];
+					$name = $member['firstname'] . ' ' . $member['lastname'];
 				}
-				$person = new App\Model\Person;
+				$person = new App\Model\Person();
 
 				$person->firstname = $firstname;
 				$person->lastname = $member['lastname'];
@@ -354,10 +349,10 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->password = $password;
 				$mtemplate->cost = $invoice->getTotal();
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
-				$mail = new Message;
+				$mail = new Message();
 				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mtemplate);
 
-				$mailer = new SendmailMailer;
+				$mailer = new SendmailMailer();
 				$mailer->send($mail);
 
 				$this->flashMessage($this->translator->translate('messages.team.success.add', null, array('password' => $password)));
@@ -374,16 +369,14 @@ class TeamPresenter extends BasePresenter {
 				$form->addError('messages.team.error.add_general');
 			}
 		}
-
 	}
 
-
 	public function createComponentTeamListFilterForm() {
-		$form = new Form;
+		$form = new Form();
 		$renderer = $form->renderer;
 		$form->setTranslator($this->translator);
-		$form->setMethod("GET");
-		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer;
+		$form->setMethod('GET');
+		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
 		$form->setRenderer($renderer);
 		$form->elementPrototype->removeClass('form-horizontal')->addClass('form-inline');
 		$renderer->wrappers['controls']['container'] = 'p';
@@ -423,9 +416,9 @@ class TeamPresenter extends BasePresenter {
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
 		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
 		$form->onValidate[] = Callback::closure($this, 'filterRedir');
+
 		return $form;
 	}
-
 
 	public function filterRedir(Nette\Forms\Form $form) {
 		$parameters = array();
@@ -477,11 +470,13 @@ class TeamPresenter extends BasePresenter {
 
 	public function personData($data) {
 		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+
 		return $this->formatData($data, $fields);
 	}
 
 	public function teamData($data) {
 		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+
 		return $this->formatData($data, $fields);
 	}
 
@@ -490,17 +485,17 @@ class TeamPresenter extends BasePresenter {
 		foreach ($fields as $name => $field) {
 			if (isset($field['label'][$this->locale])) {
 				$label = $field['label'][$this->locale];
-			} else if ($field['type'] === 'country') {
+			} elseif ($field['type'] === 'country') {
 				$label = $this->translator->translate('messages.team.person.country.label');
-			} else if ($field['type'] === 'phone') {
+			} elseif ($field['type'] === 'phone') {
 				$label = $this->translator->translate('messages.team.phone.label');
-			} else if ($field['type'] === 'sportident') {
+			} elseif ($field['type'] === 'sportident') {
 				$label = $this->translator->translate('messages.team.person.si.label');
 			} else {
 				$label = $name . ':';
 			}
 
-			if(!$this->user->isInRole('admin') && isset($field['private']) && $field['private']) {
+			if (!$this->user->isInRole('admin') && isset($field['private']) && $field['private']) {
 				continue;
 			}
 
@@ -509,15 +504,15 @@ class TeamPresenter extends BasePresenter {
 					$ret[] = $label . ' ' . $this->translator->translate('messages.team.person.si.rent');
 					continue;
 				}
-			} else if ($field['type'] === 'country') {
+			} elseif ($field['type'] === 'country') {
 				$country = isset($data->$name) ? $this->countries->getById($data->$name) : null;
 				if (!$country) {
 					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
 					continue;
 				}
-				$ret[] = (string) Html::el('span', ['class' => 'flag flag-'. $country->code]) . ' ' . $country->name;
+				$ret[] = (string) Html::el('span', ['class' => 'flag flag-' . $country->code]) . ' ' . $country->name;
 				continue;
-			} else if ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
+			} elseif ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
 				continue;
 			}

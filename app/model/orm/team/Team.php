@@ -9,6 +9,7 @@ use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Team
+ *
  * @property int $id {primary}
  * @property string $name
  * @property string $genderclass
@@ -21,7 +22,6 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $details
  * @property string $ip
  * @property string $password
- *
  * @property OneHasMany|Person[] $persons {1:m Person::$team}
  */
 class Team extends Entity {

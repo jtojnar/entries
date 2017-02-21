@@ -18,7 +18,7 @@ class CategoryCustomization extends Nette\Object {
 			$plus = (($members[0]->birth->diff($eventDate, true)->y + $members[1]->birth->diff($eventDate, true)->y) > 80) && ($members[0]->birth->diff($eventDate, true)->y >= 35) && ($members[1]->birth->diff($eventDate, true)->y >= 35) ? '+' : '';
 			if ($members[0]->gender === 'female' && $members[1]->gender === 'female') {
 				return 'DD' . $plus;
-			} else if ($members[0]->gender === 'male' && $members[1]->gender === 'male') {
+			} elseif ($members[0]->gender === 'male' && $members[1]->gender === 'male') {
 				return 'MM' . $plus;
 			} else {
 				return 'MD' . $plus;

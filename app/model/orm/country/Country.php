@@ -7,6 +7,7 @@ use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Country
+ *
  * @property int $id {primary}
  * @property string $name
  * @property string $code

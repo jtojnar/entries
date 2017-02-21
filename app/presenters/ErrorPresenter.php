@@ -10,6 +10,7 @@ use Tracy\Debugger;
 class ErrorPresenter extends BasePresenter {
 	/**
 	 * @param  Exception
+	 *
 	 * @return void
 	 */
 	public function renderDefault($exception) {
@@ -23,7 +24,7 @@ class ErrorPresenter extends BasePresenter {
 			$this->template->openingDate = $this->context->parameters['entries']['opening']->format($fmt);
 
 			$this->template->errorType = $errorType;
-		} else if ($exception instanceof Nette\Application\BadRequestException) {
+		} elseif ($exception instanceof Nette\Application\BadRequestException) {
 			$code = $exception->getCode();
 			// load template 403.latte or 404.latte or ... 4xx.latte
 			$this->setView(in_array($code, array(403, 404, 405, 410, 500)) ? $code : '4xx');
@@ -35,7 +36,7 @@ class ErrorPresenter extends BasePresenter {
 		}
 
 		if ($this->isAjax()) { // AJAX request? Note this error in payload.
-			$this->payload->error = TRUE;
+			$this->payload->error = true;
 			$this->terminate();
 		}
 	}

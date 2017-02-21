@@ -21,12 +21,12 @@ class MeosExporter implements IExporter {
 	private $teams;
 	private $categoryFormat;
 
-	function __construct($teams, \Closure $categoryFormat) {
+	public function __construct($teams, \Closure $categoryFormat) {
 		$this->teams = $teams;
 		$this->categoryFormat = $categoryFormat;
 	}
 
-	public function getMimeType() : string {
+	public function getMimeType(): string {
 		return 'text/plain';
 	}
 
@@ -36,7 +36,7 @@ class MeosExporter implements IExporter {
 	}
 
 	public function output() {
-		$this->fp = fOpen('php://output', 'a');
+		$this->fp = fopen('php://output', 'a');
 		foreach ($this->teams as $team) {
 			$category = $this->categoryFormat->__invoke($team);
 			$club = '';
@@ -50,7 +50,7 @@ class MeosExporter implements IExporter {
 				$this->outputRow([$fullName, $sportident, $club, $category]);
 			}
 		}
-		fClose($this->fp);
+		fclose($this->fp);
 		exit;
 	}
 }

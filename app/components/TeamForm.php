@@ -25,7 +25,7 @@ class TeamForm extends UI\Form {
 		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
 
 		$this->setTranslator($this->parent->translator);
-		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer;
+		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
 		$this->setRenderer($renderer);
 
 		$this->addProtection();
@@ -91,8 +91,8 @@ class TeamForm extends UI\Form {
 
 		$fields = $this->getPresenter()->context->parameters['entries']['fields']['person'];
 		$i = 0;
-		$this->addDynamic('persons', function(Container $container) use(&$i, $fields, $translator) {
-			$i++;
+		$this->addDynamic('persons', function(Container $container) use (&$i, $fields, $translator) {
+			++$i;
 			$group = $this->addGroup();
 			$group->setOption('label', Html::el()->setText($translator->translate('messages.team.person.label', $i)));
 			$container->setCurrentGroup($group);
@@ -127,33 +127,30 @@ class TeamForm extends UI\Form {
 		}
 	}
 
+	public function addMemberClicked(SubmitButton $button) {
+		$button->parent['persons']->createOne();
+	}
 
-
-		public function addMemberClicked(SubmitButton $button) {
-			$button->parent['persons']->createOne();
+	public function removeMemberClicked(SubmitButton $button) {
+		$lastPerson = null;
+		foreach ($button->parent['persons']->getContainers() as $p) {
+			$lastPerson = $p;
 		}
-
-
-		public function removeMemberClicked(SubmitButton $button) {
-			$lastPerson = null;
-			foreach ($button->parent['persons']->getContainers() as $p) {
-				$lastPerson = $p;
-			}
-			if ($lastPerson) {
-				$button->parent['persons']->remove($lastPerson, TRUE);
-			}
+		if ($lastPerson) {
+			$button->parent['persons']->remove($lastPerson, true);
 		}
+	}
 
 	public function addCustomFields($fields, $container) {
 		foreach ($fields as $name => $field) {
 			if (isset($field['type'])) {
 				if (isset($field['label'][$this->getPresenter()->locale])) {
 					$label = Html::el()->setText($field['label'][$this->getPresenter()->locale]);
-				} else if ($field['type'] === 'country') {
+				} elseif ($field['type'] === 'country') {
 					$label = 'messages.team.person.country.label';
-				} else if ($field['type'] === 'phone') {
+				} elseif ($field['type'] === 'phone') {
 					$label = 'messages.team.phone.label';
-				} else if ($field['type'] === 'sportident') {
+				} elseif ($field['type'] === 'sportident') {
 					$label = 'messages.team.person.si.label';
 				} else {
 					$label = $name . ':';
@@ -161,14 +158,14 @@ class TeamForm extends UI\Form {
 
 				if ($field['type'] === 'sportident') {
 					$this->addSportident($name, $container);
-				} else if ($field['type'] === 'country') {
+				} elseif ($field['type'] === 'country') {
 					$country = $container->addSelect($name, $label, $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
 					if (isset($field['default'])) {
 						$country->setDefaultValue($field['default']);
 					}
-				} else if ($field['type'] === 'phone') {
+				} elseif ($field['type'] === 'phone') {
 					$input = $this->addText($name, $label)->setType('tel')->setRequired();
-				} else if ($field['type'] === 'enum') {
+				} elseif ($field['type'] === 'enum') {
 					$input = $this->addEnum($name, $container, $field)->setRequired();
 				} else {
 					$input = $this->addText($name, $label)->setRequired();
@@ -195,6 +192,7 @@ class TeamForm extends UI\Form {
 		}, $field['options']);
 
 		$default = $this->getDefaultFieldValue($field);
+
 		return $container->addRadioList($name, $label, $options)->setDefaultValue($default)->setDisabled($field['disabled'] ?? false);
 	}
 
@@ -205,15 +203,18 @@ class TeamForm extends UI\Form {
 	public function getDefaultFieldValue($field) {
 		if ($field['type'] == 'enum') {
 			$full_options = $field['options'];
+
 			return array_reduce(array_keys($field['options']), function($carry, $key) use ($full_options) {
 				$item = $full_options[$key];
-				if(isset($item['default']) && $item['default'] === true) {
+				if (isset($item['default']) && $item['default'] === true) {
 					return $key;
 				}
+
 				return $carry;
 			});
 		} else {
 			return $field['default'] ?? null;
+
 			return null;
 		}
 	}
@@ -234,9 +235,9 @@ class TeamForm extends UI\Form {
 		if (($male && !$female && $class == 'male') || (!$male && $female && $class == 'female') || ($male && $female && $class == 'mixed') || !in_array($class, ['male', 'female', 'mixed'])) {
 			return true;
 		}
+
 		return false;
 	}
-
 
 	public static function ageClassValidator(Nette\Forms\IControl $input, array $args) {
 		list($form, $eventDate, $ages_data) = $args;
@@ -253,9 +254,9 @@ class TeamForm extends UI\Form {
 				}
 			}
 		}
+
 		return self::validateAgeClass($class, $ages, $ages_data);
 	}
-
 
 	public static function validateAgeClass($class, $ages, $classes) {
 		if (!isset($classes[$class])) {
@@ -275,6 +276,7 @@ class TeamForm extends UI\Form {
 				}
 			}
 		}
+
 		return true;
 	}
 }

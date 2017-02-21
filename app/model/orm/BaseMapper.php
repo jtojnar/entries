@@ -8,6 +8,7 @@ class BaseMapper extends Mapper {
 	protected function createStorageReflection() {
 		$reflection = parent::createStorageReflection();
 		$reflection->manyHasManyStorageNamePattern = '%s_%s';
+
 		return $reflection;
 	}
 }

@@ -9,6 +9,7 @@ use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Person
+ *
  * @property int $id {primary}
  * @property Team|null $team {m:1 Team::$persons}
  * @property string $firstname

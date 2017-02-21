@@ -58,6 +58,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		} else {
 			$gender = '';
 		}
+
 		return $gender . $age;
 	}
 

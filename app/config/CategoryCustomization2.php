@@ -8,7 +8,7 @@ class CategoryCustomization2 extends Nette\Object {
 	public static function detectCategory(Model\Team $team, $presenter) {
 		if ($team->ageclass == 'newcomers') {
 			return 'PO';
-		} else if ($team->ageclass == 'newcomerb') {
+		} elseif ($team->ageclass == 'newcomerb') {
 			return 'PZ';
 		}
 
@@ -27,6 +27,7 @@ class CategoryCustomization2 extends Nette\Object {
 		} else {
 			$gender = '';
 		}
+
 		return $gender . $age;
 	}
 

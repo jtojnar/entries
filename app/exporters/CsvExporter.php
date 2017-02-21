@@ -25,7 +25,7 @@ class CsvExporter implements IExporter {
 	private $categoryFormat;
 	private $maxMembers;
 
-	function __construct($teams, $countries, $teamFields, $personFields, \Closure $categoryFormat, int $maxMembers) {
+	public function __construct($teams, $countries, $teamFields, $personFields, \Closure $categoryFormat, int $maxMembers) {
 		$this->teams = $teams;
 		$this->countries = $countries;
 		$this->teamFields = $teamFields;
@@ -34,19 +34,19 @@ class CsvExporter implements IExporter {
 		$this->maxMembers = $maxMembers;
 	}
 
-	public function getMimeType() : string {
+	public function getMimeType(): string {
 		return 'text/csv';
 	}
 
 	public function output() {
-		$fp = fOpen('php://output', 'a');
+		$fp = fopen('php://output', 'a');
 		$headers = array('#', 'name', 'registered', 'category');
 
 		foreach ($this->teamFields as $name => $field) {
 			$headers[] = $name;
 		}
 
-		for ($i =1; $i <= $this->maxMembers; $i++) {
+		for ($i = 1; $i <= $this->maxMembers; ++$i) {
 			$headers[] = 'm' . $i . 'lastname';
 			$headers[] = 'm' . $i . 'firstname';
 			$headers[] = 'm' . $i . 'gender';
@@ -57,7 +57,7 @@ class CsvExporter implements IExporter {
 		}
 
 		$headers[] = 'status';
-		fPutCsv($fp, $headers);
+		fputcsv($fp, $headers);
 
 		foreach ($this->teams as $team) {
 			$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat->__invoke($team));
@@ -77,7 +77,7 @@ class CsvExporter implements IExporter {
 			$i = 0;
 			$remaining = $this->maxMembers;
 			foreach ($team->persons as $person) {
-				$i++;
+				++$i;
 				$row[] = $person->lastname;
 				$row[] = $person->firstname;
 				$row[] = $person->gender;
@@ -94,10 +94,10 @@ class CsvExporter implements IExporter {
 					}
 				}
 				$row[] = $person->birth;
-				$remaining--;
+				--$remaining;
 			}
 			if ($remaining > 0) {
-				for ($i = 0; $i < $remaining; $i++) {
+				for ($i = 0; $i < $remaining; ++$i) {
 					$row[] = '';
 					$row[] = '';
 					$row[] = '';
@@ -108,9 +108,9 @@ class CsvExporter implements IExporter {
 				}
 			}
 			$row[] = $team->status;
-			fPutCsv($fp, $row);
+			fputcsv($fp, $row);
 		}
-		fClose($fp);
+		fclose($fp);
 		exit;
 	}
 }

@@ -12,17 +12,17 @@ class TeamManager implements Nette\Security\IAuthenticator {
 
 	private $password;
 
-
 	public function __construct(TeamRepository $teams, $password) {
 		$this->teams = $teams;
 		$this->password = $password;
 	}
 
-
 	/**
 	 * Performs an authentication.
-	 * @return Nette\Security\Identity
+	 *
 	 * @throws Nette\Security\AuthenticationException
+	 *
+	 * @return Nette\Security\Identity
 	 */
 	public function authenticate(array $credentials) {
 		list($teamid, $password) = $credentials;
@@ -35,10 +35,9 @@ class TeamManager implements Nette\Security\IAuthenticator {
 
 		if (!$team) {
 			throw new Nette\Security\AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
-		} else if (!Passwords::verify($password, $team->password)) {
+		} elseif (!Passwords::verify($password, $team->password)) {
 			throw new Nette\Security\AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
-
-		} else if (Passwords::needsRehash($team->password)) {
+		} elseif (Passwords::needsRehash($team->password)) {
 			$team->password = Passwords::hash($password);
 			$this->teams->persistAndFlush($team);
 		}
@@ -46,6 +45,7 @@ class TeamManager implements Nette\Security\IAuthenticator {
 		$arr = $team->toArray();
 		unset($arr['persons']);
 		unset($arr['password']);
+
 		return new Nette\Security\Identity($team->id, 'user', $arr);
 	}
 }

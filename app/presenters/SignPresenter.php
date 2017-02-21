@@ -12,11 +12,12 @@ class SignPresenter extends BasePresenter {
 
 	/**
 	 * Sign-in form factory.
+	 *
 	 * @return Nette\Application\UI\Form
 	 */
 	protected function createComponentSignInForm() {
-		$form = new Nette\Application\UI\Form;
-		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer;
+		$form = new Nette\Application\UI\Form();
+		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
 		$form->setRenderer($renderer);
 		$form->setTranslator($this->translator);
 
@@ -31,9 +32,9 @@ class SignPresenter extends BasePresenter {
 		$form->addSubmit('send', 'messages.sign.in.action');
 
 		$form->onSuccess[] = Callback::closure($this, 'signInFormSucceeded');
+
 		return $form;
 	}
-
 
 	public function signInFormSucceeded($form, $values) {
 		if ($values->remember) {
@@ -50,7 +51,6 @@ class SignPresenter extends BasePresenter {
 			$form->addError($e->getMessage());
 		}
 	}
-
 
 	public function actionOut() {
 		$this->user->logout();

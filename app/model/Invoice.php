@@ -6,7 +6,6 @@ use App;
 use Nette;
 
 class Invoice extends Nette\Object {
-
 	private $items = [];
 
 	public function createItem($name, $price) {
@@ -14,6 +13,7 @@ class Invoice extends Nette\Object {
 			if ($price !== $this->items[$name]['price']) {
 				throw new \Exception('This invoice item already exists.');
 			}
+
 			return $this;
 		}
 
@@ -22,7 +22,7 @@ class Invoice extends Nette\Object {
 		return $this;
 	}
 
-	public function addItem($name, $price=null) {
+	public function addItem($name, $price = null) {
 		if (isset($price)) {
 			$this->createItem($name, $price);
 		}
@@ -31,7 +31,8 @@ class Invoice extends Nette\Object {
 			throw new \Exception('Invoice item was not defined.');
 		}
 
-		$this->items[$name]['amount']++;
+		++$this->items[$name]['amount'];
+
 		return $this;
 	}
 
