@@ -73,3 +73,13 @@ dbal:
 	connectionTz: +01:00
 	options:
 		charset: utf8mb4
+
+# optional
+mail:
+	smtp: true
+	host: smtp.gmail.com
+	port: 465
+	username: account@gmail.com
+	password: heslo
+	secure: tls # one of ssl, tls, null
+

@@ -352,7 +352,7 @@ class TeamPresenter extends BasePresenter {
 				$mail = new Message();
 				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mtemplate);
 
-				$mailer = new SendmailMailer();
+				$mailer = $this->context->getByType('Nette\Mail\IMailer');
 				$mailer->send($mail);
 
 				$this->flashMessage($this->translator->translate('messages.team.success.add', null, array('password' => $password)));
