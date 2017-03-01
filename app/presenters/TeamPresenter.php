@@ -13,6 +13,7 @@ use Nette\Mail\Message;
 use Nette\Mail\SendmailMailer;
 use App;
 use App\Exporters;
+use App\Model\Invoice;
 
 class TeamPresenter extends BasePresenter {
 	/** @var App\Model\CountryRepository @inject */
@@ -23,6 +24,9 @@ class TeamPresenter extends BasePresenter {
 
 	/** @var App\Model\PersonRepository @inject */
 	public $persons;
+
+	/** @var App\Model\InvoiceRepository @inject */
+	public $invoices;
 
 	public function startup() {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
@@ -106,6 +110,7 @@ class TeamPresenter extends BasePresenter {
 				$team = $this->teams->getById($id);
 				if ($team->status == 'registered') {
 					$team->status = 'paid';
+					$team->lastInvoice->status = Invoice::STATUS_PAID;
 					$this->teams->persistAndFlush($team);
 					$this->redirect('list');
 				} else {
@@ -240,7 +245,11 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		try {
-			$invoice = new App\Model\Invoice();
+			$invoice = new Invoice();
+			$invoice->status = Invoice::STATUS_NEW;
+			$invoice->team = $team;
+			$invoice->items = [];
+
 			$team->name = $form['name']->value;
 			$team->message = $form['message']->value;
 
@@ -328,6 +337,18 @@ class TeamPresenter extends BasePresenter {
 
 			$this->persons->flush();
 			$this->teams->persistAndFlush($team);
+
+			foreach ($team->invoices as $inv) {
+				if ($inv->status === Invoice::STATUS_NEW) {
+					$inv->status = Invoice::STATUS_CANCELLED;
+					$this->invoices->persist($inv);
+				}
+			}
+
+			$this->invoices->persist($invoice);
+
+			$this->invoices->flush();
+
 
 			if ($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));

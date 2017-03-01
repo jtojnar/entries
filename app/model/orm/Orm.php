@@ -10,6 +10,7 @@ use Nextras\Orm\Model\Model;
  * @property-read PersonRepository $persons
  * @property-read TeamRepository $teams
  * @property-read CountryRepository $countries
+ * @property-read InvoiceRepository $invoices
  */
 class Orm extends Model {
 }

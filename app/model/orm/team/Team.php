@@ -23,6 +23,8 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $ip
  * @property string $password
  * @property OneHasMany|Person[] $persons {1:m Person::$team}
+ * @property OneHasMany|Invoice[] $invoices {1:m Invoice::$team}
+ * @property-read Invoice $lastInvoice {virtual}
  */
 class Team extends Entity {
 	const REGISTERED = 'registered';
@@ -34,5 +36,9 @@ class Team extends Entity {
 
 	public function setJsonData($data) {
 		$this->details = Json::encode($data);
+	}
+
+	public function getterLastInvoice() {
+		return $this->invoices->get()->orderBy(['timestamp' => 'DESC'])->fetch();
 	}
 }
