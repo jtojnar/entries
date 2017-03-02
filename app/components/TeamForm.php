@@ -3,7 +3,7 @@
 namespace App\Components;
 
 use Nette;
-use App;
+use App\Model\CategoryData;
 use Nette\Application\UI;
 use Nette\ComponentModel\IContainer;
 use Nette\Diagnostics\Debugger;
@@ -18,9 +18,13 @@ class TeamForm extends UI\Form {
 	/** @var array */
 	private $countries;
 
-	public function __construct(array $countries, $parent, $name) {
+	/** @var CategoryData */
+	private $categories;
+
+	public function __construct(array $countries, CategoryData $categories, $parent, $name) {
 		parent::__construct($parent, $name);
 		$this->countries = $countries;
+		$this->categories = $categories;
 
 		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
 
@@ -32,52 +36,19 @@ class TeamForm extends UI\Form {
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
 
-		$genders_data = $this->getPresenter()->context->parameters['entries']['categories']['gender'];
-		$genders = array_keys($genders_data);
-		if (count($genders) > 1) {
-			$this->addRadioList('genderclass', 'messages.team.gender.label', array_combine($genders, array_map(function($a) use ($genders_data) {
-				if (isset($genders_data[$a]['label']) && isset($genders_data[$a]['label'][$this->getPresenter()->locale])) {
-					return Html::el()->setText($genders_data[$a]['label'][$this->getPresenter()->locale]);
-				}
+		$category = new CategoryEntry('messages.team.category.label', $this->categories);
+		$category->setRequired();
+		$this['category'] = $category;
 
-				return 'messages.team.gender.' . $a;
-			}, $genders)))->addRule(Callback::closure($this, 'genderClassValidator'), 'messages.team.error.gender_mismatch', $this)->setRequired()->setDefaultValue($genders[0]);
+		if ($category->value !== null) {
+			$constraints = $this->categories->getCategoryData()[$category->value]['constraints'];
+			foreach ($constraints as $constraint) {
+				$category->addRule(...$constraint);
+			}
 		}
+
 
 		$translator = $this->getTranslator();
-		$ages_data = $this->getPresenter()->context->parameters['entries']['categories']['age'];
-		$ages = array_keys($ages_data);
-		if (count($ages) > 1) {
-			$this->addRadioList('ageclass', 'messages.team.age.label', array_combine($ages, array_map(function($a) use (&$translator, $ages_data) {
-				if (isset($ages_data[$a]['label']) && isset($ages_data[$a]['label'][$this->getPresenter()->locale])) {
-					return Html::el()->setText($ages_data[$a]['label'][$this->getPresenter()->locale]);
-				}
-
-				$info = '';
-				if (isset($ages_data[$a]['min'])) {
-					$info .= ' ' . $translator->translate('messages.team.age.min', null, array('age' => $ages_data[$a]['min']));
-				}
-
-				if (isset($ages_data[$a]['max'])) {
-					$info .= ' ' . $translator->translate('messages.team.age.max', null, array('age' => $ages_data[$a]['max']));
-				}
-
-				return Html::el()->setText($translator->translate('messages.team.age.' . $a) . $info);
-			}, $ages)))
-			->setRequired()
-			->addRule(Callback::closure($this, 'ageClassValidator'), 'messages.team.error.age_mismatch', array($this, $this->getPresenter()->context->parameters['entries']['eventDate'], $this->getPresenter()->context->parameters['entries']['categories']['age']))
-			->setDefaultValue($ages[0])
-			->setOption('description', 'messages.team.age.help');
-		}
-
-		$durations = $this->getPresenter()->context->parameters['entries']['categories']['duration'];
-		if (count($durations) > 1) {
-			$this->addRadioList('duration', 'messages.team.duration.label', array_combine($durations, array_map(function($d) {
-				return 'messages.team.duration.' . $d;
-			}, $durations)))
-			->setRequired()
-			->setDefaultValue($durations[0]);
-		}
 
 		$fields = $this->getPresenter()->context->parameters['entries']['fields']['team'];
 		$this->addCustomFields($fields, $this);
@@ -217,66 +188,5 @@ class TeamForm extends UI\Form {
 
 			return null;
 		}
-	}
-
-	public static function genderClassValidator(Nette\Forms\IControl $input, Nette\Forms\Form $form) {
-		$male = false;
-		$female = false;
-		$class = $input->value;
-		foreach ($form['persons']->values as $person) {
-			if ($person['firstname']) {
-				if ($person['gender'] == 'male') {
-					$male = true;
-				} else {
-					$female = true;
-				}
-			}
-		}
-		if (($male && !$female && $class == 'male') || (!$male && $female && $class == 'female') || ($male && $female && $class == 'mixed') || !in_array($class, ['male', 'female', 'mixed'])) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public static function ageClassValidator(Nette\Forms\IControl $input, array $args) {
-		list($form, $eventDate, $ages_data) = $args;
-		$class = $input->value;
-		$ages = array();
-
-		foreach ($form['persons']->values as $person) {
-			if ($person['firstname']) {
-				if ($person['birth']) {
-					$diff = $person['birth']->diff($eventDate, true)->y;
-					$ages[] = $diff;
-				} else {
-					return false;
-				}
-			}
-		}
-
-		return self::validateAgeClass($class, $ages, $ages_data);
-	}
-
-	public static function validateAgeClass($class, $ages, $classes) {
-		if (!isset($classes[$class])) {
-			throw new Exception('Validating against unknown age class');
-		}
-
-		$min = isset($classes[$class]['min']) ? $classes[$class]['min'] : null;
-		$max = isset($classes[$class]['max']) ? $classes[$class]['max'] : null;
-
-		if ($min || $max) {
-			foreach ($ages as $age) {
-				if ($max && $age > $max) {
-					return false;
-				}
-				if ($min && $age < $min) {
-					return false;
-				}
-			}
-		}
-
-		return true;
 	}
 }

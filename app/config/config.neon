@@ -13,16 +13,7 @@ parameters:
 		minMembers: 0
 		maxMembers: 0
 		fees: []
-		categories:
-			gender:
-				male:
-					short: M
-				female:
-					short: F
-				mixed:
-					short: X
-			age: []
-			duration: []
+		categories: []
 		fields:
 			person: []
 			team: []
@@ -60,4 +51,5 @@ orm:
 services:
 	- App\Model\TeamManager(@App\Model\TeamRepository, %entries.admin%)
 	- App\RouterFactory
+	- App\Model\CategoryData(@Nette\Application\Application)
 	router: @App\RouterFactory::createRouter

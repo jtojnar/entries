@@ -14,24 +14,88 @@ parameters:
 		fees:
 			person: 650.0
 		categories:
-			age:
-				youth:
-					short: 'Y'
-					max: 23
-				open:
-					short: 'O'
-				veteran:
-					short: 'V'
-					min: 40
-				superveteran:
-					short: 'SV'
-					min: 55
-				ultraveteran:
-					short: 'UV'
-					min: 65
-			duration:
-				- 24
-				- 12
+			24:
+				label:
+					cs: 24 hodin
+					en: 24 hours
+				categories:
+					MY:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age<=23)'
+					WY:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age<=23)'
+					XY:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age<=23)'
+					MO:
+						constraints:
+							- 'all(gender=male)'
+					WO:
+						constraints:
+							- 'all(gender=female)'
+					XO:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+					MV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=40)'
+					WV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=40)'
+					XV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=40)'
+					MSV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=55)'
+					WSV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=55)'
+					XSV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=55)'
+					MUV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=65)'
+					WUV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=65)'
+					XUV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=65)'
+			12:
+				label: '12'
+				fees:
+					person: 200
+				categories:
+					MO12:
+						constraints:
+							- 'all(gender=male)'
+					WO12:
+						constraints:
+							- 'all(gender=female)'
+					XO12:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
 		fields:
 			person:
 				country:

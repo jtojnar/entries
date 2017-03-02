@@ -12,9 +12,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  *
  * @property int $id {primary}
  * @property string $name
- * @property string $genderclass
- * @property string $ageclass
- * @property int $duration
+ * @property string $category
  * @property string $message
  * @property string $status {default registered} {enum self::REGISTERED, self::PAID}
  * @property DateTime $timestamp {default now}

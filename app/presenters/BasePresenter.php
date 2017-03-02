@@ -13,6 +13,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @var \Kdyby\Translation\Translator @inject */
 	public $translator;
 
+	/** @var App\Model\CategoryData @inject */
+	public $categories;
+
 	protected function startup() {
 		parent::startup();
 
@@ -39,27 +42,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	}
 
 	public function categoryFormat(App\Model\Team $team) {
-		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			return Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'detectCategory')($team, $this);
+		$categoryData = $this->categories->getCategoryData();
+
+		if (isset($categoryData[$team->category])) {
+			return $categoryData[$team->category]['label'];
 		}
 
-		$gender = $team->genderclass;
-		$age = $team->ageclass;
-		$ages_data = $this->presenter->context->parameters['entries']['categories']['age'];
-		if (count($ages_data) > 1) {
-			$age = isset($ages_data[$age]) ? $ages_data[$age]['short'] : '?';
-		} else {
-			$age = '';
-		}
-
-		$gender_data = $this->presenter->context->parameters['entries']['categories']['gender'];
-		if (count($gender_data) > 1) {
-			$gender = isset($gender_data[$gender]) ? $gender_data[$gender]['short'] : '?';
-		} else {
-			$gender = '';
-		}
-
-		return $gender . $age;
+		return $team->category;
 	}
 
 	public function wrapInParagraphs(array $arr) {

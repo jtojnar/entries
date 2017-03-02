@@ -43,15 +43,7 @@ class TeamPresenter extends BasePresenter {
 		$where = array();
 		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
 		if ($category !== null) {
-			$categories = $this->getCategories();
-			if (isset($categories[$category])) {
-				$where = $categories[$category];
-			}
-		}
-
-		$duration = $this->context->getByType('Nette\Http\Request')->getQuery('duration');
-		if ($duration !== null && intval($duration) > 0) {
-			$where['duration'] = $duration;
+			$where = ['category' => explode('|', $category)];
 		}
 
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('status') !== null) {
@@ -75,7 +67,6 @@ class TeamPresenter extends BasePresenter {
 		$this->template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
 		$this->template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
 
-		$this->template->currentCategory = $category;
 		$this->template->stats = array('count' => count($this->template->teams));
 	}
 
@@ -130,6 +121,12 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		$where = [];
+
+		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
+		if ($category !== null) {
+			$where = ['category' => explode('|', $category)];
+		}
+
 		switch ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
 			case 'paid':
 				$where['status'] = 'paid';
@@ -165,14 +162,13 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	protected function createComponentTeamForm($name) {
-		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this, $name);
+		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this->categories, $this, $name);
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
 			$id = $this->getParameter('id');
 			$team = $this->teams->getById($id);
 			$default = array();
 			$default['name'] = $team->name;
-			$default['ageclass'] = $team->ageclass;
-			$default['genderclass'] = $team->genderclass;
+			$default['category'] = $team->category;
 			$default['message'] = $team->message;
 			$default['persons'] = [];
 
@@ -253,9 +249,7 @@ class TeamPresenter extends BasePresenter {
 			$team->name = $form['name']->value;
 			$team->message = $form['message']->value;
 
-			$team->genderclass = isset($form['genderclass']) ? $form['genderclass']->value : '';
-			$team->ageclass = isset($form['ageclass']) ? $form['ageclass']->value : '';
-			$team->duration = isset($form['duration']) ? $form['duration']->value : '';
+			$team->category = isset($form['category']) ? $form['category']->value : '';
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 			$jsonData = [];
@@ -285,10 +279,7 @@ class TeamPresenter extends BasePresenter {
 
 			$this->teams->persistAndFlush($team);
 
-			$personFee = $this->context->parameters['entries']['fees']['person'];
-			if (isset($this->context->parameters['entries']['categories']['age']) && isset($this->context->parameters['entries']['categories']['age'][$team->ageclass]) && isset($this->context->parameters['entries']['categories']['age'][$team->ageclass]['fee'])) {
-				$personFee = $this->context->parameters['entries']['categories']['age'][$team->ageclass]['fee'];
-			}
+			$personFee = $this->categories->getCategoryData()[$team->category]['fee'];
 			$invoice->createItem('person', $personFee);
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
@@ -408,23 +399,14 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['form']['errors'] = false;
 		$renderer->wrappers['hidden']['container'] = null;
 
-		$categories = array_keys($this->getCategories());
-
-		$category = $form->addSelect('category', 'messages.team.list.filter.category.label', array_combine($categories, $categories))->setPrompt('messages.team.list.filter.category.all')->setAttribute('style', 'width:auto;');
+		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
+		$category->setPrompt('messages.team.list.filter.category.all');
+		$category->setAttribute('style', 'width:auto;');
 
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
 			$category->setValue($this->context->getByType('Nette\Http\Request')->getQuery('category'));
 		}
 		$category->controlPrototype->onchange('this.form.submit();');
-
-		$durations = $this->context->parameters['entries']['categories']['duration'];
-		if (count($durations) > 1) {
-			$duration = $form->addSelect('duration', null, array_combine($durations, $durations))->setPrompt('messages.team.list.filter.duration.all')->setAttribute('style', 'width:auto;');
-			if ($this->context->getByType('Nette\Http\Request')->getQuery('duration')) {
-				$duration->setValue($this->context->getByType('Nette\Http\Request')->getQuery('duration'));
-			}
-			$duration->controlPrototype->onchange('this.form.submit();');
-		}
 
 		if ($this->user->isInRole('admin')) {
 			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', array('registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'))->setPrompt('messages.team.list.filter.status.all')->setAttribute('style', 'width:auto;');
@@ -444,13 +426,8 @@ class TeamPresenter extends BasePresenter {
 	public function filterRedir(Nette\Forms\Form $form) {
 		$parameters = array();
 
-		$durations = $this->context->parameters['entries']['categories']['duration'];
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
 			$parameters['category'] = $this->context->getByType('Nette\Http\Request')->getQuery('category');
-		}
-
-		if (in_array($this->context->getByType('Nette\Http\Request')->getQuery('duration'), $durations)) {
-			$parameters['duration'] = $this->context->getByType('Nette\Http\Request')->getQuery('duration');
 		}
 
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
@@ -462,31 +439,6 @@ class TeamPresenter extends BasePresenter {
 		} else {
 			$this->redirect('this', $parameters);
 		}
-	}
-
-	public function getCategories() {
-		if (isset($this->presenter->context->parameters['entries']['categories']['custom'])) {
-			return Callback::closure($this->presenter->context->parameters['entries']['categories']['custom'], 'getCategories')();
-		}
-
-		$sexes = $this->presenter->context->parameters['entries']['categories']['gender'];
-		$ages = $this->context->parameters['entries']['categories']['age'];
-		$categories = array();
-
-		foreach (array_keys($sexes) as $sex) {
-			foreach (array_keys($ages) as $age) {
-				$category = [];
-				if ($sex !== 'any') {
-					$category['genderclass'] = $sex;
-				}
-				if ($age !== 'any') {
-					$category['ageclass'] = $age;
-				}
-				$categories[$sexes[$sex]['short'] . $ages[$age]['short']] = $category;
-			}
-		}
-
-		return $categories;
 	}
 
 	public function personData($data) {

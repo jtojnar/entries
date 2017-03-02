@@ -14,19 +14,18 @@ parameters:
 		fees:
 			person: 650.0
 		categories:
-			custom: App\CategoryCustomization
-			gender:
-				male:
-					short: HH
-				female:
-					short: DD
-				mixed:
-					short: HD
-				tur:
-					short: TUR
-			age:
-				any:
-					short:
+			HH:
+				constraints:
+					- 'all(gender=male)'
+			DD:
+				constraints:
+					- 'all(gender=male)'
+			HD:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+			TUR:
+
 		fields:
 			team:
 				sportident:
