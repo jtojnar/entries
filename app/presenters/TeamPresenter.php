@@ -338,6 +338,11 @@ class TeamPresenter extends BasePresenter {
 				$this->persons->persist($person);
 			}
 
+			if (isset($this->presenter->context->parameters['entries']['invoiceModifier'])) {
+				$invoiceModifier = Callback::closure($this->presenter->context->parameters['entries']['invoiceModifier'], 'modify');
+				$invoiceModifier($team, $invoice, $this->context->parameters['entries']);
+			}
+
 			$this->persons->flush();
 			$this->teams->persistAndFlush($team);
 

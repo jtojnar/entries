@@ -11,6 +11,7 @@ parameters:
 		eventDate: 2012-06-23 # used for age calculations
 		opening: 2012-04-01T01:00:00
 		closing: 2015-06-23T01:00:00
+		invoiceModifier: App\InvoiceModifier
 		fees:
 			person: 650.0
 		categories:
@@ -97,6 +98,61 @@ parameters:
 							- 'some(gender=male)'
 							- 'some(gender=female)'
 		fields:
+			team:
+				friday2h:
+					type: enum
+					label:
+						en: '2 hour Friday Night'
+						cs: 'Páteční noční dvouhodinovka'
+					private: false
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+							fee: 50
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							fee: 0
+							default: true
+				saturday5h:
+					type: enum
+					label:
+						en: '5 hour Saturday'
+						cs: 'Sobotní denní pětihodinovka'
+					private: false
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+							fee: 150
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							fee: 0
+							default: true
+				sunday4h:
+					type: enum
+					label:
+						en: '4 hour Sunday'
+						cs: 'Nedělní čtyřhodinovka - mapa 1850'
+					private: false
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+							fee: 150
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							fee: 0
+							default: true
 			person:
 				country:
 					type: country
