@@ -60,11 +60,13 @@ class Invoice extends Entity {
 		return $this->addItem('person');
 	}
 
-	public function getTotal() {
+	public function getTotal(array $filter = null) {
 		$cost = 0;
 
 		foreach ($this->items as $name => $item) {
-			$cost += $item['amount'] * $item['price'];
+			if ($filter === null || in_array($name, $filter)) {
+				$cost += $item['amount'] * $item['price'];
+			}
 		}
 
 		return $cost;
