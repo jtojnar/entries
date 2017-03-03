@@ -128,11 +128,11 @@ class TeamForm extends UI\Form {
 				}
 
 				if ($field['type'] === 'sportident') {
-					$this->addSportident($name, $container);
+					$input = $this->addSportident($name, $container);
 				} elseif ($field['type'] === 'country') {
-					$country = $container->addSelect($name, $label, $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
+					$input = $container->addSelect($name, $label, $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
 					if (isset($field['default'])) {
-						$country->setDefaultValue($field['default']);
+						$input->setDefaultValue($field['default']);
 					}
 				} elseif ($field['type'] === 'phone') {
 					$input = $this->addText($name, $label)->setType('tel')->setRequired();
@@ -154,15 +154,21 @@ class TeamForm extends UI\Form {
 				} else {
 					$input = $this->addText($name, $label)->setRequired();
 				}
+
+				if (isset($field['description'])) {
+					$input->setOption('description', $field['description'][$this->getPresenter()->locale]);
+				}
 			}
 		}
 	}
 
 	public function addSportident($name, $container) {
 		$si = $container->addText($name, 'messages.team.person.si.label')->setType('number');
-		$container->addCheckBox($name . 'Needed', 'messages.team.person.si.rent');
+		$input = $container->addCheckBox($name . 'Needed', 'messages.team.person.si.rent');
 		$container[$name]->addConditionOn($container[$name . 'Needed'], Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
 		$container[$name . 'Needed']->addCondition(Form::EQUAL, true)->toggle($container[$name]->htmlId, false);
+
+		return $input;
 	}
 
 	public function addEnum($name, $container, $field) {
