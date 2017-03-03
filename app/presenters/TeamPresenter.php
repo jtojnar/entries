@@ -260,11 +260,11 @@ class TeamPresenter extends BasePresenter {
 					$jsonData[$name] = $form[$name]->value;
 				}
 
-				if (isset($field['fee']) && $jsonData[$name] === null) {
+				if ($field['type'] === 'sportident' && isset($field['fee']) && $jsonData[$name] === null) {
 					$invoice->addItem($name, $field['fee']);
-				}
-
-				if ($field['type'] === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
+				} elseif ($field['type'] === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
+					$invoice->addItem($name, $field['fee']);
+				} elseif ($field['type'] === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
 					$invoice->addItem($name . '-' . $form[$name]->value, $field['options'][$form[$name]->value]['fee']);
 				}
 			}
@@ -308,11 +308,11 @@ class TeamPresenter extends BasePresenter {
 					} else {
 						$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
 					}
-					if (isset($field['fee']) && $jsonData[$name] === null) {
+					if ($field['type'] === 'sportident' && isset($field['fee']) && $jsonData[$name] === null) {
 						$invoice->addItem($name, $field['fee']);
-					}
-
-					if ($field['type'] === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
+					} elseif ($field['type'] === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
+						$invoice->addItem($name, $field['fee']);
+					} elseif ($field['type'] === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
 						$invoice->addItem($name . '-' . $member[$name], $field['options'][$member[$name]]['fee']);
 					}
 				}

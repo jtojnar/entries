@@ -138,6 +138,11 @@ class TeamForm extends UI\Form {
 					$input = $this->addText($name, $label)->setType('tel')->setRequired();
 				} elseif ($field['type'] === 'enum') {
 					$input = $this->addEnum($name, $container, $field)->setRequired();
+				} elseif ($field['type'] === 'checkbox') {
+					$input = $container->addCheckBox($name, $label);
+					if (isset($field['default'])) {
+						$input->setDefaultValue($field['default']);
+					}
 				} else {
 					$input = $this->addText($name, $label)->setRequired();
 				}

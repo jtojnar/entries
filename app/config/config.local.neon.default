@@ -104,6 +104,12 @@ parameters:
 				sportident:
 					type: sportident
 					fee: 50
+				mug:
+					type: checkbox
+					label:
+						en: 'Mug (100 CZK)'
+						cs: 'Hrnek (100 Kč)'
+					fee: 100
 
 		admin: password
 	webmasterEmail: email@example.com
