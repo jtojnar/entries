@@ -376,7 +376,7 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->id = $team->id;
 				$mtemplate->name = $name;
 				$mtemplate->password = $password;
-				$mtemplate->cost = $invoice->getTotal();
+				$mtemplate->invoice = $invoice;
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
 				$mail = new Message();
 				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mtemplate);
