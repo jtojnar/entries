@@ -143,6 +143,14 @@ class TeamForm extends UI\Form {
 					if (isset($field['default'])) {
 						$input->setDefaultValue($field['default']);
 					}
+				} elseif ($field['type'] === 'checkboxlist') {
+					$items = [];
+					foreach ($field['items'] as $itemKey => $item) {
+						$items[$itemKey] = $item['label'][$this->getPresenter()->locale];
+					}
+
+					$input = $container->addCheckBoxList($name, $label, $items);
+					$input->setDefaultValue($this->getDefaultFieldValue($field));
 				} else {
 					$input = $this->addText($name, $label)->setRequired();
 				}
@@ -188,6 +196,16 @@ class TeamForm extends UI\Form {
 
 				return $carry;
 			});
+		} elseif ($field['type'] == 'checkboxlist') {
+			$default = [];
+
+			foreach ($field['items'] as $itemKey => $item) {
+				if (isset($item['default']) && $item['default']) {
+					$default[] = $itemKey;
+				}
+			}
+
+			return $default;
 		} else {
 			return $field['default'] ?? null;
 

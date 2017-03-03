@@ -43,7 +43,13 @@ class CsvExporter implements IExporter {
 		$headers = array('#', 'name', 'registered', 'category');
 
 		foreach ($this->teamFields as $name => $field) {
-			$headers[] = $name;
+			if ($field['type'] === 'checkboxlist') {
+				foreach ($field['items'] as $itemKey => $_) {
+					$headers[] = $name . '-' . $itemKey;
+				}
+			} else {
+				$headers[] = $name;
+			}
 		}
 
 		for ($i = 1; $i <= $this->maxMembers; ++$i) {
@@ -51,7 +57,13 @@ class CsvExporter implements IExporter {
 			$headers[] = 'm' . $i . 'firstname';
 			$headers[] = 'm' . $i . 'gender';
 			foreach ($this->personFields as $name => $field) {
-				$headers[] = 'm' . $i . $name;
+				if ($field['type'] === 'checkboxlist') {
+					foreach ($field['items'] as $itemKey => $_) {
+						$headers[] = 'm' . $i . $name . '-' . $itemKey;
+					}
+				} else {
+					$headers[] = 'm' . $i . $name;
+				}
 			}
 			$headers[] = 'm' . $i . 'birth';
 		}
@@ -66,11 +78,21 @@ class CsvExporter implements IExporter {
 				if ($f) {
 					if ($field['type'] === 'country') {
 						$row[] = $this->countries->getById($f)->name;
+					} elseif ($field['type'] === 'checkboxlist') {
+						foreach ($field['items'] as $itemKey => $item) {
+							$row[] = in_array($itemKey, $f);
+						}
 					} else {
 						$row[] = $f;
 					}
 				} else {
-					$row[] = '';
+					if ($field['type'] === 'checkboxlist') {
+						foreach ($field['items'] as $item) {
+							$row[] = '';
+						}
+					} else {
+						$row[] = '';
+					}
 				}
 			}
 
@@ -86,11 +108,21 @@ class CsvExporter implements IExporter {
 					if ($f) {
 						if ($field['type'] === 'country') {
 							$row[] = $this->countries->getById($f)->name;
+						} elseif ($field['type'] === 'checkboxlist') {
+							foreach ($field['items'] as $itemKey => $_) {
+								$row[] = in_array($itemKey, $f);
+							}
 						} else {
 							$row[] = $f;
 						}
 					} else {
-						$row[] = '';
+						if ($field['type'] === 'checkboxlist') {
+							foreach ($field['items'] as $item) {
+								$row[] = '';
+							}
+						} else {
+							$row[] = '';
+						}
 					}
 				}
 				$row[] = $person->birth;
@@ -102,7 +134,13 @@ class CsvExporter implements IExporter {
 					$row[] = '';
 					$row[] = '';
 					foreach ($this->personFields as $name => $field) {
-						$row[] = '';
+						if ($field['type'] === 'checkboxlist') {
+							foreach ($field['items'] as $item) {
+								$row[] = '';
+							}
+						} else {
+							$row[] = '';
+						}
 					}
 					$row[] = '';
 				}

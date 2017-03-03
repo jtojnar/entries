@@ -110,6 +110,30 @@ parameters:
 						en: 'Mug (100 CZK)'
 						cs: 'Hrnek (100 Kč)'
 					fee: 100
+				boarding:
+					label:
+						en: 'Boarding:'
+						cs: 'Stravování:'
+					type: checkboxlist
+					private: true
+					items:
+						fri_supper:
+							label:
+								en: 'Friday Supper (95 CZK)'
+								cs: 'Páteční večeře (95 Kč)'
+							fee: 95
+						sat_breakfast:
+							type: checkbox
+							label:
+								en: 'Saturday Breakfest (100 CZK)'
+								cs: 'Sobotní snídaně (100 Kč)'
+							fee: 100
+						sat_lun:
+							type: checkbox
+							label:
+								en: 'Saturday Lunch (95 CZK)'
+								cs: 'Sobotní oběd (95 Kč)'
+							fee: 95
 
 		admin: password
 	webmasterEmail: email@example.com

@@ -266,6 +266,12 @@ class TeamPresenter extends BasePresenter {
 					$invoice->addItem($name, $field['fee']);
 				} elseif ($field['type'] === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
 					$invoice->addItem($name . '-' . $form[$name]->value, $field['options'][$form[$name]->value]['fee']);
+				} elseif ($field['type'] === 'checkboxlist') {
+					foreach ($jsonData[$name] as $item) {
+						if (isset($field['items'][$item]['fee'])) {
+							$invoice->addItem($name . '-' . $item, $field['items'][$item]['fee']);
+						}
+					}
 				}
 			}
 			$team->setJsonData($jsonData);
@@ -314,6 +320,12 @@ class TeamPresenter extends BasePresenter {
 						$invoice->addItem($name, $field['fee']);
 					} elseif ($field['type'] === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
 						$invoice->addItem($name . '-' . $member[$name], $field['options'][$member[$name]]['fee']);
+					} elseif ($field['type'] === 'checkboxlist') {
+						foreach ($jsonData[$name] as $item) {
+							if (isset($field['items'][$item]['fee'])) {
+								$invoice->addItem($name . '-' . $item, $field['items'][$item]['fee']);
+							}
+						}
 					}
 				}
 
@@ -487,6 +499,12 @@ class TeamPresenter extends BasePresenter {
 				continue;
 			} elseif ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
+				continue;
+			} elseif ($field['type'] === 'checkboxlist' && isset($data->$name)) {
+				$items = array_map(function($item) use ($field) {
+					return $field['items'][$item]['label'][$this->locale];
+				}, $data->$name);
+				$ret[] = $label . ' ' . implode(', ', $items);
 				continue;
 			}
 			if (isset($data->$name)) {
