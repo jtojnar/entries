@@ -45,6 +45,8 @@ class TeamManager implements Nette\Security\IAuthenticator {
 		$arr = $team->toArray();
 		unset($arr['persons']);
 		unset($arr['password']);
+		unset($arr['invoices']);
+		unset($arr['lastInvoice']);
 
 		return new Nette\Security\Identity($team->id, 'user', $arr);
 	}
