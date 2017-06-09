@@ -5,7 +5,9 @@ namespace App\Model;
 use Nette;
 use Nette\Utils\Callback;
 
-class CategoryData extends Nette\Object {
+class CategoryData {
+	use Nette\SmartObject;
+
 	/** Nette\Application\Application */
 	private $app;
 

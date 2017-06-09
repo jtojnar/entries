@@ -29,16 +29,19 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			$this->canonicalize();
 		}
 
+		/** @var Nette\Bridges\ApplicationLatte\Template $template */
+		$template = $this->template;
+
 		if (isset($this->context->parameters['siteTitle'])) {
 			if (isset($this->context->parameters['siteTitle'][$this->locale])) {
-				$this->template->siteTitle = $this->context->parameters['siteTitle'][$this->locale];
+				$template->siteTitle = $this->context->parameters['siteTitle'][$this->locale];
 			} else {
-				$this->template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
+				$template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
 			}
 		}
 
-		$this->template->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
-		$this->template->getLatte()->addFilter('wrapInParagraphs', Callback::closure($this, 'wrapInParagraphs'));
+		$template->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
+		$template->getLatte()->addFilter('wrapInParagraphs', Callback::closure($this, 'wrapInParagraphs'));
 	}
 
 	public function categoryFormat(App\Model\Team $team) {

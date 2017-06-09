@@ -28,7 +28,7 @@ class TeamForm extends UI\Form {
 
 		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
 
-		$this->setTranslator($this->parent->translator);
+		$this->setTranslator($parent->translator);
 		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
 		$this->setRenderer($renderer);
 
@@ -47,7 +47,7 @@ class TeamForm extends UI\Form {
 			}
 		}
 
-
+		/** @var \Kdyby\Translation\Translator $translator */
 		$translator = $this->getTranslator();
 
 		$fields = $this->getPresenter()->context->parameters['entries']['fields']['team'];
@@ -113,10 +113,14 @@ class TeamForm extends UI\Form {
 	}
 
 	public function addCustomFields($fields, $container) {
+		/** @var BasePresenter $presenter */
+		$presenter = $this->getPresenter();
+		$locale = $presenter->locale;
+
 		foreach ($fields as $name => $field) {
 			if (isset($field['type'])) {
-				if (isset($field['label'][$this->getPresenter()->locale])) {
-					$label = Html::el()->setText($field['label'][$this->getPresenter()->locale]);
+				if (isset($field['label'][$locale])) {
+					$label = Html::el()->setText($field['label'][$locale]);
 				} elseif ($field['type'] === 'country') {
 					$label = 'messages.team.person.country.label';
 				} elseif ($field['type'] === 'phone') {
@@ -146,7 +150,7 @@ class TeamForm extends UI\Form {
 				} elseif ($field['type'] === 'checkboxlist') {
 					$items = [];
 					foreach ($field['items'] as $itemKey => $item) {
-						$items[$itemKey] = $item['label'][$this->getPresenter()->locale];
+						$items[$itemKey] = $item['label'][$locale];
 					}
 
 					$input = $container->addCheckBoxList($name, $label, $items);
@@ -156,7 +160,7 @@ class TeamForm extends UI\Form {
 				}
 
 				if (isset($field['description'])) {
-					$input->setOption('description', $field['description'][$this->getPresenter()->locale]);
+					$input->setOption('description', $field['description'][$locale]);
 				}
 			}
 		}
@@ -172,13 +176,17 @@ class TeamForm extends UI\Form {
 	}
 
 	public function addEnum($name, $container, $field) {
-		if (isset($field['label'][$this->getPresenter()->locale])) {
-			$label = Html::el()->setText($field['label'][$this->getPresenter()->locale]);
+		/** @var BasePresenter $presenter */
+		$presenter = $this->getPresenter();
+		$locale = $presenter->locale;
+
+		if (isset($field['label'][$locale])) {
+			$label = Html::el()->setText($field['label'][$locale]);
 		} else {
 			$label = $name . ':';
 		}
-		$options = array_map(function($option) {
-			return $option['label'][$this->getPresenter()->locale];
+		$options = array_map(function($option) use ($locale) {
+			return $option['label'][$locale];
 		}, $field['options']);
 
 		$default = $this->getDefaultFieldValue($field);

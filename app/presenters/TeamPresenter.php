@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use Exception;
 use Nette;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
@@ -58,26 +59,28 @@ class TeamPresenter extends BasePresenter {
 			}
 		}
 
-		if ($where === null) {
-			$this->template->teams = $this->teams->findAll();
-		} else {
-			$this->template->teams = $this->teams->findBy($where);
-		}
+		/** @var Nette\Bridges\ApplicationLatte\Template $template */
+		$template = $this->template;
 
-		$this->template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
-		$this->template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
+		$template->teams = $this->teams->findBy($where);
 
-		$this->template->stats = array('count' => count($this->template->teams));
+		$template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
+		$template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
+
+		$template->stats = array('count' => count($template->teams));
 	}
 
 	public function renderEdit($id) {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', array('return' => 'edit'));
 		} else {
+			/** @var Nette\Security\Identity $identity */
+			$identity = $this->user->identity;
+
 			if ($id === null) {
-				$this->redirect('edit', array('id' => $this->user->identity->id));
+				$this->redirect('edit', array('id' => $identity->id));
 			}
-			if (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
+			if (!$this->user->isInRole('admin') && $identity->id != $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
@@ -220,16 +223,22 @@ class TeamPresenter extends BasePresenter {
 			}
 		}
 
+		/** @var App\Components\TeamForm $form */
 		$form = $button->form;
+		/** @var string $password */
+		$password = null;
 
 		if ($this->action === 'edit') {
 			$id = $this->getParameter('id');
 			$team = $this->teams->getById($id);
+			/** @var Nette\Security\Identity $identity */
+			$identity = $this->user->identity;
+
 			if (!$team) {
 				$form->addError('messages.team.edit.error.404');
 			} elseif (!$this->user->isInRole('admin') && $team->status == 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
-			} elseif (!$this->user->isInRole('admin') && $this->user->identity->id != $id) {
+			} elseif (!$this->user->isInRole('admin') && $identity->id != $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
@@ -289,9 +298,13 @@ class TeamPresenter extends BasePresenter {
 			$invoice->createItem('person', $personFee);
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+
+			/** @var ?string $address */
+			$address = null;
+
 			foreach ($form['persons']->values as $member) {
 				$firstname = $member['firstname'];
-				if (!isset($address)) {
+				if ($address === null) {
 					$address = $member['email'];
 				}
 				if (!isset($name)) {
@@ -361,6 +374,7 @@ class TeamPresenter extends BasePresenter {
 			if ($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 			} else {
+				/** @var Nette\Bridges\ApplicationLatte\Template $mtemplate */
 				$mtemplate = $this->createTemplate();
 				$mtemplate->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
 

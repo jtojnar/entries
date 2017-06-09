@@ -6,7 +6,9 @@ use App\Model\Team;
 use App\Model\Invoice;
 use Nette;
 
-class InvoiceModifier extends Nette\Object {
+class InvoiceModifier {
+	use Nette\SmartObject;
+
 	public static function modify(Team $team, Invoice $invoice, array $parameters) {
 		$eventDate = $parameters['eventDate'];
 
