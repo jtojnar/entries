@@ -13,6 +13,7 @@ matrix:
 script:
   - vendor/bin/tester tests -s
   - php code-checker/src/code-checker.php -d app
+  - composer run-script lint
 
 before_script:
   - phpenv config-rm xdebug.ini
