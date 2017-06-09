@@ -15,6 +15,7 @@ script:
   - php code-checker/src/code-checker.php -d app
 
 before_script:
+  - phpenv config-rm xdebug.ini
   # Install Nette Tester & Code Checker
   - mv app/config/config.local.neon.default app/config/config.local.neon
   - composer install --no-interaction --dev --prefer-source
