@@ -45,6 +45,9 @@
 		"jakub-onderka/php-parallel-lint": "^0.9.2",
 		"nette/tester": "dev-master"
 	},
+	"autoload": {
+		"classmap": ["app/"]
+	},
 	"scripts": {
 		"lint": "vendor/bin/parallel-lint app/ tests/ www/"
 	}
