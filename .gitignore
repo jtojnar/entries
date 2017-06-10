@@ -2,6 +2,7 @@ log/*
 temp/*
 vendor/*
 !vendor/others
+.php_cs.cache
 
 .DS_Store
 !.gitignore
