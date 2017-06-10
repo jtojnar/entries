@@ -68,7 +68,7 @@ class TeamPresenter extends BasePresenter {
 		$template->stats = ['count' => count($template->teams)];
 	}
 
-	public function renderEdit($id) {
+	public function renderEdit(int $id = null) {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', ['return' => 'edit']);
 		} else {
@@ -94,10 +94,8 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionConfirm($id) {
-		$id = null;
-		if ($this->getParameter('id')) {
-			$id = $this->getParameter('id');
+	public function actionConfirm(int $id = null) {
+		if ($id !== null) {
 			if ($this->user->isInRole('admin')) {
 				$team = $this->teams->getById($id);
 				if ($team->status === 'registered') {
@@ -165,7 +163,7 @@ class TeamPresenter extends BasePresenter {
 	protected function createComponentTeamForm($name) {
 		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this->categories, $this, $name);
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
-			$id = $this->getParameter('id');
+			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
 			$default = [];
 			$default['name'] = $team->name;
@@ -227,7 +225,7 @@ class TeamPresenter extends BasePresenter {
 		$password = null;
 
 		if ($this->action === 'edit') {
-			$id = $this->getParameter('id');
+			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
 			/** @var Nette\Security\Identity $identity */
 			$identity = $this->user->identity;
