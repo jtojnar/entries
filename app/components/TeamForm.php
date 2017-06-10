@@ -2,17 +2,14 @@
 
 namespace App\Components;
 
-use Nette;
 use App\Model\CategoryData;
-use Nette\Application\UI;
-use Nette\ComponentModel\IContainer;
-use Nette\Diagnostics\Debugger;
-use Nette\Forms\Controls\SubmitButton;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI;
 use Nette\Forms\Container;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
-use Nette\Utils\Html;
 use Nette\Utils\Callback;
+use Nette\Utils\Html;
 
 class TeamForm extends UI\Form {
 	/** @var array */
@@ -70,7 +67,7 @@ class TeamForm extends UI\Form {
 			$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
 
 			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
-			$container->addRadioList('gender', 'messages.team.person.gender.label', array('female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'))->setDefaultValue('male')->setRequired();
+			$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
 
 			$this->addCustomFields($fields, $container);
 
@@ -199,7 +196,7 @@ class TeamForm extends UI\Form {
 	}
 
 	public function getDefaultFieldValue($field) {
-		if ($field['type'] == 'enum') {
+		if ($field['type'] === 'enum') {
 			$full_options = $field['options'];
 
 			return array_reduce(array_keys($field['options']), function($carry, $key) use ($full_options) {
@@ -210,7 +207,7 @@ class TeamForm extends UI\Form {
 
 				return $carry;
 			});
-		} elseif ($field['type'] == 'checkboxlist') {
+		} elseif ($field['type'] === 'checkboxlist') {
 			$default = [];
 
 			foreach ($field['items'] as $itemKey => $item) {

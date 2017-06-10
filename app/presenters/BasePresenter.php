@@ -2,9 +2,9 @@
 
 namespace App\Presenters;
 
+use App;
 use Nette;
 use Nette\Utils\Callback;
-use App;
 
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @persistent @var string */

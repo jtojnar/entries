@@ -10,8 +10,8 @@ if (!class_exists('Tester\Assert')) {
 Tester\Environment::setup();
 date_default_timezone_set('Europe/Prague');
 
-$configurator = new Nette\Configurator;
-$configurator->setDebugMode(FALSE);
+$configurator = new Nette\Configurator();
+$configurator->setDebugMode(false);
 $configurator->setTempDirectory(__DIR__ . '/../temp');
 $configurator->createRobotLoader()
 	->addDirectory(__DIR__ . '/../app')
@@ -19,4 +19,5 @@ $configurator->createRobotLoader()
 
 $configurator->addConfig(__DIR__ . '/../app/config/config.neon');
 $configurator->addConfig(__DIR__ . '/../app/config/config.local.neon');
+
 return $configurator->createContainer();

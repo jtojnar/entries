@@ -9,7 +9,7 @@ class LimitedAccessException extends Nette\Application\BadRequestException {
 	const LATE = 410;
 
 	public function __construct($code) {
-		if ($code != self::SOON) {
+		if ($code !== self::SOON) {
 			$code = self::LATE;
 		}
 		parent::__construct('', $code);

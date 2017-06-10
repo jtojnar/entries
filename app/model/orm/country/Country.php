@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use Nextras\Orm\Entity\Entity;
-use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Country

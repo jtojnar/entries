@@ -21,7 +21,7 @@ class HomepagePresenter extends BasePresenter {
 		$locales = $this->context->parameters['locales'];
 		$template->locales = count($locales) > 1 ? $locales : [];
 
-		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1);
+		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1);
 		$template->mail = $this->context->parameters['webmasterEmail'];
 	}
 }

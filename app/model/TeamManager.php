@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use Nette;
-use Nette\Utils\Strings;
 use Nette\Security\Passwords;
 
 class TeamManager implements Nette\Security\IAuthenticator {

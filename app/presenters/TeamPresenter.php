@@ -2,19 +2,17 @@
 
 namespace App\Presenters;
 
-use Exception;
-use Nette;
-use Nette\Utils\DateTime;
-use Nette\Utils\Html;
-use Nette\Utils\Callback;
-use Tracy\Debugger;
-use Nette\Application\UI\Form;
-use Nette\Forms\Controls\SubmitButton;
-use Nette\Mail\Message;
-use Nette\Mail\SendmailMailer;
 use App;
 use App\Exporters;
 use App\Model\Invoice;
+use Exception;
+use Nette;
+use Nette\Application\UI\Form;
+use Nette\Mail\Message;
+use Nette\Utils\Callback;
+use Nette\Utils\DateTime;
+use Nette\Utils\Html;
+use Tracy\Debugger;
 
 class TeamPresenter extends BasePresenter {
 	/** @var App\Model\CountryRepository @inject */
@@ -31,9 +29,9 @@ class TeamPresenter extends BasePresenter {
 
 	public function startup() {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
-			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
+			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
 				throw new App\TooLateForAccessException();
-			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1) {
 				throw new App\TooSoonForAccessException();
 			}
 		}
@@ -41,7 +39,7 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	public function renderList() {
-		$where = array();
+		$where = [];
 		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
 		if ($category !== null) {
 			$where = ['category' => explode('|', $category)];
@@ -67,20 +65,20 @@ class TeamPresenter extends BasePresenter {
 		$template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
 		$template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
 
-		$template->stats = array('count' => count($template->teams));
+		$template->stats = ['count' => count($template->teams)];
 	}
 
 	public function renderEdit($id) {
 		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in', array('return' => 'edit'));
+			$this->redirect('Sign:in', ['return' => 'edit']);
 		} else {
 			/** @var Nette\Security\Identity $identity */
 			$identity = $this->user->identity;
 
 			if ($id === null) {
-				$this->redirect('edit', array('id' => $identity->id));
+				$this->redirect('edit', ['id' => $identity->id]);
 			}
-			if (!$this->user->isInRole('admin') && $identity->id != $id) {
+			if (!$this->user->isInRole('admin') && $identity->id !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
@@ -89,7 +87,7 @@ class TeamPresenter extends BasePresenter {
 			if (!$team) {
 				$this->error($this->translator->translate('messages.team.edit.error.404'));
 			}
-			if (!$this->user->isInRole('admin') && $team->status == 'paid') {
+			if (!$this->user->isInRole('admin') && $team->status === 'paid') {
 				$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'error');
 				$this->redirect('Homepage:');
 			}
@@ -102,7 +100,7 @@ class TeamPresenter extends BasePresenter {
 			$id = $this->getParameter('id');
 			if ($this->user->isInRole('admin')) {
 				$team = $this->teams->getById($id);
-				if ($team->status == 'registered') {
+				if ($team->status === 'registered') {
 					$team->status = 'paid';
 					$team->lastInvoice->status = Invoice::STATUS_PAID;
 					$this->teams->persistAndFlush($team);
@@ -147,7 +145,7 @@ class TeamPresenter extends BasePresenter {
 		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
 
 		if (count($teams)) {
-			if ($type == 'meos') {
+			if ($type === 'meos') {
 				$exporter = new Exporters\MeosExporter($teams, Callback::closure($this, 'categoryFormat'));
 				$response = $this->context->getByType('Nette\Http\Response');
 				$response->setContentType($exporter->getMimeType(), 'UTF-8');
@@ -169,7 +167,7 @@ class TeamPresenter extends BasePresenter {
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
 			$id = $this->getParameter('id');
 			$team = $this->teams->getById($id);
-			$default = array();
+			$default = [];
 			$default['name'] = $team->name;
 			$default['category'] = $team->category;
 			$default['message'] = $team->message;
@@ -186,13 +184,13 @@ class TeamPresenter extends BasePresenter {
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 			foreach ($team->persons as $person) {
-				$personDefault = array(
+				$personDefault = [
 					'firstname' => $person->firstname,
 					'lastname' => $person->lastname,
 					'gender' => $person->gender,
 					'email' => $person->email,
 					'birth' => $person->birth
-				);
+				];
 
 				foreach ($fields as $name => $field) {
 					if (isset($person->getJsonData()->$name)) {
@@ -216,9 +214,9 @@ class TeamPresenter extends BasePresenter {
 
 	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button) {
 		if (!$this->user->isInRole('admin')) {
-			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert == 0) {
+			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
 				throw new App\TooLateForAccessException();
-			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert == 1) {
+			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1) {
 				throw new App\TooSoonForAccessException();
 			}
 		}
@@ -236,9 +234,9 @@ class TeamPresenter extends BasePresenter {
 
 			if (!$team) {
 				$form->addError('messages.team.edit.error.404');
-			} elseif (!$this->user->isInRole('admin') && $team->status == 'paid') {
+			} elseif (!$this->user->isInRole('admin') && $team->status === 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
-			} elseif (!$this->user->isInRole('admin') && $identity->id != $id) {
+			} elseif (!$this->user->isInRole('admin') && $identity->id !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
@@ -370,7 +368,6 @@ class TeamPresenter extends BasePresenter {
 
 			$this->invoices->flush();
 
-
 			if ($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 			} else {
@@ -398,7 +395,7 @@ class TeamPresenter extends BasePresenter {
 				$mailer = $this->context->getByType('Nette\Mail\IMailer');
 				$mailer->send($mail);
 
-				$this->flashMessage($this->translator->translate('messages.team.success.add', null, array('password' => $password)));
+				$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
 			}
 			$this->redirect('Homepage:');
 		} catch (Exception $e) {
@@ -440,7 +437,7 @@ class TeamPresenter extends BasePresenter {
 		$category->controlPrototype->onchange('this.form.submit();');
 
 		if ($this->user->isInRole('admin')) {
-			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', array('registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'))->setPrompt('messages.team.list.filter.status.all')->setAttribute('style', 'width:auto;');
+			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setAttribute('style', 'width:auto;');
 			if ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
 				$status->setValue($this->context->getByType('Nette\Http\Request')->getQuery('status'));
 			}
@@ -455,7 +452,7 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	public function filterRedir(Nette\Forms\Form $form) {
-		$parameters = array();
+		$parameters = [];
 
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
 			$parameters['category'] = $this->context->getByType('Nette\Http\Request')->getQuery('category');
@@ -465,7 +462,7 @@ class TeamPresenter extends BasePresenter {
 			$parameters['status'] = $this->context->getByType('Nette\Http\Request')->getQuery('status');
 		}
 
-		if (count($parameters) == 0) {
+		if (count($parameters) === 0) {
 			$this->redirect('this');
 		} else {
 			$this->redirect('this', $parameters);

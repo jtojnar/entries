@@ -39,7 +39,7 @@ class CategoryData {
 		'some' => 'quantSome',
 	];
 
-	function __construct(Nette\Application\Application $app) {
+	public function __construct(Nette\Application\Application $app) {
 		$this->app = $app;
 	}
 
@@ -205,7 +205,7 @@ class CategoryData {
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
-		return $age < intval($value);
+		return $age < (int) $value;
 	}
 
 	private function ageLe($person, $value) {
@@ -216,7 +216,7 @@ class CategoryData {
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
-		return $age <= intval($value);
+		return $age <= (int) $value;
 	}
 
 	private function ageEq($person, $value) {
@@ -227,7 +227,7 @@ class CategoryData {
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
-		return $age === intval($value);
+		return $age === (int) $value;
 	}
 
 	private function ageGe($person, $value) {
@@ -238,7 +238,7 @@ class CategoryData {
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
-		return $age >= intval($value);
+		return $age >= (int) $value;
 	}
 
 	private function ageGt($person, $value) {
@@ -249,7 +249,7 @@ class CategoryData {
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
-		return $age > intval($value);
+		return $age > (int) $value;
 	}
 
 	private function genderEq($person, $value) {

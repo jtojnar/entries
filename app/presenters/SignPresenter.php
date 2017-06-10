@@ -4,7 +4,6 @@ namespace App\Presenters;
 
 use Nette;
 use Nette\Utils\Callback;
-use App;
 
 class SignPresenter extends BasePresenter {
 	/** @persistent */

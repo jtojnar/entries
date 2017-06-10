@@ -40,7 +40,7 @@ class CsvExporter implements IExporter {
 
 	public function output() {
 		$fp = fopen('php://output', 'a');
-		$headers = array('#', 'name', 'registered', 'category');
+		$headers = ['#', 'name', 'registered', 'category'];
 
 		foreach ($this->teamFields as $name => $field) {
 			if ($field['type'] === 'checkboxlist') {
@@ -72,7 +72,7 @@ class CsvExporter implements IExporter {
 		fputcsv($fp, $headers);
 
 		foreach ($this->teams as $team) {
-			$row = array($team->id, $team->name, $team->timestamp, $this->categoryFormat->__invoke($team));
+			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormat->__invoke($team)];
 			foreach ($this->teamFields as $name => $field) {
 				$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
 				if ($f) {
@@ -80,7 +80,7 @@ class CsvExporter implements IExporter {
 						$row[] = $this->countries->getById($f)->name;
 					} elseif ($field['type'] === 'checkboxlist') {
 						foreach ($field['items'] as $itemKey => $item) {
-							$row[] = in_array($itemKey, $f);
+							$row[] = in_array($itemKey, $f, true);
 						}
 					} else {
 						$row[] = $f;
@@ -110,7 +110,7 @@ class CsvExporter implements IExporter {
 							$row[] = $this->countries->getById($f)->name;
 						} elseif ($field['type'] === 'checkboxlist') {
 							foreach ($field['items'] as $itemKey => $_) {
-								$row[] = in_array($itemKey, $f);
+								$row[] = in_array($itemKey, $f, true);
 							}
 						} else {
 							$row[] = $f;

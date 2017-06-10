@@ -64,7 +64,7 @@ class Invoice extends Entity {
 		$cost = 0;
 
 		foreach ($this->items as $name => $item) {
-			if ($filter === null || in_array($name, $filter)) {
+			if ($filter === null || in_array($name, $filter, true)) {
 				$cost += $item['amount'] * $item['price'];
 			}
 		}

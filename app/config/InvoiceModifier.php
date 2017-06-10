@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Model\Team;
 use App\Model\Invoice;
+use App\Model\Team;
 use Nette;
 
 class InvoiceModifier {

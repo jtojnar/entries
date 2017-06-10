@@ -11,10 +11,10 @@ class InvoiceMapper extends BaseMapper {
 		$reflection->setMapping(
 			'items',
 			$reflection->convertEntityToStorageKey('items'),
-			function ($value) {
+			function($value) {
 				return Json::decode($value, Json::FORCE_ARRAY);
 			},
-			function ($value) {
+			function($value) {
 				return Json::encode($value);
 			}
 		);

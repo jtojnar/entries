@@ -5,7 +5,6 @@ namespace App\Model;
 use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 use Nextras\Orm\Entity\Entity;
-use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Person
