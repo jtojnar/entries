@@ -11,16 +11,14 @@ matrix:
     - php: hhvm
 
 script:
-  - vendor/bin/tester tests -s
   - php code-checker/src/code-checker.php -d app
   - composer run-script lint
   - composer run-script cs
   - composer run-script phpstan
+  - composer run-script test
 
 before_script:
   - phpenv config-rm xdebug.ini
-  # Install Nette Tester & Code Checker
-  - mv app/config/config.local.neon.default app/config/config.local.neon
   - composer install --no-interaction --dev --prefer-source
   - composer create-project nette/code-checker code-checker ^2.7 --no-interaction --prefer-source
 
