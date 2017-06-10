@@ -94,22 +94,21 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionConfirm(int $id = null) {
-		if ($id !== null) {
-			if ($this->user->isInRole('admin')) {
-				$team = $this->teams->getById($id);
-				if ($team->status === 'registered') {
-					$team->status = 'paid';
-					$team->lastInvoice->status = Invoice::STATUS_PAID;
-					$this->teams->persistAndFlush($team);
-					$this->redirect('list');
-				} else {
-					$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'info');
-					$this->redirect('Homepage:');
-				}
+	public function actionConfirm(int $id) {
+		if ($this->user->isInRole('admin')) {
+			$team = $this->teams->getById($id);
+			if ($team->status === 'registered') {
+				$team->status = 'paid';
+				$team->lastInvoice->status = Invoice::STATUS_PAID;
+				$this->teams->persistAndFlush($team);
+				$this->redirect('list');
 			} else {
+				$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'info');
+				$this->redirect('Homepage:');
 			}
 		} else {
+			$backlink = $this->storeRequest('+ 48 hours');
+			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}
 	}
 
