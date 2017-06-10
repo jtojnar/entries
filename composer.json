@@ -1,10 +1,9 @@
 {
-	"name": "entries",
+	"name": "jtojnar/entries",
 	"description": "Entry registration system for rogaining",
 	"homepage": "http://github.com/jtojnar/entries",
 	"type": "project",
-	"version": "0.3.0",
-	"license": "BSD",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Jan Tojnar",

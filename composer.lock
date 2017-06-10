@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8da6eff2b069f257a2ed33ddda2c56a3",
+    "content-hash": "4911cf1b93087475f7b474ca66269b0a",
     "packages": [
         {
             "name": "kdyby/forms-replicator",
