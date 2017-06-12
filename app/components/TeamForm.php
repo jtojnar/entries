@@ -33,7 +33,8 @@ class TeamForm extends UI\Form {
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
 
-		$category = new CategoryEntry('messages.team.category.label', $this->categories);
+		$category = $this->getPresenter()->context->createService('entries.categoryEntry');
+		$category->caption = 'messages.team.category.label';
 		$category->setRequired();
 		$this['category'] = $category;
 
@@ -76,7 +77,7 @@ class TeamForm extends UI\Form {
 
 			if ($i === 1) {
 				$container['email']->setRequired()->addRule(Form::EMAIL);
-				$container->currentGroup->setOption('description', 'messages.team.person.isContact');
+				$group->setOption('description', 'messages.team.person.isContact');
 			}
 		}, $minMembers, true);
 	}

@@ -38,6 +38,7 @@ forms:
 		EMAIL: messages.general.error.not_email
 
 extensions:
+	entries: App\EntriesExtension
 	translation: Kdyby\Translation\DI\TranslationExtension
 	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
 	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
@@ -53,3 +54,6 @@ services:
 	- App\RouterFactory
 	- App\Model\CategoryData(@Nette\Application\Application)
 	router: @App\RouterFactory::createRouter
+
+translation:
+	fallback: [%defaultLocale%]

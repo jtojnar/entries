@@ -424,9 +424,11 @@ class TeamPresenter extends BasePresenter {
 		$renderer->wrappers['form']['errors'] = false;
 		$renderer->wrappers['hidden']['container'] = null;
 
-		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
+		$category = $this->context->createService('entries.categorySelector');
+		$category->caption = 'messages.team.list.filter.category.label';
 		$category->setPrompt('messages.team.list.filter.category.all');
 		$category->setAttribute('style', 'width:auto;');
+		$form['category'] = $category;
 
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
 			$category->setValue($this->context->getByType('Nette\Http\Request')->getQuery('category'));

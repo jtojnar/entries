@@ -3,6 +3,9 @@
 namespace App\Model;
 
 use Nette;
+use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Form;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Callback;
 
 class CategoryData {
@@ -43,7 +46,7 @@ class CategoryData {
 		$this->app = $app;
 	}
 
-	public function getCategoryTree() {
+	private function getCategoryTree() {
 		if (!isset($this->categoryTree)) {
 			$presenter = $this->app->getPresenter();
 			$parameters = $this->parameters = $presenter->context->parameters['entries'];
@@ -99,7 +102,7 @@ class CategoryData {
 						$categoryValue = [
 							'label' => $categoryKey,
 							'fee' => $fee,
-							'constraints' => $this->parseConstraints($category),
+							'constraints' => self::parseConstraints($category, $parameters),
 						];
 
 						if (isset($this->categoryData[$categoryKey])) {
@@ -134,7 +137,7 @@ class CategoryData {
 					return [
 						'label' => $categoryKey,
 						'fee' => $fee,
-						'constraints' => $this->parseConstraints($category),
+						'constraints' => self::parseConstraints($category, $parameters),
 					];
 				}, array_keys($categories));
 
@@ -166,15 +169,15 @@ class CategoryData {
 		}
 	}
 
-	private function parseConstraints($category) {
+	public static function parseConstraints(array $category, array $config): array {
 		if (!isset($category['constraints'])) {
 			return [];
 		}
 
-		return array_map(function($constraint) {
+		return array_map(function(string $constraint) use ($config) {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match)) {
-				$quant = Callback::closure($this, self::QUANT_LOOKUP[$match['quant']]);
-				$op = Callback::closure($this, self::OP_LOOKUP[$match['op']]);
+				$quant = Callback::closure(self::class, self::QUANT_LOOKUP[$match['quant']]);
+				$op = Callback::closure(self::class, self::OP_LOOKUP[$match['op']]);
 				$val = $match['val'];
 
 				if ($match['op'] === 'gender=') {
@@ -183,13 +186,11 @@ class CategoryData {
 					$message = 'messages.team.error.age_mismatch';
 				}
 
-				$translator = $this->app->getPresenter()->translator;
-
 				return [
-					function($entry) use ($quant, $op, $val) {
-						return $quant($entry->getForm(), $op, $val);
+					function(BaseControl $entry) use ($quant, $op, $val, $config) {
+						return $quant($entry->getForm(), $op, $val, $config);
 					},
-					$translator->translate($message)
+					$message
 				];
 			}
 
@@ -197,68 +198,68 @@ class CategoryData {
 		}, $category['constraints']);
 	}
 
-	private function ageLt($person, $value) {
+	private static function ageLt(ArrayHash $person, $value, array $config): bool {
 		if (!isset($person['birth'])) {
 			return true;
 		}
 
-		$eventDate = $this->parameters['eventDate'];
+		$eventDate = $config['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
 		return $age < (int) $value;
 	}
 
-	private function ageLe($person, $value) {
+	private static function ageLe(ArrayHash $person, $value, array $config): bool {
 		if (!isset($person['birth'])) {
 			return true;
 		}
 
-		$eventDate = $this->parameters['eventDate'];
+		$eventDate = $config['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
 		return $age <= (int) $value;
 	}
 
-	private function ageEq($person, $value) {
+	private static function ageEq(ArrayHash $person, $value, array $config): bool {
 		if (!isset($person['birth'])) {
 			return true;
 		}
 
-		$eventDate = $this->parameters['eventDate'];
+		$eventDate = $config['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
 		return $age === (int) $value;
 	}
 
-	private function ageGe($person, $value) {
+	private static function ageGe(ArrayHash $person, $value, array $config): bool {
 		if (!isset($person['birth'])) {
 			return true;
 		}
 
-		$eventDate = $this->parameters['eventDate'];
+		$eventDate = $config['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
 		return $age >= (int) $value;
 	}
 
-	private function ageGt($person, $value) {
+	private static function ageGt(ArrayHash $person, $value, array $config): bool {
 		if (!isset($person['birth'])) {
 			return true;
 		}
 
-		$eventDate = $this->parameters['eventDate'];
+		$eventDate = $config['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
 		return $age > (int) $value;
 	}
 
-	private function genderEq($person, $value) {
+	private static function genderEq(ArrayHash $person, $value, array $config): bool {
 		return $person['gender'] === $value;
 	}
 
-	private function quantAll($team, \Closure $fn, $value) {
+	private static function quantAll(Form $team, \Closure $fn, $value, array $config): bool {
 		foreach ($team['persons']->values as $person) {
-			if (!$fn($person, $value)) {
+			if (!$fn($person, $value, $config)) {
 				return false;
 			}
 		}
@@ -266,9 +267,9 @@ class CategoryData {
 		return true;
 	}
 
-	private function quantSome($team, \Closure $fn, $value) {
+	private static function quantSome(Form $team, \Closure $fn, $value, array $config): bool {
 		foreach ($team['persons']->values as $person) {
-			if ($fn($person, $value)) {
+			if ($fn($person, $value, $config)) {
 				return true;
 			}
 		}
