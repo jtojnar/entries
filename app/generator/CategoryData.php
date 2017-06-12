@@ -79,7 +79,7 @@ class CategoryData {
 			return true;
 		}
 
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
+		$age = $person['birth']->diff($eventDate, true)->y;
 
 		return $age < (int) $value;
 	}
@@ -89,7 +89,7 @@ class CategoryData {
 			return true;
 		}
 
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
+		$age = $person['birth']->diff($eventDate, true)->y;
 
 		return $age <= (int) $value;
 	}
@@ -99,7 +99,7 @@ class CategoryData {
 			return true;
 		}
 
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
+		$age = $person['birth']->diff($eventDate, true)->y;
 
 		return $age === (int) $value;
 	}
@@ -109,7 +109,7 @@ class CategoryData {
 			return true;
 		}
 
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
+		$age = $person['birth']->diff($eventDate, true)->y;
 
 		return $age >= (int) $value;
 	}
@@ -119,7 +119,7 @@ class CategoryData {
 			return true;
 		}
 
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
+		$age = $person['birth']->diff($eventDate, true)->y;
 
 		return $age > (int) $value;
 	}
