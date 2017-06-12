@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Generator;
 
-use App\Model\CategoryData;
 use Nette;
 
 class EntriesExtension extends Nette\DI\CompilerExtension {
@@ -13,6 +12,9 @@ class EntriesExtension extends Nette\DI\CompilerExtension {
 
 	/** @var string $defaultLocale */
 	private $defaultLocale;
+
+	/** @var array $categoryData */
+	private $categoryData;
 
 	public function loadConfiguration() {
 		$builder = $this->getContainerBuilder();
@@ -29,6 +31,9 @@ class EntriesExtension extends Nette\DI\CompilerExtension {
 			->setClass('Nette\\Forms\\Controls\\SelectBox')
 			->addSetup('setItems', [self::getLabels($categories, $nested, true)])
 			->setAutowired(false);
+
+		$builder->addDefinition($this->prefix('categoryData'))
+			->setClass('App\\Model\\CategoryData', [$this->categoryData]);
 	}
 
 	public function beforeCompile() {
@@ -60,6 +65,7 @@ class EntriesExtension extends Nette\DI\CompilerExtension {
 		$nested = self::isNested($config['categories']);
 
 		if ($nested) {
+			$this->categoryData = [];
 			$groups = $config['categories'];
 
 			$groupsKeys = array_map(function(string $groupKey) use ($groups): string {
@@ -114,6 +120,12 @@ class EntriesExtension extends Nette\DI\CompilerExtension {
 						'constraints' => CategoryData::parseConstraints($category, $config),
 					];
 
+					if (isset($this->categoryData[$categoryKey])) {
+						throw new \Exception("Category “${categoryKey}” is already defined");
+					}
+
+					$this->categoryData[$categoryKey] = $categoryValue;
+
 					return $categoryValue;
 				}, array_keys($categories));
 
@@ -149,6 +161,7 @@ class EntriesExtension extends Nette\DI\CompilerExtension {
 			}, array_keys($categories));
 
 			$categories = array_combine($categoriesKeys, $categoriesData);
+			$this->categoryData = $categories;
 		}
 
 		return [$categories, $nested];
