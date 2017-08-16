@@ -170,6 +170,7 @@ fields:
 * `type` – Each field will need to declare its type, see [field types](#field-types).
 * `label` – Some fields may define a default label (`sportident`, `country`) but otherwise you should define one for each language.
 * `private` – By default, the value of every will be displayed at the team list publicly. You can set it to `false` to prevent leaking personal information or items only relevant for organizers.
+* `applicableCategories` – A list of categories to show this field in. If not present, every category is implied.
 
 ###### Field types
 

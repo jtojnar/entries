@@ -10,6 +10,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\Utils\Callback;
 use Nette\Utils\Html;
+use Nette\Utils\Json;
 
 class TeamForm extends UI\Form {
 	/** @var array */
@@ -158,6 +159,10 @@ class TeamForm extends UI\Form {
 
 				if (isset($field['description'])) {
 					$input->setOption('description', $field['description'][$locale]);
+				}
+
+				if (isset($field['applicableCategories'])) {
+					$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field['applicableCategories']);
 				}
 			}
 		}

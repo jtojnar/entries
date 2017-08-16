@@ -223,6 +223,8 @@ class TeamPresenter extends BasePresenter {
 		/** @var string $password */
 		$password = null;
 
+		$this->cleanNonApplicableFields($form);
+
 		if ($this->action === 'edit') {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
@@ -409,6 +411,26 @@ class TeamPresenter extends BasePresenter {
 				$form->addError('messages.team.error.edit_general');
 			} else {
 				$form->addError('messages.team.error.add_general');
+			}
+		}
+	}
+
+	public function cleanNonApplicableFields(Nette\Forms\Form $form) {
+		$category = $form['category']->getValue();
+
+		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
+		foreach ($teamFields as $name => $field) {
+			if (isset($field['applicableCategories']) && !in_array($category, $field['applicableCategories'], true)) {
+				$form[$name]->setValue(null);
+			}
+		}
+
+		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
+		foreach ($form['persons']->values as $member) {
+			foreach ($personFields as $name => $field) {
+				if (isset($field['applicableCategories']) && !in_array($category, $field['applicableCategories'], true)) {
+					$form['persons'][$name]->setValue(null);
+				}
 			}
 		}
 	}
