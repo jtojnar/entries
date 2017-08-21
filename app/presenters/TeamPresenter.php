@@ -386,8 +386,13 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->password = $password;
 				$mtemplate->invoice = $invoice;
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
+				$emogrifier = new \Pelago\Emogrifier();
+				$emogrifier->setHtml($mtemplate);
+				$emogrifier->setCss(file_get_contents($appDir . '/templates/Mail/style.css'));
+				$emogrifier->enableCssToHtmlMapping();
+
 				$mail = new Message();
-				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mtemplate);
+				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($emogrifier->emogrify());
 
 				$mailer = $this->context->getByType('Nette\Mail\IMailer');
 				$mailer->send($mail);
