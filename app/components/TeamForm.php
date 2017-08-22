@@ -24,7 +24,9 @@ class TeamForm extends UI\Form {
 		$this->countries = $countries;
 		$this->categories = $categories;
 
-		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
+		/** @var BasePresenter $presenter */
+		$presenter = $this->getPresenter();
+		$minMembers = $presenter->context->parameters['entries']['minMembers'];
 
 		$this->setTranslator($parent->translator);
 		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
@@ -48,7 +50,7 @@ class TeamForm extends UI\Form {
 		/** @var \Kdyby\Translation\Translator $translator */
 		$translator = $this->getTranslator();
 
-		$fields = $this->getPresenter()->context->parameters['entries']['fields']['team'];
+		$fields = $presenter->context->parameters['entries']['fields']['team'];
 		$this->addCustomFields($fields, $this);
 
 		$this->addTextArea('message', 'messages.team.message.label');
@@ -58,7 +60,7 @@ class TeamForm extends UI\Form {
 		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = Callback::closure($this, 'addMemberClicked');
 		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = Callback::closure($this, 'removeMemberClicked');
 
-		$fields = $this->getPresenter()->context->parameters['entries']['fields']['person'];
+		$fields = $presenter->context->parameters['entries']['fields']['person'];
 		$i = 0;
 		$this->addDynamic('persons', function(Container $container) use (&$i, $fields, $translator) {
 			++$i;
@@ -77,15 +79,17 @@ class TeamForm extends UI\Form {
 
 			if ($i === 1) {
 				$container['email']->setRequired()->addRule(Form::EMAIL);
-				$container->currentGroup->setOption('description', 'messages.team.person.isContact');
+				$group->setOption('description', 'messages.team.person.isContact');
 			}
 		}, $minMembers, true);
 	}
 
 	public function onRender() {
+		/** @var BasePresenter $presenter */
+		$presenter = $this->getPresenter();
 		$count = iterator_count($this['persons']->getContainers());
-		$minMembers = $this->getPresenter()->context->parameters['entries']['minMembers'];
-		$maxMembers = $this->getPresenter()->context->parameters['entries']['maxMembers'];
+		$minMembers = $presenter->context->parameters['entries']['minMembers'];
+		$maxMembers = $presenter->context->parameters['entries']['maxMembers'];
 
 		if ($count >= $maxMembers) {
 			$this['add']->setDisabled();

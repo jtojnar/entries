@@ -13,40 +13,34 @@
 	"repositories": [
 	],
 	"require": {
-		"php": ">= 5.6",
+		"php": ">= 7.0",
 		"nette/application": "~2.4",
 		"nette/bootstrap": "~2.4",
 		"nette/caching": "~2.5",
-		"nette/component-model": "~2.3",
 		"nette/database": "~2.4",
-		"nette/deprecated": "~2.3",
 		"nette/di": "~2.4",
 		"nette/finder": "~2.4",
 		"nette/forms": "~2.4",
 		"nette/http": "~2.4",
 		"nette/mail": "~2.4",
-		"nette/neon": "~2.4",
-		"nette/php-generator": "~2.4",
-		"nette/reflection": "~2.4",
-		"nette/robot-loader": "~2.4",
+		"nette/robot-loader": "~3.0",
 		"nette/safe-stream": "~2.3",
 		"nette/security": "~2.4",
-		"nette/tokenizer": "~2.2",
 		"nette/utils": "~2.4",
 		"latte/latte": "~2.4",
 		"tracy/tracy": "~2.4",
-		"nextras/forms": "dev-master",
+		"nextras/forms": "~2.0",
 		"kdyby/forms-replicator": "dev-master",
-		"kdyby/translation": "dev-master",
-		"nextras/orm": "@dev",
+		"kdyby/translation": "~2.4",
+		"nextras/orm": "~2.2",
 		"pelago/emogrifier": "^1.2"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^2.3",
 		"jakub-onderka/php-parallel-lint": "^0.9.2",
-		"nette/tester": "dev-master",
-		"phpstan/phpstan": "^0.7.0",
-		"phpstan/phpstan-nette": "^0.7.0"
+		"nette/tester": "^2.0.0",
+		"phpstan/phpstan": "^0.8.0",
+		"phpstan/phpstan-nette": "^0.8.0"
 	},
 	"autoload": {
 		"classmap": ["app/"]
@@ -55,5 +49,10 @@
 		"cs": "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --config=utils/php_cs.php",
 		"lint": "vendor/bin/parallel-lint app/ tests/ www/",
 		"phpstan": "vendor/bin/phpstan analyse --configuration=utils/phpstan.neon --level=7 app/ tests/ www/"
+	},
+	"config": {
+		"platform": {
+			"php": "7.0.22"
+		}
 	}
 }
