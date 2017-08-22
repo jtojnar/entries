@@ -4,7 +4,6 @@ vendor/*
 !vendor/others
 .php_cs.cache
 
-.DS_Store
 !.gitignore
 !.htaccess
 !web.config
