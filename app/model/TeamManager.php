@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Nette;
 use Nette\Security\Passwords;
+use Nextras\Orm\Entity\ToArrayConverter;
 
 class TeamManager implements Nette\Security\IAuthenticator {
 	/** @var TeamRepository */
@@ -18,6 +21,9 @@ class TeamManager implements Nette\Security\IAuthenticator {
 
 	/**
 	 * Performs an authentication.
+	 *
+	 *
+	 * @param array $credentials
 	 *
 	 * @throws Nette\Security\AuthenticationException
 	 *
@@ -41,7 +47,7 @@ class TeamManager implements Nette\Security\IAuthenticator {
 			$this->teams->persistAndFlush($team);
 		}
 
-		$arr = $team->toArray();
+		$arr = ToArrayConverter::toArray($team);
 		unset($arr['persons']);
 		unset($arr['password']);
 		unset($arr['invoices']);

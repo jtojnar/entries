@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Nette;
@@ -23,9 +25,9 @@ class CategoryData {
 	/** @var array */
 	private $categoryData;
 
-	const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<op>age[<>]?=?|gender=)(?P<val>.+)\)$\s*)';
+	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<op>age[<>]?=?|gender=)(?P<val>.+)\)$\s*)';
 
-	const OP_LOOKUP = [
+	public const OP_LOOKUP = [
 		'age<' => 'ageLt',
 		'age<=' => 'ageLe',
 		'age=' => 'ageEq',
@@ -34,7 +36,7 @@ class CategoryData {
 		'gender=' => 'genderEq',
 	];
 
-	const QUANT_LOOKUP = [
+	public const QUANT_LOOKUP = [
 		'all' => 'quantAll',
 		'some' => 'quantSome',
 	];
@@ -50,7 +52,7 @@ class CategoryData {
 			$locale = $this->locale = $presenter->locale;
 			$items = [];
 
-			if (count($parameters['categories']) === 0) {
+			if (\count($parameters['categories']) === 0) {
 				throw new \Exception('No categories defined.');
 			}
 
@@ -62,9 +64,9 @@ class CategoryData {
 					$group = $groups[$groupKey];
 
 					if (isset($group['label'])) {
-						if (is_array($group['label']) && isset($group['label'][$locale])) {
+						if (\is_array($group['label']) && isset($group['label'][$locale])) {
 							return $group['label'][$locale];
-						} elseif (is_string($group['label'])) {
+						} elseif (\is_string($group['label'])) {
 							return $group['label'];
 						}
 					}
@@ -75,7 +77,7 @@ class CategoryData {
 				$groupsCategories = array_map(function($groupKey) use ($groups, $parameters) {
 					$group = $groups[$groupKey];
 
-					if (!isset($group['categories']) || !is_array($group['categories'])) {
+					if (!isset($group['categories']) || !\is_array($group['categories'])) {
 						throw new \Exception("Category group #${groupKey} lacks categories");
 					}
 
@@ -189,7 +191,7 @@ class CategoryData {
 					function($entry) use ($quant, $op, $val) {
 						return $quant($entry->getForm(), $op, $val);
 					},
-					$translator->translate($message)
+					$translator->translate($message),
 				];
 			}
 

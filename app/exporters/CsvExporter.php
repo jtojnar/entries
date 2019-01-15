@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exporters;
 
 /**
- * Legacy CSV Exporter
+ * Legacy CSV Exporter.
  *
  * The output is generic CSV file – values separated by commas. The first line
  * contains heading (comma separated list of column names).
@@ -38,7 +40,7 @@ class CsvExporter implements IExporter {
 		return 'text/csv';
 	}
 
-	public function output() {
+	public function output(): void {
 		$fp = fopen('php://output', 'a');
 		$headers = ['#', 'name', 'registered', 'category'];
 
@@ -80,7 +82,7 @@ class CsvExporter implements IExporter {
 						$row[] = $this->countries->getById($f)->name;
 					} elseif ($field['type'] === 'checkboxlist') {
 						foreach ($field['items'] as $itemKey => $item) {
-							$row[] = in_array($itemKey, $f, true);
+							$row[] = \in_array($itemKey, $f, true);
 						}
 					} else {
 						$row[] = $f;
@@ -110,7 +112,7 @@ class CsvExporter implements IExporter {
 							$row[] = $this->countries->getById($f)->name;
 						} elseif ($field['type'] === 'checkboxlist') {
 							foreach ($field['items'] as $itemKey => $_) {
-								$row[] = in_array($itemKey, $f, true);
+								$row[] = \in_array($itemKey, $f, true);
 							}
 						} else {
 							$row[] = $f;

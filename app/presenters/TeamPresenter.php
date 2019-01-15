@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presenters;
 
 use App;
@@ -27,7 +29,7 @@ class TeamPresenter extends BasePresenter {
 	/** @var App\Model\InvoiceRepository @inject */
 	public $invoices;
 
-	public function startup() {
+	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
 				throw new App\TooLateForAccessException();
@@ -38,7 +40,7 @@ class TeamPresenter extends BasePresenter {
 		parent::startup();
 	}
 
-	public function renderList() {
+	public function renderList(): void {
 		$where = [];
 		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
 		if ($category !== null) {
@@ -65,10 +67,10 @@ class TeamPresenter extends BasePresenter {
 		$template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
 		$template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
 
-		$template->stats = ['count' => count($template->teams)];
+		$template->stats = ['count' => \count($template->teams)];
 	}
 
-	public function renderEdit(int $id = null) {
+	public function renderEdit(int $id = null): void {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', ['return' => 'edit']);
 		} else {
@@ -94,7 +96,7 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionConfirm(int $id) {
+	public function actionConfirm(int $id): void {
 		if ($this->user->isInRole('admin')) {
 			$team = $this->teams->getById($id);
 			if ($team->status === 'registered') {
@@ -112,7 +114,7 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionExport($type = 'csv') {
+	public function actionExport($type = 'csv'): void {
 		if (!$this->user->isInRole('admin')) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
@@ -141,7 +143,7 @@ class TeamPresenter extends BasePresenter {
 		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
 		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
 
-		if (count($teams)) {
+		if (\count($teams)) {
 			if ($type === 'meos') {
 				$exporter = new Exporters\MeosExporter($teams, Callback::closure($this, 'categoryFormat'));
 				$response = $this->context->getByType('Nette\Http\Response');
@@ -186,7 +188,7 @@ class TeamPresenter extends BasePresenter {
 					'lastname' => $person->lastname,
 					'gender' => $person->gender,
 					'email' => $person->email,
-					'birth' => $person->birth
+					'birth' => $person->birth,
 				];
 
 				foreach ($fields as $name => $field) {
@@ -209,7 +211,7 @@ class TeamPresenter extends BasePresenter {
 		return $form;
 	}
 
-	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button) {
+	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button): void {
 		if (!$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
 				throw new App\TooLateForAccessException();
@@ -298,6 +300,8 @@ class TeamPresenter extends BasePresenter {
 
 			/** @var ?string $address */
 			$address = null;
+			/** @var string $name */
+			$name = null;
 
 			foreach ($form['persons']->values as $member) {
 				$firstname = $member['firstname'];
@@ -339,7 +343,7 @@ class TeamPresenter extends BasePresenter {
 					}
 				}
 
-				if (count($team->persons) === 0) {
+				if (\count($team->persons) === 0) {
 					$person->contact = true;
 				}
 				$person->setJsonData($jsonData);
@@ -415,12 +419,12 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function cleanNonApplicableFields(Nette\Forms\Form $form) {
+	public function cleanNonApplicableFields(Nette\Forms\Form $form): void {
 		$category = $form['category']->getValue();
 
 		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
 		foreach ($teamFields as $name => $field) {
-			if (isset($field['applicableCategories']) && !in_array($category, $field['applicableCategories'], true)) {
+			if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
 				$form[$name]->setValue(null);
 			}
 		}
@@ -428,7 +432,7 @@ class TeamPresenter extends BasePresenter {
 		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
 		foreach ($form['persons']->values as $member) {
 			foreach ($personFields as $name => $field) {
-				if (isset($field['applicableCategories']) && !in_array($category, $field['applicableCategories'], true)) {
+				if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
 					$form['persons'][$name]->setValue(null);
 				}
 			}
@@ -475,7 +479,7 @@ class TeamPresenter extends BasePresenter {
 		return $form;
 	}
 
-	public function filterRedir(Nette\Forms\Form $form) {
+	public function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 
 		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
@@ -486,7 +490,7 @@ class TeamPresenter extends BasePresenter {
 			$parameters['status'] = $this->context->getByType('Nette\Http\Request')->getQuery('status');
 		}
 
-		if (count($parameters) === 0) {
+		if (\count($parameters) === 0) {
 			$this->redirect('this');
 		} else {
 			$this->redirect('this', $parameters);

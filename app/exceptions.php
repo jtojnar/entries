@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use Nette;
 
 class LimitedAccessException extends Nette\Application\BadRequestException {
-	const SOON = 409;
-	const LATE = 410;
+	public const SOON = 409;
+	public const LATE = 410;
 
 	public function __construct($code) {
 		if ($code !== self::SOON) {

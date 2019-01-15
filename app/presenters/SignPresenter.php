@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presenters;
 
 use Nette;
@@ -35,7 +37,7 @@ class SignPresenter extends BasePresenter {
 		return $form;
 	}
 
-	public function signInFormSucceeded($form, $values) {
+	public function signInFormSucceeded($form, $values): void {
 		if ($values->remember) {
 			$this->user->setExpiration('30 days', false);
 		} else {
@@ -51,7 +53,7 @@ class SignPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionOut() {
+	public function actionOut(): void {
 		$this->user->logout();
 		$this->flashMessage($this->translator->translate('messages.sign.out.notice'));
 		$this->redirect('in');

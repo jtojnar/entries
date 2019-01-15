@@ -200,7 +200,7 @@ parameters:
 dbal:
 	driver: mysqli
 	host: localhost
-	dbname: entries
+	database: entries
 	username: root
 	password:
 	connectionTz: +01:00

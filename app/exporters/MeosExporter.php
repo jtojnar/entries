@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exporters;
 
 use Nette\Utils\Strings;
 
 /**
- * Exporter to MeOS format or something
+ * Exporter to MeOS format or something.
  *
  * The output consists of team rows and person rows. Each team row is followed
  * by rows of its members (usually two to three). Each row contains values
@@ -15,7 +17,7 @@ use Nette\Utils\Strings;
  * Person row contains these values: full name, sportident card, club, category
  */
 class MeosExporter implements IExporter {
-	const DELIMITER = ';';
+	public const DELIMITER = ';';
 
 	private $fp;
 	private $teams;
@@ -30,12 +32,12 @@ class MeosExporter implements IExporter {
 		return 'text/plain';
 	}
 
-	private function outputRow($row) {
+	private function outputRow($row): void {
 		// fPutCsv($this->fp, $row, self::DELIMITER);
 		echo Strings::toAscii(implode(self::DELIMITER, $row)) . PHP_EOL;
 	}
 
-	public function output() {
+	public function output(): void {
 		$this->fp = fopen('php://output', 'a');
 		foreach ($this->teams as $team) {
 			$category = $this->categoryFormat->__invoke($team);

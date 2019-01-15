@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Nextras\Orm\Model\Model;
 
 /**
- * Model
+ * Model.
  *
- * @property-read PersonRepository $persons
- * @property-read TeamRepository $teams
- * @property-read CountryRepository $countries
- * @property-read InvoiceRepository $invoices
+ * @property PersonRepository $persons
+ * @property TeamRepository $teams
+ * @property CountryRepository $countries
+ * @property InvoiceRepository $invoices
  */
 class Orm extends Model {
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Components;
 
 use App\Model\CategoryData;
@@ -62,7 +64,7 @@ class TeamForm extends UI\Form {
 
 		$fields = $presenter->context->parameters['entries']['fields']['person'];
 		$i = 0;
-		$this->addDynamic('persons', function(Container $container) use (&$i, $fields, $translator) {
+		$this->addDynamic('persons', function(Container $container) use (&$i, $fields, $translator): void {
 			++$i;
 			$group = $this->addGroup();
 			$group->setOption('label', Html::el()->setText($translator->translate('messages.team.person.label', $i)));
@@ -84,7 +86,7 @@ class TeamForm extends UI\Form {
 		}, $minMembers, true);
 	}
 
-	public function onRender() {
+	public function onRender(): void {
 		/** @var BasePresenter $presenter */
 		$presenter = $this->getPresenter();
 		$count = iterator_count($this['persons']->getContainers());
@@ -100,11 +102,11 @@ class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addMemberClicked(SubmitButton $button) {
+	public function addMemberClicked(SubmitButton $button): void {
 		$button->parent['persons']->createOne();
 	}
 
-	public function removeMemberClicked(SubmitButton $button) {
+	public function removeMemberClicked(SubmitButton $button): void {
 		$lastPerson = null;
 		foreach ($button->parent['persons']->getContainers() as $p) {
 			$lastPerson = $p;
@@ -114,7 +116,7 @@ class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addCustomFields($fields, $container) {
+	public function addCustomFields($fields, $container): void {
 		/** @var BasePresenter $presenter */
 		$presenter = $this->getPresenter();
 		$locale = $presenter->locale;

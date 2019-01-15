@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test;
 
 use Nette;
@@ -15,7 +17,7 @@ class ExampleTest extends Tester\TestCase {
 		$this->container = $container;
 	}
 
-	public function testSample() {
+	public function testSample(): void {
 		Assert::true(true);
 	}
 }

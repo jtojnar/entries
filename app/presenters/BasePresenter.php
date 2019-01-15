@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presenters;
 
 use App;
@@ -16,7 +18,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @var App\Model\CategoryData @inject */
 	public $categories;
 
-	protected function startup() {
+	protected function startup(): void {
 		parent::startup();
 
 		$locales = $this->context->parameters['locales'];
