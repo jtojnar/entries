@@ -2,8 +2,9 @@ language: php
 
 matrix:
   include:
+    - php: 7.3
+    - php: 7.2
     - php: 7.1
-    - php: 7.0
       env: DEPLOY=true
     - hhvm
   fast_finish: true
@@ -22,7 +23,7 @@ before_script:
   # Install Nette Tester & Code Checker
   - mv app/config/config.local.neon.default app/config/config.local.neon
   - composer install --no-interaction --dev --prefer-source
-  - composer create-project nette/code-checker code-checker ^2.7 --no-interaction --prefer-source
+  - composer global require nette/code-checker ^3.0 --no-interaction --prefer-source
 
 
 before_deploy:
