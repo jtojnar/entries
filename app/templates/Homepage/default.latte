@@ -13,3 +13,7 @@
 {/if}
 </ul>
 <p>{_messages.home.contact_instructions} <a href="mailto:{$mail}">{$mail}</a></p>
+{if $user->isInRole('admin')}
+<h3>{_messages.maintenance.title}</h3>
+{control maintenanceForm}
+{/if}

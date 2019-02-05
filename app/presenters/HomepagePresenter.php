@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use Nette;
+use Nette\Application\ForbiddenRequestException;
+use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Forms\Controls\SubmitButton;
+use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
+use Nextras\Forms\Rendering\Bs3FormRenderer;
 
 class HomepagePresenter extends BasePresenter {
+	/** @var Nette\Caching\IStorage @inject */
+	public $storage;
+
 	public function renderDefault(): void {
 		/** @var Nette\Bridges\ApplicationLatte\Template $template */
 		$template = $this->template;
@@ -25,5 +34,45 @@ class HomepagePresenter extends BasePresenter {
 
 		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1);
 		$template->mail = $this->context->parameters['webmasterEmail'];
+	}
+
+	/**
+	 * Maintenance form factory.
+	 *
+	 * @return Form
+	 */
+	protected function createComponentMaintenanceForm(): Form {
+		$form = new Form();
+		$renderer = new Bs3FormRenderer();
+		$form->setRenderer($renderer);
+		$form->elementPrototype->removeClass('form-horizontal')->addClass('form-inline');
+		$renderer->wrappers['controls']['container'] = 'p';
+		$renderer->wrappers['pair']['container'] = null;
+		$renderer->wrappers['label']['container'] = null;
+		$renderer->wrappers['control']['container'] = null;
+		$renderer->wrappers['control']['errors'] = false;
+		$renderer->wrappers['form']['errors'] = false;
+		$renderer->wrappers['hidden']['container'] = null;
+
+		$form->setTranslator($this->translator);
+
+		$clearCacheButton = $form->addSubmit('clearCache', 'messages.maintenance.clear_cache');
+		$clearCacheButton->controlPrototype->removeClass('btn-primary')->addClass('btn-warning');
+		$clearCacheButton->onClick[] = Callback::closure($this, 'clearCache');
+
+		return $form;
+	}
+
+	public function clearCache(SubmitButton $form, array $values): void {
+		if (!$this->user->isInRole('admin')) {
+			throw new ForbiddenRequestException();
+		}
+
+		$this->storage->clean([
+			Cache::ALL => true,
+		]);
+
+		$this->flashMessage($this->translator->translate('messages.maintenance.cache_cleared'));
+		$this->redirect('Homepage:');
 	}
 }
