@@ -13,7 +13,7 @@ matrix:
 
 script:
   - vendor/bin/tester tests -s
-  - php code-checker/src/code-checker.php -d app
+  - php $(composer global config bin-dir --absolute)/code-checker -d app
   - composer run-script lint
   - composer run-script cs
   - composer run-script phpstan
