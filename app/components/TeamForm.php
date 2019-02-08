@@ -74,10 +74,11 @@ class TeamForm extends UI\Form {
 			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
 			$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
 
+			$container->addDatePicker('birth', 'messages.team.person.birth.label')->setRequired();
+
 			$this->addCustomFields($fields, $container);
 
 			$container->addText('email', 'messages.team.person.email.label')->setType('email');
-			$container->addDatePicker('birth', 'messages.team.person.birth.label')->setRequired();
 
 			if ($i === 1) {
 				$container['email']->setRequired()->addRule(Form::EMAIL);
