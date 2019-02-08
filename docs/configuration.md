@@ -14,7 +14,7 @@ This section contains credentials for connecting to a database server. It is req
 dbal:
 	driver: mysqli
 	host: localhost
-	dbname: entries
+	database: entries
 	username: u_entries
 	password: p4ssw0rd
 	connectionTz: +01:00
