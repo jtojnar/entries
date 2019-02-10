@@ -4,9 +4,9 @@ function categoryChanged(categoryField, conditionalFields) {
 	const category = categoryField.val();
 	conditionalFields.forEach(([formGroup, categories]) => {
 		if (categories.includes(category)) {
-			$(formGroup).hide();
-		} else {
 			$(formGroup).show();
+		} else {
+			$(formGroup).hide();
 		}
 	});
 };
