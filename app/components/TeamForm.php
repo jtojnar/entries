@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Components;
 
 use App\Model\CategoryData;
-use App\Presenters\BasePresenter;
 use Nette\Application\UI;
+use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
@@ -21,18 +21,23 @@ class TeamForm extends UI\Form {
 	/** @var CategoryData */
 	private $categories;
 
-	public function __construct(array $countries, CategoryData $categories, $parent, $name) {
+	/** @var array */
+	private $parameters;
+
+	/** @var string */
+	private $locale;
+
+	public function __construct(array $countries, CategoryData $categories, array $parameters, string $locale, \Kdyby\Translation\Translator $translator, IContainer $parent = null, string $name = null) {
 		parent::__construct($parent, $name);
 		$this->countries = $countries;
 		$this->categories = $categories;
-
-		/** @var BasePresenter $presenter */
-		$presenter = $this->getPresenter();
-		$minMembers = $presenter->context->parameters['entries']['minMembers'];
-
-		$this->setTranslator($parent->translator);
-		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
+		$this->parameters = $parameters;
+		$this->locale = $locale;
+		$this->setTranslator($translator);
+		$renderer = new \Nextras\Forms\Rendering\Bs4FormRenderer();
 		$this->setRenderer($renderer);
+
+		$minMembers = $this->parameters['minMembers'];
 
 		$this->addProtection();
 		$this->addGroup('messages.team.info.label');
@@ -49,20 +54,17 @@ class TeamForm extends UI\Form {
 			}
 		}
 
-		/** @var \Kdyby\Translation\Translator $translator */
-		$translator = $this->getTranslator();
-
-		$fields = $presenter->context->parameters['entries']['fields']['team'];
+		$fields = $this->parameters['fields']['team'];
 		$this->addCustomFields($fields, $this);
 
 		$this->addTextArea('message', 'messages.team.message.label');
 
 		$this->setCurrentGroup();
 		$this->addSubmit('save', 'messages.team.action.register');
-		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope(false)->onClick[] = Callback::closure($this, 'addMemberClicked');
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope(false)->onClick[] = Callback::closure($this, 'removeMemberClicked');
+		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = Callback::closure($this, 'addMemberClicked');
+		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = Callback::closure($this, 'removeMemberClicked');
 
-		$fields = $presenter->context->parameters['entries']['fields']['person'];
+		$fields = $this->parameters['fields']['person'];
 		$i = 0;
 		$this->addDynamic('persons', function(Container $container) use (&$i, $fields, $translator): void {
 			++$i;
@@ -88,11 +90,9 @@ class TeamForm extends UI\Form {
 	}
 
 	public function onRender(): void {
-		/** @var BasePresenter $presenter */
-		$presenter = $this->getPresenter();
 		$count = iterator_count($this['persons']->getContainers());
-		$minMembers = $presenter->context->parameters['entries']['minMembers'];
-		$maxMembers = $presenter->context->parameters['entries']['maxMembers'];
+		$minMembers = $this->parameters['minMembers'];
+		$maxMembers = $this->parameters['maxMembers'];
 
 		if ($count >= $maxMembers) {
 			$this['add']->setDisabled();
@@ -118,9 +118,7 @@ class TeamForm extends UI\Form {
 	}
 
 	public function addCustomFields($fields, $container): void {
-		/** @var BasePresenter $presenter */
-		$presenter = $this->getPresenter();
-		$locale = $presenter->locale;
+		$locale = $this->locale;
 
 		foreach ($fields as $name => $field) {
 			if (isset($field['type'])) {
@@ -185,9 +183,7 @@ class TeamForm extends UI\Form {
 	}
 
 	public function addEnum($name, $container, $field) {
-		/** @var BasePresenter $presenter */
-		$presenter = $this->getPresenter();
-		$locale = $presenter->locale;
+		$locale = $this->locale;
 
 		if (isset($field['label'][$locale])) {
 			$label = Html::el()->setText($field['label'][$locale]);

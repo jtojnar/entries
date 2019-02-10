@@ -11,6 +11,12 @@ matrix:
   allow_failures:
     - php: hhvm
 
+node_js:
+  - "7"
+
+cache:
+  yarn: true
+
 script:
   - vendor/bin/tester tests -s
   - php $(composer global config bin-dir --absolute)/code-checker -d app

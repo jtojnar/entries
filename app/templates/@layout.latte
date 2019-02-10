@@ -2,15 +2,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<title>{$siteTitle|striptags|trim}{ifset #title} – {include title|striptags}{/ifset}</title>
 
-	<link rel="stylesheet" href="{$basePath}/css/bootstrap.min.css">
-	<link rel="stylesheet" href="{$basePath}/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="{$basePath}/css/bootstrap-datetimepicker.min.css">
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css">
-	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css">
+	<link rel="stylesheet" href="{$basePath}/dist/main.css">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 	{block head}{/block}
 </head>
@@ -18,9 +14,9 @@
 <body>
 	<script> document.documentElement.className+=' js' </script>
 	<div class="container">
-		<div class="page-header">
+		<div class="page-header pb-2 mt-4 mb-2 border-bottom">
 			<h1>
-				<a n:href="Homepage:" n:if="!$presenter->isLinkCurrent('Homepage:')" class="back-to-title"><span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">{_back}</span></a>
+				<a n:href="Homepage:" n:if="!$presenter->isLinkCurrent('Homepage:')" class="back-to-title"><i class="fas fa-angle-left"></i><span class="sr-only">{_back}</span></a>
 				{$siteTitle}
 				<small n:ifset="#title">{include title|striptags}</small>
 			</h1>
@@ -30,14 +26,6 @@
 		{include content}
 	</div>
 
-	<script src="{$basePath}/js/jquery.js"></script>
-	<script src="{$basePath}/js/netteForms.js"></script>
-	<script src="{$basePath}/js/bootstrap.min.js"></script>
-	<script src="{$basePath}/js/bootstrap-datetimepicker.min.js"></script>
-	<script src="{$basePath}/js/nextras.netteForms.js"></script>
-	<script src="{$basePath}/js/nextras.datetimepicker.init.js"></script>
-	<script src="{$basePath}/js/main.js"></script>
-	{block scripts}
-	{/block}
+	<script src="{$basePath}/dist/main.js"></script>
 </body>
 </html>

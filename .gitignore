@@ -4,6 +4,9 @@ vendor/*
 !vendor/others
 .php_cs.cache
 
+node_modules
+www/dist
+
 !.gitignore
 !.htaccess
 !web.config

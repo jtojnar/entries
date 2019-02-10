@@ -29,7 +29,7 @@
 		"nette/utils": "~2.4",
 		"latte/latte": "~2.4",
 		"tracy/tracy": "~2.4",
-		"nextras/forms": "~2.0",
+		"nextras/forms": "dev-bs4#3045a321debcfc7295405d2fdd5eb3188ebed0f2",
 		"kdyby/forms-replicator": "dev-master",
 		"kdyby/translation": "~2.4",
 		"nextras/orm": "~3.0",
@@ -50,6 +50,12 @@
 		"lint": "vendor/bin/parallel-lint app/ tests/ www/",
 		"phpstan": "vendor/bin/phpstan analyse --configuration=utils/phpstan.neon --level=7 app/ tests/ www/"
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/jtojnar/forms"
+		}
+	],
 	"config": {
 		"platform": {
 			"php": "7.1.0"

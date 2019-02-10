@@ -11,7 +11,8 @@ use Nette\Caching\Cache;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
-use Nextras\Forms\Rendering\Bs3FormRenderer;
+use Nextras\Forms\Rendering\Bs4FormRenderer;
+use Nextras\Forms\Rendering\FormLayout;
 
 class HomepagePresenter extends BasePresenter {
 	/** @var Nette\Caching\IStorage @inject */
@@ -43,16 +44,7 @@ class HomepagePresenter extends BasePresenter {
 	 */
 	protected function createComponentMaintenanceForm(): Form {
 		$form = new Form();
-		$renderer = new Bs3FormRenderer();
-		$form->setRenderer($renderer);
-		$form->elementPrototype->removeClass('form-horizontal')->addClass('form-inline');
-		$renderer->wrappers['controls']['container'] = 'p';
-		$renderer->wrappers['pair']['container'] = null;
-		$renderer->wrappers['label']['container'] = null;
-		$renderer->wrappers['control']['container'] = null;
-		$renderer->wrappers['control']['errors'] = false;
-		$renderer->wrappers['form']['errors'] = false;
-		$renderer->wrappers['hidden']['container'] = null;
+		$form->setRenderer(new Bs4FormRenderer(FormLayout::INLINE));
 
 		$form->setTranslator($this->translator);
 

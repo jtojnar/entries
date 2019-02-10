@@ -10,6 +10,8 @@ use App\Model\Invoice;
 use Exception;
 use Nette;
 use Nette\Application\UI\Form;
+use Nextras\Forms\Rendering\Bs4FormRenderer;
+use Nextras\Forms\Rendering\FormLayout;
 use Nette\Mail\Message;
 use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
@@ -161,8 +163,8 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	protected function createComponentTeamForm($name) {
-		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this->categories, $this, $name);
+	protected function createComponentTeamForm(string $name) {
+		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $this->translator, $this, $name);
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
@@ -441,19 +443,9 @@ class TeamPresenter extends BasePresenter {
 
 	public function createComponentTeamListFilterForm() {
 		$form = new Form();
-		$renderer = $form->renderer;
+		$form->setRenderer(new Bs4FormRenderer(FormLayout::INLINE));
 		$form->setTranslator($this->translator);
 		$form->setMethod('GET');
-		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
-		$form->setRenderer($renderer);
-		$form->elementPrototype->removeClass('form-horizontal')->addClass('form-inline');
-		$renderer->wrappers['controls']['container'] = 'p';
-		$renderer->wrappers['pair']['container'] = null;
-		$renderer->wrappers['label']['container'] = null;
-		$renderer->wrappers['control']['container'] = null;
-		$renderer->wrappers['control']['errors'] = false;
-		$renderer->wrappers['form']['errors'] = false;
-		$renderer->wrappers['hidden']['container'] = null;
 
 		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
 		$category->setPrompt('messages.team.list.filter.category.all');

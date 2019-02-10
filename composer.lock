@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "687fc3b1dbeb09ed59ddc5f77d54b3bf",
+    "content-hash": "2dbc5df46df81b6e29acfc18857141ba",
     "packages": [
         {
             "name": "kdyby/forms-replicator",
@@ -1573,16 +1573,16 @@
         },
         {
             "name": "nextras/forms",
-            "version": "v2.0.5",
+            "version": "dev-bs4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nextras/forms.git",
-                "reference": "895eee801b060af80bdea68b30bcc9fce391701b"
+                "url": "https://github.com/jtojnar/forms.git",
+                "reference": "3045a321debcfc7295405d2fdd5eb3188ebed0f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextras/forms/zipball/895eee801b060af80bdea68b30bcc9fce391701b",
-                "reference": "895eee801b060af80bdea68b30bcc9fce391701b",
+                "url": "https://api.github.com/repos/jtojnar/forms/zipball/3045a321debcfc7295405d2fdd5eb3188ebed0f2",
+                "reference": "3045a321debcfc7295405d2fdd5eb3188ebed0f2",
                 "shasum": ""
             },
             "require": {
@@ -1607,7 +1607,6 @@
                     "Nextras\\Forms\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1622,7 +1621,10 @@
                 "form",
                 "nette"
             ],
-            "time": "2017-10-31T10:00:30+00:00"
+            "support": {
+                "source": "https://github.com/jtojnar/forms/tree/bs4"
+            },
+            "time": "2019-02-10T08:12:19+00:00"
         },
         {
             "name": "nextras/orm",
@@ -3519,6 +3521,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "nextras/forms": 20,
         "kdyby/forms-replicator": 20
     },
     "prefer-stable": false,

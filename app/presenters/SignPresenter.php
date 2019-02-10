@@ -6,6 +6,7 @@ namespace App\Presenters;
 
 use Nette;
 use Nette\Utils\Callback;
+use Nextras\Forms\Rendering\Bs4FormRenderer;
 
 class SignPresenter extends BasePresenter {
 	/** @persistent */
@@ -18,8 +19,7 @@ class SignPresenter extends BasePresenter {
 	 */
 	protected function createComponentSignInForm() {
 		$form = new Nette\Application\UI\Form();
-		$renderer = new \Nextras\Forms\Rendering\Bs3FormRenderer();
-		$form->setRenderer($renderer);
+		$form->setRenderer(new Bs4FormRenderer());
 		$form->setTranslator($this->translator);
 
 		$form->addText('teamid', 'messages.sign.in.team_id')

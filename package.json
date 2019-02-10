@@ -1,0 +1,37 @@
+{
+	"name": "entries",
+	"license": "MIT",
+	"private": true,
+	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^1.2.14",
+		"@fortawesome/free-solid-svg-icons": "^5.7.1",
+		"bootstrap": "^4.2.1",
+		"jquery": "^3.3.1",
+		"nette-forms": "^3.0.0",
+		"popper.js": "^1.14.7"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.2.2",
+		"@babel/preset-env": "^7.3.1",
+		"autoprefixer": "^9.4.7",
+		"babel-loader": "^8.0.5",
+		"css-loader": "^2.1.0",
+		"file-loader": "^3.0.1",
+		"mini-css-extract-plugin": "^0.5.0",
+		"node-sass": "^4.11.0",
+		"optimize-css-assets-webpack-plugin": "^5.0.1",
+		"postcss-loader": "^3.0.0",
+		"sass-loader": "^7.1.0",
+		"uglifyjs-webpack-plugin": "^2.1.1",
+		"url-loader": "^1.1.2",
+		"webpack": "^4.22.0",
+		"webpack-cli": "^3.2.3"
+	},
+	"resolutions": {
+		"ajv": "6.8.1"
+	},
+	"scripts": {
+		"dev": "webpack --mode development --watch --progress",
+		"build": "webpack --mode production"
+	}
+}
