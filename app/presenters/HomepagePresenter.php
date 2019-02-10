@@ -7,7 +7,6 @@ namespace App\Presenters;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
-use Nette\Caching\Cache;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
@@ -60,15 +59,14 @@ class HomepagePresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		foreach (Nette\Utils\Finder::find('*')->from($this->context->parameters['tempDir'])->childFirst() as $entry) {
+		foreach (Nette\Utils\Finder::find('*')->from($this->context->parameters['tempDir'] . '/cache')->childFirst() as $entry) {
 			$path = (string) $entry;
 			if ($entry->isDir()) { // collector: remove empty dirs
 				@rmdir($path); // @ - removing dirs is not necessary
 				continue;
 			}
-			$this->storage->remove($path);
+			unlink($path);
 		}
-
 
 		$this->flashMessage($this->translator->translate('messages.maintenance.cache_cleared'));
 		$this->redirect('Homepage:');
