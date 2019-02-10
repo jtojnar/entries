@@ -60,9 +60,15 @@ class HomepagePresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		$this->storage->clean([
-			Cache::ALL => true,
-		]);
+		foreach (Nette\Utils\Finder::find('*')->from($this->context->parameters['tempDir'])->childFirst() as $entry) {
+			$path = (string) $entry;
+			if ($entry->isDir()) { // collector: remove empty dirs
+				@rmdir($path); // @ - removing dirs is not necessary
+				continue;
+			}
+			$this->storage->remove($path);
+		}
+
 
 		$this->flashMessage($this->translator->translate('messages.maintenance.cache_cleared'));
 		$this->redirect('Homepage:');
