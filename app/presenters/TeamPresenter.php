@@ -531,7 +531,7 @@ class TeamPresenter extends BasePresenter {
 					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
 					continue;
 				}
-				$ret[] = (string) Html::el('span', ['class' => 'flag flag-' . $country->code]) . ' ' . $country->name;
+				$ret[] = (string) Html::el('span', ['class' => 'flag-icon flag-icon-' . $country->code]) . ' ' . $country->name;
 				continue;
 			} elseif ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
