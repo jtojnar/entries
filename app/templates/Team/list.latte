@@ -13,7 +13,7 @@
 	<td>{$team|categoryFormat}</td>
 	<td><p n:foreach="$team->persons as $person" data-content="{$person->getJsonData()|personData|wrapInParagraphs}">{if $person->gender === $person::MALE}♂{else}♀{/if} {$person->firstname} {$person->lastname}</p></td>
 	<td>{if $team->status === $team::REGISTERED}{_messages.team.list.entry.status.registered}{elseif $team->status == $team::PAID}<i class="fas fa-check" title="{_messages.team.list.entry.status.paid}"></i> {_messages.team.list.entry.status.accepted}{else}N/A{/if}</td>
-	<td n:if="$user->isInRole('admin')"><s n:tag-if="$team->status == $team::PAID">{$team->lastInvoice->getTotal()}</s></td>
+	<td n:if="$user->isInRole('admin')"><a n:href="Invoice:show $team->lastInvoice->id"><s n:tag-if="$team->status == $team::PAID">{$team->lastInvoice->getTotal()|price}</s></a></td>
 	<td n:if="$user->isInRole('admin')">{if $team->status == $team::REGISTERED}<a n:href="confirm $team->id">{_messages.team.list.entry.action.confirm}</a> {/if}<a n:href="edit $team->id">{_messages.team.list.entry.action.edit}</a></td>
 </tr>
 {/foreach}

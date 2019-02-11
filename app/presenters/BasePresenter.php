@@ -44,6 +44,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 		$template->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
 		$template->getLatte()->addFilter('wrapInParagraphs', Callback::closure($this, 'wrapInParagraphs'));
+		$template->getLatte()->addFilter('price', function($amount) {
+			$currency = $this->context->parameters['entries']['fees']['currency'];
+			$key = 'messages.currencies.' . $currency;
+			$translated = $this->translator->translate($key, ['amount' => $amount]);
+
+			return $translated === $key ? $amount : $translated;
+		});
 	}
 
 	public function categoryFormat(App\Model\Team $team) {

@@ -13,7 +13,8 @@ parameters:
 		minMembers: 0
 		maxMembers: 0
 		recommendedCardCapacity: 0
-		fees: []
+		fees:
+			currency: CZK
 		categories: []
 		fields:
 			person: []

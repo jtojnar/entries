@@ -270,17 +270,36 @@ class TeamPresenter extends BasePresenter {
 			$jsonData = [];
 			foreach ($fields as $name => $field) {
 				$jsonData[$name] = $form[$name]->value;
+				$type = $field['type'];
 
-				if ($field['type'] === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
-					$invoice->addItem($name, $field['fee']);
-				} elseif ($field['type'] === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
-					$invoice->addItem($name, $field['fee']);
-				} elseif ($field['type'] === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
-					$invoice->addItem($name . '-' . $form[$name]->value, $field['options'][$form[$name]->value]['fee']);
-				} elseif ($field['type'] === 'checkboxlist') {
+				if ($type === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
+					$invoice->addItem(self::serializeInvoiceItem([
+						'type' => $type,
+						'scope' => 'team',
+						'key' => $name,
+					]), $field['fee']);
+				} elseif ($type === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
+					$invoice->addItem(self::serializeInvoiceItem([
+						'type' => $type,
+						'scope' => 'team',
+						'key' => $name,
+					]), $field['fee']);
+				} elseif ($type === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
+					$invoice->addItem(self::serializeInvoiceItem([
+						'type' => $type,
+						'scope' => 'team',
+						'key' => $name,
+						'value' => $form[$name]->value,
+					]), $field['options'][$form[$name]->value]['fee']);
+				} elseif ($type === 'checkboxlist') {
 					foreach ($jsonData[$name] as $item) {
 						if (isset($field['items'][$item]['fee'])) {
-							$invoice->addItem($name . '-' . $item, $field['items'][$item]['fee']);
+							$invoice->addItem(self::serializeInvoiceItem([
+								'type' => $type,
+								'scope' => 'team',
+								'key' => $name,
+								'value' => $item,
+							]), $field['items'][$item]['fee']);
 						}
 					}
 				}
@@ -297,7 +316,10 @@ class TeamPresenter extends BasePresenter {
 			$this->teams->persistAndFlush($team);
 
 			$personFee = $this->categories->getCategoryData()[$team->category]['fee'];
-			$invoice->createItem('person', $personFee);
+			$invoice->createItem(self::serializeInvoiceItem([
+				'type' => '~entry',
+				'scope' => 'person',
+			]), $personFee);
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 
@@ -327,17 +349,36 @@ class TeamPresenter extends BasePresenter {
 				foreach ($fields as $name => $field) {
 					$member[$name] = $member[$name] ?? null;
 					$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
+					$type = $field['type'];
 
-					if ($field['type'] === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
-						$invoice->addItem($name, $field['fee']);
-					} elseif ($field['type'] === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
-						$invoice->addItem($name, $field['fee']);
-					} elseif ($field['type'] === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
-						$invoice->addItem($name . '-' . $member[$name], $field['options'][$member[$name]]['fee']);
-					} elseif ($field['type'] === 'checkboxlist') {
+					if ($type === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
+						$invoice->addItem(self::serializeInvoiceItem([
+							'type' => $type,
+							'scope' => 'person',
+							'key' => $name,
+						]), $field['fee']);
+					} elseif ($type === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
+						$invoice->addItem(self::serializeInvoiceItem([
+							'type' => $type,
+							'scope' => 'person',
+							'key' => $name,
+						]), $field['fee']);
+					} elseif ($type === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
+						$invoice->addItem(self::serializeInvoiceItem([
+							'type' => $type,
+							'scope' => 'person',
+							'key' => $name,
+							'value' => $member[$name],
+						]), $field['options'][$member[$name]]['fee']);
+					} elseif ($type === 'checkboxlist') {
 						foreach ($jsonData[$name] as $item) {
 							if (isset($field['items'][$item]['fee'])) {
-								$invoice->addItem($name . '-' . $item, $field['items'][$item]['fee']);
+								$invoice->addItem(self::serializeInvoiceItem([
+									'type' => $type,
+									'scope' => 'person',
+									'key' => $name,
+									'value' => $item,
+								]), $field['items'][$item]['fee']);
 							}
 						}
 					}
@@ -348,7 +389,10 @@ class TeamPresenter extends BasePresenter {
 				}
 				$person->setJsonData($jsonData);
 
-				$invoice->addItem('person');
+				$invoice->addItem(self::serializeInvoiceItem([
+					'type' => '~entry',
+					'scope' => 'person',
+				]));
 				$this->persons->persist($person);
 			}
 
@@ -546,5 +590,11 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		return $ret;
+	}
+
+	public static function serializeInvoiceItem($item) {
+		$parts = [$item['scope'] ?? '', $item['type'] ?? '', $item['key'] ?? '', $item['value'] ?? ''];
+
+		return implode(':', $parts);
 	}
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
@@ -17,6 +18,9 @@ class HomepagePresenter extends BasePresenter {
 	/** @var Nette\Caching\IStorage @inject */
 	public $storage;
 
+	/** @var App\Model\TeamRepository @inject */
+	public $teams;
+
 	public function renderDefault(): void {
 		/** @var Nette\Bridges\ApplicationLatte\Template $template */
 		$template = $this->template;
@@ -25,6 +29,10 @@ class HomepagePresenter extends BasePresenter {
 			/** @var Nette\Security\Identity $identity */
 			$identity = $this->user->identity;
 			$template->status = $identity->status;
+
+			if ($template->status === 'registered') {
+				$template->invoice = $this->teams->getById($identity->getId())->lastInvoice;
+			}
 		} else {
 			$template->status = null;
 		}
