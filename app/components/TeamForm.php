@@ -173,13 +173,11 @@ class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addSportident($name, $container) {
-		$si = $container->addText($name, 'messages.team.person.si.label')->setType('number');
-		$input = $container->addCheckBox($name . 'Needed', 'messages.team.person.si.rent');
-		$container[$name]->addConditionOn($container[$name . 'Needed'], Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
-		$container[$name . 'Needed']->addCondition(Form::EQUAL, true)->toggle($container[$name]->htmlId, false);
+	public function addSportident($name, $container): SportidentControl {
+		$si = new SportidentControl('messages.team.person.si.label');
+		$container->addComponent($si, $name);
 
-		return $input;
+		return $si;
 	}
 
 	public function addEnum($name, $container, $field) {

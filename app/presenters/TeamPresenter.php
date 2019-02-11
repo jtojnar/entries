@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Components\SportidentControl;
 use App\Exporters;
 use App\Model\Invoice;
 use Exception;
@@ -179,7 +180,9 @@ class TeamPresenter extends BasePresenter {
 				if (isset($team->getJsonData()->$name)) {
 					$default[$name] = $team->getJsonData()->$name;
 				} elseif ($field['type'] === 'sportident') {
-					$default[$name . 'Needed'] = true;
+					$default[$name] = [
+						SportidentControl::NAME_NEEDED => true,
+					];
 				}
 			}
 
@@ -197,7 +200,9 @@ class TeamPresenter extends BasePresenter {
 					if (isset($person->getJsonData()->$name)) {
 						$personDefault[$name] = $person->getJsonData()->$name;
 					} elseif ($field['type'] === 'sportident') {
-						$personDefault[$name . 'Needed'] = true;
+						$personDefault[$name] = [
+							SportidentControl::NAME_NEEDED => true,
+						];
 					}
 				}
 
@@ -264,13 +269,9 @@ class TeamPresenter extends BasePresenter {
 			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 			$jsonData = [];
 			foreach ($fields as $name => $field) {
-				if ($field['type'] === 'sportident' && $form[$name . 'Needed']->value) {
-					$jsonData[$name] = null;
-				} else {
-					$jsonData[$name] = $form[$name]->value;
-				}
+				$jsonData[$name] = $form[$name]->value;
 
-				if ($field['type'] === 'sportident' && isset($field['fee']) && $jsonData[$name] === null) {
+				if ($field['type'] === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 					$invoice->addItem($name, $field['fee']);
 				} elseif ($field['type'] === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
 					$invoice->addItem($name, $field['fee']);
@@ -325,12 +326,9 @@ class TeamPresenter extends BasePresenter {
 				$jsonData = [];
 				foreach ($fields as $name => $field) {
 					$member[$name] = $member[$name] ?? null;
-					if ($field['type'] === 'sportident' && $member[$name . 'Needed']) {
-						$jsonData[$name] = null;
-					} else {
-						$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
-					}
-					if ($field['type'] === 'sportident' && isset($field['fee']) && $jsonData[$name] === null) {
+					$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
+
+					if ($field['type'] === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 						$invoice->addItem($name, $field['fee']);
 					} elseif ($field['type'] === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
 						$invoice->addItem($name, $field['fee']);
@@ -521,10 +519,9 @@ class TeamPresenter extends BasePresenter {
 			}
 
 			if ($field['type'] === 'sportident') {
-				if (!isset($data->$name) || $data->$name === null) {
-					$ret[] = $label . ' ' . $this->translator->translate('messages.team.person.si.rent');
-					continue;
-				}
+				$value = $data->$name->{SportidentControl::NAME_CARD_ID} ?? $this->translator->translate('messages.team.person.si.rent');
+				$ret[] = $label . ' ' . $value;
+				continue;
 			} elseif ($field['type'] === 'country') {
 				$country = isset($data->$name) ? $this->countries->getById($data->$name) : null;
 				if (!$country) {
