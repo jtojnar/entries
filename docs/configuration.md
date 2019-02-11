@@ -70,7 +70,23 @@ admin: p4ssw0rd
 
 ##### `fees`
 
-This section defines the fees. At the moment, `person` is the only supported key. It is used as a fallback when a category does not define fees locally. It is especially useful if most of the categories share the same price, prices for the rest can be overridden individually.
+This section defines the fees and other properties related to prices.
+
+###### `person`
+
+This key is used as a fallback when a category does not define fees locally. It is especially useful if most of the categories share the same price, prices for the rest can be overridden individually.
+
+###### `currency`
+
+Prices will be displayed in choosen currency on the invoice and in the administration. Currently only the following are supported:
+
+* CZK – Czech koruna
+* PLN – Polish złoty
+* HUF – Hungarian forint
+* EUR – Euro
+* USD – United States dollar
+* GBP – Pound sterling
+* JPY – Japanese yen
 
 ##### `categories`
 
