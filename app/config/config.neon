@@ -12,6 +12,7 @@ parameters:
 	entries:
 		minMembers: 0
 		maxMembers: 0
+		recommendedCardCapacity: 0
 		fees: []
 		categories: []
 		fields:

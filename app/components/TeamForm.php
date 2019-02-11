@@ -174,7 +174,9 @@ class TeamForm extends UI\Form {
 	}
 
 	public function addSportident($name, $container): SportidentControl {
-		$si = new SportidentControl('messages.team.person.si.label');
+		$recommendedCardCapacity = $this->parameters['recommendedCardCapacity'];
+
+		$si = new SportidentControl('messages.team.person.si.label', $recommendedCardCapacity);
 		$container->addComponent($si, $name);
 
 		return $si;

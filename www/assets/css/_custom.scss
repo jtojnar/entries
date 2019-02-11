@@ -1,4 +1,5 @@
 $primary: #5d2bd4;
+$enable-validation-icons: false;
 
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
@@ -16,3 +17,5 @@ $primary: #5d2bd4;
 @import '~bootstrap/scss/popover';
 @import '~bootstrap/scss/utilities';
 @import '~bootstrap/scss/print';
+
+@include form-validation-state('warning', theme-color('warning'));

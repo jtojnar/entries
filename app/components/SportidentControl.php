@@ -11,6 +11,8 @@ use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Form;
+use Nette\Forms\Helpers;
+use Nette\Forms\Rules;
 use Nextras\Forms\Controls\Fragments\ComponentControlTrait;
 
 class SportidentControl extends BaseControl implements IContainer {
@@ -31,7 +33,7 @@ class SportidentControl extends BaseControl implements IContainer {
 	/** @var Checkbox neededControl checkbox for requesting a loan */
 	protected $neededControl;
 
-	public function __construct($label) {
+	public function __construct($label, $recommendedCardCapacity) {
 		$this->cardIdControl = new TextInput();
 		$this->neededControl = new Checkbox('messages.team.person.si.rent');
 
@@ -44,9 +46,32 @@ class SportidentControl extends BaseControl implements IContainer {
 
 		// Asking for cardIdControl->htmlId before the control is attached
 		// to a form freezes it at `frm-cardId`
-		$this->monitor(Form::class, function(Form $form): void {
+		$this->monitor(Form::class, function(Form $form) use ($recommendedCardCapacity): void {
 			$this->cardIdControl->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
 			$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId, false);
+
+			// We want to warn user when they register with a SI card with
+			// a potentially insufficient capacity for the race.
+			// https://www.sportident.co.uk/equipment/information_sheets/SPORTident-CardComparison.PDF
+			if ($recommendedCardCapacity > 30) {
+				$rules = new Rules($this->neededControl);
+				$rules = $rules->addConditionOn($this->neededControl, Form::EQUAL, false);
+
+				@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
+				@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2000001, 2999999]); // @ - negative rules are deprecated
+
+				if ($recommendedCardCapacity > 50) {
+					@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1000000, 1999999]); // @ - negative rules are deprecated
+				}
+
+				if ($recommendedCardCapacity > 64) {
+					@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si6'), [500001, 999999]); // @ - negative rules are deprecated
+				}
+
+				$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId . '-warning', false);
+
+				$this->cardIdControl->getControlPrototype()->{'data-form-warning-rules'} = Helpers::exportRules($rules);
+			}
 		});
 	}
 

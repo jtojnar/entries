@@ -60,6 +60,10 @@ closing: 2017-11-01T01:00:00
 minMembers: 2
 maxMembers: 3
 
+# this will warn users when they try to enter with an SI card
+# with lower capacity
+recommendedCardCapacity: 50
+
 # used for editing entries, currently only plain-text passwords are supported
 admin: p4ssw0rd
 ```

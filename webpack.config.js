@@ -1,7 +1,18 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
+const postcss = require('postcss');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+const removeWarningPseudoClasses = postcss.plugin('postcss-remove-warning-pseudoclasses', opts => {
+	return root => {
+		root.walkRules(rule => {
+			if (rule.selector.includes(':warning')) {
+				rule.selectors = rule.selectors.filter(selector => !selector.includes(':warning'));
+			}
+		});
+	};
+});
 
 module.exports = {
 	entry: './www/assets/index.js',
@@ -66,6 +77,11 @@ module.exports = {
 						options: {
 							plugins: () => [
 								require('autoprefixer'),
+								// We are adding custom validation state to Bootstrap
+								// but form-validation-state mixin uses :warning pseudo-class
+								// which breaks the style.
+								// Let’ strip it.
+								removeWarningPseudoClasses,
 							],
 						},
 					},
