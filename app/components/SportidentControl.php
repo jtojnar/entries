@@ -22,6 +22,9 @@ class SportidentControl extends BaseControl implements IContainer {
 	/** @var string */
 	public const NAME_NEEDED = 'needed';
 
+	/** @var string */
+	private const SI_PATTERN = '[0-9]+';
+
 	/** @var TextInput cardIdControl entry for card id */
 	protected $cardIdControl;
 
@@ -29,13 +32,15 @@ class SportidentControl extends BaseControl implements IContainer {
 	protected $neededControl;
 
 	public function __construct($label) {
-		$this->cardIdControl = (new TextInput())->setType('number');
+		$this->cardIdControl = new TextInput();
 		$this->neededControl = new Checkbox('messages.team.person.si.rent');
 
 		parent::__construct($label);
 
 		$this->addComponent($this->cardIdControl, self::NAME_CARD_ID);
 		$this->addComponent($this->neededControl, self::NAME_NEEDED);
+
+		$this->cardIdControl->getControlPrototype()->pattern = self::SI_PATTERN;
 
 		// Asking for cardIdControl->htmlId before the control is attached
 		// to a form freezes it at `frm-cardId`
