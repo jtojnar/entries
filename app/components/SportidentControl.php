@@ -56,16 +56,18 @@ class SportidentControl extends BaseControl implements IContainer {
 			if ($recommendedCardCapacity > 30) {
 				$rules = new Rules($this->neededControl);
 				$rules = $rules->addConditionOn($this->neededControl, Form::EQUAL, false);
+				/** @var \Kdyby\Translation\Translator */
+				$translator = $this->getTranslator();
 
-				@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
-				@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2000001, 2999999]); // @ - negative rules are deprecated
+				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
+				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2000001, 2999999]); // @ - negative rules are deprecated
 
 				if ($recommendedCardCapacity > 50) {
-					@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1000000, 1999999]); // @ - negative rules are deprecated
+					@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1000000, 1999999]); // @ - negative rules are deprecated
 				}
 
 				if ($recommendedCardCapacity > 64) {
-					@$rules->addRule(~Form::RANGE, $this->translator->translate('messages.team.person.si.warning.low-capacity-si6'), [500001, 999999]); // @ - negative rules are deprecated
+					@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si6'), [500001, 999999]); // @ - negative rules are deprecated
 				}
 
 				$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId . '-warning', false);
