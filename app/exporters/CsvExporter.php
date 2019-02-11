@@ -114,6 +114,8 @@ class CsvExporter implements IExporter {
 							foreach ($field['items'] as $itemKey => $_) {
 								$row[] = \in_array($itemKey, $f, true);
 							}
+						} elseif ($field['type'] === 'sportident') {
+							$row[] = $f->cardId ?? 'rent';
 						} else {
 							$row[] = $f;
 						}
@@ -140,6 +142,8 @@ class CsvExporter implements IExporter {
 							foreach ($field['items'] as $item) {
 								$row[] = '';
 							}
+						} elseif ($field['type'] === 'sportident') {
+							$row[] = $f->cardId ?? '';
 						} else {
 							$row[] = '';
 						}
