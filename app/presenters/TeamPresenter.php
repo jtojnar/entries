@@ -405,7 +405,7 @@ class TeamPresenter extends BasePresenter {
 			$this->teams->persistAndFlush($team);
 
 			foreach ($team->invoices as $inv) {
-				if ($inv->status === Invoice::STATUS_NEW) {
+				if ($inv->status === Invoice::STATUS_NEW && $inv !== $invoice) {
 					$inv->status = Invoice::STATUS_CANCELLED;
 					$this->invoices->persist($inv);
 				}
