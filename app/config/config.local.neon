@@ -1,0 +1,257 @@
+php:
+	date.timezone: Europe/Prague
+
+parameters:
+	siteTitle:
+		cs: MČR v rogainingu 2019
+		en: Czech Rogaining Championships 2019
+	entries:
+		minMembers: 2
+		maxMembers: 5
+		recommendedCardCapacity: 60
+		eventDate: 2019-06-29 # used for age calculations
+		opening: 2019-02-01T23:59:59
+		closing: 2019-06-01T23:59:59
+		#invoiceModifier: App\InvoiceModifier
+		customInputModifier: App\CustomInputModifier
+		fees:
+			person: 600.0
+		categories:
+			24:
+				label:
+					cs: 24 hodin
+					en: 24 hours
+				categories:
+					MY:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age<=23)'
+					WY:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age<=23)'
+					XY:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age<=23)'
+					MO:
+						constraints:
+							- 'all(gender=male)'
+					WO:
+						constraints:
+							- 'all(gender=female)'
+					XO:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+					MV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=40)'
+					WV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=40)'
+					XV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=40)'
+					MSV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=55)'
+					WSV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=55)'
+					XSV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=55)'
+				#	MUV:
+				#		constraints:
+				#			- 'all(gender=male)'
+				#			- 'all(age>=65)'
+				#	WUV:
+				#		constraints:
+				#			- 'all(gender=female)'
+				#			- 'all(age>=65)'
+				#	XUV:
+				#		constraints:
+				#			- 'some(gender=male)'
+				#			- 'some(gender=female)'
+				#			- 'all(age>=65)'
+			12:
+				label: '12'
+				fees:
+					person: 600
+				categories:
+					MO12:
+						constraints:
+							- 'all(gender=male)'
+					WO12:
+						constraints:
+							- 'all(gender=female)'
+					XO12:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+			6:
+				label: '6'
+				fees:
+					person: 300
+				categories:
+					MO6:
+						constraints:
+							- 'all(gender=male)'
+					WO6:
+						constraints:
+							- 'all(gender=female)'
+					XO6:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+		fields:
+			team:
+				newcomers:
+					type: enum
+					label:
+						en: 'Our first Rogaining'
+						cs: 'Náš první rogaining'
+					description:
+						en: Competition of newcomers who have never started in a rogaine
+						cs: "Soutěž nováčků, kteří nikdy nestartovali na akci ČAR (MČR rogaining, MČR HROB, Brutus Extreme Orienteering, Sudetské Tojnárkovo Bloudění)"
+					private: true
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							default: true
+			person:
+				country:
+					type: country
+					default: 46
+				sportident:
+					type: sportident
+					fee: 100
+				shirt:
+					private: true
+					type: enum
+					label:
+						en: 'T-shirt (390 CZK)'
+						cs: 'Triko (390 Kč)'
+					options:
+						none:
+							label:
+								en: 'None'
+								cs: 'Žádné'
+							default: true
+						ws:
+							label:
+								en: 'Woman S'
+								cs: 'Dámské S'
+							fee: 390
+						wm:
+							label:
+								en: 'Woman M'
+								cs: 'Dámské M'
+							fee: 390
+						wl:
+							label:
+								en: 'Woman L'
+								cs: 'Dámské L'
+							fee: 390
+						mm:
+							label:
+								en: 'Man M'
+								cs: 'Pánské M'
+							fee: 390
+						ml:
+							label:
+								en: 'Man L'
+								cs: 'Pánské L'
+							fee: 390
+						mxl:
+							label:
+								en: 'Man XL'
+								cs: 'Pánské XL'
+							fee: 390
+				boarding:
+					label:
+						en: 'Boarding (Bio products of eco-farm Babiny):'
+						cs: 'Stravování (Bio produkty ekofarmy Babiny):'
+					type: checkboxlist
+					private: true
+					items:
+						fri_soup:
+							label:
+								en: 'Friday Beef Soup (25 CZK)'
+								cs: 'Páteční hovězí polévka (25 Kč)'
+							fee: 25
+						fri_goulash:
+							label:
+								en: 'Friday Goulash (65 CZK)'
+								cs: 'Páteční guláš (65 Kč)'
+							fee: 65
+							description:
+								en: Beef Goulash with bread
+								cs: Hovězí guláš s chlebem
+						fri_beef_rice:
+							label:
+								en: 'Friday Beef & rice (80 CZK)'
+								cs: 'Páteční Znojemská hovězí (80 Kč)'
+							fee: 80
+							description:
+								en: Beef with rice ala Znaim
+								cs: Znojemská hovězí s rýží
+						sat_breakfast:
+							label:
+								en: 'Saturday Breakfest - smorgasbord (60 CZK)'
+								cs: 'Sobotní snídaně - švédský stůl (60 Kč)'
+							fee: 60
+						sat_soup:
+							label:
+								en: 'Saturday Beef Soup (25 CZK)'
+								cs: 'Sobotní hovězí polévka (25 Kč)'
+							fee: 25
+						sat_goulash:
+							label:
+								en: 'Saturday Goulash (65 CZK)'
+								cs: 'Sobotní guláš (65 Kč)'
+							fee: 65
+							description:
+								en: Beef Goulash with bread
+								cs: Hovězí guláš s chlebem
+						sat_beef_rice:
+							label:
+								en: 'Saturday Beef & rice (80 CZK)'
+								cs: 'Sobotní Znojemská hovězí (80 Kč)'
+							fee: 80
+							description:
+								en: Beef with rice ala Znaim
+								cs: Znojemská hovězí s rýží
+						sun_breakfast:
+							label:
+								en: 'Sunday Breakfest - smorgasbord (60 CZK)'
+								cs: 'Nedělní snídaně - švédský stůl (60 Kč)'
+							fee: 60
+				registry_address:
+					private: true
+					type: text
+					label:
+						cs: 'Bydliště:'
+						en: 'Address:'
+					description:
+						cs: 'Adresa pro účely rejstříku sportovců MŠMT, sím vyplňte bydliště přesně podle občanky'
+						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
+
+
+	webmasterEmail: "jan.tojnar@rogaining.cz"
