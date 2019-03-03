@@ -169,6 +169,11 @@ class TeamForm extends UI\Form {
 				if (isset($field['applicableCategories'])) {
 					$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field['applicableCategories']);
 				}
+
+				if (isset($this->parameters['customInputModifier'])) {
+					$customInputModifier = Callback::closure($this->parameters['customInputModifier'], 'modify');
+					$customInputModifier($input, $container);
+				}
 			}
 		}
 	}

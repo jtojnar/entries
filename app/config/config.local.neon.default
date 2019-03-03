@@ -13,6 +13,7 @@ parameters:
 		opening: 2012-04-01T01:00:00
 		closing: 2015-06-23T01:00:00
 		invoiceModifier: App\InvoiceModifier
+		customInputModifier: App\CustomInputModifier
 		fees:
 			currency: CZK
 			person: 650.0
@@ -192,6 +193,14 @@ parameters:
 					description:
 						en: Half-boarding costs 210 CZK per day
 						cs: Polopenze stojí 210 Kč na den
+				registry_address:
+					type: text
+					label:
+						cs: 'Bydliště:'
+						en: 'Address:'
+					description:
+						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
+						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
 
 		admin: password
 	webmasterEmail: email@example.com
