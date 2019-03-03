@@ -142,7 +142,7 @@ class TeamForm extends UI\Form {
 						$input->setDefaultValue($field['default']);
 					}
 				} elseif ($field['type'] === 'phone') {
-					$input = $this->addText($name, $label)->setType('tel')->setRequired();
+					$input = $container->addText($name, $label)->setType('tel')->setRequired();
 				} elseif ($field['type'] === 'enum') {
 					$input = $this->addEnum($name, $container, $field)->setRequired();
 				} elseif ($field['type'] === 'checkbox') {
@@ -159,7 +159,7 @@ class TeamForm extends UI\Form {
 					$input = $container->addCheckBoxList($name, $label, $items);
 					$input->setDefaultValue($this->getDefaultFieldValue($field));
 				} else {
-					$input = $this->addText($name, $label)->setRequired();
+					$input = $container->addText($name, $label)->setRequired();
 				}
 
 				if (isset($field['description'])) {
