@@ -166,6 +166,8 @@ class TeamForm extends UI\Form {
 					$input->setOption('description', $field['description'][$locale]);
 				}
 
+				$input->setDisabled($field['disabled'] ?? false);
+
 				if (isset($field['applicableCategories'])) {
 					$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field['applicableCategories']);
 				}
@@ -201,7 +203,7 @@ class TeamForm extends UI\Form {
 
 		$default = $this->getDefaultFieldValue($field);
 
-		return $container->addRadioList($name, $label, $options)->setDefaultValue($default)->setDisabled($field['disabled'] ?? false);
+		return $container->addRadioList($name, $label, $options)->setDefaultValue($default);
 	}
 
 	public function isFieldDisabled($field) {
