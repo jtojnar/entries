@@ -42,7 +42,7 @@ class CsvExporter implements IExporter {
 
 	public function output(): void {
 		$fp = fopen('php://output', 'a');
-		$headers = ['#', 'name', 'registered', 'category'];
+		$headers = ['#', 'name', 'registered', 'category', 'message'];
 
 		foreach ($this->teamFields as $name => $field) {
 			if ($field['type'] === 'checkboxlist') {
@@ -74,7 +74,7 @@ class CsvExporter implements IExporter {
 		fputcsv($fp, $headers);
 
 		foreach ($this->teams as $team) {
-			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormat->__invoke($team)];
+			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormat->__invoke($team), $team->message];
 			foreach ($this->teamFields as $name => $field) {
 				$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
 				if ($f) {
