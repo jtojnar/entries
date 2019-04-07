@@ -25,15 +25,34 @@ class CategoryData {
 	/** @var array */
 	private $categoryData;
 
-	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<op>age[<>]?=?|gender=)(?P<val>.+)\)$\s*)';
+	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
 
 	public const OP_LOOKUP = [
-		'age<' => 'ageLt',
-		'age<=' => 'ageLe',
-		'age=' => 'ageEq',
-		'age>=' => 'ageGe',
-		'age>' => 'ageGt',
-		'gender=' => 'genderEq',
+		'<' => 'lt',
+		'<=' => 'lte',
+		'=' => 'eq',
+		'>=' => 'gte',
+		'>' => 'gt',
+	];
+
+	public const KEY_SUPPORTED_OPS = [
+		'age' => ['<', '<=', '=', '>=', '>'],
+		'gender' => ['='],
+	];
+
+	public const KEY_PROJECTIONS_LOOKUP = [
+		'age' => 'ageProjection',
+		'gender' => 'genderProjection',
+	];
+
+	public const VALUE_PARSERS_LOOKUP = [
+		'age' => 'ageParser',
+		'gender' => 'genderParser',
+	];
+
+	public const KEY_MESSAGES = [
+		'gender' => 'messages.team.error.gender_mismatch',
+		'age' => 'messages.team.error.age_mismatch',
 	];
 
 	public const QUANT_LOOKUP = [
@@ -177,19 +196,20 @@ class CategoryData {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match)) {
 				$quant = Callback::closure($this, self::QUANT_LOOKUP[$match['quant']]);
 				$op = Callback::closure($this, self::OP_LOOKUP[$match['op']]);
-				$val = $match['val'];
+				$keyProjection = Callback::closure($this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]);
+				$message = self::KEY_MESSAGES[$match['key']];
 
-				if ($match['op'] === 'gender=') {
-					$message = 'messages.team.error.gender_mismatch';
-				} else {
-					$message = 'messages.team.error.age_mismatch';
+				if (!\in_array($match['op'], self::KEY_SUPPORTED_OPS[$match['key']], true)) {
+					throw new \Exception("Constraint “${constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
 				}
+
+				$val = Callback::closure($this, self::VALUE_PARSERS_LOOKUP[$match['key']])($match['val']);
 
 				$translator = $this->app->getPresenter()->translator;
 
 				return [
-					function($entry) use ($quant, $op, $val) {
-						return $quant($entry->getForm(), $op, $val);
+					function($entry) use ($quant, $keyProjection, $op, $val) {
+						return $quant($entry->getForm(), $keyProjection, $op, $val);
 					},
 					$translator->translate($message),
 				];
@@ -199,68 +219,52 @@ class CategoryData {
 		}, $category['constraints']);
 	}
 
-	private function ageLt($person, $value) {
+	private function lt($a, $b) {
+		return $a < $b;
+	}
+
+	private function lte($a, $b) {
+		return $a <= $b;
+	}
+
+	private function eq($a, $b) {
+		return $a === $b;
+	}
+
+	private function gte($a, $b) {
+		return $a >= $b;
+	}
+
+	private function gt($a, $b) {
+		return $a > $b;
+	}
+
+	private function ageParser(string $age): int {
+		return (int) $age;
+	}
+
+	private function genderParser(string $gender): string {
+		return $gender;
+	}
+
+	private function ageProjection(\ArrayAccess $person): ?int {
 		if (!isset($person['birth'])) {
-			return true;
+			return null;
 		}
 
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
 
-		return $age < (int) $value;
+		return $age;
 	}
 
-	private function ageLe($person, $value) {
-		if (!isset($person['birth'])) {
-			return true;
-		}
-
-		$eventDate = $this->parameters['eventDate'];
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
-
-		return $age <= (int) $value;
+	private function genderProjection(\ArrayAccess $person): ?string {
+		return $person['gender'];
 	}
 
-	private function ageEq($person, $value) {
-		if (!isset($person['birth'])) {
-			return true;
-		}
-
-		$eventDate = $this->parameters['eventDate'];
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
-
-		return $age === (int) $value;
-	}
-
-	private function ageGe($person, $value) {
-		if (!isset($person['birth'])) {
-			return true;
-		}
-
-		$eventDate = $this->parameters['eventDate'];
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
-
-		return $age >= (int) $value;
-	}
-
-	private function ageGt($person, $value) {
-		if (!isset($person['birth'])) {
-			return true;
-		}
-
-		$eventDate = $this->parameters['eventDate'];
-		$age = $diff = $person['birth']->diff($eventDate, true)->y;
-
-		return $age > (int) $value;
-	}
-
-	private function genderEq($person, $value) {
-		return $person['gender'] === $value;
-	}
-
-	private function quantAll($team, \Closure $fn, $value) {
+	private function quantAll($team, \Closure $keyProjection, \Closure $op, $value) {
 		foreach ($team['persons']->values as $person) {
-			if (!$fn($person, $value)) {
+			if (!$op($keyProjection($person), $value)) {
 				return false;
 			}
 		}
@@ -268,9 +272,9 @@ class CategoryData {
 		return true;
 	}
 
-	private function quantSome($team, \Closure $fn, $value) {
+	private function quantSome($team, \Closure $keyProjection, \Closure $op, $value) {
 		foreach ($team['persons']->values as $person) {
-			if ($fn($person, $value)) {
+			if ($op($keyProjection($person), $value)) {
 				return true;
 			}
 		}
