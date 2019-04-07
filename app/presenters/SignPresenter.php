@@ -4,23 +4,25 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App;
 use Nette;
+use Nette\Application\UI\Form;
 use Nette\Utils\Callback;
-use Nextras\Forms\Rendering\Bs4FormRenderer;
 
 class SignPresenter extends BasePresenter {
 	/** @persistent */
 	public $backlink = '';
 
+	/** @var App\Forms\FormFactory @inject */
+	public $formFactory;
+
 	/**
 	 * Sign-in form factory.
 	 *
-	 * @return Nette\Application\UI\Form
+	 * @return Form
 	 */
-	protected function createComponentSignInForm() {
-		$form = new Nette\Application\UI\Form();
-		$form->setRenderer(new Bs4FormRenderer());
-		$form->setTranslator($this->translator);
+	protected function createComponentSignInForm(): Form {
+		$form = $this->formFactory->create();
 
 		$form->addText('teamid', 'messages.sign.in.team_id')
 			->setRequired('messages.sign.in.error.no_id');

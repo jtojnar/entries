@@ -11,7 +11,6 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
-use Nextras\Forms\Rendering\Bs4FormRenderer;
 use Nextras\Forms\Rendering\FormLayout;
 
 class HomepagePresenter extends BasePresenter {
@@ -20,6 +19,9 @@ class HomepagePresenter extends BasePresenter {
 
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
+
+	/** @var App\Forms\FormFactory @inject */
+	public $formFactory;
 
 	public function renderDefault(): void {
 		/** @var Nette\Bridges\ApplicationLatte\Template $template */
@@ -51,10 +53,7 @@ class HomepagePresenter extends BasePresenter {
 	 * @return Form
 	 */
 	protected function createComponentMaintenanceForm(): Form {
-		$form = new Form();
-		$form->setRenderer(new Bs4FormRenderer(FormLayout::INLINE));
-
-		$form->setTranslator($this->translator);
+		$form = $this->formFactory->create(FormLayout::INLINE);
 
 		$clearCacheButton = $form->addSubmit('clearCache', 'messages.maintenance.clear_cache');
 		$clearCacheButton->controlPrototype->removeClass('btn-primary')->addClass('btn-warning');

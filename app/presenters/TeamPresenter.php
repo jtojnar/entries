@@ -15,7 +15,6 @@ use Nette\Mail\Message;
 use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
-use Nextras\Forms\Rendering\Bs4FormRenderer;
 use Nextras\Forms\Rendering\FormLayout;
 use Tracy\Debugger;
 
@@ -31,6 +30,9 @@ class TeamPresenter extends BasePresenter {
 
 	/** @var App\Model\InvoiceRepository @inject */
 	public $invoices;
+
+	/** @var App\Forms\FormFactory @inject */
+	public $formFactory;
 
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
@@ -483,10 +485,8 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function createComponentTeamListFilterForm() {
-		$form = new Form();
-		$form->setRenderer(new Bs4FormRenderer(FormLayout::INLINE));
-		$form->setTranslator($this->translator);
+	public function createComponentTeamListFilterForm(): Form {
+		$form = $this->formFactory->create(FormLayout::INLINE);
 		$form->setMethod('GET');
 
 		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
