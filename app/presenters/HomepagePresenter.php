@@ -41,6 +41,7 @@ class HomepagePresenter extends BasePresenter {
 		$template->locales = \count($locales) > 1 ? $locales : [];
 
 		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1);
+		$template->allowLateRegistrationsByEmail = $this->context->parameters['entries']['allowLateRegistrationsByEmail'];
 		$template->mail = $this->context->parameters['webmasterEmail'];
 	}
 

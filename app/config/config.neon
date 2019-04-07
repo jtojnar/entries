@@ -12,6 +12,7 @@ parameters:
 	entries:
 		minMembers: 0
 		maxMembers: 0
+		allowLateRegistrationsByEmail: false
 		recommendedCardCapacity: 0
 		fees:
 			currency: CZK

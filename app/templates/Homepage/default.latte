@@ -1,7 +1,11 @@
 {block content}
 <a n:foreach="$locales as $code => $locale" n:href="this locale => $code">{$locale}</a>
 <ul>
-<li n:if="$registrationOpen"><a n:href="Team:register">{_messages.home.registration}</a></li>
+{if $registrationOpen}
+<li><a n:href="Team:register">{_messages.home.registration}</a></li>
+{elseif $allowLateRegistrationsByEmail}
+<li>{_messages.home.contact_us_for_late_registration, ['mail' => $mail]|noescape}</li>
+{/if}
 <li><a n:href="Team:list">{_messages.home.list}</a></li>
 {if $user->isLoggedIn()}
 {if $status === 'registered'}

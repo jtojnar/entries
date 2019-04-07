@@ -38,6 +38,7 @@ team.person.name.first.label: "First name:"
 team.error.gender_mismatch: "Gender category does not match gender of team members!"
 team.person.gender.label: "Gender:"
 team.list: "Hover name of a team member to display SportIdent card number."
+home.contact_us_for_late_registration: 'Registration period is over, if you still want to sign up, please contact us at <a href="mailto:%mail%">%mail%</a>.'
 home.contact_instructions: "If you find any bug please report it on following e-mail:"
 billing.invoice.title: "Invoice"
 billing.invoice.number: "Invoice No."

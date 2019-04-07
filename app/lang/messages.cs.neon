@@ -38,6 +38,7 @@ team.person.name.first.label: "Jméno:"
 team.error.gender_mismatch: "Zvolená kategorie neodpovídá pohlaví členů týmu!"
 team.person.gender.label: "Pohlaví:"
 team.list: "Pro zobrazení čísla čipu SportIdent najeďte na člena týmu."
+home.contact_us_for_late_registration: 'Registrace už skončila, chcete-li se ještě registrovat, napište na adresu <a href="mailto:%mail%">%mail%</a>.'
 home.contact_instructions: "Pokud najdete nějakou chybu, oznamte ji prosím na následující e-mail:"
 billing.invoice.title: "Faktura"
 billing.invoice.number: "Faktura č."

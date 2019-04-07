@@ -56,6 +56,9 @@ eventDate: 2017-11-03
 opening: 2017-06-01T01:00:00
 closing: 2017-11-01T01:00:00
 
+# whether to urge people to use e-mail after registration period (defaults to false)
+allowLateRegistrationsByEmail: true
+
 # constraints on number of team members
 minMembers: 2
 maxMembers: 3
