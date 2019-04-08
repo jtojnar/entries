@@ -96,12 +96,12 @@ Prices will be displayed in choosen currency on the invoice and in the administr
 This section defines the categories entrants can choose from. The `categories` section can be either nested or flat. Each category defines a set of constraints that need to be satisfied in order for the team to be able to register in the category.
 
 ###### Category constraints
-Each constraint is a simple expression consisting of a predicate
+Each constraint is a simple expression consisting of either a predicate
 
-* `age<`, `age<=`, `age=`, `age>=`, `age>` followed by a number
-* `gender=` followed by `male` or `female`
+* `age`, followed by one of the comparison operators `<`, `<=`, `=`, `>=`, `>` and then a number
+* `gender` followed by `=` and then either `male` or `female`
 
-qualified by either `some` or `all`.
+quantified by either `some` or `all`, or one of aggregate function `sum`, `min`, `max` applied to `age` and followed by a comparison operator and then a number.
 
 The constrains are laid down in a list and all the constraints need to be satisfied.
 
@@ -110,6 +110,7 @@ constraints:
 	- 'some(gender=male)'
 	- 'some(gender=female)'
 	- 'all(age<20)'
+	- 'sum(age)>40'
 ```
 
 If the constraints are an empty set, the `constraints` key can be omitted.

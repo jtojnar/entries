@@ -26,6 +26,7 @@ class CategoryData {
 	private $categoryData;
 
 	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
+	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>(sum|min|max))\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
 
 	public const OP_LOOKUP = [
 		'<' => 'lt',
@@ -33,6 +34,12 @@ class CategoryData {
 		'=' => 'eq',
 		'>=' => 'gte',
 		'>' => 'gt',
+	];
+
+	public const AGGR_LOOKUP = [
+		'sum' => 'array_sum',
+		'min' => 'min',
+		'max' => 'max',
 	];
 
 	public const KEY_SUPPORTED_OPS = [
@@ -210,6 +217,22 @@ class CategoryData {
 				return [
 					function($entry) use ($quant, $keyProjection, $op, $val) {
 						return $quant($entry->getForm(), $keyProjection, $op, $val);
+					},
+					$translator->translate($message),
+				];
+			} elseif (preg_match(self::AGGREGATE_CONSTRAINT_REGEX, $constraint, $match)) {
+				$aggr = self::AGGR_LOOKUP[$match['aggr']];
+				$keyProjection = Callback::closure($this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]);
+				$op = Callback::closure($this, self::OP_LOOKUP[$match['op']]);
+				$message = self::KEY_MESSAGES[$match['key']];
+
+				$val = Callback::closure($this, self::VALUE_PARSERS_LOOKUP[$match['key']])($match['val']);
+
+				$translator = $this->app->getPresenter()->translator;
+
+				return [
+					function($entry) use ($aggr, $keyProjection, $op, $val) {
+						return $op($aggr(array_map($keyProjection, iterator_to_array($entry->getForm()['persons']->values))), $val);
 					},
 					$translator->translate($message),
 				];
