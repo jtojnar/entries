@@ -39,15 +39,15 @@ class SignPresenter extends BasePresenter {
 		return $form;
 	}
 
-	public function signInFormSucceeded($form, $values): void {
-		if ($values->remember) {
+	public function signInFormSucceeded(Form $form, array $values): void {
+		if ($values['remember']) {
 			$this->user->setExpiration('30 days', false);
 		} else {
 			$this->user->setExpiration('20 minutes', true);
 		}
 
 		try {
-			$this->user->login($values->teamid, $values->password);
+			$this->user->login($values['teamid'], $values['password']);
 			$this->restoreRequest($this->backlink);
 			$this->redirect('Homepage:');
 		} catch (Nette\Security\AuthenticationException $e) {

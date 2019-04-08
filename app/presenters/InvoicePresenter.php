@@ -37,7 +37,7 @@ class InvoicePresenter extends BasePresenter {
 		$template->getLatte()->addFilter('itemLabel', Callback::closure($this, 'itemLabel'));
 	}
 
-	public function formatInvoiceStatus($status) {
+	public function formatInvoiceStatus(string $status): string {
 		switch ($status) {
 			case Invoice::STATUS_CANCELLED:
 				return 'messages.billing.invoice.status.cancelled';
@@ -48,15 +48,15 @@ class InvoicePresenter extends BasePresenter {
 		}
 	}
 
-	public function itemLabel($item) {
+	public function itemLabel(string $item): string {
 		[$scope, $type, $key, $value] = array_merge(explode(':', $item), ['', '', '', '']);
 
 		if ($scope === 'person' && $type === '~entry') {
-			return $this->translator->translate('messages.billing.invoice.fees.person');
+			return (string) $this->translator->translate('messages.billing.invoice.fees.person');
 		}
 
 		if ($type === 'sportident') {
-			return $this->translator->translate('messages.billing.invoice.fees.si');
+			return (string) $this->translator->translate('messages.billing.invoice.fees.si');
 		}
 
 		$field = $this->presenter->context->parameters['entries']['fields'][$scope][$key] ?? null;

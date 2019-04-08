@@ -119,7 +119,7 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionExport($type = 'csv'): void {
+	public function actionExport(string $type = 'csv'): void {
 		if (!$this->user->isInRole('admin')) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
@@ -166,7 +166,7 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	protected function createComponentTeamForm(string $name) {
+	protected function createComponentTeamForm(string $name): Form {
 		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $this->translator, $this, $name);
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
 			$id = (int) $this->getParameter('id');
@@ -531,19 +531,19 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function personData($data) {
+	public function personData($data): array {
 		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 
 		return $this->formatData($data, $fields);
 	}
 
-	public function teamData($data) {
+	public function teamData($data): array {
 		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 
 		return $this->formatData($data, $fields);
 	}
 
-	public function formatData($data, $fields) {
+	public function formatData($data, array $fields): array {
 		$ret = [];
 		foreach ($fields as $name => $field) {
 			if (isset($field['label'][$this->locale])) {

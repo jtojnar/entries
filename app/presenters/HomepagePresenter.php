@@ -14,9 +14,6 @@ use Nette\Utils\DateTime;
 use Nextras\Forms\Rendering\FormLayout;
 
 class HomepagePresenter extends BasePresenter {
-	/** @var Nette\Caching\IStorage @inject */
-	public $storage;
-
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
 

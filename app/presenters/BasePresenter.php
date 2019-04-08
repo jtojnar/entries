@@ -53,7 +53,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		});
 	}
 
-	public function categoryFormat(App\Model\Team $team) {
+	public function categoryFormat(App\Model\Team $team): string {
 		$categoryData = $this->categories->getCategoryData();
 
 		if (isset($categoryData[$team->category])) {
@@ -63,7 +63,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		return $team->category;
 	}
 
-	public function wrapInParagraphs(array $arr) {
+	public function wrapInParagraphs(array $arr): string {
 		return implode('', array_map(function($e) {
 			return '<p>' . $e . '</p>';
 		}, $arr));
