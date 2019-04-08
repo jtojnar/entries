@@ -1,0 +1,92 @@
+parameters:
+	locales!:
+		cs: Česky
+	siteTitle:
+		cs: Mamut Bike Orienteering
+	entries:
+		minMembers: 1
+		initialMembers: 2
+		maxMembers: 5
+		eventDate: 2019-06-30 # used for age calculations
+		opening: 2019-04-01T00:00:00
+		closing: 2019-06-23T23:59:59
+		allowLateRegistrationsByEmail: true
+		invoiceModifier: App\InvoiceModifier
+		fees:
+			person: 200.0
+		categories:
+			'MM':
+				minMembers: 2
+				maxMembers: 2
+				constraints:
+					- 'all(gender=male)'
+					- 'sum(age)<=80'
+			'MM+':
+				minMembers: 2
+				maxMembers: 2
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>=35)'
+					- 'sum(age)>80'
+			'DD':
+				minMembers: 2
+				maxMembers: 2
+				constraints:
+					- 'all(gender=female)'
+					- 'sum(age)<=80'
+			'DD+':
+				minMembers: 2
+				maxMembers: 2
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=35)'
+					- 'sum(age)>80'
+			'MD':
+				minMembers: 2
+				maxMembers: 2
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'sum(age)<=80'
+			'MD+':
+				minMembers: 2
+				maxMembers: 2
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age>=35)'
+					- 'sum(age)>80'
+			'RD':
+				minMembers: 2
+				maxMembers: 5
+				constraints:
+					- 'some(age<=15)'
+					- 'some(age>=18)'
+				fees:
+					# only count people over fifteen
+			'M':
+				minMembers: 1
+				maxMembers: 1
+				constraints:
+					- 'all(gender=male)'
+			'D':
+				minMembers: 1
+				maxMembers: 1
+				constraints:
+					- 'all(gender=female)'
+			'E-BIKE':
+				minMembers: 1
+				maxMembers: 2
+				constraints:
+		admin: ''
+	webmasterEmail: sedlakradek@centrum.cz
+
+dbal:
+	driver: mysqli
+	host: localhost
+	database: entries
+	username: root
+	password:
+	connectionTz: +01:00
+	options:
+		charset: utf8mb4
