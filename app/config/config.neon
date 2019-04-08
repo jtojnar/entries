@@ -53,7 +53,6 @@ orm:
 
 services:
 	- App\Model\TeamManager(@App\Model\TeamRepository, %entries.admin%)
-	- App\RouterFactory
 	- App\Model\CategoryData(@Nette\Application\Application)
 	- App\Forms\FormFactory
-	router: @App\RouterFactory::createRouter
+	router: App\Router\RouterFactory::createRouter
