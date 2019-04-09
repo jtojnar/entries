@@ -254,7 +254,7 @@ class TeamPresenter extends BasePresenter {
 			$team = new App\Model\Team();
 			$password = Nette\Utils\Random::generate();
 			$team->password = Nette\Security\Passwords::hash($password);
-			$team->ip = $this->context->getByType(Nette\Http\Request::class)->remoteAddress;
+			$team->ip = $this->context->getByType(Nette\Http\Request::class)->remoteAddress ?? '';
 		}
 
 		try {
