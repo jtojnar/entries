@@ -8,11 +8,11 @@ use App;
 use App\Components\SportidentControl;
 use App\Exporters;
 use App\Model\Invoice;
+use Closure;
 use Exception;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Mail\Message;
-use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
 use Nextras\Forms\Rendering\FormLayout;
@@ -69,8 +69,8 @@ class TeamPresenter extends BasePresenter {
 
 		$template->teams = $this->teams->findBy($where);
 
-		$template->getLatte()->addFilter('personData', Callback::closure($this, 'personData'));
-		$template->getLatte()->addFilter('teamData', Callback::closure($this, 'teamData'));
+		$template->getLatte()->addFilter('personData', Closure::fromCallable([$this, 'personData']));
+		$template->getLatte()->addFilter('teamData', Closure::fromCallable([$this, 'teamData']));
 
 		$template->stats = ['count' => \count($template->teams)];
 	}
@@ -150,12 +150,12 @@ class TeamPresenter extends BasePresenter {
 
 		if (\count($teams)) {
 			if ($type === 'meos') {
-				$exporter = new Exporters\MeosExporter($teams, Callback::closure($this, 'categoryFormat'));
+				$exporter = new Exporters\MeosExporter($teams, Closure::fromCallable([$this, 'categoryFormat']));
 				$response = $this->context->getByType(Nette\Http\Response::class);
 				$response->setContentType($exporter->getMimeType(), 'UTF-8');
 				$exporter->output();
 			} else {
-				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, Callback::closure($this, 'categoryFormat'), $maxMembers);
+				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, Closure::fromCallable([$this, 'categoryFormat']), $maxMembers);
 				$response = $this->context->getByType(Nette\Http\Response::class);
 				$response->setContentType('text/plain', 'UTF-8');
 				$exporter->output();
@@ -215,12 +215,12 @@ class TeamPresenter extends BasePresenter {
 		if ($this->getParameter('id')) {
 			$form['save']->caption = 'messages.team.action.edit';
 		}
-		$form['save']->onClick[] = Callback::closure($this, 'processTeamForm');
+		$form['save']->onClick[] = Closure::fromCallable([$this, 'processTeamForm']);
 
 		return $form;
 	}
 
-	public function processTeamForm(Nette\Forms\Controls\SubmitButton $button): void {
+	private function processTeamForm(Nette\Forms\Controls\SubmitButton $button): void {
 		if (!$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
 				throw new App\TooLateForAccessException();
@@ -399,7 +399,7 @@ class TeamPresenter extends BasePresenter {
 			}
 
 			if (isset($this->presenter->context->parameters['entries']['invoiceModifier'])) {
-				$invoiceModifier = Callback::closure($this->presenter->context->parameters['entries']['invoiceModifier'], 'modify');
+				$invoiceModifier = Closure::fromCallable([$this->presenter->context->parameters['entries']['invoiceModifier'], 'modify']);
 				$invoiceModifier($team, $invoice, $this->context->parameters['entries']);
 			}
 
@@ -422,7 +422,7 @@ class TeamPresenter extends BasePresenter {
 			} else {
 				/** @var Nette\Bridges\ApplicationLatte\Template $mtemplate */
 				$mtemplate = $this->createTemplate();
-				$mtemplate->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
+				$mtemplate->getLatte()->addFilter('categoryFormat', Closure::fromCallable([$this, 'categoryFormat']));
 
 				$appDir = $this->context->parameters['appDir'];
 				if (file_exists($appDir . '/templates/Mail/verification.' . $this->locale . '.latte')) {
@@ -508,12 +508,12 @@ class TeamPresenter extends BasePresenter {
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
 		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
-		$form->onValidate[] = Callback::closure($this, 'filterRedir');
+		$form->onValidate[] = Closure::fromCallable([$this, 'filterRedir']);
 
 		return $form;
 	}
 
-	public function filterRedir(Nette\Forms\Form $form): void {
+	private function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 
 		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('category')) {
@@ -531,19 +531,19 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function personData($data): array {
+	private function personData($data): array {
 		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 
 		return $this->formatData($data, $fields);
 	}
 
-	public function teamData($data): array {
+	private function teamData($data): array {
 		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 
 		return $this->formatData($data, $fields);
 	}
 
-	public function formatData($data, array $fields): array {
+	private function formatData($data, array $fields): array {
 		$ret = [];
 		foreach ($fields as $name => $field) {
 			if (isset($field['label'][$this->locale])) {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use Closure;
 use Nette;
-use Nette\Utils\Callback;
 
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @persistent @var string */
@@ -42,8 +42,8 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			}
 		}
 
-		$template->getLatte()->addFilter('categoryFormat', Callback::closure($this, 'categoryFormat'));
-		$template->getLatte()->addFilter('wrapInParagraphs', Callback::closure($this, 'wrapInParagraphs'));
+		$template->getLatte()->addFilter('categoryFormat', Closure::fromCallable([$this, 'categoryFormat']));
+		$template->getLatte()->addFilter('wrapInParagraphs', Closure::fromCallable([$this, 'wrapInParagraphs']));
 		$template->getLatte()->addFilter('price', function($amount) {
 			$currency = $this->context->parameters['entries']['fees']['currency'];
 			$key = 'messages.currencies.' . $currency;
@@ -53,7 +53,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		});
 	}
 
-	public function categoryFormat(App\Model\Team $team): string {
+	// protected since it is used by other presenters
+	// TODO: move this into a separate factory
+	protected function categoryFormat(App\Model\Team $team): string {
 		$categoryData = $this->categories->getCategoryData();
 
 		if (isset($categoryData[$team->category])) {
@@ -63,7 +65,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		return $team->category;
 	}
 
-	public function wrapInParagraphs(array $arr): string {
+	private function wrapInParagraphs(array $arr): string {
 		return implode('', array_map(function($e) {
 			return '<p>' . $e . '</p>';
 		}, $arr));

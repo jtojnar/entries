@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use Closure;
 use Nette;
 use Nette\Application\UI\Form;
-use Nette\Utils\Callback;
 
 class SignPresenter extends BasePresenter {
 	/** @persistent */
@@ -34,12 +34,12 @@ class SignPresenter extends BasePresenter {
 
 		$form->addSubmit('send', 'messages.sign.in.action');
 
-		$form->onSuccess[] = Callback::closure($this, 'signInFormSucceeded');
+		$form->onSuccess[] = Closure::fromCallable([$this, 'signInFormSucceeded']);
 
 		return $form;
 	}
 
-	public function signInFormSucceeded(Form $form, array $values): void {
+	private function signInFormSucceeded(Form $form, array $values): void {
 		if ($values['remember']) {
 			$this->user->setExpiration('30 days', false);
 		} else {

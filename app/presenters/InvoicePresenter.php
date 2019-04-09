@@ -6,10 +6,10 @@ namespace App\Presenters;
 
 use App;
 use App\Model\Invoice;
+use Closure;
 use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
-use Nette\Utils\Callback;
 
 class InvoicePresenter extends BasePresenter {
 	/** @var App\Model\TeamRepository @inject */
@@ -33,11 +33,11 @@ class InvoicePresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		$template->getLatte()->addFilter('formatInvoiceStatus', Callback::closure($this, 'formatInvoiceStatus'));
-		$template->getLatte()->addFilter('itemLabel', Callback::closure($this, 'itemLabel'));
+		$template->getLatte()->addFilter('formatInvoiceStatus', Closure::fromCallable([$this, 'formatInvoiceStatus']));
+		$template->getLatte()->addFilter('itemLabel', Closure::fromCallable([$this, 'itemLabel']));
 	}
 
-	public function formatInvoiceStatus(string $status): string {
+	private function formatInvoiceStatus(string $status): string {
 		switch ($status) {
 			case Invoice::STATUS_CANCELLED:
 				return 'messages.billing.invoice.status.cancelled';
@@ -48,7 +48,7 @@ class InvoicePresenter extends BasePresenter {
 		}
 	}
 
-	public function itemLabel(string $item): string {
+	private function itemLabel(string $item): string {
 		[$scope, $type, $key, $value] = array_merge(explode(':', $item), ['', '', '', '']);
 
 		if ($scope === 'person' && $type === '~entry') {

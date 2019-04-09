@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use Closure;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Utils\Callback;
 use Nette\Utils\DateTime;
 use Nextras\Forms\Rendering\FormLayout;
 
@@ -44,22 +44,17 @@ class HomepagePresenter extends BasePresenter {
 		$template->mail = $this->context->parameters['webmasterEmail'];
 	}
 
-	/**
-	 * Maintenance form factory.
-	 *
-	 * @return Form
-	 */
 	protected function createComponentMaintenanceForm(): Form {
 		$form = $this->formFactory->create(FormLayout::INLINE);
 
 		$clearCacheButton = $form->addSubmit('clearCache', 'messages.maintenance.clear_cache');
 		$clearCacheButton->controlPrototype->removeClass('btn-primary')->addClass('btn-warning');
-		$clearCacheButton->onClick[] = Callback::closure($this, 'clearCache');
+		$clearCacheButton->onClick[] = Closure::fromCallable([$this, 'clearCache']);
 
 		return $form;
 	}
 
-	public function clearCache(SubmitButton $form, array $values): void {
+	private function clearCache(SubmitButton $form): void {
 		if (!$this->user->isInRole('admin')) {
 			throw new ForbiddenRequestException();
 		}

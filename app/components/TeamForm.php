@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Components;
 
 use App\Model\CategoryData;
+use Closure;
 use Nette\Application\UI;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
-use Nette\Utils\Callback;
 use Nette\Utils\Html;
 use Nette\Utils\Json;
 
@@ -61,8 +61,8 @@ class TeamForm extends UI\Form {
 
 		$this->setCurrentGroup();
 		$this->addSubmit('save', 'messages.team.action.register');
-		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = Callback::closure($this, 'addMemberClicked');
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = Callback::closure($this, 'removeMemberClicked');
+		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = Closure::fromCallable([$this, 'addMemberClicked']);
+		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = Closure::fromCallable([$this, 'removeMemberClicked']);
 
 		$fields = $this->parameters['fields']['person'];
 		$i = 0;
@@ -103,11 +103,11 @@ class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addMemberClicked(SubmitButton $button): void {
+	private function addMemberClicked(SubmitButton $button): void {
 		$button->parent['persons']->createOne();
 	}
 
-	public function removeMemberClicked(SubmitButton $button): void {
+	private function removeMemberClicked(SubmitButton $button): void {
 		$lastPerson = null;
 		foreach ($button->parent['persons']->getContainers() as $p) {
 			$lastPerson = $p;
@@ -173,7 +173,7 @@ class TeamForm extends UI\Form {
 				}
 
 				if (isset($this->parameters['customInputModifier'])) {
-					$customInputModifier = Callback::closure($this->parameters['customInputModifier'], 'modify');
+					$customInputModifier = Closure::fromCallable([$this->parameters['customInputModifier'], 'modify']);
 					$customInputModifier($input, $container);
 				}
 			}
