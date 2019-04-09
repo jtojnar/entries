@@ -47,13 +47,13 @@ class TeamPresenter extends BasePresenter {
 
 	public function renderList(): void {
 		$where = [];
-		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
+		$category = $this->context->getByType(Nette\Http\Request::class)->getQuery('category');
 		if ($category !== null) {
 			$where = ['category' => explode('|', $category)];
 		}
 
-		if ($this->context->getByType('Nette\Http\Request')->getQuery('status') !== null) {
-			switch ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
+		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status') !== null) {
+			switch ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
 				case 'paid':
 					$where['status'] = 'paid';
 					break;
@@ -127,12 +127,12 @@ class TeamPresenter extends BasePresenter {
 
 		$where = [];
 
-		$category = $this->context->getByType('Nette\Http\Request')->getQuery('category');
+		$category = $this->context->getByType(Nette\Http\Request::class)->getQuery('category');
 		if ($category !== null) {
 			$where = ['category' => explode('|', $category)];
 		}
 
-		switch ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
+		switch ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
 			case 'paid':
 				$where['status'] = 'paid';
 				break;
@@ -151,12 +151,12 @@ class TeamPresenter extends BasePresenter {
 		if (\count($teams)) {
 			if ($type === 'meos') {
 				$exporter = new Exporters\MeosExporter($teams, Callback::closure($this, 'categoryFormat'));
-				$response = $this->context->getByType('Nette\Http\Response');
+				$response = $this->context->getByType(Nette\Http\Response::class);
 				$response->setContentType($exporter->getMimeType(), 'UTF-8');
 				$exporter->output();
 			} else {
 				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, Callback::closure($this, 'categoryFormat'), $maxMembers);
-				$response = $this->context->getByType('Nette\Http\Response');
+				$response = $this->context->getByType(Nette\Http\Response::class);
 				$response->setContentType('text/plain', 'UTF-8');
 				$exporter->output();
 			}
@@ -254,7 +254,7 @@ class TeamPresenter extends BasePresenter {
 			$team = new App\Model\Team();
 			$password = Nette\Utils\Random::generate();
 			$team->password = Nette\Security\Passwords::hash($password);
-			$team->ip = $this->context->getByType('Nette\Http\Request')->remoteAddress;
+			$team->ip = $this->context->getByType(Nette\Http\Request::class)->remoteAddress;
 		}
 
 		try {
@@ -446,7 +446,7 @@ class TeamPresenter extends BasePresenter {
 				$mail = new Message();
 				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($emogrifier->emogrify());
 
-				$mailer = $this->context->getByType('Nette\Mail\IMailer');
+				$mailer = $this->context->getByType(Nette\Mail\IMailer::class);
 				$mailer->send($mail);
 
 				$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
@@ -493,15 +493,15 @@ class TeamPresenter extends BasePresenter {
 		$category->setPrompt('messages.team.list.filter.category.all');
 		$category->setAttribute('style', 'width:auto;');
 
-		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
-			$category->setValue($this->context->getByType('Nette\Http\Request')->getQuery('category'));
+		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('category')) {
+			$category->setValue($this->context->getByType(Nette\Http\Request::class)->getQuery('category'));
 		}
 		$category->controlPrototype->onchange('this.form.submit();');
 
 		if ($this->user->isInRole('admin')) {
 			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setAttribute('style', 'width:auto;');
-			if ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
-				$status->setValue($this->context->getByType('Nette\Http\Request')->getQuery('status'));
+			if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
+				$status->setValue($this->context->getByType(Nette\Http\Request::class)->getQuery('status'));
 			}
 			$status->controlPrototype->onchange('this.form.submit();');
 		}
@@ -516,12 +516,12 @@ class TeamPresenter extends BasePresenter {
 	public function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 
-		if ($this->context->getByType('Nette\Http\Request')->getQuery('category')) {
-			$parameters['category'] = $this->context->getByType('Nette\Http\Request')->getQuery('category');
+		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('category')) {
+			$parameters['category'] = $this->context->getByType(Nette\Http\Request::class)->getQuery('category');
 		}
 
-		if ($this->context->getByType('Nette\Http\Request')->getQuery('status')) {
-			$parameters['status'] = $this->context->getByType('Nette\Http\Request')->getQuery('status');
+		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
+			$parameters['status'] = $this->context->getByType(Nette\Http\Request::class)->getQuery('status');
 		}
 
 		if (\count($parameters) === 0) {

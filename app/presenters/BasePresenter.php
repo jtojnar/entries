@@ -25,7 +25,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		$defaultLocale = $this->context->parameters['defaultLocale'];
 
 		if ($this->locale === null) {
-			$detectedLocale = $this->template->locale = $this->context->getByType('Nette\Http\Request')->detectLanguage(array_keys($locales));
+			$detectedLocale = $this->template->locale = $this->context->getByType(Nette\Http\Request::class)->detectLanguage(array_keys($locales));
 
 			$this->locale = $detectedLocale ? $detectedLocale : $defaultLocale;
 			$this->canonicalize();
