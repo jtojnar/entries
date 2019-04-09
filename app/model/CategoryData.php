@@ -8,8 +8,17 @@ use Closure;
 use Kdyby\Translation\Translator;
 use Nette;
 use Nette\Application\Application;
-use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SelectBox;
+use const nspl\a\all;
+use const nspl\a\any;
+use function nspl\a\map;
+use const nspl\f\id;
+use const nspl\op\ge;
+use const nspl\op\gt;
+use const nspl\op\idnt;
+use const nspl\op\int;
+use const nspl\op\le;
+use const nspl\op\lt;
 
 final class CategoryData {
 	use Nette\SmartObject;
@@ -36,11 +45,11 @@ final class CategoryData {
 	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>(sum|min|max))\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
 
 	public const OP_LOOKUP = [
-		'<' => 'lt',
-		'<=' => 'lte',
-		'=' => 'eq',
-		'>=' => 'gte',
-		'>' => 'gt',
+		'<' => lt,
+		'<=' => le,
+		'=' => idnt,
+		'>=' => ge,
+		'>' => gt,
 	];
 
 	public const AGGR_LOOKUP = [
@@ -59,9 +68,9 @@ final class CategoryData {
 		'gender' => 'genderProjection',
 	];
 
-	public const VALUE_PARSERS_LOOKUP = [
-		'age' => 'ageParser',
-		'gender' => 'genderParser',
+	public const VALUE_PARSERS = [
+		'age' => int,
+		'gender' => id,
 	];
 
 	public const KEY_MESSAGES = [
@@ -70,8 +79,8 @@ final class CategoryData {
 	];
 
 	public const QUANT_LOOKUP = [
-		'all' => 'quantAll',
-		'some' => 'quantSome',
+		'all' => all,
+		'some' => any,
 	];
 
 	public function __construct(Application $app, Translator $translator) {
@@ -210,8 +219,8 @@ final class CategoryData {
 
 		return array_map(function(string $constraint): array {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match)) {
-				$quant = Closure::fromCallable([$this, self::QUANT_LOOKUP[$match['quant']]]);
-				$op = Closure::fromCallable([$this, self::OP_LOOKUP[$match['op']]]);
+				$quant = Closure::fromCallable(self::QUANT_LOOKUP[$match['quant']]);
+				$op = Closure::fromCallable(self::OP_LOOKUP[$match['op']]);
 				$keyProjection = Closure::fromCallable([$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]]);
 				$message = self::KEY_MESSAGES[$match['key']];
 
@@ -219,25 +228,31 @@ final class CategoryData {
 					throw new \Exception("Constraint “${constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
 				}
 
-				$val = Closure::fromCallable([$this, self::VALUE_PARSERS_LOOKUP[$match['key']]])($match['val']);
+				$comparedValue = Closure::fromCallable(self::VALUE_PARSERS[$match['key']])($match['val']);
 
 				return [
-					function(SelectBox $entry) use ($quant, $keyProjection, $op, $val): bool {
-						return $quant($entry->getForm(), $keyProjection, $op, $val);
+					function(SelectBox $entry) use ($quant, $keyProjection, $op, $comparedValue): bool {
+						$members = $entry->getForm()['persons']->values;
+
+						return $quant($members, function(\ArrayAccess $person) use ($op, $keyProjection, $comparedValue): bool {
+							return $op($keyProjection($person), $comparedValue);
+						});
 					},
 					$this->translator->translate($message),
 				];
 			} elseif (preg_match(self::AGGREGATE_CONSTRAINT_REGEX, $constraint, $match)) {
 				$aggr = Closure::fromCallable(self::AGGR_LOOKUP[$match['aggr']]);
 				$keyProjection = Closure::fromCallable([$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]]);
-				$op = Closure::fromCallable([$this, self::OP_LOOKUP[$match['op']]]);
+				$op = Closure::fromCallable(self::OP_LOOKUP[$match['op']]);
 				$message = self::KEY_MESSAGES[$match['key']];
 
-				$val = Closure::fromCallable([$this, self::VALUE_PARSERS_LOOKUP[$match['key']]])($match['val']);
+				$comparedValue = Closure::fromCallable(self::VALUE_PARSERS[$match['key']])($match['val']);
 
 				return [
-					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $val): bool {
-						return $op($aggr(array_map($keyProjection, iterator_to_array($entry->getForm()['persons']->values))), $val);
+					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $comparedValue): bool {
+						$members = iterator_to_array($entry->getForm()['persons']->values);
+
+						return $op($aggr(map($keyProjection, $members)), $comparedValue);
 					},
 					$this->translator->translate($message),
 				];
@@ -245,34 +260,6 @@ final class CategoryData {
 
 			throw new \Exception("Constraint “${constraint}” is invalid");
 		}, $category['constraints']);
-	}
-
-	private function lt($a, $b): bool {
-		return $a < $b;
-	}
-
-	private function lte($a, $b): bool {
-		return $a <= $b;
-	}
-
-	private function eq($a, $b): bool {
-		return $a === $b;
-	}
-
-	private function gte($a, $b): bool {
-		return $a >= $b;
-	}
-
-	private function gt($a, $b): bool {
-		return $a > $b;
-	}
-
-	private function ageParser(string $age): int {
-		return (int) $age;
-	}
-
-	private function genderParser(string $gender): string {
-		return $gender;
 	}
 
 	private function ageProjection(\ArrayAccess $person): ?int {
@@ -288,25 +275,5 @@ final class CategoryData {
 
 	private function genderProjection(\ArrayAccess $person): ?string {
 		return $person['gender'];
-	}
-
-	private function quantAll(Form $team, Closure $keyProjection, Closure $op, $value): bool {
-		foreach ($team['persons']->values as $person) {
-			if (!$op($keyProjection($person), $value)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private function quantSome(Form $team, Closure $keyProjection, Closure $op, $value): bool {
-		foreach ($team['persons']->values as $person) {
-			if ($op($keyProjection($person), $value)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }
