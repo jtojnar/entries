@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Closure;
+use Kdyby\Translation\Translator;
 use Nette;
-use Nette\Utils\Callback;
+use Nette\Application\Application;
+use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SelectBox;
 
-class CategoryData {
+final class CategoryData {
 	use Nette\SmartObject;
 
-	/** Nette\Application\Application */
+	/** @var Application */
 	private $app;
+
+	/** @var Translator */
+	private $translator;
 
 	/** @var array */
 	private $parameters;
@@ -67,14 +74,16 @@ class CategoryData {
 		'some' => 'quantSome',
 	];
 
-	public function __construct(Nette\Application\Application $app) {
+	public function __construct(Application $app, Translator $translator) {
 		$this->app = $app;
+		$this->translator = $translator;
 	}
 
-	public function getCategoryTree() {
+	public function getCategoryTree(): array {
 		if (!isset($this->categoryTree)) {
+			/** @var \App\Presenters\BasePresenter */
 			$presenter = $this->app->getPresenter();
-			$parameters = $this->parameters = $presenter->context->parameters['entries'];
+			$parameters = $this->parameters = $presenter->getContext()->parameters['entries'];
 			$locale = $this->locale = $presenter->locale;
 			$items = [];
 
@@ -86,7 +95,7 @@ class CategoryData {
 				$this->categoryData = [];
 				$groups = $parameters['categories'];
 
-				$groupsKeys = array_map(function($groupKey) use ($groups, $locale) {
+				$groupsKeys = array_map(function(string $groupKey) use ($groups, $locale): string {
 					$group = $groups[$groupKey];
 
 					if (isset($group['label'])) {
@@ -100,7 +109,7 @@ class CategoryData {
 					throw new \Exception("Category group #${groupKey} lacks a label");
 				}, array_keys($groups));
 
-				$groupsCategories = array_map(function($groupKey) use ($groups, $parameters) {
+				$groupsCategories = array_map(function(string $groupKey) use ($groups, $parameters): array {
 					$group = $groups[$groupKey];
 
 					if (!isset($group['categories']) || !\is_array($group['categories'])) {
@@ -111,7 +120,7 @@ class CategoryData {
 
 					$categoriesKeys = array_keys($categories);
 
-					$categoriesData = array_map(function($categoryKey) use ($categories, $group, $parameters) {
+					$categoriesData = array_map(function(string $categoryKey) use ($categories, $group, $parameters): array {
 						$category = $categories[$categoryKey];
 
 						if (isset($category['fees']) && isset($category['fees']['person'])) {
@@ -148,7 +157,7 @@ class CategoryData {
 
 				$categoriesKeys = array_keys($categories);
 
-				$categoriesData = array_map(function($categoryKey) use ($categories, $parameters) {
+				$categoriesData = array_map(function(string $categoryKey) use ($categories, $parameters): array {
 					$category = $categories[$categoryKey];
 
 					if (isset($category['fees']) && isset($category['fees']['person'])) {
@@ -174,7 +183,7 @@ class CategoryData {
 		return $this->categoryTree;
 	}
 
-	public function getCategoryData() {
+	public function getCategoryData(): array {
 		if (!isset($this->categoryData)) {
 			$this->getCategoryTree();
 		}
@@ -182,59 +191,55 @@ class CategoryData {
 		return $this->categoryData;
 	}
 
-	private static function isNested($categories) {
+	private static function isNested(array $categories): bool {
 		foreach ($categories as $category) {
 			return isset($category['categories']);
 		}
 	}
 
-	public function areNested() {
+	public function areNested(): bool {
 		foreach ($this->getCategoryTree() as $category) {
 			return !isset($category['label']);
 		}
 	}
 
-	private function parseConstraints($category) {
+	private function parseConstraints(array $category): array {
 		if (!isset($category['constraints'])) {
 			return [];
 		}
 
-		return array_map(function($constraint) {
+		return array_map(function(string $constraint): array {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match)) {
-				$quant = Callback::closure($this, self::QUANT_LOOKUP[$match['quant']]);
-				$op = Callback::closure($this, self::OP_LOOKUP[$match['op']]);
-				$keyProjection = Callback::closure($this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]);
+				$quant = Closure::fromCallable([$this, self::QUANT_LOOKUP[$match['quant']]]);
+				$op = Closure::fromCallable([$this, self::OP_LOOKUP[$match['op']]]);
+				$keyProjection = Closure::fromCallable([$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]]);
 				$message = self::KEY_MESSAGES[$match['key']];
 
 				if (!\in_array($match['op'], self::KEY_SUPPORTED_OPS[$match['key']], true)) {
 					throw new \Exception("Constraint “${constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
 				}
 
-				$val = Callback::closure($this, self::VALUE_PARSERS_LOOKUP[$match['key']])($match['val']);
-
-				$translator = $this->app->getPresenter()->translator;
+				$val = Closure::fromCallable([$this, self::VALUE_PARSERS_LOOKUP[$match['key']]])($match['val']);
 
 				return [
-					function($entry) use ($quant, $keyProjection, $op, $val) {
+					function(SelectBox $entry) use ($quant, $keyProjection, $op, $val): bool {
 						return $quant($entry->getForm(), $keyProjection, $op, $val);
 					},
-					$translator->translate($message),
+					$this->translator->translate($message),
 				];
 			} elseif (preg_match(self::AGGREGATE_CONSTRAINT_REGEX, $constraint, $match)) {
-				$aggr = self::AGGR_LOOKUP[$match['aggr']];
-				$keyProjection = Callback::closure($this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]);
-				$op = Callback::closure($this, self::OP_LOOKUP[$match['op']]);
+				$aggr = Closure::fromCallable(self::AGGR_LOOKUP[$match['aggr']]);
+				$keyProjection = Closure::fromCallable([$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]]);
+				$op = Closure::fromCallable([$this, self::OP_LOOKUP[$match['op']]]);
 				$message = self::KEY_MESSAGES[$match['key']];
 
-				$val = Callback::closure($this, self::VALUE_PARSERS_LOOKUP[$match['key']])($match['val']);
-
-				$translator = $this->app->getPresenter()->translator;
+				$val = Closure::fromCallable([$this, self::VALUE_PARSERS_LOOKUP[$match['key']]])($match['val']);
 
 				return [
-					function($entry) use ($aggr, $keyProjection, $op, $val) {
+					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $val): bool {
 						return $op($aggr(array_map($keyProjection, iterator_to_array($entry->getForm()['persons']->values))), $val);
 					},
-					$translator->translate($message),
+					$this->translator->translate($message),
 				];
 			}
 
@@ -242,23 +247,23 @@ class CategoryData {
 		}, $category['constraints']);
 	}
 
-	private function lt($a, $b) {
+	private function lt($a, $b): bool {
 		return $a < $b;
 	}
 
-	private function lte($a, $b) {
+	private function lte($a, $b): bool {
 		return $a <= $b;
 	}
 
-	private function eq($a, $b) {
+	private function eq($a, $b): bool {
 		return $a === $b;
 	}
 
-	private function gte($a, $b) {
+	private function gte($a, $b): bool {
 		return $a >= $b;
 	}
 
-	private function gt($a, $b) {
+	private function gt($a, $b): bool {
 		return $a > $b;
 	}
 
@@ -285,7 +290,7 @@ class CategoryData {
 		return $person['gender'];
 	}
 
-	private function quantAll($team, \Closure $keyProjection, \Closure $op, $value) {
+	private function quantAll(Form $team, Closure $keyProjection, Closure $op, $value): bool {
 		foreach ($team['persons']->values as $person) {
 			if (!$op($keyProjection($person), $value)) {
 				return false;
@@ -295,7 +300,7 @@ class CategoryData {
 		return true;
 	}
 
-	private function quantSome($team, \Closure $keyProjection, \Closure $op, $value) {
+	private function quantSome(Form $team, Closure $keyProjection, Closure $op, $value): bool {
 		foreach ($team['persons']->values as $person) {
 			if ($op($keyProjection($person), $value)) {
 				return true;
