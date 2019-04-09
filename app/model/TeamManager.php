@@ -5,16 +5,21 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Nette;
+use Nette\Security\AuthenticationException;
+use Nette\Security\Identity;
 use Nette\Security\Passwords;
 use Nextras\Orm\Entity\ToArrayConverter;
 
-class TeamManager implements Nette\Security\IAuthenticator {
+final class TeamManager implements Nette\Security\IAuthenticator {
+	use Nette\SmartObject;
+
 	/** @var TeamRepository */
 	private $teams;
 
+	/** @var string administrator password */
 	private $password;
 
-	public function __construct(TeamRepository $teams, $password) {
+	public function __construct(TeamRepository $teams, string $password) {
 		$this->teams = $teams;
 		$this->password = $password;
 	}
@@ -22,26 +27,25 @@ class TeamManager implements Nette\Security\IAuthenticator {
 	/**
 	 * Performs an authentication.
 	 *
-	 *
 	 * @param array $credentials
 	 *
-	 * @throws Nette\Security\AuthenticationException
+	 * @throws AuthenticationException
 	 *
-	 * @return Nette\Security\Identity
+	 * @return Identity
 	 */
-	public function authenticate(array $credentials) {
-		list($teamid, $password) = $credentials;
+	public function authenticate(array $credentials): Identity {
+		[$teamId, $password] = $credentials;
 
-		if ($teamid === 'admin' && $password === $this->password) {
-			return new Nette\Security\Identity('admin', 'admin', ['status' => 'admin']);
+		if ($teamId === 'admin' && $password === $this->password) {
+			return new Identity('admin', 'admin', ['status' => 'admin']);
 		}
 
-		$team = $this->teams->getById($teamid);
+		$team = $this->teams->getById($teamId);
 
 		if (!$team) {
-			throw new Nette\Security\AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
+			throw new AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
 		} elseif (!Passwords::verify($password, $team->password)) {
-			throw new Nette\Security\AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
+			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
 		} elseif (Passwords::needsRehash($team->password)) {
 			$team->password = Passwords::hash($password);
 			$this->teams->persistAndFlush($team);
@@ -53,6 +57,6 @@ class TeamManager implements Nette\Security\IAuthenticator {
 		unset($arr['invoices']);
 		unset($arr['lastInvoice']);
 
-		return new Nette\Security\Identity($team->id, 'user', $arr);
+		return new Identity($team->id, 'user', $arr);
 	}
 }
