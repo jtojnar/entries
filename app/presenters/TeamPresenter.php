@@ -34,6 +34,9 @@ class TeamPresenter extends BasePresenter {
 	/** @var App\Forms\FormFactory @inject */
 	public $formFactory;
 
+	/** @var App\Forms\TeamFormFactory @inject */
+	public $teamFormFactory;
+
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
@@ -167,7 +170,7 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	protected function createComponentTeamForm(string $name): Form {
-		$form = new App\Components\TeamForm($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $this->translator, $this, $name);
+		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $this, $name);
 		if ($this->getParameter('id') && !$form->isSubmitted()) {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);

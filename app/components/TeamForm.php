@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace App\Components;
 
-use App\Model\CategoryData;
 use Closure;
 use Nette\Application\UI;
 use Nette\ComponentModel\IContainer;
-use Nette\Forms\Container;
-use Nette\Forms\Controls\SubmitButton;
-use Nette\Forms\Form;
 use Nette\Utils\Html;
 use Nette\Utils\Json;
 
@@ -18,75 +14,17 @@ class TeamForm extends UI\Form {
 	/** @var array */
 	private $countries;
 
-	/** @var CategoryData */
-	private $categories;
-
 	/** @var array */
 	private $parameters;
 
 	/** @var string */
 	private $locale;
 
-	public function __construct(array $countries, CategoryData $categories, array $parameters, string $locale, \Kdyby\Translation\Translator $translator, IContainer $parent = null, string $name = null) {
+	public function __construct(array $countries, array $parameters, string $locale, IContainer $parent = null, string $name = null) {
 		parent::__construct($parent, $name);
 		$this->countries = $countries;
-		$this->categories = $categories;
 		$this->parameters = $parameters;
 		$this->locale = $locale;
-		$this->setTranslator($translator);
-		$renderer = new \Nextras\Forms\Rendering\Bs4FormRenderer();
-		$this->setRenderer($renderer);
-
-		$minMembers = $this->parameters['minMembers'];
-
-		$this->addProtection();
-		$this->addGroup('messages.team.info.label');
-		$this->addText('name', 'messages.team.name.label')->setRequired();
-
-		$category = new CategoryEntry('messages.team.category.label', $this->categories);
-		$category->setRequired();
-		$this['category'] = $category;
-
-		if ($category->value !== null) {
-			$constraints = $this->categories->getCategoryData()[$category->value]['constraints'];
-			foreach ($constraints as $constraint) {
-				$category->addRule(...$constraint);
-			}
-		}
-
-		$fields = $this->parameters['fields']['team'];
-		$this->addCustomFields($fields, $this);
-
-		$this->addTextArea('message', 'messages.team.message.label');
-
-		$this->setCurrentGroup();
-		$this->addSubmit('save', 'messages.team.action.register');
-		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = Closure::fromCallable([$this, 'addMemberClicked']);
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = Closure::fromCallable([$this, 'removeMemberClicked']);
-
-		$fields = $this->parameters['fields']['person'];
-		$i = 0;
-		$this->addDynamic('persons', function(Container $container) use (&$i, $fields, $translator): void {
-			++$i;
-			$group = $this->addGroup();
-			$group->setOption('label', Html::el()->setText($translator->translate('messages.team.person.label', $i)));
-			$container->setCurrentGroup($group);
-			$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
-
-			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
-			$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
-
-			$container->addDatePicker('birth', 'messages.team.person.birth.label')->setRequired();
-
-			$this->addCustomFields($fields, $container);
-
-			$container->addText('email', 'messages.team.person.email.label')->setType('email');
-
-			if ($i === 1) {
-				$container['email']->setRequired()->addRule(Form::EMAIL);
-				$group->setOption('description', 'messages.team.person.isContact');
-			}
-		}, $minMembers, true);
 	}
 
 	public function onRender(): void {
@@ -100,20 +38,6 @@ class TeamForm extends UI\Form {
 
 		if ($count <= $minMembers) {
 			$this['remove']->setDisabled();
-		}
-	}
-
-	private function addMemberClicked(SubmitButton $button): void {
-		$button->parent['persons']->createOne();
-	}
-
-	private function removeMemberClicked(SubmitButton $button): void {
-		$lastPerson = null;
-		foreach ($button->parent['persons']->getContainers() as $p) {
-			$lastPerson = $p;
-		}
-		if ($lastPerson) {
-			$button->parent['persons']->remove($lastPerson, true);
 		}
 	}
 

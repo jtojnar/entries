@@ -55,4 +55,5 @@ services:
 	- App\Model\TeamManager(@App\Model\TeamRepository, %entries.admin%)
 	- App\Model\CategoryData
 	- App\Forms\FormFactory
+	- App\Forms\TeamFormFactory
 	router: App\Router\RouterFactory::createRouter
