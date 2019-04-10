@@ -36,6 +36,7 @@ final class TeamFormFactory {
 
 		$defaultMinMembers = $parameters['minMembers'];
 		$defaultMaxMembers = $parameters['maxMembers'];
+		$initialMembers = $parameters['initialMembers'] ?? $defaultMinMembers;
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
@@ -121,7 +122,7 @@ final class TeamFormFactory {
 				$container['email']->setRequired()->addRule(Form::EMAIL);
 				$group->setOption('description', 'messages.team.person.isContact');
 			}
-		}, $defaultMinMembers, true);
+		}, $initialMembers, true);
 
 		return $form;
 	}

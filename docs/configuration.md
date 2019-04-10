@@ -59,8 +59,9 @@ closing: 2017-11-01T01:00:00
 # whether to urge people to use e-mail after registration period (defaults to false)
 allowLateRegistrationsByEmail: true
 
-# constraints on number of team members (can be overridden in each category individually)
-minMembers: 2
+# constraints on number of team members (min & max can be overridden in each category individually)
+minMembers: 1
+initialMembers: 2 # number of members when form is loaded, optional (defaults to the value of minMembers)
 maxMembers: 3
 
 # this will warn users when they try to enter with an SI card
