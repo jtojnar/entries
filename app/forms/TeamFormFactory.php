@@ -34,7 +34,8 @@ final class TeamFormFactory {
 		$renderer = new Bs4FormRenderer();
 		$form->setRenderer($renderer);
 
-		$minMembers = $parameters['minMembers'];
+		$defaultMinMembers = $parameters['minMembers'];
+		$defaultMaxMembers = $parameters['maxMembers'];
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
@@ -51,6 +52,22 @@ final class TeamFormFactory {
 			}
 		}
 
+		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMaxMembers) {
+			$category = $entry->getValue();
+			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
+			$replicator = $entry->form['persons'];
+
+			return $maxMembers > iterator_count($replicator->getContainers());
+		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
+
+		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMinMembers) {
+			$category = $entry->getValue();
+			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
+			$replicator = $entry->form['persons'];
+
+			return $minMembers < iterator_count($replicator->getContainers());
+		}, 'messages.team.error.too_few_members_simple');
+
 		$fields = $parameters['fields']['team'];
 		$form->addCustomFields($fields, $form);
 
@@ -58,13 +75,27 @@ final class TeamFormFactory {
 
 		$form->setCurrentGroup();
 		$form->addSubmit('save', 'messages.team.action.register');
-		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button): void {
-			$button->parent['persons']->createOne();
+		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($categories, $defaultMaxMembers): void {
+			$category = $button->form['category']->getValue();
+			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
+			$replicator = $button->parent['persons'];
+			if ($maxMembers > iterator_count($replicator->getContainers())) {
+				$replicator->createOne();
+			} else {
+				$button->form->addError(Html::el()->setText($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category])));
+			}
 		};
-		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button): void {
-			$lastPerson = last($button->parent['persons']->getContainers());
-			if ($lastPerson) {
-				$button->parent['persons']->remove($lastPerson, true);
+		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($categories, $defaultMinMembers): void {
+			$category = $button->form['category']->getValue();
+			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
+			$replicator = $button->parent['persons'];
+			if ($minMembers < iterator_count($replicator->getContainers())) {
+				$lastPerson = last($button->parent['persons']->getContainers());
+				if ($lastPerson) {
+					$replicator->remove($lastPerson, true);
+				}
+			} else {
+				$button->form->addError(Html::el()->setText($this->translator->translate('messages.team.error.too_few_members', $minMembers, ['category' => $category])));
 			}
 		};
 
@@ -90,7 +121,7 @@ final class TeamFormFactory {
 				$container['email']->setRequired()->addRule(Form::EMAIL);
 				$group->setOption('description', 'messages.team.person.isContact');
 			}
-		}, $minMembers, true);
+		}, $defaultMinMembers, true);
 
 		return $form;
 	}

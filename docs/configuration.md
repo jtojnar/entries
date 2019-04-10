@@ -59,7 +59,7 @@ closing: 2017-11-01T01:00:00
 # whether to urge people to use e-mail after registration period (defaults to false)
 allowLateRegistrationsByEmail: true
 
-# constraints on number of team members
+# constraints on number of team members (can be overridden in each category individually)
 minMembers: 2
 maxMembers: 3
 
@@ -94,6 +94,19 @@ Prices will be displayed in choosen currency on the invoice and in the administr
 ##### `categories`
 
 This section defines the categories entrants can choose from. The `categories` section can be either nested or flat. Each category defines a set of constraints that need to be satisfied in order for the team to be able to register in the category.
+
+Categories can also narrow down the minimum and maximum number of team members:
+
+```neon
+parameters:
+	entries:
+		minMembers: 1
+		maxMembers: 5
+		categories:
+			'MM':
+				minMembers: 2
+				maxMembers: 2
+```
 
 ###### Category constraints
 Each constraint is a simple expression consisting of either a predicate

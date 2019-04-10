@@ -146,6 +146,8 @@ final class CategoryData {
 							'label' => $categoryKey,
 							'fee' => $fee,
 							'constraints' => $this->parseConstraints($category),
+							'minMembers' => $category['minMembers'] ?? null,
+							'maxMembers' => $category['maxMembers'] ?? null,
 						];
 
 						if (isset($this->categoryData[$categoryKey])) {
@@ -181,6 +183,8 @@ final class CategoryData {
 						'label' => $categoryKey,
 						'fee' => $fee,
 						'constraints' => $this->parseConstraints($category),
+						'minMembers' => $category['minMembers'] ?? null,
+						'maxMembers' => $category['maxMembers'] ?? null,
 					];
 				}, array_keys($categories));
 
