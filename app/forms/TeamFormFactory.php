@@ -58,7 +58,7 @@ final class TeamFormFactory {
 			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
 			$replicator = $entry->form['persons'];
 
-			return $maxMembers > iterator_count($replicator->getContainers());
+			return iterator_count($replicator->getContainers()) <= $maxMembers;
 		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
 
 		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMinMembers) {
@@ -66,7 +66,7 @@ final class TeamFormFactory {
 			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			$replicator = $entry->form['persons'];
 
-			return $minMembers < iterator_count($replicator->getContainers());
+			return iterator_count($replicator->getContainers()) >= $minMembers;
 		}, 'messages.team.error.too_few_members_simple');
 
 		$fields = $parameters['fields']['team'];
@@ -80,7 +80,7 @@ final class TeamFormFactory {
 			$category = $button->form['category']->getValue();
 			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
 			$replicator = $button->parent['persons'];
-			if ($maxMembers > iterator_count($replicator->getContainers())) {
+			if (iterator_count($replicator->getContainers()) < $maxMembers) {
 				$replicator->createOne();
 			} else {
 				$button->form->addError(Html::el()->setText($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category])));
@@ -90,7 +90,7 @@ final class TeamFormFactory {
 			$category = $button->form['category']->getValue();
 			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			$replicator = $button->parent['persons'];
-			if ($minMembers < iterator_count($replicator->getContainers())) {
+			if (iterator_count($replicator->getContainers()) < $minMembers) {
 				$lastPerson = last($button->parent['persons']->getContainers());
 				if ($lastPerson) {
 					$replicator->remove($lastPerson, true);
