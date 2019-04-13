@@ -36,7 +36,7 @@ final class TeamFormFactory {
 
 		$defaultMinMembers = $parameters['minMembers'];
 		$defaultMaxMembers = $parameters['maxMembers'];
-		$initialMembers = $parameters['initialMembers'] ?? $defaultMinMembers;
+		$initialMembers = $form->isSubmitted() ? $defaultMinMembers : ($parameters['initialMembers'] ?? $defaultMinMembers);
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
@@ -90,7 +90,7 @@ final class TeamFormFactory {
 			$category = $button->form['category']->getValue();
 			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			$replicator = $button->parent['persons'];
-			if (iterator_count($replicator->getContainers()) < $minMembers) {
+			if (iterator_count($replicator->getContainers()) > $minMembers) {
 				$lastPerson = last($button->parent['persons']->getContainers());
 				if ($lastPerson) {
 					$replicator->remove($lastPerson, true);
