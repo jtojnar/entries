@@ -5,7 +5,6 @@
 # http://nette.org/security-warning
 #
 parameters:
-	defaultLocale: cs
 	entries:
 		minMembers: 0
 		maxMembers: 0
@@ -23,9 +22,6 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
-di:
-	accessors: true
-
 session:
 	autoStart: yes
 	save_path: "%tempDir%/sessions"
@@ -38,19 +34,25 @@ forms:
 		EMAIL: messages.general.error.not_email
 
 extensions:
-	translation: Kdyby\Translation\DI\TranslationExtension
+	translation: Contributte\Translation\DI\TranslationExtension
 	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
 	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
 	replicator: Kdyby\Replicator\DI\ReplicatorExtension
-	nextras.form: Nextras\Forms\Bridges\NetteDI\FormsExtension
 
 orm:
 	model: App\Model\Orm
 
 
 services:
-	- App\Model\TeamManager(@App\Model\TeamRepository, %entries.admin%)
+	- App\Model\TeamManager(%entries.admin%)
 	- App\Model\CategoryData
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
 	router: App\Router\RouterFactory::createRouter
+
+translation:
+	locales:
+		whitelist: [en, cs]
+		default: cs
+	dirs:
+		- %appDir%/lang

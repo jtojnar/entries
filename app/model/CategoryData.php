@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App;
 use Closure;
-use Kdyby\Translation\Translator;
 use Nette;
 use Nette\Application\Application;
 use Nette\Forms\Controls\SelectBox;
+use Nette\Localization\ITranslator;
 use const nspl\a\all;
 use const nspl\a\any;
 use function nspl\a\map;
@@ -26,7 +27,7 @@ final class CategoryData {
 	/** @var Application */
 	private $app;
 
-	/** @var Translator */
+	/** @var ITranslator */
 	private $translator;
 
 	/** @var array */
@@ -83,7 +84,7 @@ final class CategoryData {
 		'some' => any,
 	];
 
-	public function __construct(Application $app, Translator $translator) {
+	public function __construct(Application $app, ITranslator $translator) {
 		$this->app = $app;
 		$this->translator = $translator;
 	}
@@ -159,10 +160,10 @@ final class CategoryData {
 						return $categoryValue;
 					}, array_keys($categories));
 
-					return array_combine($categoriesKeys, $categoriesData);
+					return array_combine($categoriesKeys, $categoriesData) ?: [];
 				}, array_keys($groups));
 
-				$this->categoryTree = array_combine($groupsKeys, $groupsCategories);
+				$this->categoryTree = array_combine($groupsKeys, $groupsCategories) ?: [];
 			} else {
 				$categories = $parameters['categories'];
 
@@ -188,7 +189,7 @@ final class CategoryData {
 					];
 				}, array_keys($categories));
 
-				$this->categoryTree = array_combine($categoriesKeys, $categoriesData);
+				$this->categoryTree = array_combine($categoriesKeys, $categoriesData) ?: [];
 				$this->categoryData = $this->categoryTree;
 			}
 		}
@@ -225,7 +226,9 @@ final class CategoryData {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match)) {
 				$quant = Closure::fromCallable(self::QUANT_LOOKUP[$match['quant']]);
 				$op = Closure::fromCallable(self::OP_LOOKUP[$match['op']]);
-				$keyProjection = Closure::fromCallable([$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]]);
+				/** @var callable */
+				$keyProjection = [$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]];
+				$keyProjection = Closure::fromCallable($keyProjection);
 				$message = self::KEY_MESSAGES[$match['key']];
 
 				if (!\in_array($match['op'], self::KEY_SUPPORTED_OPS[$match['key']], true)) {
@@ -236,7 +239,9 @@ final class CategoryData {
 
 				return [
 					function(SelectBox $entry) use ($quant, $keyProjection, $op, $comparedValue): bool {
-						$members = $entry->getForm()['persons']->values;
+						/** @var App\Components\TeamForm */
+						$form = $entry->getForm();
+						$members = $form->values['persons'];
 
 						return $quant($members, function(\ArrayAccess $person) use ($op, $keyProjection, $comparedValue): bool {
 							return $op($keyProjection($person), $comparedValue);
@@ -246,7 +251,9 @@ final class CategoryData {
 				];
 			} elseif (preg_match(self::AGGREGATE_CONSTRAINT_REGEX, $constraint, $match)) {
 				$aggr = Closure::fromCallable(self::AGGR_LOOKUP[$match['aggr']]);
-				$keyProjection = Closure::fromCallable([$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]]);
+				/** @var callable */
+				$keyProjection = [$this, self::KEY_PROJECTIONS_LOOKUP[$match['key']]];
+				$keyProjection = Closure::fromCallable($keyProjection);
 				$op = Closure::fromCallable(self::OP_LOOKUP[$match['op']]);
 				$message = self::KEY_MESSAGES[$match['key']];
 
@@ -254,7 +261,9 @@ final class CategoryData {
 
 				return [
 					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $comparedValue): bool {
-						$members = iterator_to_array($entry->getForm()['persons']->values);
+						/** @var App\Components\TeamForm */
+						$form = $entry->getForm();
+						$members = iterator_to_array($form->values['persons']);
 
 						return $op($aggr(map($keyProjection, $members)), $comparedValue);
 					},

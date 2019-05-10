@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Exporters;
 
+use App;
+use Closure;
+use Nextras\Orm\Collection\ICollection;
+
 /**
  * Legacy CSV Exporter.
  *
@@ -20,14 +24,25 @@ namespace App\Exporters;
  * (i.e. either registered, or paid).
  */
 class CsvExporter implements IExporter {
+	/** @var ICollection */
 	private $teams;
+
+	/** @var App\Model\CountryRepository */
 	private $countries;
+
+	/** @var array */
 	private $teamFields;
+
+	/** @var array */
 	private $personFields;
+
+	/** @var Closure */
 	private $categoryFormat;
+
+	/** @var int */
 	private $maxMembers;
 
-	public function __construct($teams, $countries, $teamFields, $personFields, \Closure $categoryFormat, int $maxMembers) {
+	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, Closure $categoryFormat, int $maxMembers) {
 		$this->teams = $teams;
 		$this->countries = $countries;
 		$this->teamFields = $teamFields;
@@ -42,6 +57,9 @@ class CsvExporter implements IExporter {
 
 	public function output(): void {
 		$fp = fopen('php://output', 'a');
+		if ($fp === false) {
+			throw new \PHPStan\ShouldNotHappenException();
+		}
 		$headers = ['#', 'name', 'registered', 'category', 'message'];
 
 		foreach ($this->teamFields as $name => $field) {
@@ -79,7 +97,10 @@ class CsvExporter implements IExporter {
 				$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
 				if ($f) {
 					if ($field['type'] === 'country') {
-						$row[] = $this->countries->getById($f)->name;
+						// TODO: https://github.com/nextras/orm/issues/319
+						/** @var App\Model\Country */
+						$country = $this->countries->getById($f);
+						$row[] = $country->name;
 					} elseif ($field['type'] === 'checkboxlist') {
 						foreach ($field['items'] as $itemKey => $item) {
 							$row[] = \in_array($itemKey, $f, true);
@@ -109,7 +130,10 @@ class CsvExporter implements IExporter {
 					$f = isset($person->getJsonData()->$name) ? $person->getJsonData()->$name : null;
 					if ($f) {
 						if ($field['type'] === 'country') {
-							$row[] = $this->countries->getById($f)->name;
+							// TODO: https://github.com/nextras/orm/issues/319
+							/** @var App\Model\Country */
+							$country = $this->countries->getById($f);
+							$row[] = $country->name;
 						} elseif ($field['type'] === 'checkboxlist') {
 							foreach ($field['items'] as $itemKey => $_) {
 								$row[] = \in_array($itemKey, $f, true);
@@ -142,8 +166,6 @@ class CsvExporter implements IExporter {
 							foreach ($field['items'] as $item) {
 								$row[] = '';
 							}
-						} elseif ($field['type'] === 'sportident') {
-							$row[] = $f->cardId ?? '';
 						} else {
 							$row[] = '';
 						}

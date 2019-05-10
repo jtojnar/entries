@@ -8,12 +8,14 @@ use Nette;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
+use Nette\Forms\IControl;
 
 class CustomInputModifier {
 	use Nette\SmartObject;
 
-	public static function modify(BaseControl $input, IContainer $container): void {
-		if ($input->getName() === 'registry_address') {
+	public static function modify(IControl $input, IContainer $container): void {
+		// we also have some inputs that are based on Nextras\FormComponents\Fragments\UIComponent\BaseControl
+		if ($input instanceof BaseControl && $input->getName() === 'registry_address') {
 			$pairId = 'pair-' . $input->htmlId;
 			$input->setOption('id', $pairId);
 

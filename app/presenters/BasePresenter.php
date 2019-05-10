@@ -7,12 +7,16 @@ namespace App\Presenters;
 use App;
 use Closure;
 use Nette;
+use Nette\Localization\ITranslator;
 
+/**
+ * Base class for all presenters.
+ */
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @persistent @var string */
 	public $locale;
 
-	/** @var \Kdyby\Translation\Translator @inject */
+	/** @var ITranslator @inject */
 	public $translator;
 
 	/** @var App\Model\CategoryData @inject */
@@ -21,14 +25,13 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	protected function startup(): void {
 		parent::startup();
 
-		$locales = $this->context->parameters['locales'];
-		$defaultLocale = $this->context->parameters['defaultLocale'];
+		/** @var \Contributte\Translation\Translator */
+		$translator = $this->translator;
+
+		$defaultLocale = $translator->getDefaultLocale();
 
 		if ($this->locale === null) {
-			$detectedLocale = $this->template->locale = $this->context->getByType(Nette\Http\Request::class)->detectLanguage(array_keys($locales));
-
-			$this->locale = $detectedLocale ? $detectedLocale : $defaultLocale;
-			$this->canonicalize();
+			$this->locale = $translator->getLocale();
 		}
 
 		/** @var Nette\Bridges\ApplicationLatte\Template $template */
@@ -44,10 +47,10 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 		$template->getLatte()->addFilter('categoryFormat', Closure::fromCallable([$this, 'categoryFormat']));
 		$template->getLatte()->addFilter('wrapInParagraphs', Closure::fromCallable([$this, 'wrapInParagraphs']));
-		$template->getLatte()->addFilter('price', function($amount) {
+		$template->getLatte()->addFilter('price', function($amount) use ($translator): string {
 			$currency = $this->context->parameters['entries']['fees']['currency'];
 			$key = 'messages.currencies.' . $currency;
-			$translated = $this->translator->translate($key, ['amount' => $amount]);
+			$translated = $translator->translate($key, ['amount' => $amount]);
 
 			return $translated === $key ? $amount : $translated;
 		});

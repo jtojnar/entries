@@ -7,6 +7,7 @@ namespace App\Model;
 use Nette;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Identity;
+use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nextras\Orm\Entity\ToArrayConverter;
 
@@ -17,11 +18,15 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 	private $teams;
 
 	/** @var string administrator password */
-	private $password;
+	private $adminPassword;
 
-	public function __construct(TeamRepository $teams, string $password) {
+	/** @var Passwords */
+	private $passwords;
+
+	public function __construct(string $adminPassword, TeamRepository $teams, Passwords $passwords) {
 		$this->teams = $teams;
-		$this->password = $password;
+		$this->adminPassword = $adminPassword;
+		$this->passwords = $passwords;
 	}
 
 	/**
@@ -31,12 +36,12 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 	 *
 	 * @throws AuthenticationException
 	 *
-	 * @return Identity
+	 * @return IIdentity
 	 */
-	public function authenticate(array $credentials): Identity {
+	public function authenticate(array $credentials): IIdentity {
 		[$teamId, $password] = $credentials;
 
-		if ($teamId === 'admin' && $password === $this->password) {
+		if ($teamId === 'admin' && $password === $this->adminPassword) {
 			return new Identity('admin', 'admin', ['status' => 'admin']);
 		}
 
@@ -44,10 +49,10 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 
 		if (!$team) {
 			throw new AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
-		} elseif (!Passwords::verify($password, $team->password)) {
+		} elseif (!$this->passwords->verify($password, $team->password)) {
 			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
-		} elseif (Passwords::needsRehash($team->password)) {
-			$team->password = Passwords::hash($password);
+		} elseif ($this->passwords->needsRehash($team->password)) {
+			$team->password = $this->passwords->hash($password);
 			$this->teams->persistAndFlush($team);
 		}
 

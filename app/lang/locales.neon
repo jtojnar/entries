@@ -1,4 +1,4 @@
 parameters:
-	locales:
+	locales!:
 		cs: Česky
 		en: English

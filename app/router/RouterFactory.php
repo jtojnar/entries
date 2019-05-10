@@ -8,6 +8,9 @@ use Nette;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 
+/**
+ * Factory for routes.
+ */
 final class RouterFactory {
 	use Nette\StaticClass;
 

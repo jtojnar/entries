@@ -6,18 +6,14 @@ namespace App\Components;
 
 use App;
 use Nette;
-use Nette\ComponentModel\IContainer;
-use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Form;
 use Nette\Forms\Helpers;
 use Nette\Forms\Rules;
-use Nextras\Forms\Controls\Fragments\ComponentControlTrait;
+use Nextras\FormComponents\Fragments\UIComponent\BaseControl;
 
-class SportidentControl extends BaseControl implements IContainer {
-	use ComponentControlTrait;
-
+class SportidentControl extends BaseControl {
 	/** @var string */
 	public const NAME_CARD_ID = 'cardId';
 
@@ -37,8 +33,6 @@ class SportidentControl extends BaseControl implements IContainer {
 		$this->cardIdControl = new TextInput();
 		$this->neededControl = new Checkbox('messages.team.person.si.rent');
 
-		parent::__construct($label);
-
 		$this->addComponent($this->cardIdControl, self::NAME_CARD_ID);
 		$this->addComponent($this->neededControl, self::NAME_NEEDED);
 
@@ -56,7 +50,7 @@ class SportidentControl extends BaseControl implements IContainer {
 			if ($recommendedCardCapacity > 30) {
 				$rules = new Rules($this->neededControl);
 				$rules = $rules->addConditionOn($this->neededControl, Form::EQUAL, false);
-				/** @var \Kdyby\Translation\Translator */
+				/** @var \Contributte\Translation\Translator */
 				$translator = $this->getTranslator();
 
 				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
@@ -75,6 +69,8 @@ class SportidentControl extends BaseControl implements IContainer {
 				$this->cardIdControl->getControlPrototype()->{'data-form-warning-rules'} = Helpers::exportRules($rules);
 			}
 		});
+
+		parent::__construct($label);
 	}
 
 	public function setValue($value): self {
@@ -133,5 +129,10 @@ class SportidentControl extends BaseControl implements IContainer {
 		}
 
 		throw new Nette\InvalidArgumentException('Part ' . $key . ' does not exist');
+	}
+
+	public function validate(?array $controls = null): void {
+		$this->cardIdControl->validate();
+		$this->neededControl->validate();
 	}
 }

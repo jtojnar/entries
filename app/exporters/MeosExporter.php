@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Exporters;
 
+use Closure;
 use Nette\Utils\Strings;
+use Nextras\Orm\Collection\ICollection;
 
 /**
  * Exporter to MeOS format or something.
@@ -19,11 +21,13 @@ use Nette\Utils\Strings;
 class MeosExporter implements IExporter {
 	public const DELIMITER = ';';
 
-	private $fp;
+	/** @var ICollection */
 	private $teams;
+
+	/** @var Closure */
 	private $categoryFormat;
 
-	public function __construct($teams, \Closure $categoryFormat) {
+	public function __construct(ICollection $teams, Closure $categoryFormat) {
 		$this->teams = $teams;
 		$this->categoryFormat = $categoryFormat;
 	}
@@ -32,27 +36,29 @@ class MeosExporter implements IExporter {
 		return 'text/plain';
 	}
 
-	private function outputRow($row): void {
-		// fPutCsv($this->fp, $row, self::DELIMITER);
-		echo Strings::toAscii(implode(self::DELIMITER, $row)) . PHP_EOL;
+	private function outputRow($fp, array $row): void {
+		fwrite($fp, Strings::toAscii(implode(self::DELIMITER, $row)) . PHP_EOL);
 	}
 
 	public function output(): void {
-		$this->fp = fopen('php://output', 'a');
+		$fp = fopen('php://output', 'a');
+		if ($fp === false) {
+			throw new \PHPStan\ShouldNotHappenException();
+		}
 		foreach ($this->teams as $team) {
 			$category = $this->categoryFormat->__invoke($team);
 			$club = '';
-			$this->outputRow([$category, $team->name, $club]);
+			$this->outputRow($fp, [$category, $team->name, $club]);
 
 			foreach ($team->persons as $person) {
 				$additionalData = $person->getJsonData();
 				$fullName = $person->lastname . ' ' . $person->firstname;
 				$sportident = $additionalData->sportident->cardId ?? '';
 				$club = '';
-				$this->outputRow([$fullName, $sportident, $club, $category]);
+				$this->outputRow($fp, [$fullName, $sportident, $club, $category]);
 			}
 		}
-		fclose($this->fp);
+		fclose($fp);
 		exit;
 	}
 }

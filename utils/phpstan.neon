@@ -1,6 +1,12 @@
 includes:
 	- ../vendor/phpstan/phpstan-nette/extension.neon
+	- ../vendor/phpstan/phpstan-nette/rules.neon
+	- ../vendor/nextras/orm-phpstan/extension.neon
 parameters:
+	level: 7
+	paths:
+		- app
+		- tests
+		- www
 	ignoreErrors:
 		- '(Call to an undefined method App\\Components\\TeamForm::addDynamic\(\))'
-		- '(Call to an undefined method Nette\\Forms\\Container::addDatePicker\(\))'

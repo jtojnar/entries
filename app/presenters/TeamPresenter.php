@@ -15,9 +15,12 @@ use Nette\Application\UI\Form;
 use Nette\Mail\Message;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
-use Nextras\Forms\Rendering\FormLayout;
+use Nextras\FormsRendering\Renderers\FormLayout;
 use Tracy\Debugger;
 
+/**
+ * The main presenter of the application.
+ */
 class TeamPresenter extends BasePresenter {
 	/** @var App\Model\CountryRepository @inject */
 	public $countries;
@@ -36,6 +39,9 @@ class TeamPresenter extends BasePresenter {
 
 	/** @var App\Forms\TeamFormFactory @inject */
 	public $teamFormFactory;
+
+	/** @var Nette\Security\Passwords @inject */
+	public $passwords;
 
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
@@ -107,6 +113,9 @@ class TeamPresenter extends BasePresenter {
 	public function actionConfirm(int $id): void {
 		if ($this->user->isInRole('admin')) {
 			$team = $this->teams->getById($id);
+			if (!$team) {
+				$this->error($this->translator->translate('messages.team.edit.error.404'));
+			}
 			if ($team->status === 'registered') {
 				$team->status = 'paid';
 				$team->lastInvoice->status = Invoice::STATUS_PAID;
@@ -175,6 +184,9 @@ class TeamPresenter extends BasePresenter {
 		if ($editing && !$form->isSubmitted()) {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
+			if (!$team) {
+				$this->error($this->translator->translate('messages.team.edit.error.404'));
+			}
 			$default = [];
 			$default['name'] = $team->name;
 			$default['category'] = $team->category;
@@ -216,10 +228,14 @@ class TeamPresenter extends BasePresenter {
 			}
 			$form->setValues($default);
 		}
+		/** @var \Nette\Forms\Controls\SubmitButton */
+		$save = $form['save'];
 		if ($this->getParameter('id')) {
-			$form['save']->caption = 'messages.team.action.edit';
+			$save->caption = 'messages.team.action.edit';
 		}
-		$form['save']->onClick[] = Closure::fromCallable([$this, 'processTeamForm']);
+		/** @var callable(Nette\Forms\Controls\SubmitButton): void */
+		$processTeamForm = Closure::fromCallable([$this, 'processTeamForm']);
+		$save->onClick[] = $processTeamForm;
 
 		return $form;
 	}
@@ -235,6 +251,7 @@ class TeamPresenter extends BasePresenter {
 
 		/** @var App\Components\TeamForm $form */
 		$form = $button->form;
+		$values = $form->values;
 		/** @var string $password */
 		$password = null;
 
@@ -248,6 +265,8 @@ class TeamPresenter extends BasePresenter {
 
 			if (!$team) {
 				$form->addError('messages.team.edit.error.404');
+
+				return;
 			} elseif (!$this->user->isInRole('admin') && $team->status === 'paid') {
 				$form->addError('messages.team.edit.error.already_paid');
 			} elseif (!$this->user->isInRole('admin') && $identity->id !== $id) {
@@ -257,7 +276,7 @@ class TeamPresenter extends BasePresenter {
 		} else {
 			$team = new App\Model\Team();
 			$password = Nette\Utils\Random::generate();
-			$team->password = Nette\Security\Passwords::hash($password);
+			$team->password = $this->passwords->hash($password);
 			$team->ip = $this->context->getByType(Nette\Http\Request::class)->remoteAddress ?? '';
 		}
 
@@ -267,15 +286,15 @@ class TeamPresenter extends BasePresenter {
 			$invoice->team = $team;
 			$invoice->items = [];
 
-			$team->name = $form['name']->value;
-			$team->message = $form['message']->value;
+			$team->name = $values['name'];
+			$team->message = $values['message'];
 
-			$team->category = isset($form['category']) ? $form['category']->value : '';
+			$team->category = isset($form['category']) ? $values['category'] : '';
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 			$jsonData = [];
 			foreach ($fields as $name => $field) {
-				$jsonData[$name] = $form[$name]->value;
+				$jsonData[$name] = $values[$name];
 				$type = $field['type'];
 
 				if ($type === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
@@ -290,13 +309,13 @@ class TeamPresenter extends BasePresenter {
 						'scope' => 'team',
 						'key' => $name,
 					]), $field['fee']);
-				} elseif ($type === 'enum' && isset($field['options'][$form[$name]->value]) && isset($field['options'][$form[$name]->value]['fee']) && $jsonData[$name]) {
+				} elseif ($type === 'enum' && isset($field['options'][$values[$name]]) && isset($field['options'][$values[$name]]['fee']) && $jsonData[$name]) {
 					$invoice->addItem(self::serializeInvoiceItem([
 						'type' => $type,
 						'scope' => 'team',
 						'key' => $name,
-						'value' => $form[$name]->value,
-					]), $field['options'][$form[$name]->value]['fee']);
+						'value' => $values[$name],
+					]), $field['options'][$values[$name]]['fee']);
 				} elseif ($type === 'checkboxlist') {
 					foreach ($jsonData[$name] as $item) {
 						if (isset($field['items'][$item]['fee'])) {
@@ -334,7 +353,7 @@ class TeamPresenter extends BasePresenter {
 			/** @var string $name */
 			$name = null;
 
-			foreach ($form['persons']->values as $member) {
+			foreach ($values['persons'] as $member) {
 				$firstname = $member['firstname'];
 				if ($address === null) {
 					$address = $member['email'];
@@ -402,8 +421,9 @@ class TeamPresenter extends BasePresenter {
 				$this->persons->persist($person);
 			}
 
-			if (isset($this->presenter->context->parameters['entries']['invoiceModifier'])) {
-				$invoiceModifier = Closure::fromCallable([$this->presenter->context->parameters['entries']['invoiceModifier'], 'modify']);
+			/** @var ?callable */
+			$invoiceModifier = $this->presenter->context->parameters['entries']['invoiceModifier'] ?? null;
+			if ($invoiceModifier !== null) {
 				$invoiceModifier($team, $invoice, $this->context->parameters['entries']);
 			}
 
@@ -443,8 +463,8 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->invoice = $invoice;
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
 				$emogrifier = new \Pelago\Emogrifier();
-				$emogrifier->setHtml($mtemplate);
-				$emogrifier->setCss(file_get_contents($appDir . '/templates/Mail/style.css'));
+				$emogrifier->setHtml((string) $mtemplate);
+				$emogrifier->setCss((string) file_get_contents($appDir . '/templates/Mail/style.css'));
 				$emogrifier->enableCssToHtmlMapping();
 
 				$mail = new Message();
@@ -456,10 +476,9 @@ class TeamPresenter extends BasePresenter {
 				$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
 			}
 			$this->redirect('Homepage:');
+		} catch (Nette\Application\AbortException $e) {
+			throw $e;
 		} catch (Exception $e) {
-			if ($e instanceof Nette\Application\AbortException) {
-				throw $e;
-			}
 			Debugger::log($e);
 			if ($this->action === 'edit') {
 				$form->addError('messages.team.error.edit_general');
@@ -470,20 +489,26 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	public function cleanNonApplicableFields(Nette\Forms\Form $form): void {
-		$category = $form['category']->getValue();
+		$category = $form->values['category'];
 
 		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
 		foreach ($teamFields as $name => $field) {
 			if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
-				$form[$name]->setValue(null);
+				/** @var Nette\Forms\Controls\BaseControl */
+				$control = $form[$name];
+				$control->setValue(null);
 			}
 		}
 
 		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
-		foreach ($form['persons']->values as $member) {
+		foreach ($form->values['persons'] as $member) {
 			foreach ($personFields as $name => $field) {
 				if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
-					$form['persons'][$name]->setValue(null);
+					/** @var Nette\Utils\ArrayHash */
+					$persons = $form['persons'];
+					/** @var Nette\Forms\Controls\BaseControl */
+					$control = $persons[$name];
+					$control->setValue(null);
 				}
 			}
 		}
@@ -491,7 +516,7 @@ class TeamPresenter extends BasePresenter {
 
 	public function createComponentTeamListFilterForm(): Form {
 		$form = $this->formFactory->create(FormLayout::INLINE);
-		$form->setMethod('GET');
+		$form->setMethod($form::GET);
 
 		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
 		$category->setPrompt('messages.team.list.filter.category.all');
@@ -512,7 +537,9 @@ class TeamPresenter extends BasePresenter {
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
 		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
-		$form->onValidate[] = Closure::fromCallable([$this, 'filterRedir']);
+		/** @var callable(Nette\Forms\Container): void */
+		$filterRedir = Closure::fromCallable([$this, 'filterRedir']);
+		$form->onValidate[] = $filterRedir;
 
 		return $form;
 	}

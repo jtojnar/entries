@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Forms;
 
-use Kdyby\Translation\Translator;
 use Nette;
 use Nette\Application\UI\Form;
-use Nextras\Forms\Rendering\Bs4FormRenderer;
-use Nextras\Forms\Rendering\FormLayout;
+use Nette\Localization\ITranslator;
+use Nextras\FormsRendering\Renderers\Bs4FormRenderer;
+use Nextras\FormsRendering\Renderers\FormLayout;
 
 final class FormFactory {
 	use Nette\SmartObject;
 
-	/** @var Translator */
+	/** @var ITranslator */
 	private $translator;
 
-	public function __construct(Translator $translator) {
+	public function __construct(ITranslator $translator) {
 		$this->translator = $translator;
 	}
 

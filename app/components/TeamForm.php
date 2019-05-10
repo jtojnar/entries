@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Components;
 
-use Closure;
+use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI;
 use Nette\ComponentModel\IContainer;
-use Nette\Utils\Html;
 use Nette\Utils\Json;
 
+/**
+ * Form for creating and editing teams.
+ */
 class TeamForm extends UI\Form {
 	/** @var array */
 	private $countries;
@@ -28,16 +30,22 @@ class TeamForm extends UI\Form {
 	}
 
 	public function onRender(): void {
-		$count = iterator_count($this['persons']->getContainers());
+		/** @var \Kdyby\Replicator\Container */
+		$persons = $this['persons'];
+		$count = iterator_count($persons->getContainers());
 		$minMembers = $this->parameters['minMembers'];
 		$maxMembers = $this->parameters['maxMembers'];
 
 		if ($count >= $maxMembers) {
-			$this['add']->setDisabled();
+			/** @var \Nette\Forms\Controls\SubmitButton */
+			$add = $this['add'];
+			$add->setDisabled();
 		}
 
 		if ($count <= $minMembers) {
-			$this['remove']->setDisabled();
+			/** @var \Nette\Forms\Controls\SubmitButton */
+			$remove = $this['remove'];
+			$remove->setDisabled();
 		}
 	}
 
@@ -47,7 +55,7 @@ class TeamForm extends UI\Form {
 		foreach ($fields as $name => $field) {
 			if (isset($field['type'])) {
 				if (isset($field['label'][$locale])) {
-					$label = Html::el()->setText($field['label'][$locale]);
+					$label = new NotTranslate($field['label'][$locale]);
 				} elseif ($field['type'] === 'country') {
 					$label = 'messages.team.person.country.label';
 				} elseif ($field['type'] === 'phone') {
@@ -96,8 +104,9 @@ class TeamForm extends UI\Form {
 					$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field['applicableCategories']);
 				}
 
-				if (isset($this->parameters['customInputModifier'])) {
-					$customInputModifier = Closure::fromCallable([$this->parameters['customInputModifier'], 'modify']);
+				/** @var ?callable */
+				$customInputModifier = $this->parameters['customInputModifier'] ?? null;
+				if ($customInputModifier !== null) {
 					$customInputModifier($input, $container);
 				}
 			}
@@ -117,9 +126,9 @@ class TeamForm extends UI\Form {
 		$locale = $this->locale;
 
 		if (isset($field['label'][$locale])) {
-			$label = Html::el()->setText($field['label'][$locale]);
+			$label = new NotTranslate($field['label'][$locale]);
 		} else {
-			$label = $name . ':';
+			$label = new NotTranslate($name . ':');
 		}
 		$options = array_map(function($option) use ($locale) {
 			return $option['label'][$locale];

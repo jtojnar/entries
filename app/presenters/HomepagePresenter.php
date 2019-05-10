@@ -12,8 +12,11 @@ use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\DateTime;
-use Nextras\Forms\Rendering\FormLayout;
+use Nextras\FormsRendering\Renderers\FormLayout;
 
+/**
+ * Presenter for main page.
+ */
 class HomepagePresenter extends BasePresenter {
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
@@ -31,7 +34,10 @@ class HomepagePresenter extends BasePresenter {
 			$template->status = $identity->status;
 
 			if ($template->status === 'registered') {
-				$template->invoice = $this->teams->getById($identity->getId())->lastInvoice;
+				// TODO: https://github.com/nextras/orm/issues/319
+				/** @var App\Model\Team */
+				$team = $this->teams->getById($identity->getId());
+				$template->invoice = $team->lastInvoice;
 			}
 		} else {
 			$template->status = null;
@@ -47,7 +53,9 @@ class HomepagePresenter extends BasePresenter {
 
 		$clearCacheButton = $form->addSubmit('clearCache', 'messages.maintenance.clear_cache');
 		$clearCacheButton->controlPrototype->removeClass('btn-primary')->addClass('btn-warning');
-		$clearCacheButton->onClick[] = Closure::fromCallable([$this, 'clearCache']);
+		/** @var callable(SubmitButton): void */
+		$clearCache = Closure::fromCallable([$this, 'clearCache']);
+		$clearCacheButton->onClick[] = $clearCache;
 
 		return $form;
 	}
@@ -71,8 +79,13 @@ class HomepagePresenter extends BasePresenter {
 	}
 
 	protected function createComponentLocaleSwitcher(): LocaleSwitcher {
+		/** @var \Contributte\Translation\Translator */
+		$translator = $this->translator;
+
 		$localeNames = $this->context->parameters['locales'];
 
-		return new LocaleSwitcher($localeNames);
+		$allowedLocales = $translator->getLocalesWhitelist();
+
+		return new LocaleSwitcher($localeNames, $allowedLocales);
 	}
 }

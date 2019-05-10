@@ -8,7 +8,11 @@ use App;
 use Closure;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Security\IUserStorage;
 
+/**
+ * Presenter for signing in and out.
+ */
 class SignPresenter extends BasePresenter {
 	/** @persistent */
 	public $backlink = '';
@@ -34,16 +38,18 @@ class SignPresenter extends BasePresenter {
 
 		$form->addSubmit('send', 'messages.sign.in.action');
 
-		$form->onSuccess[] = Closure::fromCallable([$this, 'signInFormSucceeded']);
+		/** @var callable(Nette\Forms\Form, array): void */
+		$signInFormSucceeded = Closure::fromCallable([$this, 'signInFormSucceeded']);
+		$form->onSuccess[] = $signInFormSucceeded;
 
 		return $form;
 	}
 
 	private function signInFormSucceeded(Form $form, array $values): void {
 		if ($values['remember']) {
-			$this->user->setExpiration('30 days', false);
+			$this->user->setExpiration('30 days');
 		} else {
-			$this->user->setExpiration('20 minutes', true);
+			$this->user->setExpiration('20 minutes', IUserStorage::CLEAR_IDENTITY);
 		}
 
 		try {

@@ -7,14 +7,24 @@ namespace App\Components;
 use Nette\Application\UI\Control;
 use Nette\Bridges\ApplicationLatte\Template;
 
+/**
+ * Control for switching locale of the application.
+ */
 class LocaleSwitcher extends Control {
 	/** @var array $locales */
 	private $locales;
 
-	public function __construct(array $locales) {
-		parent::__construct();
+	/** @var ?array $allowedLocales */
+	private $allowedLocales;
 
-		$this->locales = $locales;
+	public function __construct(array $locales, ?array $allowedLocales) {
+		if ($allowedLocales === null) {
+			$this->locales = $locales;
+		} else {
+			$this->locales = array_filter($locales, function(string $code) use ($allowedLocales): bool {
+				return \in_array($code, $allowedLocales, true);
+			}, ARRAY_FILTER_USE_KEY);
+		}
 	}
 
 	public function render(): void {
