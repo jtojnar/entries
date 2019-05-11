@@ -1,1 +1,1 @@
-<a n:if="count($locales) > 1" n:foreach="$locales as $code => $locale" n:href="this locale => $code">{$locale}</a>
+<a n:if="count($locales) > 1" n:foreach="$locales as $code => $locale" href="{plink this locale => $code}">{$locale}</a>
