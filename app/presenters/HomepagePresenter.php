@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Components\LocaleSwitcher;
 use Closure;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
@@ -35,9 +36,6 @@ class HomepagePresenter extends BasePresenter {
 		} else {
 			$template->status = null;
 		}
-
-		$locales = $this->context->parameters['locales'];
-		$template->locales = \count($locales) > 1 ? $locales : [];
 
 		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1);
 		$template->allowLateRegistrationsByEmail = $this->context->parameters['entries']['allowLateRegistrationsByEmail'];
@@ -70,5 +68,11 @@ class HomepagePresenter extends BasePresenter {
 
 		$this->flashMessage($this->translator->translate('messages.maintenance.cache_cleared'));
 		$this->redirect('Homepage:');
+	}
+
+	protected function createComponentLocaleSwitcher(): LocaleSwitcher {
+		$localeNames = $this->context->parameters['locales'];
+
+		return new LocaleSwitcher($localeNames);
 	}
 }

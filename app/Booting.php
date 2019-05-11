@@ -16,6 +16,8 @@ class Booting {
 		$configurator
 			->addConfig(__DIR__ . '/config/config.neon');
 		$configurator
+			->addConfig(__DIR__ . '/lang/locales.neon');
+		$configurator
 			->addConfig(__DIR__ . '/config/config.local.neon');
 
 		return $configurator;

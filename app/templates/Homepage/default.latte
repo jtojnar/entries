@@ -1,5 +1,5 @@
 {block content}
-<a n:foreach="$locales as $code => $locale" n:href="this locale => $code">{$locale}</a>
+{control localeSwitcher}
 <ul>
 {if $registrationOpen}
 <li><a n:href="Team:register">{_messages.home.registration}</a></li>

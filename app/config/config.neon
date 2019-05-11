@@ -6,9 +6,6 @@
 #
 parameters:
 	defaultLocale: cs
-	locales:
-		cs: Česky
-		en: English
 	entries:
 		minMembers: 0
 		maxMembers: 0

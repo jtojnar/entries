@@ -1,0 +1,4 @@
+parameters:
+	locales:
+		cs: Česky
+		en: English
