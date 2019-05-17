@@ -170,8 +170,9 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	protected function createComponentTeamForm(string $name): Form {
-		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $this, $name);
-		if ($this->getParameter('id') && !$form->isSubmitted()) {
+		$editing = $this->getParameter('id') !== null;
+		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $editing, $this, $name);
+		if ($editing && !$form->isSubmitted()) {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
 			$default = [];
