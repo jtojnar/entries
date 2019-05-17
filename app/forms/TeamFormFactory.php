@@ -27,7 +27,7 @@ final class TeamFormFactory {
 		$this->translator = $translator;
 	}
 
-	public function create(array $countries, CategoryData $categories, array $parameters, string $locale, IContainer $parent = null, string $name = null): TeamForm {
+	public function create(array $countries, CategoryData $categories, array $parameters, string $locale, bool $editing = false, IContainer $parent = null, string $name = null): TeamForm {
 		$form = new TeamForm($countries, $parameters, $locale, $parent, $name);
 
 		$form->setTranslator($this->translator);
@@ -36,7 +36,7 @@ final class TeamFormFactory {
 
 		$defaultMinMembers = $parameters['minMembers'];
 		$defaultMaxMembers = $parameters['maxMembers'];
-		$initialMembers = $form->isSubmitted() ? $defaultMinMembers : ($parameters['initialMembers'] ?? $defaultMinMembers);
+		$initialMembers = $form->isSubmitted() || $editing ? $defaultMinMembers : ($parameters['initialMembers'] ?? $defaultMinMembers);
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
