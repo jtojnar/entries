@@ -20,6 +20,8 @@ class CustomInputModifier {
 			/** @var BaseControl */
 			$country = $container->getComponent('country');
 			$country->addCondition(Form::NOT_EQUAL, 46)->toggle($pairId, false);
+			$input->setRequired(false);
+			$input->addConditionOn($country, Form::EQUAL, 46)->setRequired();
 		}
 	}
 }
