@@ -25,10 +25,16 @@ class Person extends Entity {
 	public const MALE = 'male';
 	public const FEMALE = 'female';
 
+	/**
+	 * @return \stdClass
+	 */
 	public function getJsonData() {
 		return Json::decode($this->details);
 	}
 
+	/**
+	 * @param array|\stdClass $data
+	 */
 	public function setJsonData($data): void {
 		$this->details = Json::encode($data);
 	}

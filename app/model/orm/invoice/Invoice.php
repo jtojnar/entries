@@ -20,7 +20,10 @@ class Invoice extends Entity {
 	public const STATUS_NEW = 'new';
 	public const STATUS_PAID = 'paid';
 
-	public function createItem($name, $price) {
+	/**
+	 * @param Money $price
+	 */
+	public function createItem(string $name, $price): self {
 		$items = $this->items;
 
 		if (isset($items[$name])) {
@@ -39,7 +42,10 @@ class Invoice extends Entity {
 		return $this;
 	}
 
-	public function addItem($name, $price = null) {
+	/**
+	 * @param Money $price
+	 */
+	public function addItem(string $name, $price = null): self {
 		if (isset($price)) {
 			$this->createItem($name, $price);
 		}
@@ -57,10 +63,13 @@ class Invoice extends Entity {
 		return $this;
 	}
 
-	public function addPerson() {
+	public function addPerson(): self {
 		return $this->addItem('person');
 	}
 
+	/**
+	 * @return Money
+	 */
 	public function getTotal(array $filter = null) {
 		$cost = 0;
 

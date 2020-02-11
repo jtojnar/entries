@@ -9,7 +9,6 @@ use App\Components\TeamForm;
 use App\Model\CategoryData;
 use Contributte\Translation\Wrappers\Message;
 use Nette;
-use Nette\Application\UI\Form;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
@@ -54,7 +53,7 @@ final class TeamFormFactory {
 			}
 		}
 
-		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMaxMembers) {
+		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMaxMembers): bool {
 			$category = $entry->getValue();
 			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
 			/** @var \Kdyby\Replicator\Container */
@@ -63,7 +62,7 @@ final class TeamFormFactory {
 			return iterator_count($replicator->getContainers()) <= $maxMembers;
 		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
 
-		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMinMembers) {
+		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMinMembers): bool {
 			$category = $entry->getValue();
 			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			/** @var \Kdyby\Replicator\Container */
@@ -121,10 +120,10 @@ final class TeamFormFactory {
 
 			$form->addCustomFields($fields, $container);
 
-			$email = $container->addText('email', 'messages.team.person.email.label')->setType('email');
+			$email = $container->addEmail('email', 'messages.team.person.email.label');
 
 			if ($i === 1) {
-				$email->setRequired()->addRule(Form::EMAIL);
+				$email->setRequired();
 				$group->setOption('description', 'messages.team.person.isContact');
 			}
 		}, $initialMembers, true);

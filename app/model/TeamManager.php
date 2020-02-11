@@ -32,11 +32,7 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 	/**
 	 * Performs an authentication.
 	 *
-	 * @param array $credentials
-	 *
 	 * @throws AuthenticationException
-	 *
-	 * @return IIdentity
 	 */
 	public function authenticate(array $credentials): IIdentity {
 		[$teamId, $password] = $credentials;

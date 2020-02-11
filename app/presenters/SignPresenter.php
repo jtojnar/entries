@@ -14,7 +14,7 @@ use Nette\Security\IUserStorage;
  * Presenter for signing in and out.
  */
 class SignPresenter extends BasePresenter {
-	/** @persistent */
+	/** @var string @persistent */
 	public $backlink = '';
 
 	/** @var App\Forms\FormFactory @inject */
@@ -22,8 +22,6 @@ class SignPresenter extends BasePresenter {
 
 	/**
 	 * Sign-in form factory.
-	 *
-	 * @return Form
 	 */
 	protected function createComponentSignInForm(): Form {
 		$form = $this->formFactory->create();

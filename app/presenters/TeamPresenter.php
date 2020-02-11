@@ -16,6 +16,9 @@ use Nette\Mail\Message;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
+use Pelago\Emogrifier\CssInliner;
+use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
+use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 use Tracy\Debugger;
 
 /**
@@ -462,13 +465,20 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->password = $password;
 				$mtemplate->invoice = $invoice;
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
-				$emogrifier = new \Pelago\Emogrifier();
-				$emogrifier->setHtml((string) $mtemplate);
-				$emogrifier->setCss((string) file_get_contents($appDir . '/templates/Mail/style.css'));
-				$emogrifier->enableCssToHtmlMapping();
+
+				// Inline styles into the e-mail
+				$mailHtml = (string) $mtemplate;
+				$domDocument = CssInliner::fromHtml($mailHtml)
+					->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
+					->getDomDocument();
+				HtmlPruner::fromDomDocument($domDocument)
+					->removeElementsWithDisplayNone();
+				$mailHtml = CssToAttributeConverter::fromDomDocument($domDocument)
+					->convertCssToVisualAttributes()
+					->render();
 
 				$mail = new Message();
-				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($emogrifier->emogrify());
+				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mailHtml);
 
 				$mailer = $this->context->getByType(Nette\Mail\IMailer::class);
 				$mailer->send($mail);
@@ -520,7 +530,7 @@ class TeamPresenter extends BasePresenter {
 
 		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
 		$category->setPrompt('messages.team.list.filter.category.all');
-		$category->setAttribute('style', 'width:auto;');
+		$category->setHtmlAttribute('style', 'width:auto;');
 
 		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('category')) {
 			$category->setValue($this->context->getByType(Nette\Http\Request::class)->getQuery('category'));
@@ -528,7 +538,7 @@ class TeamPresenter extends BasePresenter {
 		$category->controlPrototype->onchange('this.form.submit();');
 
 		if ($this->user->isInRole('admin')) {
-			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setAttribute('style', 'width:auto;');
+			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setHtmlAttribute('style', 'width:auto;');
 			if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
 				$status->setValue($this->context->getByType(Nette\Http\Request::class)->getQuery('status'));
 			}
@@ -562,19 +572,19 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	private function personData($data): array {
+	private function personData(\stdClass $data): array {
 		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 
 		return $this->formatData($data, $fields);
 	}
 
-	private function teamData($data): array {
+	private function teamData(\stdClass $data): array {
 		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 
 		return $this->formatData($data, $fields);
 	}
 
-	private function formatData($data, array $fields): array {
+	private function formatData(\stdClass $data, array $fields): array {
 		$ret = [];
 		foreach ($fields as $name => $field) {
 			if (isset($field['label'][$this->locale])) {
@@ -609,7 +619,7 @@ class TeamPresenter extends BasePresenter {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
 				continue;
 			} elseif ($field['type'] === 'checkboxlist' && isset($data->$name)) {
-				$items = array_map(function($item) use ($field) {
+				$items = array_map(function(string $item) use ($field): string {
 					return $field['items'][$item]['label'][$this->locale];
 				}, $data->$name);
 				$ret[] = $label . ' ' . implode(', ', $items);
@@ -623,7 +633,7 @@ class TeamPresenter extends BasePresenter {
 		return $ret;
 	}
 
-	public static function serializeInvoiceItem($item) {
+	public static function serializeInvoiceItem(array $item): string {
 		$parts = [$item['scope'] ?? '', $item['type'] ?? '', $item['key'] ?? '', $item['value'] ?? ''];
 
 		return implode(':', $parts);

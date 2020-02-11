@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Components;
 
-use App;
 use Nette;
 use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\TextInput;
@@ -29,7 +28,7 @@ class SportidentControl extends BaseControl {
 	/** @var Checkbox neededControl checkbox for requesting a loan */
 	protected $neededControl;
 
-	public function __construct($label, $recommendedCardCapacity) {
+	public function __construct(string $label, int $recommendedCardCapacity) {
 		$this->cardIdControl = new TextInput();
 		$this->neededControl = new Checkbox('messages.team.person.si.rent');
 
@@ -73,6 +72,9 @@ class SportidentControl extends BaseControl {
 		parent::__construct($label);
 	}
 
+	/**
+	 * @param array|\stdClass|null $value
+	 */
 	public function setValue($value): self {
 		if ($value === null) {
 			$this->cardIdControl->setValue('');
@@ -128,7 +130,7 @@ class SportidentControl extends BaseControl {
 			return $this->neededControl->getControl();
 		}
 
-		throw new Nette\InvalidArgumentException('Part ' . $key . ' does not exist');
+		throw new Nette\InvalidArgumentException('Part ' . ($key ?: 'null') . ' does not exist');
 	}
 
 	public function validate(?array $controls = null): void {

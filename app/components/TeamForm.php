@@ -7,13 +7,15 @@ namespace App\Components;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI;
 use Nette\ComponentModel\IContainer;
+use Nette\Forms\Container;
+use Nette\Forms\Controls;
 use Nette\Utils\Json;
 
 /**
  * Form for creating and editing teams.
  */
 class TeamForm extends UI\Form {
-	/** @var array */
+	/** @var array<string, string> */
 	private $countries;
 
 	/** @var array */
@@ -37,19 +39,19 @@ class TeamForm extends UI\Form {
 		$maxMembers = $this->parameters['maxMembers'];
 
 		if ($count >= $maxMembers) {
-			/** @var \Nette\Forms\Controls\SubmitButton */
+			/** @var Controls\SubmitButton */
 			$add = $this['add'];
 			$add->setDisabled();
 		}
 
 		if ($count <= $minMembers) {
-			/** @var \Nette\Forms\Controls\SubmitButton */
+			/** @var Controls\SubmitButton */
 			$remove = $this['remove'];
 			$remove->setDisabled();
 		}
 	}
 
-	public function addCustomFields($fields, $container): void {
+	public function addCustomFields(array $fields, Container $container): void {
 		$locale = $this->locale;
 
 		foreach ($fields as $name => $field) {
@@ -74,11 +76,11 @@ class TeamForm extends UI\Form {
 						$input->setDefaultValue($field['default']);
 					}
 				} elseif ($field['type'] === 'phone') {
-					$input = $container->addText($name, $label)->setType('tel')->setRequired();
+					$input = $container->addText($name, $label)->setHtmlType('tel')->setRequired();
 				} elseif ($field['type'] === 'enum') {
 					$input = $this->addEnum($name, $container, $field)->setRequired();
 				} elseif ($field['type'] === 'checkbox') {
-					$input = $container->addCheckBox($name, $label);
+					$input = $container->addCheckbox($name, $label);
 					if (isset($field['default'])) {
 						$input->setDefaultValue($field['default']);
 					}
@@ -113,7 +115,7 @@ class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addSportident($name, $container): SportidentControl {
+	public function addSportident(string $name, Container $container): SportidentControl {
 		$recommendedCardCapacity = $this->parameters['recommendedCardCapacity'];
 
 		$si = new SportidentControl('messages.team.person.si.label', $recommendedCardCapacity);
@@ -122,7 +124,7 @@ class TeamForm extends UI\Form {
 		return $si;
 	}
 
-	public function addEnum($name, $container, $field) {
+	public function addEnum(string $name, Container $container, array $field): Controls\RadioList {
 		$locale = $this->locale;
 
 		if (isset($field['label'][$locale])) {
@@ -130,7 +132,7 @@ class TeamForm extends UI\Form {
 		} else {
 			$label = new NotTranslate($name . ':');
 		}
-		$options = array_map(function($option) use ($locale) {
+		$options = array_map(function(array $option) use ($locale): string {
 			return $option['label'][$locale];
 		}, $field['options']);
 
@@ -139,15 +141,18 @@ class TeamForm extends UI\Form {
 		return $container->addRadioList($name, $label, $options)->setDefaultValue($default);
 	}
 
-	public function isFieldDisabled($field) {
+	public function isFieldDisabled(array $field): bool {
 		return $field['disabled'] ?? false;
 	}
 
-	public function getDefaultFieldValue($field) {
+	/**
+	 * @return ?mixed
+	 */
+	public function getDefaultFieldValue(array $field) {
 		if ($field['type'] === 'enum') {
 			$full_options = $field['options'];
 
-			return array_reduce(array_keys($field['options']), function($carry, $key) use ($full_options) {
+			return array_reduce(array_keys($field['options']), function(?string $carry, string $key) use ($full_options): ?string {
 				$item = $full_options[$key];
 				if (isset($item['default']) && $item['default'] === true) {
 					return $key;
@@ -167,8 +172,6 @@ class TeamForm extends UI\Form {
 			return $default;
 		} else {
 			return $field['default'] ?? null;
-
-			return null;
 		}
 	}
 }

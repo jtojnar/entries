@@ -38,7 +38,7 @@ class CategoryEntry extends Nette\Forms\Controls\SelectBox {
 		parent::__construct($label, $items);
 	}
 
-	private static function labelKey($category) {
+	private static function labelKey(array $category): NotTranslate {
 		return new NotTranslate($category['label']);
 	}
 }

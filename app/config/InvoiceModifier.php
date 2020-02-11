@@ -44,7 +44,7 @@ class InvoiceModifier {
 		$invoice->items = $items;
 	}
 
-	private static function fixPersonItemAmounts(Invoice $invoice, $personCount): void {
+	private static function fixPersonItemAmounts(Invoice $invoice, int $personCount): void {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {

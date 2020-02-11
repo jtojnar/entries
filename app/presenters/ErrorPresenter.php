@@ -16,9 +16,6 @@ class ErrorPresenter extends BasePresenter {
 	/** @var ILogger @inject */
 	private $logger;
 
-	/**
-	 * @param Exception $exception
-	 */
 	public function renderDefault(Exception $exception): void {
 		if ($exception instanceof LimitedAccessException) {
 			$code = $exception->getCode();

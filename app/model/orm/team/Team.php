@@ -29,15 +29,21 @@ class Team extends Entity {
 	public const REGISTERED = 'registered';
 	public const PAID = 'paid';
 
+	/**
+	 * @return \stdClass
+	 */
 	public function getJsonData() {
 		return Json::decode($this->details);
 	}
 
+	/**
+	 * @param array|\stdClass $data
+	 */
 	public function setJsonData($data): void {
 		$this->details = Json::encode($data);
 	}
 
-	public function getterLastInvoice() {
+	public function getterLastInvoice(): ?Invoice {
 		return $this->invoices->get()->orderBy(['timestamp' => 'DESC'])->fetch();
 	}
 }

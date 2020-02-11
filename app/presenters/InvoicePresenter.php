@@ -48,6 +48,8 @@ class InvoicePresenter extends BasePresenter {
 				return 'messages.billing.invoice.status.new';
 			case Invoice::STATUS_PAID:
 				return 'messages.billing.invoice.status.paid';
+			default:
+				throw new \PHPStan\ShouldNotHappenException();
 		}
 	}
 

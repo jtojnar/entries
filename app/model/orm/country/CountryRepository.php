@@ -11,6 +11,9 @@ class CountryRepository extends Repository {
 		return [Country::class];
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	public function fetchIdNamePairs() {
 		return $this->findAll()->orderBy('name')->fetchPairs('id', 'name');
 	}

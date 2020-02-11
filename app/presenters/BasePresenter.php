@@ -13,7 +13,7 @@ use Nette\Localization\ITranslator;
  * Base class for all presenters.
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
-	/** @persistent @var string */
+	/** @var string @persistent */
 	public $locale;
 
 	/** @var ITranslator @inject */

@@ -20,7 +20,7 @@ final class FormFactory {
 		$this->translator = $translator;
 	}
 
-	public function create($layout = FormLayout::HORIZONTAL): Form {
+	public function create(string $layout = FormLayout::HORIZONTAL): Form {
 		$form = new Form();
 
 		$form->setTranslator($this->translator);

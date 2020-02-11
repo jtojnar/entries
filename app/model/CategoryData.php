@@ -33,9 +33,6 @@ final class CategoryData {
 	/** @var array */
 	private $parameters;
 
-	/** @var string */
-	private $locale;
-
 	/** @var array */
 	private $categoryTree;
 
@@ -89,12 +86,17 @@ final class CategoryData {
 		$this->translator = $translator;
 	}
 
+	/**
+	 * Check whether categories in config.neon are nested.
+	 *
+	 * @return array&nonEmpty
+	 */
 	public function getCategoryTree(): array {
 		if (!isset($this->categoryTree)) {
 			/** @var \App\Presenters\BasePresenter */
 			$presenter = $this->app->getPresenter();
 			$parameters = $this->parameters = $presenter->getContext()->parameters['entries'];
-			$locale = $this->locale = $presenter->locale;
+			$locale = $presenter->locale;
 			$items = [];
 
 			if (\count($parameters['categories']) === 0) {
@@ -205,16 +207,28 @@ final class CategoryData {
 		return $this->categoryData;
 	}
 
+	/**
+	 * Check whether categories in config.neon are nested.
+	 *
+	 * @param array&nonEmpty $categories
+	 */
 	private static function isNested(array $categories): bool {
 		foreach ($categories as $category) {
 			return isset($category['categories']);
 		}
+
+		throw new \PHPStan\ShouldNotHappenException();
 	}
 
+	/**
+	 * Check whether categories are nested.
+	 */
 	public function areNested(): bool {
 		foreach ($this->getCategoryTree() as $category) {
 			return !isset($category['label']);
 		}
+
+		throw new \PHPStan\ShouldNotHappenException();
 	}
 
 	private function parseConstraints(array $category): array {
