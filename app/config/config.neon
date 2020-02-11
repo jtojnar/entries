@@ -48,7 +48,11 @@ services:
 	- App\Model\CategoryData
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
+	- App\Templates\Filters\CategoryFormatFilter
 	router: App\Router\RouterFactory::createRouter
+	nette.latteFactory:
+		setup:
+			- addFilter(categoryFormat, @App\Templates\Filters\CategoryFormatFilter)
 
 translation:
 	locales:

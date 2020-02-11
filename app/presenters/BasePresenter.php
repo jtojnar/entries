@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App;
 use Closure;
 use Nette;
 use Nette\Localization\ITranslator;
@@ -18,9 +17,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 	/** @var ITranslator @inject */
 	public $translator;
-
-	/** @var App\Model\CategoryData @inject */
-	public $categories;
 
 	protected function startup(): void {
 		parent::startup();
@@ -45,7 +41,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			}
 		}
 
-		$template->getLatte()->addFilter('categoryFormat', Closure::fromCallable([$this, 'categoryFormat']));
 		$template->getLatte()->addFilter('wrapInParagraphs', Closure::fromCallable([$this, 'wrapInParagraphs']));
 		$template->getLatte()->addFilter('price', function($amount) use ($translator): string {
 			$currency = $this->context->parameters['entries']['fees']['currency'];
@@ -54,18 +49,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 			return $translated === $key ? $amount : $translated;
 		});
-	}
-
-	// protected since it is used by other presenters
-	// TODO: move this into a separate factory
-	protected function categoryFormat(App\Model\Team $team): string {
-		$categoryData = $this->categories->getCategoryData();
-
-		if (isset($categoryData[$team->category])) {
-			return $categoryData[$team->category]['label'];
-		}
-
-		return $team->category;
 	}
 
 	private function wrapInParagraphs(array $arr): string {

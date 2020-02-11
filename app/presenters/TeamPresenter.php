@@ -37,6 +37,12 @@ class TeamPresenter extends BasePresenter {
 	/** @var App\Model\InvoiceRepository @inject */
 	public $invoices;
 
+	/** @var App\Model\CategoryData @inject */
+	public $categories;
+
+	/** @var App\Templates\Filters\CategoryFormatFilter @inject */
+	public $categoryFormatter;
+
 	/** @var App\Forms\FormFactory @inject */
 	public $formFactory;
 
@@ -165,12 +171,12 @@ class TeamPresenter extends BasePresenter {
 
 		if (\count($teams)) {
 			if ($type === 'meos') {
-				$exporter = new Exporters\MeosExporter($teams, Closure::fromCallable([$this, 'categoryFormat']));
+				$exporter = new Exporters\MeosExporter($teams, $this->categoryFormatter);
 				$response = $this->context->getByType(Nette\Http\Response::class);
 				$response->setContentType($exporter->getMimeType(), 'UTF-8');
 				$exporter->output();
 			} else {
-				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, Closure::fromCallable([$this, 'categoryFormat']), $maxMembers);
+				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, $this->categoryFormatter, $maxMembers);
 				$response = $this->context->getByType(Nette\Http\Response::class);
 				$response->setContentType('text/plain', 'UTF-8');
 				$exporter->output();
@@ -449,7 +455,6 @@ class TeamPresenter extends BasePresenter {
 			} else {
 				/** @var Nette\Bridges\ApplicationLatte\Template $mtemplate */
 				$mtemplate = $this->createTemplate();
-				$mtemplate->getLatte()->addFilter('categoryFormat', Closure::fromCallable([$this, 'categoryFormat']));
 
 				$appDir = $this->context->parameters['appDir'];
 				if (file_exists($appDir . '/templates/Mail/verification.' . $this->locale . '.latte')) {

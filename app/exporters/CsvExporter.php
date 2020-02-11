@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Exporters;
 
 use App;
-use Closure;
+use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
 
 /**
@@ -36,18 +36,18 @@ class CsvExporter implements IExporter {
 	/** @var array */
 	private $personFields;
 
-	/** @var Closure */
-	private $categoryFormat;
+	/** @var CategoryFormatFilter */
+	private $categoryFormatter;
 
 	/** @var int */
 	private $maxMembers;
 
-	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, Closure $categoryFormat, int $maxMembers) {
+	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, CategoryFormatFilter $categoryFormatter, int $maxMembers) {
 		$this->teams = $teams;
 		$this->countries = $countries;
 		$this->teamFields = $teamFields;
 		$this->personFields = $personFields;
-		$this->categoryFormat = $categoryFormat;
+		$this->categoryFormatter = $categoryFormatter;
 		$this->maxMembers = $maxMembers;
 	}
 
@@ -92,7 +92,7 @@ class CsvExporter implements IExporter {
 		fputcsv($fp, $headers);
 
 		foreach ($this->teams as $team) {
-			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormat->__invoke($team), $team->message];
+			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormatter->__invoke($team), $team->message];
 			foreach ($this->teamFields as $name => $field) {
 				$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
 				if ($f) {

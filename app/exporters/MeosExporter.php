@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exporters;
 
-use Closure;
+use App\Templates\Filters\CategoryFormatFilter;
 use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;
 
@@ -24,12 +24,12 @@ class MeosExporter implements IExporter {
 	/** @var ICollection */
 	private $teams;
 
-	/** @var Closure */
-	private $categoryFormat;
+	/** @var CategoryFormatFilter */
+	private $categoryFormatter;
 
-	public function __construct(ICollection $teams, Closure $categoryFormat) {
+	public function __construct(ICollection $teams, CategoryFormatFilter $categoryFormatter) {
 		$this->teams = $teams;
-		$this->categoryFormat = $categoryFormat;
+		$this->categoryFormatter = $categoryFormatter;
 	}
 
 	public function getMimeType(): string {
@@ -49,7 +49,7 @@ class MeosExporter implements IExporter {
 			throw new \PHPStan\ShouldNotHappenException();
 		}
 		foreach ($this->teams as $team) {
-			$category = $this->categoryFormat->__invoke($team);
+			$category = $this->categoryFormatter->__invoke($team);
 			$club = '';
 			$this->outputRow($fp, [$category, $team->name, $club]);
 
