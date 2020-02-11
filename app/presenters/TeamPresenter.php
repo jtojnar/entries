@@ -351,18 +351,18 @@ class TeamPresenter extends BasePresenter {
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 
-			/** @var ?string $address */
-			$address = null;
-			/** @var string $name */
-			$name = null;
+			/** @var ?string $firstMemberAddress */
+			$firstMemberAddress = null;
+			/** @var ?string $firstMemberName */
+			$firstMemberName = null;
 
 			foreach ($values['persons'] as $member) {
 				$firstname = $member['firstname'];
-				if ($address === null) {
-					$address = $member['email'];
+				if ($firstMemberAddress === null) {
+					$firstMemberAddress = $member['email'];
 				}
-				if (!isset($name)) {
-					$name = $member['firstname'] . ' ' . $member['lastname'];
+				if ($firstMemberName === null) {
+					$firstMemberName = $member['firstname'] . ' ' . $member['lastname'];
 				}
 				$person = new App\Model\Person();
 
@@ -461,7 +461,7 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->team = $team;
 				$mtemplate->people = $team->persons;
 				$mtemplate->id = $team->id;
-				$mtemplate->name = $name;
+				$mtemplate->name = $firstMemberName;
 				$mtemplate->password = $password;
 				$mtemplate->invoice = $invoice;
 				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
@@ -478,7 +478,7 @@ class TeamPresenter extends BasePresenter {
 					->render();
 
 				$mail = new Message();
-				$mail->setFrom($mtemplate->organiserMail)->addTo($address)->setHtmlBody($mailHtml);
+				$mail->setFrom($mtemplate->organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
 
 				$mailer = $this->context->getByType(Nette\Mail\IMailer::class);
 				$mailer->send($mail);
