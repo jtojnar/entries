@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use Closure;
 use Nette;
 use Nette\Localization\ITranslator;
 
@@ -41,7 +40,6 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			}
 		}
 
-		$template->getLatte()->addFilter('wrapInParagraphs', Closure::fromCallable([$this, 'wrapInParagraphs']));
 		$template->getLatte()->addFilter('price', function($amount) use ($translator): string {
 			$currency = $this->context->parameters['entries']['fees']['currency'];
 			$key = 'messages.currencies.' . $currency;
@@ -49,11 +47,5 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 
 			return $translated === $key ? $amount : $translated;
 		});
-	}
-
-	private function wrapInParagraphs(array $arr): string {
-		return implode('', array_map(function($e) {
-			return '<p>' . $e . '</p>';
-		}, $arr));
 	}
 }

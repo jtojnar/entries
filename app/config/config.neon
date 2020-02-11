@@ -49,10 +49,12 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
 	- App\Templates\Filters\CategoryFormatFilter
+	- App\Templates\Filters\WrapInParagraphsFilter
 	router: App\Router\RouterFactory::createRouter
 	nette.latteFactory:
 		setup:
 			- addFilter(categoryFormat, @App\Templates\Filters\CategoryFormatFilter)
+			- addFilter(wrapInParagraphs, @App\Templates\Filters\WrapInParagraphsFilter)
 
 translation:
 	locales:
