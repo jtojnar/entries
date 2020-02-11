@@ -10,6 +10,8 @@ use App\Exporters;
 use App\Model\Invoice;
 use Closure;
 use Exception;
+use Money\Currency;
+use Money\Money;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Mail\Message;
@@ -300,6 +302,7 @@ class TeamPresenter extends BasePresenter {
 
 			$team->category = isset($form['category']) ? $values['category'] : '';
 
+			$currency = new Currency($this->presenter->context->parameters['entries']['fees']['currency']);
 			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
 			$jsonData = [];
 			foreach ($fields as $name => $field) {
@@ -311,20 +314,20 @@ class TeamPresenter extends BasePresenter {
 						'type' => $type,
 						'scope' => 'team',
 						'key' => $name,
-					]), $field['fee']);
+					]), new Money($field['fee'] * 100, $currency));
 				} elseif ($type === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
 					$invoice->addItem(self::serializeInvoiceItem([
 						'type' => $type,
 						'scope' => 'team',
 						'key' => $name,
-					]), $field['fee']);
+					]), new Money($field['fee'] * 100, $currency));
 				} elseif ($type === 'enum' && isset($field['options'][$values[$name]]) && isset($field['options'][$values[$name]]['fee']) && $jsonData[$name]) {
 					$invoice->addItem(self::serializeInvoiceItem([
 						'type' => $type,
 						'scope' => 'team',
 						'key' => $name,
 						'value' => $values[$name],
-					]), $field['options'][$values[$name]]['fee']);
+					]), new Money($field['options'][$values[$name]]['fee'] * 100, $currency));
 				} elseif ($type === 'checkboxlist') {
 					foreach ($jsonData[$name] as $item) {
 						if (isset($field['items'][$item]['fee'])) {
@@ -333,7 +336,7 @@ class TeamPresenter extends BasePresenter {
 								'scope' => 'team',
 								'key' => $name,
 								'value' => $item,
-							]), $field['items'][$item]['fee']);
+							]), new Money($field['items'][$item]['fee'] * 100, $currency));
 						}
 					}
 				}
@@ -353,7 +356,7 @@ class TeamPresenter extends BasePresenter {
 			$invoice->createItem(self::serializeInvoiceItem([
 				'type' => '~entry',
 				'scope' => 'person',
-			]), $personFee);
+			]), new Money($personFee * 100, $currency));
 
 			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
 
@@ -390,20 +393,20 @@ class TeamPresenter extends BasePresenter {
 							'type' => $type,
 							'scope' => 'person',
 							'key' => $name,
-						]), $field['fee']);
+						]), new Money($field['fee'] * 100, $currency));
 					} elseif ($type === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
 						$invoice->addItem(self::serializeInvoiceItem([
 							'type' => $type,
 							'scope' => 'person',
 							'key' => $name,
-						]), $field['fee']);
+						]), new Money($field['fee'] * 100, $currency));
 					} elseif ($type === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
 						$invoice->addItem(self::serializeInvoiceItem([
 							'type' => $type,
 							'scope' => 'person',
 							'key' => $name,
 							'value' => $member[$name],
-						]), $field['options'][$member[$name]]['fee']);
+						]), new Money($field['options'][$member[$name]]['fee'] * 100, $currency));
 					} elseif ($type === 'checkboxlist') {
 						foreach ($jsonData[$name] as $item) {
 							if (isset($field['items'][$item]['fee'])) {
@@ -412,7 +415,7 @@ class TeamPresenter extends BasePresenter {
 									'scope' => 'person',
 									'key' => $name,
 									'value' => $item,
-								]), $field['items'][$item]['fee']);
+								]), new Money($field['items'][$item]['fee'] * 100, $currency));
 							}
 						}
 					}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Money\Money;
 use Nextras\Orm\Entity\Entity;
 
 /**
@@ -20,32 +21,26 @@ class Invoice extends Entity {
 	public const STATUS_NEW = 'new';
 	public const STATUS_PAID = 'paid';
 
-	/**
-	 * @param Money $price
-	 */
-	public function createItem(string $name, $price): self {
+	public function createItem(string $name, Money $price): self {
 		$items = $this->items;
 
 		if (isset($items[$name])) {
-			$existingPrice = $items[$name]['price'];
-			if ($price !== $existingPrice) {
+			$existingPrice = $items[$name]->price;
+			if (!$price->equals($existingPrice)) {
 				throw new \Exception("This invoice item “${name}” already exists with a different price.");
 			}
 
 			return $this;
 		}
 
-		$items[$name] = ['price' => $price, 'amount' => 0];
+		$items[$name] = new InvoiceItem($name, $price, 0);
 
 		$this->items = $items;
 
 		return $this;
 	}
 
-	/**
-	 * @param Money $price
-	 */
-	public function addItem(string $name, $price = null): self {
+	public function addItem(string $name, ?Money $price = null): self {
 		if (isset($price)) {
 			$this->createItem($name, $price);
 		}
@@ -56,7 +51,7 @@ class Invoice extends Entity {
 			throw new \Exception("Invoice item “${name}” was not defined.");
 		}
 
-		++$items[$name]['amount'];
+		$items[$name] = $items[$name]->addAmount(1);
 
 		$this->items = $items;
 
@@ -67,18 +62,13 @@ class Invoice extends Entity {
 		return $this->addItem('person');
 	}
 
-	/**
-	 * @return Money
-	 */
-	public function getTotal(array $filter = null) {
-		$cost = 0;
+	public function getTotal(array $filter = null): Money {
+		$relevantItems = $filter === null ? $this->items : array_filter($this->items, function(string $name) use ($filter): bool {
+			return \in_array($name, $filter, true);
+		}, ARRAY_FILTER_USE_KEY);
 
-		foreach ($this->items as $name => $item) {
-			if ($filter === null || \in_array($name, $filter, true)) {
-				$cost += $item['amount'] * $item['price'];
-			}
-		}
-
-		return $cost;
+		return Money::sum(...array_values(array_map(function(InvoiceItem $item): Money {
+			return $item->price->multiply($item->amount);
+		}, $relevantItems)));
 	}
 }

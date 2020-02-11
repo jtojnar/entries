@@ -49,7 +49,7 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
 	- App\Templates\Filters\CategoryFormatFilter
-	- App\Templates\Filters\PriceFilter(%entries.fees.currency%)
+	- App\Templates\Filters\PriceFilter
 	- App\Templates\Filters\WrapInParagraphsFilter
 	router: App\Router\RouterFactory::createRouter
 	nette.latteFactory:

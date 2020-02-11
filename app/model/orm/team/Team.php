@@ -43,7 +43,13 @@ class Team extends Entity {
 		$this->details = Json::encode($data);
 	}
 
-	public function getterLastInvoice(): ?Invoice {
-		return $this->invoices->get()->orderBy(['timestamp' => 'DESC'])->fetch();
+	public function getterLastInvoice(): Invoice {
+		$invoice = $this->invoices->get()->orderBy(['timestamp' => 'DESC'])->fetch();
+
+		if ($invoice === null) {
+			throw new \Exception('Team has no invoice!');
+		}
+
+		return $invoice;
 	}
 }

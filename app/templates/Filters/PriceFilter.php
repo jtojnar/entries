@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace App\Templates\Filters;
 
-use Nette\Localization\ITranslator;
+use Contributte\Translation\Translator;
+use Money\Currencies\ISOCurrencies;
+use Money\Formatter\IntlMoneyFormatter;
+use Money\Money;
 
 class PriceFilter {
-	/** @var string */
-	public $currency;
-
-	/** @var ITranslator */
+	/** @var Translator */
 	public $translator;
 
-	public function __construct(string $currency, ITranslator $translator) {
-		$this->currency = $currency;
+	public function __construct(Translator $translator) {
 		$this->translator = $translator;
 	}
 
-	public function __invoke(int $amount): string {
-		$key = 'messages.currencies.' . $this->currency;
-		$translated = $this->translator->translate($key, ['amount' => $amount]);
+	public function __invoke(Money $money): string {
+		$currencies = new ISOCurrencies();
 
-		return $translated === $key ? (string) $amount : $translated;
+		$numberFormatter = new \NumberFormatter($this->translator->getLocale(), \NumberFormatter::CURRENCY);
+		$moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
+
+		return $moneyFormatter->format($money);
 	}
 }
