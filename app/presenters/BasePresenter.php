@@ -39,13 +39,5 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 				$template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
 			}
 		}
-
-		$template->getLatte()->addFilter('price', function($amount) use ($translator): string {
-			$currency = $this->context->parameters['entries']['fees']['currency'];
-			$key = 'messages.currencies.' . $currency;
-			$translated = $translator->translate($key, ['amount' => $amount]);
-
-			return $translated === $key ? $amount : $translated;
-		});
 	}
 }
