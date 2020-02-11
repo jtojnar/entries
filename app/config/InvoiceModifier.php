@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Model\Invoice;
+use App\Model\InvoiceItem;
 use App\Model\Team;
 use Money\Money;
 use Nette;
@@ -21,7 +22,7 @@ class InvoiceModifier {
 
 		$data = $team->getJsonData();
 		if ($data->friday2h === 'yes' && $data->saturday5h === 'yes' && $data->sunday4h === 'yes') {
-			$invoice->addItem('all_stages_discount', $invoice->items['team:enum:friday2h:yes']['price']->multiply(-1));
+			$invoice->addItem('all_stages_discount', $invoice->items['team:enum:friday2h:yes']->price->multiply(-1));
 		}
 
 		self::fixPersonItemAmounts($invoice, \count($team->persons));
@@ -31,15 +32,15 @@ class InvoiceModifier {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {
-			self::discount($items['team:enum:friday2h:yes'], 10);
+			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 10);
 		}
 
 		if (isset($items['team:enum:saturday5h:yes'])) {
-			self::discount($items['team:enum:saturday5h:yes'], 20);
+			$items['team:enum:saturday5h:yes'] = self::discount($items['team:enum:saturday5h:yes'], 20);
 		}
 
 		if (isset($items['team:enum:sunday4h:yes'])) {
-			self::discount($items['team:enum:sunday4h:yes'], 20);
+			$items['team:enum:sunday4h:yes'] = self::discount($items['team:enum:sunday4h:yes'], 20);
 		}
 
 		$invoice->items = $items;
@@ -49,25 +50,25 @@ class InvoiceModifier {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {
-			$items['team:enum:friday2h:yes']['amount'] = $personCount;
+			$items['team:enum:friday2h:yes'] = $items['team:enum:friday2h:yes']->setAmount($personCount);
 		}
 
 		if (isset($items['team:enum:saturday5h:yes'])) {
-			$items['team:enum:saturday5h:yes']['amount'] = $personCount;
+			$items['team:enum:saturday5h:yes'] = $items['team:enum:saturday5h:yes']->setAmount($personCount);
 		}
 
 		if (isset($items['team:enum:sunday4h:yes'])) {
-			$items['team:enum:sunday4h:yes']['amount'] = $personCount;
+			$items['team:enum:sunday4h:yes'] = $items['team:enum:sunday4h:yes']->setAmount($personCount);
 		}
 
 		if (isset($items['all_stages_discount'])) {
-			$items['all_stages_discount']['amount'] = $personCount;
+			$items['all_stages_discount'] = $items['all_stages_discount']->setAmount($personCount);
 		}
 
 		$invoice->items = $items;
 	}
 
-	private static function discount(array $item, int $discount): void {
-		$item['price'] = $item['price']->subtract(Money::CZK($discount * 100)); // price in halíř
+	private static function discount(InvoiceItem $item, int $discount): InvoiceItem {
+		return $item->setPrice($item->price->subtract(Money::CZK($discount * 100))); // price in halíř
 	}
 }
