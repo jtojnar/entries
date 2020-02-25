@@ -93,32 +93,7 @@ class CsvExporter implements IExporter {
 
 		foreach ($this->teams as $team) {
 			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormatter->__invoke($team), $team->message];
-			foreach ($this->teamFields as $name => $field) {
-				$f = isset($team->getJsonData()->$name) ? $team->getJsonData()->$name : null;
-				if ($f) {
-					if ($field['type'] === 'country') {
-						// TODO: https://github.com/nextras/orm/issues/319
-						/** @var App\Model\Country */
-						$country = $this->countries->getById($f);
-						$row[] = $country->name;
-					} elseif ($field['type'] === 'checkboxlist') {
-						foreach ($field['items'] as $itemKey => $item) {
-							$row[] = \in_array($itemKey, $f, true);
-						}
-					} else {
-						$row[] = $f;
-					}
-				} else {
-					if ($field['type'] === 'checkboxlist') {
-						foreach ($field['items'] as $item) {
-							$row[] = '';
-						}
-					} else {
-						$row[] = '';
-					}
-				}
-			}
-
+			$row = $this->addCustomFields($row, $this->teamFields, $team);
 			$i = 0;
 			$remaining = $this->maxMembers;
 			foreach ($team->persons as $person) {
@@ -126,33 +101,7 @@ class CsvExporter implements IExporter {
 				$row[] = $person->lastname;
 				$row[] = $person->firstname;
 				$row[] = $person->gender;
-				foreach ($this->personFields as $name => $field) {
-					$f = isset($person->getJsonData()->$name) ? $person->getJsonData()->$name : null;
-					if ($f) {
-						if ($field['type'] === 'country') {
-							// TODO: https://github.com/nextras/orm/issues/319
-							/** @var App\Model\Country */
-							$country = $this->countries->getById($f);
-							$row[] = $country->name;
-						} elseif ($field['type'] === 'checkboxlist') {
-							foreach ($field['items'] as $itemKey => $_) {
-								$row[] = \in_array($itemKey, $f, true);
-							}
-						} elseif ($field['type'] === 'sportident') {
-							$row[] = $f->cardId ?? 'rent';
-						} else {
-							$row[] = $f;
-						}
-					} else {
-						if ($field['type'] === 'checkboxlist') {
-							foreach ($field['items'] as $item) {
-								$row[] = '';
-							}
-						} else {
-							$row[] = '';
-						}
-					}
-				}
+				$row = $this->addCustomFields($row, $this->personFields, $person);
 				$row[] = $person->birth;
 				--$remaining;
 			}
@@ -178,5 +127,40 @@ class CsvExporter implements IExporter {
 		}
 		fclose($fp);
 		exit;
+	}
+
+	/**
+	 * @param App\Model\Team|App\Model\Person $container
+	 */
+	private function addCustomFields(array $row, array $fields, $container): array {
+		foreach ($fields as $name => $field) {
+			$f = isset($container->getJsonData()->$name) ? $container->getJsonData()->$name : null;
+			if ($f) {
+				if ($field['type'] === 'country') {
+					// TODO: https://github.com/nextras/orm/issues/319
+					/** @var App\Model\Country */
+					$country = $this->countries->getById($f);
+					$row[] = $country->name;
+				} elseif ($field['type'] === 'checkboxlist') {
+					foreach ($field['items'] as $itemKey => $_) {
+						$row[] = \in_array($itemKey, $f, true);
+					}
+				} elseif ($field['type'] === 'sportident') {
+					$row[] = $f->cardId ?? 'rent';
+				} else {
+					$row[] = $f;
+				}
+			} else {
+				if ($field['type'] === 'checkboxlist') {
+					foreach ($field['items'] as $item) {
+						$row[] = '';
+					}
+				} else {
+					$row[] = '';
+				}
+			}
+		}
+
+		return $row;
 	}
 }
