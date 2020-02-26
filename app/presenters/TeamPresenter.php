@@ -379,6 +379,7 @@ class TeamPresenter extends BasePresenter {
 				$person->gender = $member['gender'];
 				$person->birth = $member['birth'];
 				$person->email = $member['email'];
+				$person->contact = \count($team->persons) === 0;
 				$person->team = $team;
 
 				$jsonData = [];
@@ -420,9 +421,6 @@ class TeamPresenter extends BasePresenter {
 					}
 				}
 
-				if (\count($team->persons) === 0) {
-					$person->contact = true;
-				}
 				$person->setJsonData($jsonData);
 
 				$invoice->addItem(self::serializeInvoiceItem([
