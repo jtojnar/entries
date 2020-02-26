@@ -343,14 +343,13 @@ class TeamPresenter extends BasePresenter {
 			}
 			$team->setJsonData($jsonData);
 
+			$this->teams->persist($team);
+
 			if ($this->action === 'edit') {
 				foreach ($team->persons as $person) {
 					$this->persons->remove($person);
 				}
-				$this->persons->flush();
 			}
-
-			$this->teams->persistAndFlush($team);
 
 			$personFee = $this->categories->getCategoryData()[$team->category]['fee'];
 			$invoice->createItem(self::serializeInvoiceItem([
@@ -439,9 +438,6 @@ class TeamPresenter extends BasePresenter {
 				$invoiceModifier($team, $invoice, $this->context->parameters['entries']);
 			}
 
-			$this->persons->flush();
-			$this->teams->persistAndFlush($team);
-
 			foreach ($team->invoices as $inv) {
 				if ($inv->status === Invoice::STATUS_NEW && $inv !== $invoice) {
 					$inv->status = Invoice::STATUS_CANCELLED;
@@ -451,7 +447,7 @@ class TeamPresenter extends BasePresenter {
 
 			$this->invoices->persist($invoice);
 
-			$this->invoices->flush();
+			$this->teams->flush();
 
 			if ($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
