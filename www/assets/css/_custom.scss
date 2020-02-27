@@ -18,4 +18,4 @@ $enable-validation-icons: false;
 @import '~bootstrap/scss/utilities';
 @import '~bootstrap/scss/print';
 
-@include form-validation-state('warning', theme-color('warning'));
+@include form-validation-state('warning', theme-color('warning'), '');
