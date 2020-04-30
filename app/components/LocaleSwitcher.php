@@ -11,10 +11,10 @@ use Nette\Bridges\ApplicationLatte\Template;
  * Control for switching locale of the application.
  */
 class LocaleSwitcher extends Control {
-	/** @var string[] $locales */
+	/** @var string[] */
 	private $locales;
 
-	/** @var ?string[] $allowedLocales */
+	/** @var ?string[] */
 	private $allowedLocales;
 
 	public function __construct(array $locales, ?array $allowedLocales) {
