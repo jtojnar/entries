@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -o errexit
+
 export SHORT_COMMIT=$(git rev-parse --short HEAD)
 export ENTRIES_VERSION=$SHORT_COMMIT
 export ENTRIES_ZIPBALL=entries-$ENTRIES_VERSION.zip
