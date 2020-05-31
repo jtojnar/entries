@@ -40,7 +40,7 @@ class Team extends Entity {
 	 * @param array|\stdClass $data
 	 */
 	public function setJsonData($data): void {
-		$this->details = Json::encode($data);
+		$this->details = \is_array($data) && \count($data) == 0 ? '{}' : Json::encode($data);
 	}
 
 	public function getterLastInvoice(): Invoice {
