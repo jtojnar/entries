@@ -1,15 +1,15 @@
 language: php
 
-matrix:
+dist: bionic
+
+jobs:
   include:
+    - php: 7.4
     - php: 7.3
     - php: 7.2
     - php: 7.1
       env: DEPLOY=true
-    - hhvm
   fast_finish: true
-  allow_failures:
-    - php: hhvm
 
 node_js:
   - 12
