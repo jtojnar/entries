@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v10
+      with:
+        skip_adding_nixpkgs_channel: true # We are using flakes
+
+    - name: Set outputs
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Install dependencies
+      run: nix-shell --run 'composer install --no-interaction --dev --prefer-source'
+
+    - name: Check code using Nette code checker
+      run: nix-shell --run 'code-checker -d app'
+
+    - name: Lint coding style
+      run: nix-shell --run 'composer run-script cs'
+
+    - name: Run static analysis
+      run: nix-shell --run 'composer run-script phpstan'
+
+    - name: Lint source code
+      run: nix-shell --run 'composer run-script lint'
+
+    - name: Run tests
+      run: |
+        mv app/config/config.local.neon.default app/config/config.local.neon
+        nix-shell --run 'composer test'
+
+    - name: Build a zipball
+      run: nix-shell --run '.github/workflows/package.sh "entries-${{ steps.vars.outputs.sha_short }}.zip"'
+
+    - name: Upload the zipball to GitHub
+      uses: actions/upload-artifact@v2
+      with:
+        name: entries-${{ steps.vars.outputs.sha_short }}.zip
+        if-no-files-found: error
+        path: entries-${{ steps.vars.outputs.sha_short }}.zip
+
+    - name: Upload the zipball to Bintray
+      uses: bpicode/github-action-upload-bintray@v0.9.0
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      with:
+        file: entries-${{ steps.vars.outputs.sha_short }}.zip
+        api_user: jtojnar
+        api_key: ${{ secrets.BINTRAY_API_KEY }}
+        repository_user: jtojnar
+        repository: entries
+        package: entries
+        version: ${{ steps.vars.outputs.sha_short }}
+        publish: 1
