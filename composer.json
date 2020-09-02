@@ -51,7 +51,8 @@
 	"scripts": {
 		"cs": "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --config=utils/php_cs.php",
 		"lint": "vendor/bin/parallel-lint app/ tests/ www/",
-		"phpstan": "vendor/bin/phpstan analyse --configuration=utils/phpstan.neon"
+		"phpstan": "vendor/bin/phpstan analyse --configuration=utils/phpstan.neon",
+		"test": "vendor/bin/tester tests -C -s"
 	},
 	"config": {
 		"platform": {
