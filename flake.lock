@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "composer2nixRepo": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1585763702,
+        "narHash": "sha256-7g07bWpKFSorPbX/E0O0WIprV7m0MJgbuEHrQWwcHWA=",
+        "owner": "svanderburg",
+        "repo": "composer2nix",
+        "rev": "57cecaf5d9d667b47415bb7c1d1f5154be7c759e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "svanderburg",
+        "repo": "composer2nix",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -34,6 +50,7 @@
     },
     "root": {
       "inputs": {
+        "composer2nixRepo": "composer2nixRepo",
         "flake-compat": "flake-compat",
         "nixpkgs": "nixpkgs",
         "utils": "utils"
