@@ -56,7 +56,6 @@ jobs:
         file: entries-${{ steps.vars.outputs.sha_short }}.zip
         api_user: jtojnar
         api_key: ${{ secrets.BINTRAY_API_KEY }}
-        repository_user: jtojnar
         repository: entries
         package: entries
         version: ${{ steps.vars.outputs.sha_short }}
