@@ -60,3 +60,4 @@ jobs:
         package: entries
         version: ${{ steps.vars.outputs.sha_short }}
         publish: 1
+        calculate_metadata: false
