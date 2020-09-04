@@ -31,9 +31,9 @@
 		"nextras/form-components": "^1.0.0",
 		"nextras/forms-rendering": "^1.0.0",
 		"kdyby/forms-replicator": "^2.0.0",
-		"contributte/translation": "^0.6.0",
+		"contributte/translation": "^0.7.0",
 		"nextras/orm": "~3.1",
-		"pelago/emogrifier": "^3.1"
+		"pelago/emogrifier": "^4.0"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^2.3",
