@@ -75,6 +75,7 @@ class CsvExporter implements IExporter {
 		for ($i = 1; $i <= $this->maxMembers; ++$i) {
 			$headers[] = 'm' . $i . 'lastname';
 			$headers[] = 'm' . $i . 'firstname';
+			$headers[] = 'm' . $i . 'email';
 			$headers[] = 'm' . $i . 'gender';
 			foreach ($this->personFields as $name => $field) {
 				if ($field['type'] === 'checkboxlist') {
@@ -100,6 +101,7 @@ class CsvExporter implements IExporter {
 				++$i;
 				$row[] = $person->lastname;
 				$row[] = $person->firstname;
+				$row[] = $person->email;
 				$row[] = $person->gender;
 				$row = $this->addCustomFields($row, $this->personFields, $person);
 				$row[] = $person->birth;
