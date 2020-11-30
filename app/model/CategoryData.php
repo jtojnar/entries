@@ -33,10 +33,10 @@ final class CategoryData {
 	/** @var array */
 	private $parameters;
 
-	/** @var array */
+	/** @var non-empty-array */
 	private $categoryTree;
 
-	/** @var array */
+	/** @var non-empty-array */
 	private $categoryData;
 
 	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
@@ -89,7 +89,7 @@ final class CategoryData {
 	/**
 	 * Check whether categories in config.neon are nested.
 	 *
-	 * @return array&nonEmpty
+	 * @return non-empty-array
 	 */
 	public function getCategoryTree(): array {
 		if (!isset($this->categoryTree)) {
@@ -104,7 +104,7 @@ final class CategoryData {
 			}
 
 			if (self::isNested($parameters['categories'])) {
-				$this->categoryData = [];
+				$categoryData = [];
 				$groups = $parameters['categories'];
 
 				$groupsKeys = array_map(function(string $groupKey) use ($groups, $locale): string {
@@ -124,7 +124,7 @@ final class CategoryData {
 				$groupsCategories = array_map(function(string $groupKey) use ($groups, $parameters): array {
 					$group = $groups[$groupKey];
 
-					if (!isset($group['categories']) || !\is_array($group['categories'])) {
+					if (!isset($group['categories']) || !\is_array($group['categories']) || \count($group['categories']) === 0) {
 						throw new \Exception("Category group #${groupKey} lacks categories");
 					}
 
@@ -153,19 +153,35 @@ final class CategoryData {
 							'maxMembers' => $category['maxMembers'] ?? null,
 						];
 
-						if (isset($this->categoryData[$categoryKey])) {
-							throw new \Exception("Category “${categoryKey}” is already defined");
-						}
-
-						$this->categoryData[$categoryKey] = $categoryValue;
-
 						return $categoryValue;
-					}, array_keys($categories));
+					}, $categoriesKeys);
 
 					return array_combine($categoriesKeys, $categoriesData) ?: [];
 				}, array_keys($groups));
 
-				$this->categoryTree = array_combine($groupsKeys, $groupsCategories) ?: [];
+				$categoryTree = array_combine($groupsKeys, $groupsCategories);
+
+				if ($categoryTree === false || \count($categoryTree) === 0) {
+					throw new \PHPStan\ShouldNotHappenException();
+				}
+
+				$categoryData = [];
+				foreach ($categoryTree as $categories) {
+					foreach ($categories as $categoryKey => $categoryValue) {
+						if (isset($categoryData[$categoryKey])) {
+							throw new \Exception("Category “${categoryKey}” is already defined");
+						}
+
+						$categoryData[$categoryKey] = $categoryValue;
+					}
+				}
+
+				if (\count($categoryData) === 0) {
+					throw new \PHPStan\ShouldNotHappenException();
+				}
+
+				$this->categoryData = $categoryData;
+				$this->categoryTree = $categoryTree;
 			} else {
 				$categories = $parameters['categories'];
 
@@ -191,8 +207,14 @@ final class CategoryData {
 					];
 				}, array_keys($categories));
 
-				$this->categoryTree = array_combine($categoriesKeys, $categoriesData) ?: [];
-				$this->categoryData = $this->categoryTree;
+				$categoryTree = array_combine($categoriesKeys, $categoriesData);
+
+				if ($categoryTree === false || \count($categoryTree) === 0) {
+					throw new \PHPStan\ShouldNotHappenException();
+				}
+
+				$this->categoryTree = $categoryTree;
+				$this->categoryData = $categoryTree;
 			}
 		}
 
@@ -210,14 +232,12 @@ final class CategoryData {
 	/**
 	 * Check whether categories in config.neon are nested.
 	 *
-	 * @param array&nonEmpty $categories
+	 * @param non-empty-array $categories
 	 */
 	private static function isNested(array $categories): bool {
 		foreach ($categories as $category) {
 			return isset($category['categories']);
 		}
-
-		throw new \PHPStan\ShouldNotHappenException();
 	}
 
 	/**
@@ -227,8 +247,6 @@ final class CategoryData {
 		foreach ($this->getCategoryTree() as $category) {
 			return !isset($category['label']);
 		}
-
-		throw new \PHPStan\ShouldNotHappenException();
 	}
 
 	private function parseConstraints(array $category): array {

@@ -14,7 +14,3 @@ parameters:
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
 		- '(Call to an undefined method App\\Components\\TeamForm::addDynamic\(\))'
-	typeAliases:
-		# does not seem to work at the moment
-		# https://stackoverflow.com/questions/60162729/how-to-represent-a-non-empty-array
-		nonEmpty: array
