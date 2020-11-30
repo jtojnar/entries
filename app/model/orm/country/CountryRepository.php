@@ -12,9 +12,12 @@ class CountryRepository extends Repository {
 	}
 
 	/**
-	 * @return array<string, string>
+	 * @return array<int, string>
 	 */
 	public function fetchIdNamePairs() {
-		return $this->findAll()->orderBy('name')->fetchPairs('id', 'name');
+		/** @var array<int, string> */
+		$countries = $this->findAll()->orderBy('name')->fetchPairs('id', 'name');
+
+		return $countries;
 	}
 }

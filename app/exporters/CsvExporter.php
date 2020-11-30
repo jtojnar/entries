@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Exporters;
 
 use App;
+use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
 
@@ -24,7 +25,7 @@ use Nextras\Orm\Collection\ICollection;
  * (i.e. either registered, or paid).
  */
 class CsvExporter implements IExporter {
-	/** @var ICollection */
+	/** @var Team[]|ICollection */
 	private $teams;
 
 	/** @var App\Model\CountryRepository */
@@ -42,6 +43,9 @@ class CsvExporter implements IExporter {
 	/** @var int */
 	private $maxMembers;
 
+	/**
+	 * @param Team[]|ICollection $teams
+	 */
 	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, CategoryFormatFilter $categoryFormatter, int $maxMembers) {
 		$this->teams = $teams;
 		$this->countries = $countries;

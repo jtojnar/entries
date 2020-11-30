@@ -1,13 +1,13 @@
 {
 	"name": "jtojnar/entries",
 	"description": "Entry registration system for rogaining",
-	"homepage": "http://github.com/jtojnar/entries",
+	"homepage": "https://github.com/jtojnar/entries",
 	"type": "project",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Jan Tojnar",
-			"homepage": "http://ogion.cz"
+			"homepage": "https://ogion.cz"
 		}
 	],
 	"require": {
@@ -31,9 +31,9 @@
 		"nextras/form-components": "^1.0.0",
 		"nextras/forms-rendering": "^1.0.0",
 		"kdyby/forms-replicator": "^2.0.0",
-		"contributte/translation": "^0.7.0",
-		"nextras/orm": "~3.1",
-		"pelago/emogrifier": "^4.0"
+		"contributte/translation": "^0.8.0",
+		"nextras/orm": "~4.0",
+		"pelago/emogrifier": "^5.0"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^2.3",
@@ -41,7 +41,7 @@
 		"johnstoncode/phpstan-moneyphp": "^0.5.0",
 		"nette/tester": "^2.2.0",
 		"nextras/mail-panel": "^2.5",
-		"nextras/orm-phpstan": "^0.5",
+		"nextras/orm-phpstan": "^0.6",
 		"phpstan/phpstan": "^0.12.0",
 		"phpstan/phpstan-nette": "^0.12.0"
 	},

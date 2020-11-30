@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exporters;
 
+use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;
@@ -21,12 +22,15 @@ use Nextras\Orm\Collection\ICollection;
 class MeosExporter implements IExporter {
 	public const DELIMITER = ';';
 
-	/** @var ICollection */
+	/** @var Team[]|ICollection */
 	private $teams;
 
 	/** @var CategoryFormatFilter */
 	private $categoryFormatter;
 
+	/**
+	 * @param Team[]|ICollection $teams
+	 */
 	public function __construct(ICollection $teams, CategoryFormatFilter $categoryFormatter) {
 		$this->teams = $teams;
 		$this->categoryFormatter = $categoryFormatter;

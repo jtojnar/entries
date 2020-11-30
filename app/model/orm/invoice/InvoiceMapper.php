@@ -7,15 +7,15 @@ namespace App\Model;
 use Money\Currency;
 use Money\Money;
 use Nette\Utils\Json;
-use Nextras\Orm\Mapper\Dbal\StorageReflection\StorageReflection;
+use Nextras\Orm\Mapper\Dbal\Conventions\IConventions;
 
 class InvoiceMapper extends BaseMapper {
-	protected function createStorageReflection(): StorageReflection {
-		$reflection = parent::createStorageReflection();
+	protected function createConventions(): IConventions {
+		$conventions = parent::createConventions();
 
-		$reflection->setMapping(
+		$conventions->setMapping(
 			'items',
-			$reflection->convertEntityToStorageKey('items'),
+			$conventions->convertEntityToStorageKey('items'),
 			/**
 			 * Convert JSON object of the following form into a list of invoice items
 			 * [{name: string, price: {amount: string, currency: string}, amount: int}].
@@ -49,6 +49,6 @@ class InvoiceMapper extends BaseMapper {
 			}
 		);
 
-		return $reflection;
+		return $conventions;
 	}
 }
