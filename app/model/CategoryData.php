@@ -188,7 +188,7 @@ final class CategoryData {
 				$categoriesKeys = array_keys($categories);
 
 				$categoriesData = array_map(function(string $categoryKey) use ($categories, $parameters): array {
-					$category = $categories[$categoryKey];
+					$category = $categories[$categoryKey] ?: [];
 
 					if (isset($category['fees']) && isset($category['fees']['person'])) {
 						$fee = $category['fees']['person'];
