@@ -22,10 +22,10 @@ class InvoicePresenter extends BasePresenter {
 	public $invoices;
 
 	public function renderShow(int $id): void {
-		/** @var Nette\Security\Identity $identity */
+		/** @var Nette\Security\SimpleIdentity $identity */
 		$identity = $this->user->identity;
 
-		/** @var Nette\Bridges\ApplicationLatte\Template $template */
+		/** @var Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
 
 		$template->invoice = $this->invoices->getById($id);

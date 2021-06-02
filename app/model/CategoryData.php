@@ -9,7 +9,7 @@ use Closure;
 use Nette;
 use Nette\Application\Application;
 use Nette\Forms\Controls\SelectBox;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use const nspl\a\all;
 use const nspl\a\any;
 use function nspl\a\map;
@@ -27,7 +27,7 @@ final class CategoryData {
 	/** @var Application */
 	private $app;
 
-	/** @var ITranslator */
+	/** @var Translator */
 	private $translator;
 
 	/** @var array */
@@ -81,8 +81,9 @@ final class CategoryData {
 		'some' => any,
 	];
 
-	public function __construct(Application $app, ITranslator $translator) {
+	public function __construct(Application $app, Nette\DI\Container $context, Translator $translator) {
 		$this->app = $app;
+		$this->parameters = $context->parameters['entries'];
 		$this->translator = $translator;
 	}
 
@@ -95,17 +96,16 @@ final class CategoryData {
 		if (!isset($this->categoryTree)) {
 			/** @var \App\Presenters\BasePresenter */
 			$presenter = $this->app->getPresenter();
-			$parameters = $this->parameters = $presenter->getContext()->parameters['entries'];
 			$locale = $presenter->locale;
 			$items = [];
 
-			if (\count($parameters['categories']) === 0) {
+			if (\count($this->parameters['categories']) === 0) {
 				throw new \Exception('No categories defined.');
 			}
 
-			if (self::isNested($parameters['categories'])) {
+			if (self::isNested($this->parameters['categories'])) {
 				$categoryData = [];
-				$groups = $parameters['categories'];
+				$groups = $this->parameters['categories'];
 
 				$groupsKeys = array_map(function(string $groupKey) use ($groups, $locale): string {
 					$group = $groups[$groupKey];
@@ -121,7 +121,7 @@ final class CategoryData {
 					throw new \Exception("Category group #${groupKey} lacks a label");
 				}, array_keys($groups));
 
-				$groupsCategories = array_map(function(string $groupKey) use ($groups, $parameters): array {
+				$groupsCategories = array_map(function(string $groupKey) use ($groups): array {
 					$group = $groups[$groupKey];
 
 					if (!isset($group['categories']) || !\is_array($group['categories']) || \count($group['categories']) === 0) {
@@ -132,15 +132,15 @@ final class CategoryData {
 
 					$categoriesKeys = array_keys($categories);
 
-					$categoriesData = array_map(function(string $categoryKey) use ($categories, $group, $parameters): array {
+					$categoriesData = array_map(function(string $categoryKey) use ($categories, $group): array {
 						$category = $categories[$categoryKey];
 
 						if (isset($category['fees']) && isset($category['fees']['person'])) {
 							$fee = $category['fees']['person'];
 						} elseif (isset($group['fees']) && isset($group['fees']['person'])) {
 							$fee = $group['fees']['person'];
-						} elseif (isset($parameters['fees']) && isset($parameters['fees']['person'])) {
-							$fee = $parameters['fees']['person'];
+						} elseif (isset($this->parameters['fees']) && isset($this->parameters['fees']['person'])) {
+							$fee = $this->parameters['fees']['person'];
 						} else {
 							throw new \Exception("No fee set for category “${category}”");
 						}
@@ -183,17 +183,17 @@ final class CategoryData {
 				$this->categoryData = $categoryData;
 				$this->categoryTree = $categoryTree;
 			} else {
-				$categories = $parameters['categories'];
+				$categories = $this->parameters['categories'];
 
 				$categoriesKeys = array_keys($categories);
 
-				$categoriesData = array_map(function(string $categoryKey) use ($categories, $parameters): array {
+				$categoriesData = array_map(function(string $categoryKey) use ($categories): array {
 					$category = $categories[$categoryKey] ?: [];
 
 					if (isset($category['fees']) && isset($category['fees']['person'])) {
 						$fee = $category['fees']['person'];
-					} elseif (isset($parameters['fees']) && isset($parameters['fees']['person'])) {
-						$fee = $parameters['fees']['person'];
+					} elseif (isset($this->parameters['fees']) && isset($this->parameters['fees']['person'])) {
+						$fee = $this->parameters['fees']['person'];
 					} else {
 						throw new \Exception("No fee set for category “${category}”");
 					}
@@ -273,7 +273,7 @@ final class CategoryData {
 					function(SelectBox $entry) use ($quant, $keyProjection, $op, $comparedValue): bool {
 						/** @var App\Components\TeamForm */
 						$form = $entry->getForm();
-						$members = $form->values['persons'];
+						$members = $form->getUnsafeValues(null)['persons'];
 
 						return $quant($members, function(\ArrayAccess $person) use ($op, $keyProjection, $comparedValue): bool {
 							return $op($keyProjection($person), $comparedValue);
@@ -295,7 +295,7 @@ final class CategoryData {
 					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $comparedValue): bool {
 						/** @var App\Components\TeamForm */
 						$form = $entry->getForm();
-						$members = iterator_to_array($form->values['persons']);
+						$members = iterator_to_array($form->getUnsafeValues(null)['persons']);
 
 						return $op($aggr(map($keyProjection, $members)), $comparedValue);
 					},

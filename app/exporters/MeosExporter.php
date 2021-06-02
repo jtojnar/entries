@@ -44,7 +44,7 @@ class MeosExporter implements IExporter {
 	 * @param resource $fp
 	 */
 	private function outputRow($fp, array $row): void {
-		fwrite($fp, Strings::toAscii(implode(self::DELIMITER, $row)) . PHP_EOL);
+		fwrite($fp, Strings::toAscii(implode(self::DELIMITER, $row)) . \PHP_EOL);
 	}
 
 	public function output(): void {

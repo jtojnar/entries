@@ -25,11 +25,11 @@ class HomepagePresenter extends BasePresenter {
 	public $formFactory;
 
 	public function renderDefault(): void {
-		/** @var Nette\Bridges\ApplicationLatte\Template $template */
+		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
 
 		if ($this->user->isLoggedIn()) {
-			/** @var Nette\Security\Identity $identity */
+			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 			$template->status = $identity->status;
 

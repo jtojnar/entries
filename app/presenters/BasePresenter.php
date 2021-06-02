@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use Contributte\Translation\Translator;
 use Nette;
-use Nette\Localization\ITranslator;
 
 /**
  * Base class for all presenters.
@@ -14,30 +14,29 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @var string @persistent */
 	public $locale;
 
-	/** @var ITranslator @inject */
+	/** @var Translator @inject */
 	public $translator;
+
+	/** @var Nette\DI\Container @inject */
+	public $context;
 
 	protected function startup(): void {
 		parent::startup();
 
-		/** @var \Contributte\Translation\Translator */
-		$translator = $this->translator;
-
-		$defaultLocale = $translator->getDefaultLocale();
-
 		if ($this->locale === null) {
-			$this->locale = $translator->getLocale();
+			$this->locale = $this->translator->getLocale();
 		}
-
-		/** @var Nette\Bridges\ApplicationLatte\Template $template */
-		$template = $this->template;
 
 		if (isset($this->context->parameters['siteTitle'])) {
 			if (isset($this->context->parameters['siteTitle'][$this->locale])) {
-				$template->siteTitle = $this->context->parameters['siteTitle'][$this->locale];
+				$this->template->siteTitle = $this->context->parameters['siteTitle'][$this->locale];
 			} else {
-				$template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
+				$defaultLocale = $this->translator->getDefaultLocale();
+
+				$this->template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
 			}
+		} else {
+			throw new Nette\InvalidStateException('Missing siteTitle argument');
 		}
 	}
 }

@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"php": ">= 7.1",
+		"php": ">= 7.3",
 		"ihor/nspl": "^1.3",
 		"moneyphp/money": "^3.3",
 		"nette/application": "~3.0",
@@ -36,7 +36,7 @@
 		"pelago/emogrifier": "^5.0"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "^2.3",
+		"friendsofphp/php-cs-fixer": "^3.0",
 		"php-parallel-lint/php-parallel-lint": "^1.2",
 		"johnstoncode/phpstan-moneyphp": "^0.5.0",
 		"nette/tester": "^2.2.0",
@@ -49,14 +49,15 @@
 		"classmap": ["app/"]
 	},
 	"scripts": {
-		"cs": "vendor/bin/php-cs-fixer fix --verbose --dry-run --diff --config=utils/php_cs.php",
-		"lint": "vendor/bin/parallel-lint app/ tests/ www/",
-		"phpstan": "vendor/bin/phpstan analyse --configuration=utils/phpstan.neon --memory-limit 256M",
-		"test": "vendor/bin/tester tests -C -s"
+		"cs": "php-cs-fixer fix --verbose --dry-run --diff --config=utils/php-cs-fixer.php",
+		"fix": "php-cs-fixer fix --verbose --diff --config=utils/php-cs-fixer.php",
+		"lint": "parallel-lint app/ tests/ www/",
+		"phpstan": "phpstan analyse --configuration=utils/phpstan.neon --memory-limit 256M",
+		"test": "tester tests -C -s"
 	},
 	"config": {
 		"platform": {
-			"php": "7.1.3"
+			"php": "7.3.0"
 		}
 	}
 }

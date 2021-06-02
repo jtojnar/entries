@@ -6,9 +6,9 @@ namespace App\Model;
 
 use Nette;
 use Nette\Security\AuthenticationException;
-use Nette\Security\Identity;
 use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
+use Nette\Security\SimpleIdentity;
 use Nextras\Orm\Entity\ToArrayConverter;
 
 final class TeamManager implements Nette\Security\IAuthenticator {
@@ -38,7 +38,7 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 		[$teamId, $password] = $credentials;
 
 		if ($teamId === 'admin' && $password === $this->adminPassword) {
-			return new Identity('admin', 'admin', ['status' => 'admin']);
+			return new SimpleIdentity('admin', 'admin', ['status' => 'admin']);
 		}
 
 		$team = $this->teams->getById($teamId);
@@ -58,6 +58,6 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 		unset($arr['invoices']);
 		unset($arr['lastInvoice']);
 
-		return new Identity($team->id, 'user', $arr);
+		return new SimpleIdentity($team->id, 'user', $arr);
 	}
 }

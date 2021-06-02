@@ -54,6 +54,18 @@ class TeamPresenter extends BasePresenter {
 	/** @var Nette\Security\Passwords @inject */
 	public $passwords;
 
+	/** @var \Nette\Http\Request @inject */
+	public $request;
+
+	/** @var \Nette\Http\Response @inject */
+	public $response;
+
+	/** @var \Nette\Mail\Mailer @inject */
+	public $mailer;
+
+	/** @var Nette\DI\Container @inject */
+	public $context;
+
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
@@ -67,13 +79,13 @@ class TeamPresenter extends BasePresenter {
 
 	public function renderList(): void {
 		$where = [];
-		$category = $this->context->getByType(Nette\Http\Request::class)->getQuery('category');
+		$category = $this->request->getQuery('category');
 		if ($category !== null) {
 			$where = ['category' => explode('|', $category)];
 		}
 
-		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status') !== null) {
-			switch ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
+		if ($this->request->getQuery('status') !== null) {
+			switch ($this->request->getQuery('status')) {
 				case 'paid':
 					$where['status'] = 'paid';
 					break;
@@ -84,7 +96,7 @@ class TeamPresenter extends BasePresenter {
 			}
 		}
 
-		/** @var Nette\Bridges\ApplicationLatte\Template $template */
+		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
 
 		$template->teams = $this->teams->findBy($where);
@@ -99,7 +111,7 @@ class TeamPresenter extends BasePresenter {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', ['return' => 'edit']);
 		} else {
-			/** @var Nette\Security\Identity $identity */
+			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if ($id === null) {
@@ -150,12 +162,12 @@ class TeamPresenter extends BasePresenter {
 
 		$where = [];
 
-		$category = $this->context->getByType(Nette\Http\Request::class)->getQuery('category');
+		$category = $this->request->getQuery('category');
 		if ($category !== null) {
 			$where = ['category' => explode('|', $category)];
 		}
 
-		switch ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
+		switch ($this->request->getQuery('status')) {
 			case 'paid':
 				$where['status'] = 'paid';
 				break;
@@ -168,19 +180,17 @@ class TeamPresenter extends BasePresenter {
 		$teams = $this->teams->findBy($where);
 		$maxMembers = $this->context->parameters['entries']['maxMembers'];
 
-		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
-		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
+		$teamFields = $this->context->parameters['entries']['fields']['team'];
+		$personFields = $this->context->parameters['entries']['fields']['person'];
 
 		if (\count($teams)) {
 			if ($type === 'meos') {
 				$exporter = new Exporters\MeosExporter($teams, $this->categoryFormatter);
-				$response = $this->context->getByType(Nette\Http\Response::class);
-				$response->setContentType($exporter->getMimeType(), 'UTF-8');
+				$this->response->setContentType($exporter->getMimeType(), 'UTF-8');
 				$exporter->output();
 			} else {
 				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, $this->categoryFormatter, $maxMembers);
-				$response = $this->context->getByType(Nette\Http\Response::class);
-				$response->setContentType('text/plain', 'UTF-8');
+				$this->response->setContentType('text/plain', 'UTF-8');
 				$exporter->output();
 			}
 		} else {
@@ -191,7 +201,7 @@ class TeamPresenter extends BasePresenter {
 
 	protected function createComponentTeamForm(string $name): Form {
 		$editing = $this->getParameter('id') !== null;
-		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->categories, $this->context->parameters['entries'], $this->locale, $editing, $this, $name);
+		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->locale, $editing, $this, $name);
 		if ($editing && !$form->isSubmitted()) {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
@@ -204,7 +214,7 @@ class TeamPresenter extends BasePresenter {
 			$default['message'] = $team->message;
 			$default['persons'] = [];
 
-			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+			$fields = $this->context->parameters['entries']['fields']['team'];
 			foreach ($fields as $name => $field) {
 				if (isset($team->getJsonData()->$name)) {
 					$default[$name] = $team->getJsonData()->$name;
@@ -215,7 +225,7 @@ class TeamPresenter extends BasePresenter {
 				}
 			}
 
-			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+			$fields = $this->context->parameters['entries']['fields']['person'];
 			foreach ($team->persons as $person) {
 				$personDefault = [
 					'firstname' => $person->firstname,
@@ -262,7 +272,7 @@ class TeamPresenter extends BasePresenter {
 
 		/** @var App\Components\TeamForm $form */
 		$form = $button->form;
-		$values = $form->values;
+		$values = $form->getValues();
 		/** @var string $password */
 		$password = null;
 
@@ -271,7 +281,7 @@ class TeamPresenter extends BasePresenter {
 		if ($this->action === 'edit') {
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
-			/** @var Nette\Security\Identity $identity */
+			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if (!$team) {
@@ -288,7 +298,7 @@ class TeamPresenter extends BasePresenter {
 			$team = new App\Model\Team();
 			$password = Nette\Utils\Random::generate();
 			$team->password = $this->passwords->hash($password);
-			$team->ip = $this->context->getByType(Nette\Http\Request::class)->remoteAddress ?? '';
+			$team->ip = $this->request->remoteAddress ?? '';
 		}
 
 		try {
@@ -302,8 +312,8 @@ class TeamPresenter extends BasePresenter {
 
 			$team->category = isset($form['category']) ? $values['category'] : '';
 
-			$currency = new Currency($this->presenter->context->parameters['entries']['fees']['currency']);
-			$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+			$currency = new Currency($this->context->parameters['entries']['fees']['currency']);
+			$fields = $this->context->parameters['entries']['fields']['team'];
 			$jsonData = [];
 			foreach ($fields as $name => $field) {
 				$jsonData[$name] = $values[$name];
@@ -357,7 +367,7 @@ class TeamPresenter extends BasePresenter {
 				'scope' => 'person',
 			]), new Money($personFee * 100, $currency));
 
-			$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+			$fields = $this->context->parameters['entries']['fields']['person'];
 
 			/** @var ?string $firstMemberAddress */
 			$firstMemberAddress = null;
@@ -431,7 +441,7 @@ class TeamPresenter extends BasePresenter {
 			}
 
 			/** @var ?callable */
-			$invoiceModifier = $this->presenter->context->parameters['entries']['invoiceModifier'] ?? null;
+			$invoiceModifier = $this->context->parameters['entries']['invoiceModifier'] ?? null;
 			if ($invoiceModifier !== null) {
 				$invoiceModifier($team, $invoice, $this->context->parameters['entries']);
 			}
@@ -450,7 +460,7 @@ class TeamPresenter extends BasePresenter {
 			if ($this->action === 'edit') {
 				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 			} else {
-				/** @var Nette\Bridges\ApplicationLatte\Template $mtemplate */
+				/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
 				$mtemplate = $this->createTemplate();
 
 				$appDir = $this->context->parameters['appDir'];
@@ -482,7 +492,7 @@ class TeamPresenter extends BasePresenter {
 				$mail = new Message();
 				$mail->setFrom($mtemplate->organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
 
-				$mailer = $this->context->getByType(Nette\Mail\IMailer::class);
+				$mailer = $this->mailer;
 				$mailer->send($mail);
 
 				$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
@@ -503,7 +513,7 @@ class TeamPresenter extends BasePresenter {
 	public function cleanNonApplicableFields(Nette\Forms\Form $form): void {
 		$category = $form->values['category'];
 
-		$teamFields = $this->presenter->context->parameters['entries']['fields']['team'];
+		$teamFields = $this->context->parameters['entries']['fields']['team'];
 		foreach ($teamFields as $name => $field) {
 			if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
 				/** @var Nette\Forms\Controls\BaseControl */
@@ -512,7 +522,7 @@ class TeamPresenter extends BasePresenter {
 			}
 		}
 
-		$personFields = $this->presenter->context->parameters['entries']['fields']['person'];
+		$personFields = $this->context->parameters['entries']['fields']['person'];
 		foreach ($form->values['persons'] as $member) {
 			foreach ($personFields as $name => $field) {
 				if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
@@ -534,15 +544,15 @@ class TeamPresenter extends BasePresenter {
 		$category->setPrompt('messages.team.list.filter.category.all');
 		$category->setHtmlAttribute('style', 'width:auto;');
 
-		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('category')) {
-			$category->setValue($this->context->getByType(Nette\Http\Request::class)->getQuery('category'));
+		if ($this->request->getQuery('category')) {
+			$category->setValue($this->request->getQuery('category'));
 		}
 		$category->controlPrototype->onchange('this.form.submit();');
 
 		if ($this->user->isInRole('admin')) {
 			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setHtmlAttribute('style', 'width:auto;');
-			if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
-				$status->setValue($this->context->getByType(Nette\Http\Request::class)->getQuery('status'));
+			if ($this->request->getQuery('status')) {
+				$status->setValue($this->request->getQuery('status'));
 			}
 			$status->controlPrototype->onchange('this.form.submit();');
 		}
@@ -559,12 +569,12 @@ class TeamPresenter extends BasePresenter {
 	private function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 
-		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('category')) {
-			$parameters['category'] = $this->context->getByType(Nette\Http\Request::class)->getQuery('category');
+		if ($this->request->getQuery('category')) {
+			$parameters['category'] = $this->request->getQuery('category');
 		}
 
-		if ($this->context->getByType(Nette\Http\Request::class)->getQuery('status')) {
-			$parameters['status'] = $this->context->getByType(Nette\Http\Request::class)->getQuery('status');
+		if ($this->request->getQuery('status')) {
+			$parameters['status'] = $this->request->getQuery('status');
 		}
 
 		if (\count($parameters) === 0) {
@@ -575,13 +585,13 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	private function personData(\stdClass $data): array {
-		$fields = $this->presenter->context->parameters['entries']['fields']['person'];
+		$fields = $this->context->parameters['entries']['fields']['person'];
 
 		return $this->formatData($data, $fields);
 	}
 
 	private function teamData(\stdClass $data): array {
-		$fields = $this->presenter->context->parameters['entries']['fields']['team'];
+		$fields = $this->context->parameters['entries']['fields']['team'];
 
 		return $this->formatData($data, $fields);
 	}

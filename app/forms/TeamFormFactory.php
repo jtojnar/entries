@@ -12,7 +12,7 @@ use Nette;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nextras\FormComponents\Controls\DateControl;
 use Nextras\FormsRendering\Renderers\Bs4FormRenderer;
 use function nspl\a\last;
@@ -20,67 +20,75 @@ use function nspl\a\last;
 final class TeamFormFactory {
 	use Nette\SmartObject;
 
-	/** @var ITranslator */
+	/** @var CategoryData */
+	private $categories;
+
+	/** @var array */
+	public $parameters;
+
+	/** @var Translator */
 	private $translator;
 
-	public function __construct(ITranslator $translator) {
+	public function __construct(CategoryData $categories, Nette\DI\Container $context, Translator $translator) {
+		$this->categories = $categories;
+		$this->parameters = $context->parameters['entries'];
 		$this->translator = $translator;
 	}
 
-	public function create(array $countries, CategoryData $categories, array $parameters, string $locale, bool $editing = false, IContainer $parent = null, string $name = null): TeamForm {
-		$form = new TeamForm($countries, $parameters, $locale, $parent, $name);
+	public function create(array $countries, string $locale, bool $editing = false, IContainer $parent = null, string $name = null): TeamForm {
+		$form = new TeamForm($countries, $this->parameters, $locale, $parent, $name);
 
 		$form->setTranslator($this->translator);
 		$renderer = new Bs4FormRenderer();
 		$form->setRenderer($renderer);
 
-		$defaultMinMembers = $parameters['minMembers'];
-		$defaultMaxMembers = $parameters['maxMembers'];
-		$initialMembers = $form->isSubmitted() || $editing ? $defaultMinMembers : ($parameters['initialMembers'] ?? $defaultMinMembers);
+		$defaultMinMembers = $this->parameters['minMembers'];
+		$defaultMaxMembers = $this->parameters['maxMembers'];
+		$initialMembers = $form->isSubmitted() || $editing ? $defaultMinMembers : ($this->parameters['initialMembers'] ?? $defaultMinMembers);
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
 		$form->addText('name', 'messages.team.name.label')->setRequired();
 
-		$category = new CategoryEntry('messages.team.category.label', $categories);
+		$category = new CategoryEntry('messages.team.category.label', $this->categories);
 		$category->setRequired();
 		$form['category'] = $category;
 
 		if ($category->value !== null) {
-			$constraints = $categories->getCategoryData()[$category->value]['constraints'];
+			$constraints = $this->categories->getCategoryData()[$category->value]['constraints'];
 			foreach ($constraints as $constraint) {
 				$category->addRule(...$constraint);
 			}
 		}
 
-		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMaxMembers): bool {
+		$category->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
 			$category = $entry->getValue();
-			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
+			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
 			/** @var \Kdyby\Replicator\Container */
 			$replicator = $entry->form['persons'];
 
 			return iterator_count($replicator->getContainers()) <= $maxMembers;
 		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
 
-		$category->addRule(function(CategoryEntry $entry) use ($categories, $defaultMinMembers): bool {
+		$category->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
 			$category = $entry->getValue();
-			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
+			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			/** @var \Kdyby\Replicator\Container */
 			$replicator = $entry->form['persons'];
 
 			return iterator_count($replicator->getContainers()) >= $minMembers;
 		}, 'messages.team.error.too_few_members_simple');
 
-		$fields = $parameters['fields']['team'];
+		$fields = $this->parameters['fields']['team'];
 		$form->addCustomFields($fields, $form);
 
 		$form->addTextArea('message', 'messages.team.message.label');
 
 		$form->setCurrentGroup();
 		$form->addSubmit('save', 'messages.team.action.register');
-		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($categories, $defaultMaxMembers): void {
-			$category = $button->form->values['category'];
-			$maxMembers = $categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
+		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
+			$category = $button->form->getUnsafeValues(null)['category'];
+			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
 			/** @var \Kdyby\Replicator\Container */
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) < $maxMembers) {
@@ -89,9 +97,9 @@ final class TeamFormFactory {
 				$button->form->addError($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category]), false);
 			}
 		};
-		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($categories, $defaultMinMembers): void {
-			$category = $button->form->values['category'];
-			$minMembers = $categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
+		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
+			$category = $button->form->getUnsafeValues(null)['category'];
+			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			/** @var \Kdyby\Replicator\Container */
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) > $minMembers) {
@@ -104,7 +112,7 @@ final class TeamFormFactory {
 			}
 		};
 
-		$fields = $parameters['fields']['person'];
+		$fields = $this->parameters['fields']['person'];
 		$i = 0;
 		$form->addDynamic('persons', function(Container $container) use (&$i, $fields, $form): void {
 			++$i;
