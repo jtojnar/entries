@@ -29,7 +29,7 @@
 		"latte/latte": "~2.5",
 		"tracy/tracy": "~2.6",
 		"nextras/form-components": "^1.0.0",
-		"nextras/forms-rendering": "^1.0.0",
+		"nextras/forms-rendering": "@dev",
 		"kdyby/forms-replicator": "^2.0.0",
 		"contributte/translation": "^0.8.0",
 		"nextras/orm": "~4.0",

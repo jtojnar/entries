@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c8768065ab102856d3dd23f12a7cfd6",
+    "content-hash": "0c9d6579aba8d61327180df7aec9df02",
     "packages": [
         {
             "name": "contributte/translation",
@@ -1892,16 +1892,16 @@
         },
         {
             "name": "nextras/forms-rendering",
-            "version": "v1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextras/forms-rendering.git",
-                "reference": "9333347438691cc050a6e4e96cbaf2ff9fc12729"
+                "reference": "8776b68caa30796814994442a6a329bd61b0182c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextras/forms-rendering/zipball/9333347438691cc050a6e4e96cbaf2ff9fc12729",
-                "reference": "9333347438691cc050a6e4e96cbaf2ff9fc12729",
+                "url": "https://api.github.com/repos/nextras/forms-rendering/zipball/8776b68caa30796814994442a6a329bd61b0182c",
+                "reference": "8776b68caa30796814994442a6a329bd61b0182c",
                 "shasum": ""
             },
             "require": {
@@ -1919,6 +1919,7 @@
                 "phpstan/phpstan-shim": "0.11.5",
                 "tracy/tracy": "~2.5"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1950,9 +1951,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nextras/forms-rendering/issues",
-                "source": "https://github.com/nextras/forms-rendering/tree/v1.0.0"
+                "source": "https://github.com/nextras/forms-rendering/tree/master"
             },
-            "time": "2019-04-07T21:05:17+00:00"
+            "time": "2021-06-04T04:20:26+00:00"
         },
         {
             "name": "nextras/orm",
@@ -5010,11 +5011,13 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "nextras/forms-rendering": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">= 7.1"
+        "php": ">= 7.3"
     },
     "platform-dev": [],
     "platform-overrides": {

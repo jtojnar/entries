@@ -1,13 +1,12 @@
-import $ from 'jquery';
-import 'bootstrap/js/dist/popover';
+import Popover from 'bootstrap/js/dist/popover';
 
 export function register() {
-	$(function() {
-		$('[data-content]').popover({
+	document.querySelectorAll('[data-bs-content]').forEach(element =>
+		new Popover(element, {
 			placement: 'left',
 			html: true,
 			trigger: 'hover',
-			container: 'body'
-		});
-	});
+			container: 'body',
+		})
+	);
 };

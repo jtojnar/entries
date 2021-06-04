@@ -15,7 +15,7 @@
 	<div class="container">
 		<div class="page-header pb-2 mt-4 mb-2 border-bottom">
 			<h1>
-				<a n:href="Homepage:" n:if="!$presenter->isLinkCurrent('Homepage:')" class="back-to-title"><i class="fas fa-angle-left"></i><span class="sr-only">{_back}</span></a>
+				<a n:href="Homepage:" n:if="!$presenter->isLinkCurrent('Homepage:')" class="back-to-title"><i class="fas fa-angle-left"></i><span class="visually-hidden">{_back}</span></a>
 				{$siteTitle}
 				<small n:ifset="#title">{include title|striptags}</small>
 			</h1>

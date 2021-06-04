@@ -14,7 +14,7 @@ use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Localization\Translator;
 use Nextras\FormComponents\Controls\DateControl;
-use Nextras\FormsRendering\Renderers\Bs4FormRenderer;
+use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use function nspl\a\last;
 
 final class TeamFormFactory {
@@ -39,7 +39,9 @@ final class TeamFormFactory {
 		$form = new TeamForm($countries, $this->parameters, $locale, $parent, $name);
 
 		$form->setTranslator($this->translator);
-		$renderer = new Bs4FormRenderer();
+		$renderer = new Bs5FormRenderer();
+		// We need the class to know what to hide (e.g. for applicableCategories).
+		$renderer->wrappers['pair']['container'] = preg_replace('(class=")', '$0form-group ', $renderer->wrappers['pair']['container']);
 		$form->setRenderer($renderer);
 
 		$defaultMinMembers = $this->parameters['minMembers'];

@@ -7,7 +7,7 @@ namespace App\Forms;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Localization\Translator;
-use Nextras\FormsRendering\Renderers\Bs4FormRenderer;
+use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use Nextras\FormsRendering\Renderers\FormLayout;
 
 final class FormFactory {
@@ -24,7 +24,7 @@ final class FormFactory {
 		$form = new Form();
 
 		$form->setTranslator($this->translator);
-		$renderer = new Bs4FormRenderer($layout);
+		$renderer = new Bs5FormRenderer($layout);
 		$form->setRenderer($renderer);
 
 		return $form;
