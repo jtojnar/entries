@@ -1,3 +1,6 @@
+# This file lints the code, runs tests, builds a package and then deploys it.
+# The following secrets need to be set:
+# - “CLOUDSMITH_API_KEY” for pushing built package to Cloudsmith
 name: CI
 
 on:
@@ -47,15 +50,16 @@ jobs:
         if-no-files-found: error
         path: entries-${{ steps.vars.outputs.sha_short }}.zip
 
-    - name: Upload the zipball to Bintray
-      uses: bpicode/github-action-upload-bintray@v0.9.0
+    - name: Upload the zipball to Cloudsmith
+      uses: cloudsmith-io/action@v0.5.2
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
+        api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+        command: "push"
+        format: "raw"
+        owner: "entries-for-rogaining"
+        repo: "entries"
         file: entries-${{ steps.vars.outputs.sha_short }}.zip
-        api_user: jtojnar
-        api_key: ${{ secrets.BINTRAY_API_KEY }}
-        repository: entries
-        package: entries
-        version: ${{ steps.vars.outputs.sha_short }}
-        publish: 1
-        calculate_metadata: false
+        name: entries.zip
+        version: ${{ steps.zipball.outputs.version }}
+        extra: '--tags version:latest'
