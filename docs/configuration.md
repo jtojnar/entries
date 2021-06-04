@@ -1,6 +1,6 @@
 # Configuring Entries
 
-The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `config.local.neon` file in the `app/config` directory.
+The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `config.local.neon` and `private.neon` files in the `app/config` directory.
 
 ## Structure of the config
 The configuration file provides considerable customization possibilities – not only it enables changing the application, it also allows overriding the behaviour of the underlying libraries. For example, it is possible to [use SMTP](https://doc.nette.org/en/2.4/configuring#toc-mailing) for sending e-mails.

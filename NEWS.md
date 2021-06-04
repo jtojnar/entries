@@ -2,6 +2,22 @@
 
 Each minor release (or even commit in the repository) is generally considered a separate product with different database schema and upgrading is not supported. This is usually not a problem since most deployments are limited time only but we can create a backwards-compatible patch release if you are affected by a security issue.
 
+## 0.6.0 – unreleased
+### New features
+* Secrets can now be loaded from `app/config/private.neon` file, making sharing the non-private parts of the config easier.
+* CSV exporter now includes e-mail addresses.
+
+### Bugs fixed
+* Built packages are now hosted on [Cloudsmith](https://cloudsmith.io/~entries-for-rogaining/repos/entries/packages/?q=version%3Alatest).
+* Fixed saving team/person data with no customú fields.
+* Fix contact marker in the form.
+* Fixed several small bugs.
+
+### Other changes
+* PHP 7.3 is now the minimum required version.
+* Upgraded to Bootstrap 5, for fresh looks.
+* [Nix](https://nixos.org) files were added for more convenient development.
+
 ## 0.5.0 – 2020-02-11
 ### New features
 * User can display invoice-like itemized list of fees.
