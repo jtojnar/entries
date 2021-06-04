@@ -1,0 +1,124 @@
+php:
+	date.timezone: Europe/Prague
+
+parameters:
+	siteTitle:
+		cs: MČR v rogainingu 2020
+		en: Czech Rogaining Championships 2020
+	entries:
+		minMembers: 2
+		maxMembers: 5
+		recommendedCardCapacity: 60
+		eventDate: 2020-06-20 # used for age calculations
+		opening: 2020-05-31T00:00:00
+		closing: 2020-06-19T16:59:59
+		#invoiceModifier: [App\InvoiceModifier, modify]
+		customInputModifier: [App\CustomInputModifier, modify]
+		fees:
+			currency: CZK
+			person: 550.0
+		categories:
+			24:
+				label:
+					cs: 24 hodin
+					en: 24 hours
+				categories:
+					MY:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age<=23)'
+					WY:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age<=23)'
+					XY:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age<=23)'
+					MO:
+						constraints:
+							- 'all(gender=male)'
+					WO:
+						constraints:
+							- 'all(gender=female)'
+					XO:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+					MV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=40)'
+					WV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=40)'
+					XV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=40)'
+					MSV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=55)'
+					WSV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=55)'
+					XSV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=55)'
+			12:
+				label: '12'
+				fees:
+					person: 550
+				categories:
+					MO12:
+						constraints:
+							- 'all(gender=male)'
+					WO12:
+						constraints:
+							- 'all(gender=female)'
+					XO12:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+			6:
+				label: '6'
+				fees:
+					person: 300
+				categories:
+					MO6:
+						constraints:
+							- 'all(gender=male)'
+					WO6:
+						constraints:
+							- 'all(gender=female)'
+					XO6:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+		fields:
+			person:
+				country:
+					type: country
+					default: 46
+				sportident:
+					type: sportident
+					fee: 100
+				registry_address:
+					private: true
+					type: text
+					label:
+						cs: 'Bydliště:'
+						en: 'Address:'
+					description:
+						cs: 'Adresa pro účely rejstříku sportovců, sím vyplňte bydliště přesně podle občanky'
+						en: 'Address is needed from Czech competitors only - please input any text'
+
+
+	webmasterEmail: "jan.tojnar@rogaining.cz"

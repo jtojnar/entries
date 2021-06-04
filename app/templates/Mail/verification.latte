@@ -1,16 +1,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>CRC 2012 – Registration Acknowledgement</title>
+<title>CRC 2021 – Registration Acknowledgement</title>
 </head>
 <body>
-<h1>The Czech Rogaining Championships 2012</h1>
+<h1>The Czech Rogaining Championships 2021</h1>
 <h2>Registration Acknowledgement</h2>
 <p>Hello {$name},</p>
-<p>thank you for your registration. Your registration ID is {$id}. Please remember it. It will identify your team in the processing of entries and any other correspondence that is necessary. Consult the <a href="{link //Team:list}">list of entrants</a> on the CRC website to check whether your registration data are correct. You can edit your entry using password provided bellow. Fees (starting fee, SI card hire fee, accommodation) <strong>{$invoice->getTotal()|price}</strong> pay cash at registration. You can also pay in EUR.</p>
-
+<p>thank you for your registration. Your registration ID is {$id}. Please remember it. It will identify your team in the processing of entries and any other correspondence that is necessary. Consult the <a href="{link //Team:list}">list of entrants</a> on&nbsp;the CRC website to check whether your registration data are correct. You can edit your entry using password provided bellow. Please pay sum of&nbsp;the entry fee and SI card rental <strong>{$invoice->getTotal()|price}</strong> to&nbsp;the bank account of&nbsp;Czech Rogaining Association.<br>
+Bank address: Česká spořitelna, a.s., Olbrachtova 1929/62, 140 00 Praha 4<br>
+IBAN: CZ8208000000000721206359<br>
+BIC/SWIFT code: GIBACZPX
 <p>If you have any queries about your entry please e-mail <a href="mailto:{$organiserMail}">{$organiserMail}</a>.</p>
-
 <h3>Entry details:</h3>
 <h4>Team</h4>
 <table class="teamlist">
@@ -22,10 +23,14 @@
 </table>
 {foreach $people as $person}
 <h4>Team member {$iterator->counter}{if $person->contact} {_messages.team.person.isContact}{/if}</h4>
+{var $cardId = $person->getJsonData()->sportident->cardId ?? 0}
 <table class="teamlist">
 <tr><th>Name:</th><td>{$person->firstname} {$person->lastname}</td></tr>
 <tr><th>Gender:</th><td>{if $person->gender=='male'}♂ Male{else}♀ Female{/if}</td></tr>
 <tr><th>Date of birth:</th><td>{$person->birth|date:'%b/%d/%Y'}</td></tr>
+<tr n:if="$cardId >= 1 && $cardId <= 499999"><th>Your SI5 chip has low capacity.</th><td>Consider renting of SI10 chip from organizers, otherwise only 1st 30 check points will be recognized.</td></tr>
+<tr n:if="$cardId >= 2000000 && $cardId <= 2999999"><th>Your SI8 chip has low capacity.</th><td>Consider renting of SI10 chip from organizers, otherwise only 1st 30 check points will be recognized.</td></tr>
+<tr n:if="$cardId >= 1000000 && $cardId <= 1999999"><th>Your SI9 chip has low capacity.</th><td>Consider renting of SI10 chip from organizers, otherwise only 1st 50 check points will be recognized.</td></tr>
 <tr n:if="$person->email"><th>E-Mail address:</th><td>{$person->email}</td></tr>
 </table>
 {/foreach}
