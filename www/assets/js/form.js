@@ -1,33 +1,26 @@
-import $ from 'jquery';
+import selectParent from 'select-parent';
 
 function categoryChanged(categoryField, conditionalFields) {
-	const category = categoryField.val();
-	conditionalFields.forEach(([formGroup, categories]) => {
-		if (categories.includes(category)) {
-			$(formGroup).show();
-		} else {
-			$(formGroup).hide();
-		}
+	const category = categoryField.value;
+	conditionalFields.forEach(({formGroup, categories}) => {
+		formGroup.classList.toggle('d-none', !categories.includes(category));
 	});
-};
+}
 
 export function register() {
-	$(function() {
-		var categoryField = $('#frm-teamForm-category');
+	document.addEventListener('DOMContentLoaded', (event) => {
+		const categoryField = document.getElementById('frm-teamForm-category');
 
 		if (categoryField) {
-			var conditionalFields = [];
-			$('[data-applicable-categories]').each(function() {
-				conditionalFields.push([
-					$(this).parents('.form-group'),
-					JSON.parse(this.getAttribute('data-applicable-categories'))
-				]);
-			});
+			let conditionalFields = Array.from(document.querySelectorAll('[data-applicable-categories]')).map((control) => ({
+				formGroup: selectParent('.form-group', control),
+				categories: JSON.parse(control.getAttribute('data-applicable-categories'))
+			}));
 
-			categoryField.change(() => {
+			categoryField.addEventListener('change', () => {
 				categoryChanged(categoryField, conditionalFields);
 			});
 			categoryChanged(categoryField, conditionalFields);
 		}
 	});
-};
+}

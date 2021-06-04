@@ -8,8 +8,8 @@
 		"@popperjs/core": "^2.9.2",
 		"bootstrap": "^5.0.1",
 		"flag-icon-css": "^3.2.1",
-		"jquery": "^3.5.0",
-		"nette-forms": "^3.0.4"
+		"nette-forms": "^3.0.4",
+		"select-parent": "^1.0.1"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.9.6",
