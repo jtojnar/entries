@@ -61,5 +61,5 @@ jobs:
         repo: "entries"
         file: entries-${{ steps.vars.outputs.sha_short }}.zip
         name: entries.zip
-        version: ${{ steps.zipball.outputs.version }}
+        version: ${{ steps.vars.outputs.sha_short }}
         extra: '--tags version:latest'
