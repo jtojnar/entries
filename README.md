@@ -1,8 +1,6 @@
 entries
 =======
 
-[![Build Status](https://travis-ci.org/jtojnar/entries.svg?branch=master)](https://travis-ci.org/jtojnar/entries)
-
 Entry registration system for [Rogaining](http://en.wikipedia.org/wiki/Rogaining).
 
 Requirements
