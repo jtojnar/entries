@@ -3,11 +3,13 @@
 The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `config.local.neon` and `private.neon` files in the `app/config` directory.
 
 ## Structure of the config
+
 The configuration file provides considerable customization possibilities – not only it enables changing the application, it also allows overriding the behaviour of the underlying libraries. For example, it is possible to [use SMTP](https://doc.nette.org/en/2.4/configuring#toc-mailing) for sending e-mails.
 
 The configuration file is divided into sections; on top of the optional Nette specific ones, there are the following sections:
 
 ### `dbal` section
+
 This section contains credentials for connecting to a database server. It is required.
 
 ```neon
@@ -25,9 +27,11 @@ dbal:
 For details about the supported keys see [Nextras\Dbal docs](https://nextras.org/dbal/docs/2.1/#toc-connection).
 
 ### `parameters` section
+
 This section affects behaviour of the app itself.
 
 #### `siteTitle`
+
 This is a dictionary of names of the event in the supported languages. It will be displayed in the page title and headings.
 
 At least an item for the default language needs to be provided, it will be used as a fallback.
@@ -84,13 +88,13 @@ This key is used as a fallback when a category does not define fees locally. It 
 
 Prices will be displayed in choosen currency on the invoice and in the administration. Currently only the following are supported:
 
-* CZK – Czech koruna
-* PLN – Polish złoty
-* HUF – Hungarian forint
-* EUR – Euro
-* USD – United States dollar
-* GBP – Pound sterling
-* JPY – Japanese yen
+- CZK – Czech koruna
+- PLN – Polish złoty
+- HUF – Hungarian forint
+- EUR – Euro
+- USD – United States dollar
+- GBP – Pound sterling
+- JPY – Japanese yen
 
 ##### `categories`
 
@@ -110,10 +114,11 @@ parameters:
 ```
 
 ###### Category constraints
+
 Each constraint is a simple expression consisting of either a predicate
 
-* `age`, followed by one of the comparison operators `<`, `<=`, `=`, `>=`, `>` and then a number
-* `gender` followed by `=` and then either `male` or `female`
+- `age`, followed by one of the comparison operators `<`, `<=`, `=`, `>=`, `>` and then a number
+- `gender` followed by `=` and then either `male` or `female`
 
 quantified by either `some` or `all`, or one of aggregate function `sum`, `min`, `max` applied to `age` and followed by a comparison operator and then a number.
 
@@ -205,17 +210,18 @@ fields:
 
 ###### Common properties
 
-* `type` – Each field will need to declare its type, see [field types](#field-types).
-* `label` – Some fields may define a default label (`sportident`, `country`) but otherwise you should define one for each language.
-* `private` – By default, the value of every will be displayed at the team list publicly. You can set it to `false` to prevent leaking personal information or items only relevant for organizers.
-* `applicableCategories` – A list of categories to show this field in. If not present, every category is implied.
+- `type` – Each field will need to declare its type, see [field types](#field-types).
+- `label` – Some fields may define a default label (`sportident`, `country`) but otherwise you should define one for each language.
+- `private` – By default, the value of every will be displayed at the team list publicly. You can set it to `false` to prevent leaking personal information or items only relevant for organizers.
+- `applicableCategories` – A list of categories to show this field in. If not present, every category is implied.
 
 ###### Field types
 
-* `country` – Select box listing the countries of the world. You can specify a `default` value – 46 stands for Czechia, see [install.sql](../install.sql) for a complete list.
-* `phone` – A telephone number, it should probably be set to private.
-* `sportident` – A field allowing to enter a SI card number or request one for rent. The price is set using the `fee` key.
-* `enum` – Allows selecting a single value from a list of values. Each option can have a `fee` set.
+- `country` – Select box listing the countries of the world. You can specify a `default` value – 46 stands for Czechia, see [install.sql](../install.sql) for a complete list.
+- `phone` – A telephone number, it should probably be set to private.
+- `sportident` – A field allowing to enter a SI card number or request one for rent. The price is set using the `fee` key.
+- `enum` – Allows selecting a single value from a list of values. Each option can have a `fee` set.
+
 ```neon
 accommodation:
 	type: enum
@@ -239,8 +245,10 @@ accommodation:
 				en: 'None'
 				cs: 'Žádné'
 ```
-* `checkbox` – A simple boolean switch, can have a `fee` or a `default` state associated.
-* `checkboxlist` – Allows selecting multiple values from a list of values. Each option can have a `fee` or a `default` state set.
+
+- `checkbox` – A simple boolean switch, can have a `fee` or a `default` state associated.
+- `checkboxlist` – Allows selecting multiple values from a list of values. Each option can have a `fee` or a `default` state set.
+
 ```neon
 boarding:
 	label:
