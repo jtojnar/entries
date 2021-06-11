@@ -611,7 +611,7 @@ class TeamPresenter extends BasePresenter {
 				$label = $name . ':';
 			}
 
-			if (!$this->user->isInRole('admin') && isset($field['private']) && $field['private']) {
+			if (!$this->user->isInRole('admin') && (!isset($field['public']) || !$field['public'])) {
 				continue;
 			}
 

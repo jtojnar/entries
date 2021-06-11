@@ -19,6 +19,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 ### Other changes
 
 - PHP 7.3 is now the minimum required version.
+- Custom fields will now be hidden by default. You need to add `public: true` to show them in the popovers on the list of teams.
 - Upgraded to Bootstrap 5, for fresh looks.
 - [Nix](https://nixos.org) files were added for more convenient development.
 

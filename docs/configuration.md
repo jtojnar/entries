@@ -198,28 +198,29 @@ fields:
 			label:
 				cs: 'Telefon:'
 				en: 'Phone:'
-			private: true
 	person:
 		country:
 			type: country
 			default: 46
+			public: true
 		sportident:
 			type: sportident
 			fee: 50.0
+			public: true
 ```
 
 ###### Common properties
 
 - `type` – Each field will need to declare its type, see [field types](#field-types).
 - `label` – Some fields may define a default label (`sportident`, `country`) but otherwise you should define one for each language.
-- `private` – By default, the value of every will be displayed at the team list publicly. You can set it to `false` to prevent leaking personal information or items only relevant for organizers.
+- `public` – By default, no custom field will be shown in the team list publicly to prevent leaking personal information and as not to clutter the list with items only relevant to organizers. You can set this option to `true` to make it visible to everyone.
 - `applicableCategories` – A list of categories to show this field in. If not present, every category is implied.
 
 ###### Field types
 
-- `country` – Select box listing the countries of the world. You can specify a `default` value – 46 stands for Czechia, see [install.sql](../install.sql) for a complete list.
-- `phone` – A telephone number, it should probably be set to private.
-- `sportident` – A field allowing to enter a SI card number or request one for rent. The price is set using the `fee` key.
+- `country` – Select box listing the countries of the world. You can specify a `default` value – 46 stands for Czechia, see [install.sql](../install.sql) for a complete list. You might want to make the value public to promote nationalism among the participants.
+- `phone` – A telephone number.
+- `sportident` – A field allowing to enter a SI card number or request one for rent. The price is set using the `fee` key. You might want to make the value public to allow people to check if they registered the correct SI card.
 - `enum` – Allows selecting a single value from a list of values. Each option can have a `fee` set.
 
 ```neon
@@ -255,7 +256,6 @@ boarding:
 		en: 'Boarding:'
 		cs: 'Stravování:'
 	type: checkboxlist
-	private: true
 	items:
 		sat_breakfast:
 			label:

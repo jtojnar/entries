@@ -107,7 +107,7 @@ parameters:
 					label:
 						en: '2 hour Friday Night'
 						cs: 'Páteční noční dvouhodinovka'
-					private: false
+					public: true
 					options:
 						yes:
 							label:
@@ -124,7 +124,7 @@ parameters:
 					label:
 						en: '5 hour Saturday'
 						cs: 'Sobotní denní pětihodinovka'
-					private: false
+					public: true
 					options:
 						yes:
 							label:
@@ -141,7 +141,7 @@ parameters:
 					label:
 						en: '4 hour Sunday'
 						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					private: false
+					public: true
 					options:
 						yes:
 							label:
@@ -157,9 +157,11 @@ parameters:
 				country:
 					type: country
 					default: 46
+					public: true
 				sportident:
 					type: sportident
 					fee: 50
+					public: true
 				mug:
 					type: checkbox
 					label:
@@ -171,7 +173,6 @@ parameters:
 						en: 'Boarding:'
 						cs: 'Stravování:'
 					type: checkboxlist
-					private: true
 					items:
 						fri_supper:
 							label:

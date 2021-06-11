@@ -31,12 +31,12 @@ parameters:
 				sportident:
 					type: sportident
 					fee: 50.0
+					public: true
 				phone:
 					type: phone
 					label:
 						cs: 'Telefon:'
 						en: 'Phone:'
-					private: true
 			person:
 				accommodation:
 					type: enum
