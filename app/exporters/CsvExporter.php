@@ -135,9 +135,7 @@ class CsvExporter implements IExporter {
 			$f = isset($container->getJsonData()->$name) ? $container->getJsonData()->$name : null;
 			if ($f) {
 				if ($field['type'] === 'country') {
-					// TODO: https://github.com/nextras/orm/issues/319
-					/** @var App\Model\Country */
-					$country = $this->countries->getById($f);
+					$country = $this->countries->getByIdChecked($f);
 					$row[$prefix . $name] = $country->name;
 				} elseif ($field['type'] === 'checkboxlist') {
 					foreach ($field['items'] as $itemKey => $_) {

@@ -34,9 +34,7 @@ class HomepagePresenter extends BasePresenter {
 			$template->status = $identity->status;
 
 			if ($template->status === 'registered') {
-				// TODO: https://github.com/nextras/orm/issues/319
-				/** @var App\Model\Team */
-				$team = $this->teams->getById($identity->getId());
+				$team = $this->teams->getByIdChecked($identity->getId());
 				$template->invoice = $team->lastInvoice;
 			}
 		} else {
