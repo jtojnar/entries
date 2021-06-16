@@ -113,9 +113,10 @@ class CsvExporter implements IExporter {
 			}
 			if ($remaining > 0) {
 				for ($i = 0; $i < $remaining; ++$i) {
-					$row[] = '';
-					$row[] = '';
-					$row[] = '';
+					$row[] = ''; // lastname
+					$row[] = ''; // firstname
+					$row[] = ''; // email
+					$row[] = ''; // gender
 					foreach ($this->personFields as $name => $field) {
 						if ($field['type'] === 'checkboxlist') {
 							foreach ($field['items'] as $item) {
@@ -125,7 +126,7 @@ class CsvExporter implements IExporter {
 							$row[] = '';
 						}
 					}
-					$row[] = '';
+					$row[] = ''; // birth
 				}
 			}
 			$row[] = $team->status;
