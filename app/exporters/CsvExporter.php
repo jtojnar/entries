@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Exporters;
 
 use App;
+use App\Helpers\CsvWriter;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
@@ -64,73 +65,62 @@ class CsvExporter implements IExporter {
 		if ($fp === false) {
 			throw new \PHPStan\ShouldNotHappenException();
 		}
-		$headers = ['#', 'name', 'registered', 'category', 'message'];
+		$writer = new CsvWriter($fp);
+		$writer->addColumns(['#', 'name', 'registered', 'category', 'message']);
 
 		foreach ($this->teamFields as $name => $field) {
 			if ($field['type'] === 'checkboxlist') {
-				foreach ($field['items'] as $itemKey => $_) {
-					$headers[] = $name . '-' . $itemKey;
-				}
+				$writer->addColumns(array_map(function($itemKey) use ($name) {
+					return $name . '-' . $itemKey;
+				}, array_keys($field['items'])));
 			} else {
-				$headers[] = $name;
+				$writer->addColumns($name);
 			}
 		}
 
 		for ($i = 1; $i <= $this->maxMembers; ++$i) {
-			$headers[] = 'm' . $i . 'lastname';
-			$headers[] = 'm' . $i . 'firstname';
-			$headers[] = 'm' . $i . 'email';
-			$headers[] = 'm' . $i . 'gender';
+			$writer->addColumns([
+				'm' . $i . 'lastname',
+				'm' . $i . 'firstname',
+				'm' . $i . 'email',
+				'm' . $i . 'gender',
+			]);
 			foreach ($this->personFields as $name => $field) {
 				if ($field['type'] === 'checkboxlist') {
-					foreach ($field['items'] as $itemKey => $_) {
-						$headers[] = 'm' . $i . $name . '-' . $itemKey;
-					}
+					$writer->addColumns(array_map(function($itemKey) use ($i, $name) {
+						return 'm' . $i . $name . '-' . $itemKey;
+					}, array_keys($field['items'])));
 				} else {
-					$headers[] = 'm' . $i . $name;
+					$writer->addColumns('m' . $i . $name);
 				}
 			}
-			$headers[] = 'm' . $i . 'birth';
+			$writer->addColumns('m' . $i . 'birth');
 		}
 
-		$headers[] = 'status';
-		fputcsv($fp, $headers);
+		$writer->addColumns('status');
+		$writer->writeHeaders();
 
 		foreach ($this->teams as $team) {
-			$row = [$team->id, $team->name, $team->timestamp, $this->categoryFormatter->__invoke($team), $team->message];
-			$row = $this->addCustomFields($row, $this->teamFields, $team);
+			$row = [
+				'#' => $team->id,
+				'name' => $team->name,
+				'registered' => $team->timestamp,
+				'category' => $this->categoryFormatter->__invoke($team),
+				'message' => $team->message,
+			];
+			$row += $this->addCustomFields($this->teamFields, $team);
 			$i = 0;
-			$remaining = $this->maxMembers;
 			foreach ($team->persons as $person) {
 				++$i;
-				$row[] = $person->lastname;
-				$row[] = $person->firstname;
-				$row[] = $person->email;
-				$row[] = $person->gender;
-				$row = $this->addCustomFields($row, $this->personFields, $person);
-				$row[] = $person->birth;
-				--$remaining;
+				$row['m' . $i . 'lastname'] = $person->lastname;
+				$row['m' . $i . 'firstname'] = $person->firstname;
+				$row['m' . $i . 'email'] = $person->email;
+				$row['m' . $i . 'gender'] = $person->gender;
+				$row += $this->addCustomFields($this->personFields, $person, 'm' . $i);
+				$row['m' . $i . 'birth'] = $person->birth;
 			}
-			if ($remaining > 0) {
-				for ($i = 0; $i < $remaining; ++$i) {
-					$row[] = ''; // lastname
-					$row[] = ''; // firstname
-					$row[] = ''; // email
-					$row[] = ''; // gender
-					foreach ($this->personFields as $name => $field) {
-						if ($field['type'] === 'checkboxlist') {
-							foreach ($field['items'] as $item) {
-								$row[] = '';
-							}
-						} else {
-							$row[] = '';
-						}
-					}
-					$row[] = ''; // birth
-				}
-			}
-			$row[] = $team->status;
-			fputcsv($fp, $row);
+			$row['status'] = $team->status;
+			$writer->write($row);
 		}
 		fclose($fp);
 		exit;
@@ -139,7 +129,8 @@ class CsvExporter implements IExporter {
 	/**
 	 * @param App\Model\Team|App\Model\Person $container
 	 */
-	private function addCustomFields(array $row, array $fields, $container): array {
+	private function addCustomFields(array $fields, $container, string $prefix = ''): array {
+		$row = [];
 		foreach ($fields as $name => $field) {
 			$f = isset($container->getJsonData()->$name) ? $container->getJsonData()->$name : null;
 			if ($f) {
@@ -147,23 +138,15 @@ class CsvExporter implements IExporter {
 					// TODO: https://github.com/nextras/orm/issues/319
 					/** @var App\Model\Country */
 					$country = $this->countries->getById($f);
-					$row[] = $country->name;
+					$row[$prefix . $name] = $country->name;
 				} elseif ($field['type'] === 'checkboxlist') {
 					foreach ($field['items'] as $itemKey => $_) {
-						$row[] = \in_array($itemKey, $f, true);
+						$row[$prefix . $name . '-' . $itemKey] = \in_array($itemKey, $f, true);
 					}
 				} elseif ($field['type'] === 'sportident') {
-					$row[] = $f->cardId ?? 'rent';
+					$row[$prefix . $name] = $f->cardId ?? 'rent';
 				} else {
-					$row[] = $f;
-				}
-			} else {
-				if ($field['type'] === 'checkboxlist') {
-					foreach ($field['items'] as $item) {
-						$row[] = '';
-					}
-				} else {
-					$row[] = '';
+					$row[$prefix . $name] = $f;
 				}
 			}
 		}
