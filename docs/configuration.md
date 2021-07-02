@@ -1,6 +1,6 @@
 # Configuring Entries
 
-The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `config.local.neon` and `private.neon` files in the `app/config` directory.
+The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `config.local.neon` and `private.neon` files in the `app/config` directory. It is also possible to [customize e-mail messages](customizing-emails.md), hook into input fields and modify invoices.
 
 ## Structure of the config
 
@@ -42,9 +42,21 @@ siteTitle:
 	en: Mountain Orienteering Championships 2017
 ```
 
+#### `siteTitleShort`
+
+This is a dictionary of short names of the event in the supported languages. It may be used in the e-mail messages.
+
+When missing, the full `siteTitle` will be used instead.
+
+```neon
+siteTitle:
+	cs: MČR 2021
+	en: CRC 2021
+```
+
 #### `accountNumber`
 
-This is the bank account number to be listed in payment instructions in the Czech e-mail the team receives after registration.
+This is the bank account number to be listed in payment instructions in the Czech e-mail the team receives after registration. (Unless the message text is [overridden](customizing-emails.md).)
 
 ```neon
 accountNumber: '000000-0000000000/0000'

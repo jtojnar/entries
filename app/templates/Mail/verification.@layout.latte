@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{$eventNameShort} – {_messages.email.verification.subject}</title>
+</head>
+<body>
+<h1>{$eventName}</h1>
+<h2>{_messages.email.verification.subject}</h2>
+
+{block body}
+{/block}
+
+<h3>{_messages.email.verification.entry_details.heading}</h3>
+<h4>{_messages.email.verification.entry_details.team.heading}</h4>
+<table class="teamlist">
+<tr><th>{_messages.email.verification.entry_details.team.registration_id}</th><td>{$id}</td></tr>
+<tr><th>{_messages.email.verification.entry_details.team.name}</th><td>{$team->name}</td></tr>
+<tr><th>{_messages.email.verification.entry_details.team.password}</th><td>{$password}</td></tr>
+<tr><th>{_messages.email.verification.entry_details.team.category}</th><td>{$team|categoryFormat}</td></tr>
+<tr><th>{_messages.email.verification.entry_details.message}</th><td>{$team->message}</td></tr>
+</table>
+{foreach $people as $person}
+<h4>{_$person->contact ? 'messages.email.verification.entry_details.person.heading.contact' : 'messages.email.verification.entry_details.person.heading', [number => $iterator->counter]}</h4>
+<table class="teamlist">
+<tr><th>{_messages.email.verification.entry_details.person.name}</th><td>{$person->firstname} {$person->lastname}</td></tr>
+<tr><th>{_messages.email.verification.entry_details.person.gender}</th><td>{if $person->gender=='male'}{_messages.email.verification.entry_details.person.gender.male}{else}{_messages.email.verification.entry_details.person.gender.female}{/if}</td></tr>
+<tr><th>{_messages.email.verification.entry_details.person.birth}</th><td>{$person->birth|date:$dateFormat}</td></tr>
+<tr n:if="$person->email"><th>{_messages.email.verification.entry_details.person.email}</th><td>{$person->email}</td></tr>
+</table>
+{/foreach}
+ <br><p>{_messages.email.verification.archivation_request}</p>
+</body>
+</html>

@@ -9,6 +9,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Secrets can now be loaded from `app/config/private.neon` file, making sharing the non-private parts of the config easier.
 - CSV exporter now includes e-mail addresses.
 - Bank account number in the e-mails can be customized, reducing the need to muck with the templates. See the [`accountNumber`](docs/configuration.md#accountNumber) option.
+- E-Mail messages can now be modified by placing overrides in the config directory. See [documentation](docs/customizing-emails.md).
 
 ### Bugs fixed
 
@@ -23,6 +24,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Custom fields will now be hidden by default. You need to add `public: true` to show them in the popovers on the list of teams.
 - Upgraded to Bootstrap 5, for fresh looks.
 - [Nix](https://nixos.org) files were added for more convenient development.
+- Slightly improved wording in the default e-mail templates and made the use more data from the config.
 
 ## 0.5.0 – 2020-02-11
 

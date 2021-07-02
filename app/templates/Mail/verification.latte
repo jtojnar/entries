@@ -1,34 +1,19 @@
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>CRC 2012 – Registration Acknowledgement</title>
-</head>
-<body>
-<h1>The Czech Rogaining Championships 2012</h1>
-<h2>Registration Acknowledgement</h2>
-<p>Hello {$name},</p>
-<p>thank you for your registration. Your registration ID is {$id}. Please remember it. It will identify your team in the processing of entries and any other correspondence that is necessary. Consult the <a href="{link //Team:list}">list of entrants</a> on the CRC website to check whether your registration data are correct. You can edit your entry using password provided bellow. Fees (starting fee, SI card hire fee, accommodation) <strong>{$invoice->getTotal()|price}</strong> pay cash at registration. You can also pay in EUR.</p>
+{layout 'verification.@layout.latte'}
 
-<p>If you have any queries about your entry please e-mail <a href="mailto:{$organiserMail}">{$organiserMail}</a>.</p>
+{block body}
+{block greeting}
+<p>Hello {$name}.</p>
+{/block}
 
-<h3>Entry details:</h3>
-<h4>Team</h4>
-<table class="teamlist">
-<tr><th>Registration ID:</th><td>{$id}</td></tr>
-<tr><th>Team name:</th><td>{$team->name}</td></tr>
-<tr><th>Password:</th><td>{$password}</td></tr>
-<tr><th>Team category:</th><td>{$team|categoryFormat}</td></tr>
-<tr><th>Message:</th><td>{$team->message}</td></tr>
-</table>
-{foreach $people as $person}
-<h4>Team member {$iterator->counter}{if $person->contact} {_messages.team.person.isContact}{/if}</h4>
-<table class="teamlist">
-<tr><th>Name:</th><td>{$person->firstname} {$person->lastname}</td></tr>
-<tr><th>Gender:</th><td>{if $person->gender=='male'}♂ Male{else}♀ Female{/if}</td></tr>
-<tr><th>Date of birth:</th><td>{$person->birth|date:'%b/%d/%Y'}</td></tr>
-<tr n:if="$person->email"><th>E-Mail address:</th><td>{$person->email}</td></tr>
-</table>
-{/foreach}
- <br><p>Please archive this message for future communication.</p>
-</body>
-</html>
+<p>Thank you for your registration.</p>
+
+<p>Your registration ID is {$id}. Please keep it handy – it will serve to identify your team during the processing of the entry and in the event of any further correspondence.</p>
+
+<p>You can consult the <a n:href="//Team:list">list of entrants</a> on the website to check the status of your entry. Until confirmed, you can change your entry using the password provided below.</p>
+
+{block payment}
+<p>Fees <strong>{$invoice->getTotal()|price}</strong> should be paid by cash at the registration desk. You can also pay in EUR.</p>
+{/block}
+
+<p>If you have any queries about your entry please e-mail <a href="mailto:{$organiserMail}">{$organiserMail}</a></p>
+{/block}

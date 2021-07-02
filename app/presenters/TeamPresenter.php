@@ -10,6 +10,7 @@ use App\Exporters;
 use App\Model\Invoice;
 use Closure;
 use Exception;
+use Latte;
 use Money\Currency;
 use Money\Money;
 use Nette;
@@ -464,13 +465,43 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate = $this->createTemplate();
 
 				$appDir = $this->context->parameters['appDir'];
-				if (file_exists($appDir . '/templates/Mail/verification.' . $this->locale . '.latte')) {
-					$mtemplate->setFile($appDir . '/templates/Mail/verification.' . $this->locale . '.latte');
-				} else {
-					$mtemplate->setFile($appDir . '/templates/Mail/verification.latte');
+
+				$baseMailTemplateLocalizedPath = $appDir . '/templates/Mail/verification.' . $this->locale . '.latte';
+
+				// If the override templates exist in the config directory,
+				// let’s use them.
+				$mailTemplatePath = null;
+				if (file_exists($appDir . '/config/mail/verification.' . $this->locale . '.latte')) {
+					$mailTemplatePath = $appDir . '/config/mail/verification.' . $this->locale . '.latte';
+				} elseif (file_exists($appDir . '/config/mail/verification.latte')) {
+					$mailTemplatePath = $appDir . '/config/mail/verification.latte';
 				}
 
+				// If not, let’s use the built-in templates.
+				$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : $appDir . '/templates/Mail/verification.latte';
+				if ($mailTemplatePath === null) {
+					$mailTemplatePath = $baseMailTemplatePath;
+				} else {
+					// If the overrides exist, pass the built-in template as a parameter
+					// so that they can inherit it and only override what they need.
+					$mtemplate->layout = $baseMailTemplatePath;
+					// TODO: Try to make use of coreParentFinder
+					// so that the templates do not need to carry layout tags.
+					// https://latte.nette.org/en/develop#toc-layout-lookup
+				}
+
+				$mtemplate->setFile($mailTemplatePath);
+
+				// Define variables for use in the e-mail template.
 				$mtemplate->accountNumber = $this->context->parameters['accountNumber'];
+				$mtemplate->eventName =
+					$this->parameters->getSiteTitle($this->locale)
+					?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
+				$mtemplate->eventNameShort =
+					$this->parameters->getSiteTitleShort($this->locale)
+					?? $this->parameters->getSiteTitleShort($this->translator->getDefaultLocale())
+					?? $mtemplate->eventName;
+				$mtemplate->dateFormat = $this->translator->translate('messages.email.verification.entry_details.person.birth.format');
 				$mtemplate->team = $team;
 				$mtemplate->people = $team->persons;
 				$mtemplate->id = $team->id;
