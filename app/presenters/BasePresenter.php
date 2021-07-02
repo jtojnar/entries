@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App\Helpers\Parameters;
 use Contributte\Translation\Translator;
 use Nette;
 
@@ -17,6 +18,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	/** @var Translator @inject */
 	public $translator;
 
+	/** @var Parameters @inject */
+	public $parameters;
+
 	/** @var Nette\DI\Container @inject */
 	public $context;
 
@@ -27,15 +31,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			$this->locale = $this->translator->getLocale();
 		}
 
-		if (isset($this->context->parameters['siteTitle'])) {
-			if (isset($this->context->parameters['siteTitle'][$this->locale])) {
-				$this->template->siteTitle = $this->context->parameters['siteTitle'][$this->locale];
-			} else {
-				$defaultLocale = $this->translator->getDefaultLocale();
+		$this->template->siteTitle = $this->parameters->getSiteTitle($this->locale) ?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
 
-				$this->template->siteTitle = $this->context->parameters['siteTitle'][$defaultLocale];
-			}
-		} else {
+		if ($this->template->siteTitle === null) {
 			throw new Nette\InvalidStateException('Missing siteTitle argument');
 		}
 	}
