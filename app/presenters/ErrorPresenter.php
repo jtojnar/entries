@@ -35,7 +35,9 @@ class ErrorPresenter extends BasePresenter {
 			$this->logger->log("HTTP code {$exception->getCode()}: {$exception->getMessage()} in {$exception->getFile()}:{$exception->getLine()}", 'access');
 		} else {
 			$this->setView('500'); // load template 500.latte
-			$this->logger->log($exception);
+			if (isset($exception)) {
+				$this->logger->log($exception);
+			}
 		}
 
 		if ($this->isAjax()) { // AJAX request? Note this error in payload.

@@ -7,10 +7,10 @@
 <h1>6. Sudetské Tojnárkovo Bloudění 2020</h1>
 <h2>Potvrzení registrace</h2>
 <p>Vážený závodníku,</p>
-<p>děkujeme za zaslání přihlášky. Registrační ID Vašeho týmu je {$id}. Prosím, uschovejte si je. Poslouží k identifikaci vašeho týmu při případné editaci vaší přihlášky a komunikaci s pořadateli závodu. Prosíme, abyste si v <a href="{link //Team:list}">seznamu přihlášek</a> zkontrolovali správnost registračních údajů.
+<p>děkujeme za&nbsp; přihlášení. Registrační ID Vašeho týmu je {$id}. Prosím, uschovejte si je. Poslouží k&nbsp;identifikaci vašeho týmu při&nbsp;případné editaci vaší přihlášky a komunikaci s&nbsp;pořadateli závodu. Prosíme, abyste si v&nbsp;<a href="{link //Team:list}">seznamu přihlášek</a> zkontrolovali správnost registračních údajů.
 <p>Vaši přihlášku můžete editovat pomocí ID a hesla, které naleznete níže.</p>
-<p>Po zaplacení částky <strong>{$invoice->getTotal()|price}</strong> (startovné + příp. půjčovné čipu) s variabilním symbolem <strong>{$id}</strong> na účet číslo <strong>2800039826/2010</strong> bude přihláška plně akceptována.</p>
-<p>V případě jakýchkoli problémů s přihláškou pište na e-mail: <a href="mailto:{$organiserMail}">{$organiserMail}</a>.
+<p>Po zaplacení částky <strong>{$invoice->getTotal()|price}</strong> (startovné + příp. půjčovné čipu, ev. objednané jídlo) s&nbsp;variabilním symbolem <strong>{$id}</strong> na&nbsp;účet číslo <strong>2800039826/2010</strong> bude přihláška plně akceptována.</p>
+<p>V případě jakýchkoli problémů s&nbsp;přihláškou pište na&nbsp;e-mail: <a href="mailto:{$organiserMail}">{$organiserMail}</a>.
 
 <h3>Detaily přihlášky:</h3>
 <h4>Tým</h4>
@@ -30,6 +30,6 @@
 <tr n:if="$person->email"><th>E-Mail:</th><td>{$person->email}</td></tr>
 </table>
 {/foreach} <br>
-<p>Prosím, uschovejte tento mail pro případnou budoucí komunikaci.</p>
+<p>Prosím, uschovejte tento mail pro&nbsp;případnou budoucí komunikaci.</p>
 </body>
 </html>

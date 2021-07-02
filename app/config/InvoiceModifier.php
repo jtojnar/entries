@@ -27,15 +27,15 @@ class InvoiceModifier {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {
-			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 20);
+			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 0);
 		}
 
 		if (isset($items['team:enum:saturday5h:yes'])) {
-			$items['team:enum:saturday5h:yes'] = self::discount($items['team:enum:saturday5h:yes'], 20);
+			$items['team:enum:saturday5h:yes'] = self::discount($items['team:enum:saturday5h:yes'], 0);
 		}
 
 		if (isset($items['team:enum:sunday4h:yes'])) {
-			$items['team:enum:sunday4h:yes'] = self::discount($items['team:enum:sunday4h:yes'], 20);
+			$items['team:enum:sunday4h:yes'] = self::discount($items['team:enum:sunday4h:yes'], 0);
 		}
 
 		$invoice->items = $items;
