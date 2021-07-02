@@ -20,11 +20,6 @@ class InvoiceModifier {
 			self::adjustJuniorStagePrices($invoice);
 		}
 
-		$data = $team->getJsonData();
-		if ($data->friday2h === 'yes' && $data->saturday5h === 'yes' && $data->sunday4h === 'yes') {
-			$invoice->addItem('all_stages_discount', $invoice->items['team:enum:friday2h:yes']->price->multiply(-1));
-		}
-
 		self::fixPersonItemAmounts($invoice, \count($team->persons));
 	}
 
@@ -32,7 +27,7 @@ class InvoiceModifier {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {
-			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 10);
+			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 20);
 		}
 
 		if (isset($items['team:enum:saturday5h:yes'])) {

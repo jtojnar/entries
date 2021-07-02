@@ -1,0 +1,196 @@
+php:
+	date.timezone: Europe/Prague
+
+parameters:
+	siteTitle:
+		cs: 7. Sudetské Tojnárkovo Bloudění 2021
+		en: Lost in Tojnarek’s Sudetenland 2021
+	entries:
+		maxMembers: 2
+		minMembers: 2
+		eventDate: 2021-09-24 # used for age calculations
+		opening: 2021-06-21T00:00:00
+		closing: 2021-09-24T14:00:00
+		invoiceModifier: App\InvoiceModifier::modify
+		fees:
+			person: 0
+		categories:
+			MJ:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age<=18)'
+			WJ:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age<=18)'
+			XJ:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age<=18)'
+			MO:
+				constraints:
+					- 'all(gender=male)'
+			WO:
+				constraints:
+					- 'all(gender=female)'
+			XO:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+			MV:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>=40)'
+			WV:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=40)'
+			XV:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age>=40)'
+		fields:
+			team:
+				sportident:
+					type: sportident
+					fee: 50
+				friday2h:
+					type: enum
+					label:
+						en: '2 hour Friday Night'
+						cs: 'Páteční noční dvouhodinovka'
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+							fee: 70
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							default: true
+				saturday5h:
+					type: enum
+					label:
+						en: '5 hour Saturday'
+						cs: 'Sobotní denní pětihodinovka'
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+							fee: 180
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							default: true
+				sunday4h:
+					type: enum
+					label:
+						en: '4 hour Sunday'
+						cs: 'Nedělní čtyřhodinovka - mapa 1850'
+					options:
+						yes:
+							label:
+								en: 'Yes'
+								cs: 'Ano'
+							fee: 170
+						no:
+							label:
+								en: 'No'
+								cs: 'Ne'
+							default: true
+			person:
+				country:
+					type: country
+					default: 46
+				boarding:
+					disabled: false
+					label:
+						en: 'Boarding (must be ordered and paid up to Friday 17. 9. 2021):'
+						cs: 'Stravování (nutno objednat a zaplatit do pátku 17. 9. 2021):'
+					type: checkboxlist
+					items:
+						pa-soup:
+							label:
+								en: 'Friday chicken soup (25 CZK, available between 18:00 and 21:00)'
+								cs: 'Páteční slepičí vývar (25 Kč, odběr mezi 18:00 až 21:00)'
+							fee: 25
+						pa-gulas-k:
+							label:
+								en: 'Friday pork goulash & dumplings (90 CZK, available between 18:00 and 21:00)'
+								cs: 'Páteční vepřový guláš s knedlíkem (90 Kč, odběr mezi 18:00 až 21:00)'
+							fee: 90
+						pa-gulas-b:
+							label:
+								en: 'Friday pork goulash & bread (90 CZK, available between 18:00 and 21:00)'
+								cs: 'Páteční vepřový guláš s chlebem (90 Kč, odběr mezi 18:00 až 21:00)'
+							fee: 90
+						so-breakfast:
+							label:
+								en: 'Saturday breakfast (60 CZK, available between 8:00 and 9:00)'
+								cs: 'Sobotní snídaně (60 Kč, odběr mezi 8:00 až 9:00)'
+							fee: 60
+						so-soup:
+							label:
+								en: 'Saturday goulash soup (25 CZK, available between 17:00 and 21:00)'
+								cs: 'Sobotní gulášovka (25 Kč, odběr mezi 17:00 až 21:00)'
+							fee: 25
+						so-rizoto:
+							label:
+								en: 'Saturday risotto (90 CZK, available between 17:00 and 21:00)'
+								cs: 'Sobotní rizoto (90 Kč, odběr mezi 17:00 až 21:00)'
+							fee: 90
+						so-kure-k:
+							label:
+								en: 'Saturday chicken, cream-paprika sauce & dumplings (90 CZK, available between 17:00 and 21:00)'
+								cs: 'Sobotní kuře na paprice s knedlíkem (90 Kč, odběr mezi 17:00 až 21:00)'
+							fee: 90
+						so-kure-r:
+							label:
+								en: 'Saturday chicken with cream-paprika sauce & pasta (90 CZK, available between 17:00 and 21:00)'
+								cs: 'Sobotní kuře na paprice s těstovinami (90 Kč, odběr mezi 17:00 až 21:00)'
+							fee: 90
+						ne-breakfast:
+							label:
+								en: 'Sunday breakfast (60 CZK, available between 8:00 and 8:30)'
+								cs: 'Nedělní snídaně (60 Kč, odběr mezi 8:00 až 8:30)'
+							fee: 60
+						ne-soup:
+							label:
+								en: 'Sunday cream of pea soup (25 CZK, available between 13:00 and 15:00)'
+								cs: 'Nedělní hrachovka (25 Kč, odběr mezi 13:00 až 15:00)'
+							fee: 25
+						ne-kure-b:
+							label:
+								en: 'Sunday chicken slice with mushrooms & potatoes (90 CZK, available between 13:00 and 15:00)'
+								cs: 'Nedělní kuřecí plátek na žampiónech s bramborem (90 Kč, odběr mezi 13:00 až 15:00)'
+							fee: 90
+						ne-kure-r:
+							label:
+								en: 'Sunday chicken slice with mushrooms & rice (90 CZK, available between 13:00 and 15:00)'
+								cs: 'Nedělní kuřecí plátek na žampiónech s rýží (90 Kč, odběr mezi 13:00 až 15:00)'
+							fee: 90
+				accommodation:
+					label:
+						en: 'Hard floor accommodation at the event centre (no shower, WC available):'
+						cs: 'Nouzové ubytování v sále restaurace (bez sprchy, jen s WC):'
+					type: checkboxlist
+					items:
+						gym2:
+							label:
+								en: 'Hard floor accommodation, 2 nights from Friday to Sunday (200 CZK)'
+								cs: 'Sál restaurace, 2 noci od pátku do neděle (200 Kč)'
+							fee: 200
+						gym1:
+							label:
+								en: 'Hard floor accommodation, 1 night from Friday-Saturday or Saturday-Sunday (100 CZK)'
+								cs: 'Sál restaurace, 1 noc pátek-sobota nebo sobota-neděle (100 Kč)'
+							fee: 100
+	webmasterEmail: tojnar@gmail.com
+
+
