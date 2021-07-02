@@ -10,6 +10,7 @@ parameters:
 		maxMembers: 0
 		allowLateRegistrationsByEmail: false
 		recommendedCardCapacity: 0
+		accountNumber: '000000-0000000000/0000'
 		fees:
 			currency: CZK
 		categories: []

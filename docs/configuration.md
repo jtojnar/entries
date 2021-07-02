@@ -42,6 +42,14 @@ siteTitle:
 	en: Mountain Orienteering Championships 2017
 ```
 
+#### `accountNumber`
+
+This is the bank account number to be listed in payment instructions in the Czech e-mail the team receives after registration.
+
+```neon
+accountNumber: '000000-0000000000/0000'
+```
+
 #### `webmasterEmail`
 
 A string containing the e-mail address of the person responsible for handling entries. It will be shown on the front page and will be used as a sender of the confirmation e-mails.

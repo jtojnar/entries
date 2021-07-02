@@ -470,6 +470,7 @@ class TeamPresenter extends BasePresenter {
 					$mtemplate->setFile($appDir . '/templates/Mail/verification.latte');
 				}
 
+				$mtemplate->accountNumber = $this->context->parameters['accountNumber'];
 				$mtemplate->team = $team;
 				$mtemplate->people = $team->persons;
 				$mtemplate->id = $team->id;
