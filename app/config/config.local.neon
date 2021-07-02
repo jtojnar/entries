@@ -59,8 +59,8 @@ parameters:
 				friday2h:
 					type: enum
 					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
+						en: '2 hour Friday Night:'
+						cs: 'Páteční noční dvouhodinovka:'
 					options:
 						yes:
 							label:
@@ -75,8 +75,8 @@ parameters:
 				saturday5h:
 					type: enum
 					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
+						en: '5 hour Saturday:'
+						cs: 'Sobotní denní pětihodinovka:'
 					options:
 						yes:
 							label:
@@ -91,8 +91,8 @@ parameters:
 				sunday4h:
 					type: enum
 					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
+						en: '4 hour Sunday:'
+						cs: 'Nedělní čtyřhodinovka - mapa 1850:'
 					options:
 						yes:
 							label:
@@ -192,5 +192,3 @@ parameters:
 								cs: 'Sál restaurace, 1 noc pátek-sobota nebo sobota-neděle (100 Kč)'
 							fee: 100
 	webmasterEmail: tojnar@gmail.com
-
-
