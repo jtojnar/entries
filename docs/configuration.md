@@ -4,7 +4,7 @@ The system currently uses [NEON language](https://ne-on.org/) for creating the e
 
 ## Structure of the config
 
-The configuration file provides considerable customization possibilities – not only it enables changing the application, it also allows overriding the behaviour of the underlying libraries. For example, it is possible to [use SMTP](https://doc.nette.org/en/2.4/configuring#toc-mailing) for sending e-mails.
+The configuration file provides considerable customization possibilities – not only it enables changing the application, it also allows overriding the behaviour of the underlying libraries. For example, it is possible to [use SMTP](https://doc.nette.org/en/3.1/configuring#toc-mail) for sending e-mails.
 
 The configuration file is divided into sections; on top of the optional Nette specific ones, there are the following sections:
 
@@ -24,7 +24,7 @@ dbal:
 		charset: utf8mb4
 ```
 
-For details about the supported keys see [Nextras\Dbal docs](https://nextras.org/dbal/docs/2.1/#toc-connection).
+For details about the supported keys see [Nextras\Dbal docs](https://nextras.org/dbal/docs/4.0/#toc-connection).
 
 ### `parameters` section
 
