@@ -27,8 +27,9 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	protected function startup(): void {
 		parent::startup();
 
-		if ($this->locale === null) {
-			$this->locale = $this->translator->getLocale();
+		$detectedLocale = $this->translator->getLocale();
+		if ($this->locale !== $detectedLocale) {
+			$this->locale = $detectedLocale;
 		}
 
 		$this->template->siteTitle = $this->parameters->getSiteTitle($this->locale) ?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
