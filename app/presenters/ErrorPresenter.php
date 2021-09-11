@@ -5,42 +5,40 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App\LimitedAccessException;
-use Exception;
 use Nette;
+use Nette\Application\Responses;
+use Nette\Http;
 use Tracy\ILogger;
 
-/**
- * Presenter for handling errors.
- */
-class ErrorPresenter extends BasePresenter {
-	/** @var ILogger @inject */
-	private $logger;
+final class ErrorPresenter implements Nette\Application\IPresenter {
+	use Nette\SmartObject;
 
-	public function renderDefault(Exception $exception): void {
-		if ($exception instanceof LimitedAccessException) {
-			$code = $exception->getCode();
-			$errorType = $code === LimitedAccessException::LATE ? 'late' : 'early';
+	private ILogger $logger;
 
-			$this->setView('access');
+	public function __construct(ILogger $logger) {
+		$this->logger = $logger;
+	}
 
-			$fmt = $this->translator->translate('messages.date');
-			$this->template->openingDate = $this->context->parameters['entries']['opening']->format($fmt);
+	public function run(Nette\Application\Request $request): Nette\Application\IResponse {
+		$exception = $request->getParameter('exception');
 
-			$this->template->errorType = $errorType;
-		} elseif ($exception instanceof Nette\Application\BadRequestException) {
-			$code = $exception->getCode();
-			// load template 403.latte or 404.latte or ... 4xx.latte
-			$this->setView(\in_array($code, [403, 404, 405, 410, 500], true) ? (string) $code : '4xx');
-			// log to access.log
-			$this->logger->log("HTTP code {$exception->getCode()}: {$exception->getMessage()} in {$exception->getFile()}:{$exception->getLine()}", 'access');
-		} else {
-			$this->setView('500'); // load template 500.latte
-			$this->logger->log($exception);
+		if ($exception instanceof Nette\Application\BadRequestException || $exception instanceof LimitedAccessException) {
+			[$module, , $sep] = Nette\Application\Helpers::splitName($request->getPresenterName());
+			if ($exception instanceof LimitedAccessException) {
+				$errorPresenter = $module . $sep . 'ErrorAccess';
+			} else {
+				$errorPresenter = $module . $sep . 'Error4xx';
+			}
+
+			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
 		}
 
-		if ($this->isAjax()) { // AJAX request? Note this error in payload.
-			$this->payload->error = true;
-			$this->terminate();
-		}
+		$this->logger->log($exception, ILogger::EXCEPTION);
+
+		return new Responses\CallbackResponse(function(Http\IRequest $httpRequest, Http\IResponse $httpResponse): void {
+			if (preg_match('#^text/html(?:;|$)#', (string) $httpResponse->getHeader('Content-Type'))) {
+				require __DIR__ . '/../templates/Error/500.phtml';
+			}
+		});
 	}
 }
