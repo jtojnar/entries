@@ -9,6 +9,8 @@ use App\Helpers\CsvWriter;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
+use function nspl\a\map;
+use function nspl\a\reduce;
 
 /**
  * Legacy CSV Exporter.
@@ -41,19 +43,15 @@ class CsvExporter implements IExporter {
 	/** @var CategoryFormatFilter */
 	private $categoryFormatter;
 
-	/** @var int */
-	private $maxMembers;
-
 	/**
 	 * @param Team[]|ICollection $teams
 	 */
-	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, CategoryFormatFilter $categoryFormatter, int $maxMembers) {
+	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, CategoryFormatFilter $categoryFormatter) {
 		$this->teams = $teams;
 		$this->countries = $countries;
 		$this->teamFields = $teamFields;
 		$this->personFields = $personFields;
 		$this->categoryFormatter = $categoryFormatter;
-		$this->maxMembers = $maxMembers;
 	}
 
 	public function getMimeType(): string {
@@ -67,6 +65,11 @@ class CsvExporter implements IExporter {
 		}
 		$writer = new CsvWriter($fp);
 		$writer->addColumns(['#', 'name', 'registered', 'category', 'message']);
+		$maxMembers = reduce(function($maximum, $personsCount) {
+			return max($maximum, $personsCount);
+		}, map(function($team) {
+			return $team->persons->count();
+		}, $this->teams));
 
 		foreach ($this->teamFields as $name => $field) {
 			if ($field['type'] === 'checkboxlist') {
@@ -78,7 +81,7 @@ class CsvExporter implements IExporter {
 			}
 		}
 
-		for ($i = 1; $i <= $this->maxMembers; ++$i) {
+		for ($i = 1; $i <= $maxMembers; ++$i) {
 			$writer->addColumns([
 				'm' . $i . 'lastname',
 				'm' . $i . 'firstname',

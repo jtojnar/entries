@@ -179,7 +179,6 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		$teams = $this->teams->findBy($where);
-		$maxMembers = $this->context->parameters['entries']['maxMembers'];
 
 		$teamFields = $this->context->parameters['entries']['fields']['team'];
 		$personFields = $this->context->parameters['entries']['fields']['person'];
@@ -190,7 +189,7 @@ class TeamPresenter extends BasePresenter {
 				$this->response->setContentType($exporter->getMimeType(), 'UTF-8');
 				$exporter->output();
 			} else {
-				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, $this->categoryFormatter, $maxMembers);
+				$exporter = new Exporters\CsvExporter($teams, $this->countries, $teamFields, $personFields, $this->categoryFormatter);
 				$this->response->setContentType('text/plain', 'UTF-8');
 				$exporter->output();
 			}
