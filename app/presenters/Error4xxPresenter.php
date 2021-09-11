@@ -6,10 +6,13 @@ namespace App\Presenters;
 
 use Nette;
 
+/**
+ * @property Nette\Application\UI\Template $template
+ */
 final class Error4xxPresenter extends BasePresenter {
 	public function startup(): void {
 		parent::startup();
-		if (!$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {
+		if ($this->getRequest() === null || !$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {
 			$this->error();
 		}
 	}

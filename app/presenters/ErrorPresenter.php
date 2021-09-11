@@ -22,13 +22,14 @@ final class ErrorPresenter implements Nette\Application\IPresenter {
 	public function run(Nette\Application\Request $request): Nette\Application\IResponse {
 		$exception = $request->getParameter('exception');
 
-		if ($exception instanceof Nette\Application\BadRequestException || $exception instanceof LimitedAccessException) {
+		if ($exception instanceof LimitedAccessException) {
 			[$module, , $sep] = Nette\Application\Helpers::splitName($request->getPresenterName());
-			if ($exception instanceof LimitedAccessException) {
-				$errorPresenter = $module . $sep . 'ErrorAccess';
-			} else {
-				$errorPresenter = $module . $sep . 'Error4xx';
-			}
+			$errorPresenter = $module . $sep . 'ErrorAccess';
+
+			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
+		} elseif ($exception instanceof Nette\Application\BadRequestException) {
+			[$module, , $sep] = Nette\Application\Helpers::splitName($request->getPresenterName());
+			$errorPresenter = $module . $sep . 'Error4xx';
 
 			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
 		}

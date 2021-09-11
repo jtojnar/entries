@@ -7,10 +7,13 @@ namespace App\Presenters;
 use App\LimitedAccessException;
 use Nette;
 
+/**
+ * @property Nette\Application\UI\Template $template
+ */
 final class ErrorAccessPresenter extends BasePresenter {
 	public function startup(): void {
 		parent::startup();
-		if (!$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {
+		if ($this->getRequest() === null || !$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {
 			$this->error();
 		}
 	}
@@ -23,6 +26,6 @@ final class ErrorAccessPresenter extends BasePresenter {
 		$this->template->openingDate = $this->context->parameters['entries']['opening']->format($fmt);
 
 		$this->template->errorType = $errorType;
-		$this->template->setFile(__DIR__ . '/../templates/Error/access.latte');
+		$this->setView('access');
 	}
 }
