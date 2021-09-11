@@ -493,7 +493,7 @@ class TeamPresenter extends BasePresenter {
 				$mtemplate->setFile($mailTemplatePath);
 
 				// Define variables for use in the e-mail template.
-				$mtemplate->accountNumber = $this->context->parameters['accountNumber'];
+				$mtemplate->accountNumber = $this->context->parameters['entries']['accountNumber'];
 				$mtemplate->eventName =
 					$this->parameters->getSiteTitle($this->locale)
 					?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
