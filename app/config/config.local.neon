@@ -1,126 +1,109 @@
 php:
 	date.timezone: Europe/Prague
 
-# Do not forget to configure database here or in private.neon
-dbal:
-	driver: mysqli
-	host: localhost
-	database: entries
-	username: root
-	password:
-	connectionTz: +01:00
-	options:
-		charset: utf8mb4
-
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: MČR v horském orientačním běhu 2021
+		en: Czech Mountain Orienteering Championships 2021
+	webmasterEmail: "jan.tojnar@rogaining.cz"
 	entries:
 		minMembers: 2
-		maxMembers: 5
+		maxMembers: 2
 		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
-		invoiceModifier: [App\InvoiceModifier, modify]
+		eventDate: 2021-11-06 # used for age calculations
+		opening: 2021-08-30T01:00:00
+		closing: 2021-11-03T14:00:00
 		customInputModifier: [App\CustomInputModifier, modify]
 		fees:
 			currency: CZK
-			person: 650.0
+			person: 300.0
 		categories:
 			HH20:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age<20)'
+					- 'all(age<=20)'
 			HD20:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+					- 'all(age<=20)'
+			DD20:
 				constraints:
-					- 'all(gender=male)'
-			DD:
+					- 'all(gender=female)'
+					- 'all(age<=20)'
+			HH:
 				constraints:
 					- 'all(gender=male)'
 			HD:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
+			DD:
+				constraints:
+					- 'all(gender=female)'
 			HH40:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
 			HD40:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
+			DD40:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=40)'
+			HH60:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>=60)'
+			HD60:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age>=60)'
+			DD60:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=60)'
+			PO:
+				label:
+					en: 'Skilled Newcomers (PO)'
+					cs: 'Příchozí orienťáci (PO)'
+				short: 'PO'
+				fees:
+					person: 200.0
+			PZ:
+				label:
+					en: 'Newcomers – Beginners (PZ)'
+					cs: 'Příchozí začátečníci (PZ)'
+				short: 'PZ'
+				fees:
+					person: 200.0
 		fields:
 			team:
-				friday2h:
+				stage:
 					type: enum
 					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
-					public: true
+						en: 'Stage:'
+						cs: 'Etapa:'
 					options:
-						yes:
-							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 50
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
+						both:
 							default: true
-				saturday5h:
-					type: enum
-					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
-					public: true
-					options:
-						yes:
 							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 150
-						no:
+								en: 'Saturday & Sunday'
+								cs: 'Sobota i neděle'
+						saturday:
 							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
-				sunday4h:
-					type: enum
-					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					public: true
-					options:
-						yes:
+								en: 'Saturday only'
+								cs: 'Pouze sobota'
+							fee: -200
+						sunday:
 							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 150
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
+								en: 'Sunday only'
+								cs: 'Pouze neděle'
+							fee: -200
 			person:
 				country:
 					type: country
@@ -128,40 +111,83 @@ parameters:
 					public: true
 				sportident:
 					type: sportident
-					fee: 50
+					fee: 60
 					public: true
-				mug:
-					type: checkbox
+				accommodation:
+					type: enum
+					disabled: false
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accomodation:'
+						cs: 'Ubytování:'
+						# en: 'Accommodation not available:'
+						# cs: 'Kapacita ubytování vyčerpána:'
+					options:
+						Potkavarna:
+							label:
+								en: 'Bed at Potkavarna (350 CZK / night)'
+								cs: 'Postel na Potkávárně (350 Kč / noc)'
+							fee: 700
+						Karlovka:
+							label:
+								en: 'Bed at Karlovka (300 CZK / night)'
+								cs: 'Postel na Potkávárně (300 Kč / noc)'
+							fee: 600
+						TichaRicka:
+							label:
+								en: 'Bed at Ticha říčka (400 CZK / night)'
+								cs: 'Postel na Tiché říčce (400 Kč / noc)'
+							fee: 800
+						Sokolka-friday:
+							label:
+								en: 'Bed at Sokolka Friday to Sunday (200 CZK / night), own sleeping bag required'
+								cs: 'Postel na Sokolce pátek až neděle (200 Kč / noc), vlastní spacák nutný'
+							fee: 400
+						Sokolka-saturday:
+							label:
+								en: 'Bed at Sokolka Saturday to Sunday (250 CZK / night)own sleeping bag required'
+								cs: 'Postel na Sokolce sobota až neděle (250 Kč / noc), vlastní spacák nutný'
+							fee: 250
+						Tent-friday:
+							label:
+								en: 'Tent or teepee at Potkávárna Friday to Sunday (100 CZK / night)'
+								cs: 'Nocleh ve stanu nebo teepee na Potkávárně pátek až neděle (100 Kč / noc)'
+							fee: 200
+						Tent-saturday:
+							label:
+								en: 'Tent or teepee at Potkávárna Saturday to Sunday (100 CZK / night)'
+								cs: 'Nocleh ve stanu nebo teepee na Potkávárně sobota až neděle (100 Kč / noc)'
+							fee: 100
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 				boarding:
 					label:
 						en: 'Boarding:'
 						cs: 'Stravování:'
 					type: checkboxlist
 					items:
-						fri_supper:
+						sat_half-board:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
-							fee: 95
-						sat_breakfast:
-							type: checkbox
+								en: 'Friday Supper (2 courses) + Saturday breakfast (250 CZK). Available only if you stay at one of the cottages.'
+								cs: 'Páteční večeře (2 chody) + sobotní snídaně (250 Kč). Pouze pro ubytované na některě z chalup.'
+							fee: 250
+						sun_half-board:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
-							type: checkbox
+								en: 'Saturday Supper (2 courses) + Sunday breakfast (250 CZK). Available only if you stay at one of the cottages.'
+								cs: 'Sobotní večeře (2 chody) + nedělní snídaně (250 Kč). Pouze pro ubytované na některě z chalup.'
+							fee: 250
+						sat_meal:
 							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
-							fee: 95
-					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
+								en: 'Saturday meal during the day at Potkávárna (115 CZK)'
+								cs: 'Sobotní jídlo během dne na Potkávárně (115 Kč)'
+							fee: 115
+						sun_meal:
+							label:
+								en: 'Sunday meal during the day at Potkávárna (115 CZK)'
+								cs: 'Nedělní jídlo během dne na Potkávárně (115 Kč)'
+							fee: 115
 				registry_address:
 					type: text
 					label:
