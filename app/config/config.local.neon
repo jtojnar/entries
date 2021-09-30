@@ -18,101 +18,56 @@ parameters:
 	siteTitle:
 		cs: Nějaký závod
 		en: Some event
+	webmasterEmail: email@example.com
 	entries:
 		minMembers: 2
 		maxMembers: 5
 		recommendedCardCapacity: 30
 		eventDate: 2012-06-23 # used for age calculations
-		opening: 2012-04-01T01:00:00
-		closing: 2015-06-23T01:00:00
+		opening: 2021-04-01T01:00:00
+		closing: 2050-06-23T01:00:00
 		invoiceModifier: [App\InvoiceModifier, modify]
 		customInputModifier: [App\CustomInputModifier, modify]
 		fees:
 			currency: CZK
 			person: 650.0
 		categories:
-			24:
-				label:
-					cs: 24 hodin
-					en: 24 hours
-				categories:
-					MY:
-						constraints:
-							- 'all(gender=male)'
-							- 'all(age<=23)'
-					WY:
-						constraints:
-							- 'all(gender=female)'
-							- 'all(age<=23)'
-					XY:
-						constraints:
-							- 'some(gender=male)'
-							- 'some(gender=female)'
-							- 'all(age<=23)'
-					MO:
-						constraints:
-							- 'all(gender=male)'
-					WO:
-						constraints:
-							- 'all(gender=female)'
-					XO:
-						constraints:
-							- 'some(gender=male)'
-							- 'some(gender=female)'
-					MV:
-						constraints:
-							- 'all(gender=male)'
-							- 'all(age>=40)'
-					WV:
-						constraints:
-							- 'all(gender=female)'
-							- 'all(age>=40)'
-					XV:
-						constraints:
-							- 'some(gender=male)'
-							- 'some(gender=female)'
-							- 'all(age>=40)'
-					MSV:
-						constraints:
-							- 'all(gender=male)'
-							- 'all(age>=55)'
-					WSV:
-						constraints:
-							- 'all(gender=female)'
-							- 'all(age>=55)'
-					XSV:
-						constraints:
-							- 'some(gender=male)'
-							- 'some(gender=female)'
-							- 'all(age>=55)'
-					MUV:
-						constraints:
-							- 'all(gender=male)'
-							- 'all(age>=65)'
-					WUV:
-						constraints:
-							- 'all(gender=female)'
-							- 'all(age>=65)'
-					XUV:
-						constraints:
-							- 'some(gender=male)'
-							- 'some(gender=female)'
-							- 'all(age>=65)'
-			12:
-				label: '12'
-				fees:
-					person: 200
-				categories:
-					MO12:
-						constraints:
-							- 'all(gender=male)'
-					WO12:
-						constraints:
-							- 'all(gender=female)'
-					XO12:
-						constraints:
-							- 'some(gender=male)'
-							- 'some(gender=female)'
+			HH20:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age<20)'
+			DD20:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age<20)'
+			HD20:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age<20)'
+			HH:
+				constraints:
+					- 'all(gender=male)'
+			DD:
+				constraints:
+					- 'all(gender=male)'
+			HD:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+			HH40:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>40)'
+			DD40:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>40)'
+			HD40:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age>40)'
 		fields:
 			team:
 				friday2h:
@@ -215,5 +170,3 @@ parameters:
 					description:
 						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
 						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
-
-	webmasterEmail: email@example.com

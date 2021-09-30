@@ -3,6 +3,6 @@
 
 /www/dist/
 
-app/config/config.local.neon
+app/config/private.neon
 
 .php-cs-fixer.cache
