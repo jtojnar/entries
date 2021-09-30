@@ -6,8 +6,10 @@ namespace App\Presenters;
 
 use App;
 use Closure;
+use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Security\IAuthenticator;
 use Nette\Security\IUserStorage;
 
 /**
@@ -55,7 +57,13 @@ class SignPresenter extends BasePresenter {
 			$this->restoreRequest($this->backlink);
 			$this->redirect('Homepage:');
 		} catch (Nette\Security\AuthenticationException $e) {
-			$form->addError($e->getMessage());
+			$form->addError(
+				$e->getCode() === IAuthenticator::IDENTITY_NOT_FOUND
+				? 'messages.sign.in.error.incorrect_id'
+				: ($e->getCode() === IAuthenticator::INVALID_CREDENTIAL
+				? 'messages.sign.in.error.incorrect_password'
+				: new NotTranslate($e->getMessage()))
+			);
 		}
 	}
 
