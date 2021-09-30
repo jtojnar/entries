@@ -2,6 +2,7 @@ php:
 	date.timezone: Europe/Prague
 
 parameters:
+	adminPassword: heslo
 	siteTitle:
 		cs: Nějaký závod
 		en: Some event
@@ -203,7 +204,6 @@ parameters:
 						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
 						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
 
-		admin: password
 	webmasterEmail: email@example.com
 
 dbal:

@@ -51,7 +51,7 @@ orm:
 
 services:
 	- App\Helpers\Parameters(%parameters%)
-	- App\Model\TeamManager(%entries.admin%)
+	- App\Model\TeamManager(%adminPassword%)
 	- App\Model\CategoryData
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory

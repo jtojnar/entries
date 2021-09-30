@@ -30,6 +30,13 @@ For details about the supported keys see [Nextras\Dbal docs](https://nextras.org
 
 This section affects behaviour of the app itself.
 
+#### `adminPassword`
+
+```neon
+# used for editing entries, currently only plain-text passwords are supported
+adminPassword: p4ssw0rd
+```
+
 #### `siteTitle`
 
 This is a dictionary of names of the event in the supported languages. It will be displayed in the page title and headings.
@@ -91,9 +98,6 @@ maxMembers: 3
 # this will warn users when they try to enter with an SI card
 # with lower capacity
 recommendedCardCapacity: 50
-
-# used for editing entries, currently only plain-text passwords are supported
-admin: p4ssw0rd
 ```
 
 ##### `fees`

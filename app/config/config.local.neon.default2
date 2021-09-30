@@ -2,6 +2,7 @@ php:
 	date.timezone: Europe/Prague
 
 parameters:
+	adminPassword: heslo
 	siteTitle:
 		cs: Nějaký závod
 		en: Some event
@@ -60,7 +61,6 @@ parameters:
 								en: 'None'
 								cs: 'Žádné'
 
-		admin: password
 	webmasterEmail: email@example.com
 
 dbal:
