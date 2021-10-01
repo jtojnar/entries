@@ -663,7 +663,7 @@ class TeamPresenter extends BasePresenter {
 				continue;
 			} elseif ($field['type'] === 'checkboxlist' && isset($data->$name)) {
 				$items = array_map(function(string $item) use ($field): string {
-					return $field['items'][$item]['label'][$this->locale];
+					return $field['items'][$item]['label'][$this->locale] ?? $item;
 				}, $data->$name);
 				$ret[] = $label . ' ' . implode(', ', $items);
 				continue;
