@@ -41,7 +41,7 @@ jobs:
         nix-shell --run 'composer test'
 
     - name: Build a zipball
-      run: nix-shell --run '.github/workflows/package.sh "entries-${{ steps.vars.outputs.sha_short }}.zip"'
+      run: nix-shell --run '.github/workflows/create-zipball.py "entries-${{ steps.vars.outputs.sha_short }}.zip"'
 
     - name: Upload the zipball to GitHub
       uses: actions/upload-artifact@v2

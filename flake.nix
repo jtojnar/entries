@@ -46,6 +46,7 @@
             pkgs.mkShell {
               nativeBuildInputs = [
                 php
+                pkgs.python3 # for create-zipball.py
                 nette-code-checker
                 update-php-extradeps
               ] ++ (with pkgs.nodePackages; [
