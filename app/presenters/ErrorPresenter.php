@@ -13,7 +13,10 @@ use Tracy\ILogger;
 final class ErrorPresenter implements Nette\Application\IPresenter {
 	use Nette\SmartObject;
 
-	private ILogger $logger;
+	/**
+	 * @var ILogger
+	 */
+	private $logger;
 
 	public function __construct(ILogger $logger) {
 		$this->logger = $logger;
