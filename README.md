@@ -19,7 +19,7 @@ Then you will need to build the assets with `yarn run build` or `yarn run dev`. 
 
 1. Clone this repository and follow the steps in [Development section](#development), or download package from [Cloudsmith](https://cloudsmith.io/~entries-for-rogaining/repos/entries/packages/) ([latest](https://cloudsmith.io/~entries-for-rogaining/repos/entries/packages/?q=version%3Alatest)).
 2. Run SQL from `install.sql`.
-3. Configure app in `app/config/config.local.neon.default` and rename the file to `config.local.neon`. See [documentation](docs/configuration.md) for more information.
+3. Configure app in `app/config/config.local.neon.default` and rename the file to `config.local.neon`. See [documentation](docs/configuration.md) for more information. Do not forget to set up admin password and database credentials in either `app/config/config.local.neon` or `app/config/private.neon`.
 4. Make `temp` and `log` directories writeable.
 5. Change e-mail templates in `app/templates/Mail`.
 6. The entry point of the application is in the `www` directory, configure your web server accordingly.

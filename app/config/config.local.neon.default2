@@ -1,8 +1,29 @@
 php:
 	date.timezone: Europe/Prague
 
+# Do not forget to configure database here or in private.neon
+dbal:
+	driver: mysqli
+	host: localhost
+	database: entries
+	username: root
+	password:
+	connectionTz: +01:00
+	options:
+		charset: utf8mb4
+
+# optional
+mail:
+	smtp: true
+	host: smtp.gmail.com
+	port: 465
+	username: account@gmail.com
+	password: heslo
+	secure: tls # one of ssl, tls, null
+
 parameters:
-	adminPassword: heslo
+	# Do not forget to set password here or in private.neon
+	adminPassword:
 	siteTitle:
 		cs: Nějaký závod
 		en: Some event
@@ -62,23 +83,3 @@ parameters:
 								cs: 'Žádné'
 
 	webmasterEmail: email@example.com
-
-dbal:
-	driver: mysqli
-	host: localhost
-	database: entries
-	username: root
-	password:
-	connectionTz: +01:00
-	options:
-		charset: utf8mb4
-
-# optional
-mail:
-	smtp: true
-	host: smtp.gmail.com
-	port: 465
-	username: account@gmail.com
-	password: heslo
-	secure: tls # one of ssl, tls, null
-
