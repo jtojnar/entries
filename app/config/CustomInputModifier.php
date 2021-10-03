@@ -42,6 +42,16 @@ class CustomInputModifier {
 				'PO',
 				'PZ',
 			])->setRequired();
+		} elseif ($input instanceof BaseControl && $input->getName() === 'accommodation') {
+			// Disables listed option of accommodation.
+			$disabledOptions = [
+				'Potkavarna',
+			];
+			$input->form->onRender[] =function($form) use ($input, $disabledOptions) {
+				// Needs to be disabled just before the form rendering, since we only supply
+				// values for editing long after the input is created (and CustomInputModifier run).
+				$input->setDisabled(array_diff($disabledOptions, [$input->getValue()]));
+			};
 		} elseif ($input instanceof BaseControl && $input->getName() === 'boarding') {
 			// Do not allow ordering half board when not using accommodation.
 			/** @var BaseControl */

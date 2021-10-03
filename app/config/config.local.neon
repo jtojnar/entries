@@ -127,8 +127,8 @@ parameters:
 					options:
 						Potkavarna:
 							label:
-								en: 'Bed at Potkavarna (2 nights 700 CZK per person)'
-								cs: 'Postel na Potkávárně (2 noci 700 Kč / os.)'
+								en: 'Bed at Potkavarna (no vacancies)'
+								cs: 'Postel na Potkávárně (všechna lůžka obsazena)'
 							fee: 700
 						Karlovka:
 							label:
