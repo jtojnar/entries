@@ -578,18 +578,18 @@ class TeamPresenter extends BasePresenter {
 		if ($this->request->getQuery('category')) {
 			$category->setValue($this->request->getQuery('category'));
 		}
-		$category->controlPrototype->onchange('this.form.submit();');
+		$category->controlPrototype->class[] = 'change-form-submit';
 
 		if ($this->user->isInRole('admin')) {
 			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setHtmlAttribute('style', 'width:auto;');
 			if ($this->request->getQuery('status')) {
 				$status->setValue($this->request->getQuery('status'));
 			}
-			$status->controlPrototype->onchange('this.form.submit();');
+			$status->controlPrototype->class[] = 'change-form-submit';
 		}
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
-		$submit->controlPrototype->onload("this.setAttribute('style', 'display: none');");
+		$submit->controlPrototype->class[] = 'noscript';
 		/** @var callable(Nette\Forms\Container): void */
 		$filterRedir = Closure::fromCallable([$this, 'filterRedir']);
 		$form->onValidate[] = $filterRedir;
