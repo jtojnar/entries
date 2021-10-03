@@ -13,18 +13,22 @@ Each minor release (or even commit in the repository) is generally considered a 
 
 ### Bugs fixed
 
-- Built packages are now hosted on [Cloudsmith](https://cloudsmith.io/~entries-for-rogaining/repos/entries/packages/?q=version%3Alatest).
-- Fixed saving team/person data with no customú fields.
+- Fixed saving team/person data with no custom fields.
 - Fix contact marker in the form.
 - Fixed several small bugs.
 
 ### Other changes
 
 - PHP 7.3 is now the minimum required version.
+- Built packages are now hosted on [Cloudsmith](https://cloudsmith.io/~entries-for-rogaining/repos/entries/packages/?q=version%3Alatest).
 - Custom fields will now be hidden by default. You need to add `public: true` to show them in the popovers on the list of teams.
 - Upgraded to Bootstrap 5, for fresh looks.
 - [Nix](https://nixos.org) files were added for more convenient development.
 - Slightly improved wording in the default e-mail templates and made the use more data from the config.
+- URLs with ynknown locales are now redirected to the default one.
+- Translated the sign in error messages and made them report incorrect password for admin correctly.
+- `admin` field for admin password has been renamed to `adminPassword` and moved directly to `parameters` section.
+- `config.local.neon` is now included in the source tree, instead of the examples.
 
 ## 0.5.0 – 2020-02-11
 
