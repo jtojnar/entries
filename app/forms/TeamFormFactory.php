@@ -59,11 +59,13 @@ final class TeamFormFactory {
 		if ($category->value !== null) {
 			$constraints = $this->categories->getCategoryData()[$category->value]['constraints'];
 			foreach ($constraints as $constraint) {
-				$category->addRule(...$constraint);
+				$rule = $category->addCondition(true); // not to block the export of rules to JS
+				$rule->addRule(...$constraint);
 			}
 		}
 
-		$category->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
+		$rule = $category->addCondition(true); // not to block the export of rules to JS
+		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
 			$category = $entry->getValue();
 			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
 			/** @var \Kdyby\Replicator\Container */
@@ -72,7 +74,8 @@ final class TeamFormFactory {
 			return iterator_count($replicator->getContainers()) <= $maxMembers;
 		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
 
-		$category->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
+		$rule = $category->addCondition(true); // not to block the export of rules to JS
+		$rule->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
 			$category = $entry->getValue();
 			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
 			/** @var \Kdyby\Replicator\Container */
