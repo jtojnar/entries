@@ -27,18 +27,18 @@ class HomepagePresenter extends BasePresenter {
 	public function renderDefault(): void {
 		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
+		$template->invoice = null;
+		$template->status = null;
 
 		if ($this->user->isLoggedIn()) {
 			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
-			$template->status = $identity->status;
+			$template->status = $identity->status ?? null;
 
-			if ($template->status === 'registered') {
+			if (!$this->user->isInRole('admin')) {
 				$team = $this->teams->getByIdChecked($identity->getId());
 				$template->invoice = $team->lastInvoice;
 			}
-		} else {
-			$template->status = null;
 		}
 
 		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1);

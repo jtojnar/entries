@@ -39,7 +39,7 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 
 		if ($teamId === 'admin') {
 			if ($password === $this->adminPassword) {
-				return new SimpleIdentity('admin', 'admin', ['status' => 'admin']);
+				return new SimpleIdentity('admin', 'admin');
 			} else {
 				throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
 			}
