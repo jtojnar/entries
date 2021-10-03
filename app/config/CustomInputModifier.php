@@ -43,7 +43,7 @@ class CustomInputModifier {
 				'PZ',
 			])->setRequired();
 		} elseif ($input instanceof BaseControl && $input->getName() === 'boarding') {
-			// Do not allow ordering half board when not using accomodation.
+			// Do not allow ordering half board when not using accommodation.
 			/** @var BaseControl */
 			$accommodation = $container->getComponent('accommodation');
 			$withoutAccomodation = $input->addConditionOn($accommodation, Form::EQUAL, 'none');

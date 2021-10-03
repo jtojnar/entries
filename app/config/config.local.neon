@@ -92,17 +92,17 @@ parameters:
 						both:
 							default: true
 							label:
-								en: 'Saturday & Sunday'
-								cs: 'Sobota i neděle'
+								en: 'Saturday & Sunday (400 CZK per person)'
+								cs: 'Sobota i neděle (400 Kč/os.)'
 						saturday:
 							label:
-								en: 'Saturday only'
-								cs: 'Pouze sobota'
+								en: 'Saturday only (200 CZK per person)'
+								cs: 'Pouze sobota (200 Kč/os.)'
 							fee: -200
 						sunday:
 							label:
-								en: 'Sunday only'
-								cs: 'Pouze neděle'
+								en: 'Sunday only (200 CZK per person)'
+								cs: 'Pouze neděle (200 Kč/os.)'
 							fee: -200
 			person:
 				country:
@@ -113,49 +113,52 @@ parameters:
 					type: sportident
 					fee: 60
 					public: true
+					description:
+						cs: 'Cena 60 Kč/ks'
+						en: '60 CZK per chip'
 				accommodation:
 					type: enum
 					disabled: false
 					label:
-						en: 'Accomodation:'
+						en: 'Accommodation:'
 						cs: 'Ubytování:'
 						# en: 'Accommodation not available:'
 						# cs: 'Kapacita ubytování vyčerpána:'
 					options:
 						Potkavarna:
 							label:
-								en: 'Bed at Potkavarna (350 CZK / night)'
-								cs: 'Postel na Potkávárně (350 Kč / noc)'
+								en: 'Bed at Potkavarna (2 nights 700 CZK per person)'
+								cs: 'Postel na Potkávárně (2 noci 700 Kč / os.)'
 							fee: 700
 						Karlovka:
 							label:
-								en: 'Bed at Karlovka (300 CZK / night)'
-								cs: 'Postel na Potkávárně (300 Kč / noc)'
+								en: 'Bed at Karlovka (2 nights 600 CZK / person)'
+								cs: 'Postel na Karlovce (2 noci 600 Kč / os.)'
 							fee: 600
 						TichaRicka:
 							label:
-								en: 'Bed at Ticha říčka (400 CZK / night)'
-								cs: 'Postel na Tiché říčce (400 Kč / noc)'
+								en: 'Bed at Tichá říčka (2 nights 800 CZK per person)'
+								cs: 'Postel na Tiché říčce (2 noci 800 Kč / os.)'
 							fee: 800
 						Sokolka-friday:
 							label:
-								en: 'Bed at Sokolka Friday to Sunday (200 CZK / night), own sleeping bag required'
-								cs: 'Postel na Sokolce pátek až neděle (200 Kč / noc), vlastní spacák nutný'
+								en: 'Bed at Sokolka Friday to Sunday (2 nights 400 CZK per person), own sleeping bag required'
+								cs: 'Postel na Sokolce pátek až neděle (2 noci 400 Kč / os.), vlastní spacák nutný'
 							fee: 400
 						Sokolka-saturday:
 							label:
-								en: 'Bed at Sokolka Saturday to Sunday (250 CZK / night)own sleeping bag required'
-								cs: 'Postel na Sokolce sobota až neděle (250 Kč / noc), vlastní spacák nutný'
-							fee: 250
+								en: 'Bed at Sokolka Saturday to Sunday (1 night 250 CZK / person), own sleeping bag required'
+								cs: 'Postel na Sokolce sobota až neděle (1 noc 250 Kč / os.), vlastní spacák nutný'
+							fee: 250	
 						Tent-friday:
 							label:
-								en: 'Tent or teepee at Potkávárna Friday to Sunday (100 CZK / night)'
-								cs: 'Nocleh ve stanu nebo teepee na Potkávárně pátek až neděle (100 Kč / noc)'
+								en: 'Tent or teepee at Potkávárna Friday to Sunday (2 nights 200 CZK / person)'
+								cs: 'Nocleh ve stanu nebo teepee na Potkávárně pátek až neděle (2 noci 200 Kč / os.)'
 							fee: 200
 						Tent-saturday:
 							label:
-								en: 'Tent or teepee at Potkávárna Saturday to Sunday (100 CZK / night)'
-								cs: 'Nocleh ve stanu nebo teepee na Potkávárně sobota až neděle (100 Kč / noc)'
+								en: 'Tent or teepee at Potkávárna Saturday to Sunday (1 night 100 CZK / person)'
+								cs: 'Nocleh ve stanu nebo teepee na Potkávárně sobota až neděle (1 noc 100 Kč / os.)'
 							fee: 100
 						none:
 							default: true
@@ -180,13 +183,13 @@ parameters:
 							fee: 250
 						sat_meal:
 							label:
-								en: 'Saturday meal during the day at Potkávárna (115 CZK)'
-								cs: 'Sobotní jídlo během dne na Potkávárně (115 Kč)'
+								en: 'Saturday after race meal at Potkávárna (115 CZK)'
+								cs: 'Sobotní pozávodní jídlo na Potkávárně (115 Kč)'
 							fee: 115
 						sun_meal:
 							label:
-								en: 'Sunday meal during the day at Potkávárna (115 CZK)'
-								cs: 'Nedělní jídlo během dne na Potkávárně (115 Kč)'
+								en: 'Sunday after race meal at Potkávárna (115 CZK)'
+								cs: 'Nedělní pozávodní jídlo na Potkávárně (115 Kč)'
 							fee: 115
 				registry_address:
 					type: text
@@ -195,4 +198,4 @@ parameters:
 						en: 'Address:'
 					description:
 						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
-						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
+						en: 'Please type any letter, the address is required from the Czech participants only'
