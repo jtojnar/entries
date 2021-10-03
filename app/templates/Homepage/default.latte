@@ -10,8 +10,8 @@
 {if $user->isLoggedIn()}
 {if $status === 'registered'}
 <li n:if="$registrationOpen"><a n:href="Team:edit">{_messages.home.edit}</a></li>
-<li n:if="$invoice !== null"><a n:href="Invoice:show $invoice->id">{_messages.home.invoice}</a></li>
 {/if}
+<li n:if="$invoice !== null"><a n:href="Invoice:show $invoice->id">{_messages.home.invoice}</a></li>
 <li><a n:href="Sign:out">{_messages.home.sign_out}</a></li>
 {else}
 <li><a n:href="Sign:in">{_messages.home.sign_in}</a></li>
