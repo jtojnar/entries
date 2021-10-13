@@ -132,8 +132,8 @@ parameters:
 							fee: 700
 						Karlovka:
 							label:
-								en: 'Bed at Karlovka (2 nights 600 CZK / person)'
-								cs: 'Postel na Karlovce (2 noci 600 Kč / os.)'
+								en: 'Bed at Karlovka (no vacancies)'
+								cs: 'Postel na Karlovce (všechna lůžka obsazena)'
 							fee: 600
 						TichaRicka:
 							label:

@@ -46,6 +46,7 @@ class CustomInputModifier {
 			// Disables listed option of accommodation.
 			$disabledOptions = [
 				'Potkavarna',
+				'Karlovka',
 			];
 			$input->form->onRender[] =function($form) use ($input, $disabledOptions) {
 				// Needs to be disabled just before the form rendering, since we only supply
