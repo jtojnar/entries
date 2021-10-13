@@ -92,17 +92,17 @@ parameters:
 						both:
 							default: true
 							label:
-								en: 'Saturday & Sunday (400 CZK per person)'
-								cs: 'Sobota i neděle (400 Kč/os.)'
+								en: 'Saturday & Sunday (400 CZK per team)'
+								cs: 'Sobota i neděle (400 Kč/tým)'
 						saturday:
 							label:
-								en: 'Saturday only (200 CZK per person)'
-								cs: 'Pouze sobota (200 Kč/os.)'
+								en: 'Saturday only (200 CZK per team)'
+								cs: 'Pouze sobota (200 Kč/tým)'
 							fee: -200
 						sunday:
 							label:
-								en: 'Sunday only (200 CZK per person)'
-								cs: 'Pouze neděle (200 Kč/os.)'
+								en: 'Sunday only (200 CZK per team)'
+								cs: 'Pouze neděle (200 Kč/tým)'
 							fee: -200
 			person:
 				country:
@@ -174,12 +174,12 @@ parameters:
 						sat_half-board:
 							label:
 								en: 'Friday Supper (2 courses) + Saturday breakfast (250 CZK). Available only if you stay at one of the cottages.'
-								cs: 'Páteční večeře (2 chody) + sobotní snídaně (250 Kč). Pouze pro ubytované na některě z chalup.'
+								cs: 'Páteční večeře (2 chody) + sobotní snídaně (250 Kč). Pouze pro ubytované na některé z chalup.'
 							fee: 250
 						sun_half-board:
 							label:
 								en: 'Saturday Supper (2 courses) + Sunday breakfast (250 CZK). Available only if you stay at one of the cottages.'
-								cs: 'Sobotní večeře (2 chody) + nedělní snídaně (250 Kč). Pouze pro ubytované na některě z chalup.'
+								cs: 'Sobotní večeře (2 chody) + nedělní snídaně (250 Kč). Pouze pro ubytované na některé z chalup.'
 							fee: 250
 						sat_meal:
 							label:
