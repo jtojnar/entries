@@ -142,7 +142,7 @@ final class CategoryData {
 						} elseif (isset($this->parameters['fees']) && isset($this->parameters['fees']['person'])) {
 							$fee = $this->parameters['fees']['person'];
 						} else {
-							throw new \Exception("No fee set for category “${category}”");
+							throw new \Exception("No fee set for category “${categoryKey}”");
 						}
 
 						$categoryValue = [
@@ -195,7 +195,7 @@ final class CategoryData {
 					} elseif (isset($this->parameters['fees']) && isset($this->parameters['fees']['person'])) {
 						$fee = $this->parameters['fees']['person'];
 					} else {
-						throw new \Exception("No fee set for category “${category}”");
+						throw new \Exception("No fee set for category “${categoryKey}”");
 					}
 
 					return [

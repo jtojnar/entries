@@ -8,6 +8,7 @@ use App\Components\CategoryEntry;
 use App\Components\TeamForm;
 use App\Model\CategoryData;
 use Contributte\Translation\Wrappers\Message;
+use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
@@ -68,7 +69,7 @@ final class TeamFormFactory {
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
 			$category = $entry->getValue();
 			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
-			/** @var \Kdyby\Replicator\Container */
+			/** @var ReplicatorContainer */
 			$replicator = $entry->form['persons'];
 
 			return iterator_count($replicator->getContainers()) <= $maxMembers;
@@ -78,7 +79,7 @@ final class TeamFormFactory {
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
 			$category = $entry->getValue();
 			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
-			/** @var \Kdyby\Replicator\Container */
+			/** @var ReplicatorContainer */
 			$replicator = $entry->form['persons'];
 
 			return iterator_count($replicator->getContainers()) >= $minMembers;
@@ -94,7 +95,7 @@ final class TeamFormFactory {
 		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
 			$category = $button->form->getUnsafeValues(null)['category'];
 			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
-			/** @var \Kdyby\Replicator\Container */
+			/** @var ReplicatorContainer */
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) < $maxMembers) {
 				$replicator->createOne();
@@ -105,7 +106,7 @@ final class TeamFormFactory {
 		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
 			$category = $button->form->getUnsafeValues(null)['category'];
 			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
-			/** @var \Kdyby\Replicator\Container */
+			/** @var ReplicatorContainer */
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) > $minMembers) {
 				$lastPerson = last($replicator->getContainers());

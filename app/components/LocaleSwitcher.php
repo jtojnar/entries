@@ -13,9 +13,6 @@ class LocaleSwitcher extends Control {
 	/** @var string[] */
 	private $locales;
 
-	/** @var ?string[] */
-	private $allowedLocales;
-
 	public function __construct(array $locales, ?array $allowedLocales) {
 		if ($allowedLocales === null) {
 			$this->locales = $locales;
