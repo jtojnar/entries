@@ -16,7 +16,7 @@
 		"parcel": "^2.0.0"
 	},
 	"scripts": {
-		"dev": "parcel watch www/assets/style.scss www/assets/index.js --dist-dir www/dist/ --public-url ./",
-		"build": "parcel build www/assets/style.scss www/assets/index.js --dist-dir www/dist/ --public-url ./"
+		"build": "parcel build www/assets/style.scss www/assets/index.js --dist-dir www/dist/ --public-url ./",
+		"dev": "parcel watch www/assets/style.scss www/assets/index.js --dist-dir www/dist/ --public-url ./"
 	}
 }
