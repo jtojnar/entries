@@ -1,6 +1,3 @@
-// Assets
-import './css/style.scss';
-
 // Application
 import netteForms from 'nette-forms';
 import * as changeFormSubmit from './js/change-form-submit';

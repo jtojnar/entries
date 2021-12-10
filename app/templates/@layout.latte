@@ -6,7 +6,7 @@
 
 	<title>{$siteTitle|striptags|trim}{ifset #title} – {include title|striptags}{/ifset}</title>
 
-	<link rel="stylesheet" href="{$basePath}/dist/main.css">
+	<link rel="stylesheet" href="{$basePath}/dist/style.css">
 	{block head}{/block}
 </head>
 
@@ -25,6 +25,6 @@
 		{include content}
 	</div>
 
-	<script src="{$basePath}/dist/main.js"></script>
+	<script src="{$basePath}/dist/index.js"></script>
 </body>
 </html>
