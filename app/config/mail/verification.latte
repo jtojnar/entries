@@ -1,0 +1,16 @@
+{layout 'verification.@layout.latte'}
+
+{block body}
+{block greeting}
+<p>Hello {$name}.</p>
+{/block}
+
+<p>Thank you for your registration.</p>
+
+<p>Your registration ID is {$id}. Please keep it handy – it will serve to identify your team during the processing of the entry and in the event of any further correspondence.</p>
+
+<p>You can consult the <a n:href="//Team:list">list of entrants</a> on the website to check the status of your entry. Until confirmed, you can change your entry using the password provided below.</p>
+
+<p>Your entry will be treated in accordance with the Selection criteria. You may be waitlisted while the pre-qualifying entrants are processed or we will send you an invitation e-mail containing payment instruction. Then you will have 3 weeks to confirm your entry by paying the registration fee.</p>
+<p>If you have any queries about your entry please e-mail <a href="mailto:{$organiserMail}">{$organiserMail}</a></p>
+{/block}

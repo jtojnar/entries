@@ -1,0 +1,17 @@
+{layout 'verification.@layout.latte'}
+
+{block body}
+{block greeting}
+<p>Vážený závodníku,</p>
+{/block}
+
+<p>děkujeme za přihlášení.</p>
+
+<p>Registrační ID Vašeho týmu je {$id}. Prosím, uschovejte si je, poslouží k identifikaci vašeho týmu při případné editaci vaší přihlášky a při komunikaci s pořadateli závodu.</p>
+
+<p>Prosíme, abyste si v <a href="{link //Team:list}">seznamu přihlášek</a> zkontrolovali správnost registračních údajů. Svou přihlášku můžete editovat pomocí ID a hesla, které naleznete níže.</p>
+
+<p>Vaše přihláška bude nyní posouzena podle předkvalifikačních kritérií. Buď budete zařazeni na waitlist, nebo od nás dostanete instrukce k zaplacení startovného ve lhůtě tří týdnů.  Po jeho uhrazení bude vaše přihláška přijata.</p>
+
+<p>V případě jakýchkoli problémů s přihláškou pište na e-mail: <a href="mailto:{$organiserMail}">{$organiserMail}</a>.</p>
+{/block}
