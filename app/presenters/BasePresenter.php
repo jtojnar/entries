@@ -33,6 +33,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 		}
 
 		$this->template->siteTitle = $this->parameters->getSiteTitle($this->locale) ?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
+		$this->template->locale = $this->locale;
 
 		if ($this->template->siteTitle === null) {
 			throw new Nette\InvalidStateException('Missing siteTitle argument');
