@@ -55,6 +55,7 @@ const enLang = {
 			<p>Past WRC champions pre-qualified via criteria 1.1, please name the at least one 24-hour rogaine you participated in the past two years into the message field.</p>
 		</Fragment>
 	),
+	customHint: 'Please specify the event, category and place.',
 	selectCriterionStarred: 'This is me and I have competed in at least one 24-hour rogaine in the two years',
 };
 const csLang = enLang;
@@ -424,10 +425,13 @@ function QualificationChooser({
 	} else if (widgetState === WidgetState.CUSTOM) {
 		console.assert(typeof selectedReason === 'string');
 		body = (
-			<CustomSelectedReason
-				selectedReason={selectedReason}
-				setSelectedReason={setSelectedReason}
-			/>
+			<Fragment>
+				<CustomSelectedReason
+					selectedReason={selectedReason}
+					setSelectedReason={setSelectedReason}
+				/>
+				<p className="form-text text-muted">{lang.customHint}</p>
+			</Fragment>
 		);
 	} else if (widgetState === WidgetState.SELECTED) {
 		console.assert(typeof selectedReason === 'object');
