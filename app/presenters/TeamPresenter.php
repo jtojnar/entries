@@ -14,6 +14,7 @@ use Latte;
 use Money\Currency;
 use Money\Money;
 use Nette;
+use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Mail\Message;
 use Nette\Utils\DateTime;
