@@ -56,7 +56,7 @@ const enLang = {
 		</Fragment>
 	),
 	customHint: 'Please specify the event, category and place.',
-	selectCriterionStarred: 'This is me and I have competed in at least one 24-hour rogaine in the two years',
+	selectCriterionStarred: 'This is me and I have competed in at least one 24-hour rogaine in the last two years',
 };
 const csLang = enLang;
 
