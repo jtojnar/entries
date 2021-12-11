@@ -25,7 +25,6 @@ application:
 
 session:
 	autoStart: yes
-	save_path: "%tempDir%/sessions"
 	expiration: 31 days
 
 forms:
