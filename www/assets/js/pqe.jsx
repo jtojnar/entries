@@ -2,7 +2,7 @@ import Enum from 'es6-enum';
 import { distance } from 'fastest-levenshtein';
 import { faSpinner as fasSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { prop, sortBy } from 'ramda';
+import { prop, sortBy, toLower } from 'ramda';
 import { useCallback, useEffect, useRef, useState, Fragment } from 'react';
 import { render } from 'react-dom';
 
@@ -283,7 +283,7 @@ function QualificationChooser({
 
 				for (let [country, persons] of data) {
 					for (let person of persons) {
-						if (distance(`${person.lastname} ${person.firstname}`, `${lastname} ${firstname}`) <= 5 || distance(`${person.firstname} ${person.lastname}`, `${lastname} ${firstname}`) <= 5) {
+						if (distance(toLower(`${person.lastname} ${person.firstname}`), toLower(`${lastname} ${firstname}`)) <= 5 || distance(toLower(`${person.firstname} ${person.lastname}`), toLower(`${lastname} ${firstname}`)) <= 5) {
 							matches.push(person);
 						}
 					}
