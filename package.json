@@ -13,11 +13,12 @@
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "^2.0.1",
-		"parcel": "^2.0.0"
+		"parcel": "^2.0.0",
+		"parcel-reporter-bundle-manifest": "^1.0.0"
 	},
 	"scripts": {
-		"build": "parcel build www/assets/style.scss www/assets/index.js --dist-dir www/dist/ --public-url ./",
-		"dev": "parcel watch www/assets/style.scss www/assets/index.js --dist-dir www/dist/ --public-url ./",
+		"build": "parcel build www/assets/index.html --dist-dir www/dist/ --public-url ./",
+		"dev": "parcel watch www/assets/index.html --dist-dir www/dist/ --public-url ./",
 		"dist": "python3 .github/workflows/create-zipball.py"
 	}
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b998bdfe482f9e3003ca3abef402749",
+    "content-hash": "4af3ca12366611615e64341b8f02c476",
     "packages": [
         {
             "name": "contributte/mail",
@@ -3093,6 +3093,60 @@
                 "source": "https://github.com/nette/tracy/tree/v2.8.9"
             },
             "time": "2021-11-24T16:04:35+00:00"
+        },
+        {
+            "name": "webrouse/n-asset-macro",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webrouse/n-asset-macro.git",
+                "reference": "d6fb24f1600974039b733262cbe943557087042e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webrouse/n-asset-macro/zipball/d6fb24f1600974039b733262cbe943557087042e",
+                "reference": "d6fb24f1600974039b733262cbe943557087042e",
+                "shasum": ""
+            },
+            "require": {
+                "latte/latte": ">=2.4",
+                "nette/di": ">=2.4",
+                "nette/utils": ">=2.4",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.2.0",
+                "nette/application": ">=2.4",
+                "nette/caching": ">=2.5",
+                "nette/coding-standard": ">=2.0",
+                "nette/http": ">=2.4",
+                "nette/tester": ">=2.0",
+                "nette/utils": "3.0.x-dev as 2.5.x-dev",
+                "phpstan/phpstan-nette": ">=0.9",
+                "tracy/tracy": ">=2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Webrouse": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michal Jurečko",
+                    "email": "michal.jurecko@gmail.com"
+                }
+            ],
+            "description": "Asset macro for Latte and Nette Framework useful for assets cache busting (with gulp, webpack, etc.)",
+            "support": {
+                "issues": "https://github.com/webrouse/n-asset-macro/issues",
+                "source": "https://github.com/webrouse/n-asset-macro/tree/v2.0.2"
+            },
+            "time": "2019-01-16T11:45:01+00:00"
         }
     ],
     "packages-dev": [

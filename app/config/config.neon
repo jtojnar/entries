@@ -35,6 +35,7 @@ forms:
 		EMAIL: messages.general.error.not_email
 
 extensions:
+	assetMacro: Webrouse\AssetMacro\DI\Extension
 	translation: Contributte\Translation\DI\TranslationExtension
 	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
 	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
@@ -71,3 +72,8 @@ translation:
 		default: cs
 	dirs:
 		- %appDir%/lang
+
+assetMacro:
+	manifest: %wwwDir%/dist/parcel-manifest.json
+	assetsPath: %wwwDir%/dist/
+	publicPath: /dist/
