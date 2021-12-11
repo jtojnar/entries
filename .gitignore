@@ -6,3 +6,4 @@
 app/config/private.neon
 
 .php-cs-fixer.cache
+.parcel-cache/
