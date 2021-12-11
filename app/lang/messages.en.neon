@@ -87,6 +87,8 @@ team.person.si.warning.low-capacity-si5: "Your SI5 card has low capacity. Consid
 team.person.si.warning.low-capacity-si6: "Your SI6 card has low capacity. Consider renting SI10 card from organizers, otherwise only first 64 check points will be recognized."
 team.person.si.warning.low-capacity-si8: "Your SI8 card has low capacity. Consider renting SI10 card from organizers, otherwise only first 30 check points will be recognized."
 team.person.si.warning.low-capacity-si9: "Your SI9 card has low capacity. Consider renting SI10 card from organizers, otherwise only first 50 check points will be recognized."
+team.person.pqe.label: "Qualified via criteria:"
+team.person.pqe.error.not_filled: "Pre-qualification status is required."
 team.list.stats: "Stats"
 team.list.status: "Status"
 billing.invoice.subtotal: "Subtotal"

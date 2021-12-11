@@ -64,6 +64,8 @@ class TeamForm extends UI\Form {
 					$label = 'messages.team.phone.label';
 				} elseif ($field['type'] === 'sportident') {
 					$label = 'messages.team.person.si.label';
+				} elseif ($field['type'] === 'pqe') {
+					$label = 'messages.team.person.pqe.label';
 				} else {
 					$label = $name . ':';
 				}
@@ -92,6 +94,9 @@ class TeamForm extends UI\Form {
 
 					$input = $container->addCheckBoxList($name, $label, $items);
 					$input->setDefaultValue($this->getDefaultFieldValue($field));
+				} elseif ($field['type'] === 'pqe') {
+					$input = $container->addText($name, $label)->setRequired('messages.team.person.pqe.error.not_filled');
+					$input->getControlPrototype()->appendAttribute('class', 'pqe-entry-field');
 				} else {
 					$input = $container->addText($name, $label)->setRequired();
 				}

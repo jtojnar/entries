@@ -87,6 +87,8 @@ team.person.si.warning.low-capacity-si5: "Váš SI5 čip má malou kapacitu. Zva
 team.person.si.warning.low-capacity-si6: "Váš SI6 čip má malou kapacitu. Zvažte zapůjčení SI10 čipu od pořadatele, jinak vám uznáme pouze prvních 64 naražených kontrol."
 team.person.si.warning.low-capacity-si8: "Váš SI8 čip má malou kapacitu. Zvažte zapůjčení SI10 čipu od pořadatele, jinak vám uznáme pouze prvních 30 naražených kontrol."
 team.person.si.warning.low-capacity-si9: "Váš SI9 čip má malou kapacitu. Zvažte zapůjčení SI10 čipu od pořadatele, jinak vám uznáme pouze prvních 50 naražených kontrol."
+team.person.pqe.label: "Kvalifikační kritéria:"
+team.person.pqe.error.not_filled: "Informace o předkvalifikaci je povinná."
 team.list.stats: "Statistiky"
 team.list.status: "Stav"
 billing.invoice.subtotal: "Mezisoučet"
