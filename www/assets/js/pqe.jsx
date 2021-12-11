@@ -40,25 +40,43 @@ const ageclass = {
 	'ultraveteran': 'UV'
 };
 
+const csLang = {
+	noMatches: 'Jméno nenalezeno. Prosím zkontrolujte případné překlepy nebo manuálně prohledejte databázi předkvalifikovaných závodníků.',
+	searchCriteria: 'Prohledat databázi předkvalifikovaných závodníků',
+	searchCriteriaAgain: 'Znovu prohledat databázi předkvalifikovaných závodníků',
+	browseDatabase: 'Přehled po zemích',
+	selectNotQualified: 'Nekvalifikoval jsem se',
+	errorLoadingData: 'Chyba při načítání dat, opakujte akci.',
+	selectCriterion: 'To jsem já',
+	notQualified: 'Nekvalifikoval jsem se podle žádného z kritérií.',
+	placeholder: (
+		<Fragment>
+			<p>Mezinárodní Rogainingová Federace vytvořila <a href="https://wrc2022.rogaining.cz/files/Entry_Criteria_WRC_2022.pdf">výběrová kritéria</a> pro MS 2022. Pokud tento člen týmu splňuje tato kritéria pro prioritní přijetí přihlášky, může tuto skutečnost deklarovat zde.</p>
+			<p>Vítězové minulých světových šampionátů (předkvalifikace podle kritéria 1.2), prosím uveďte do pole „zpráva pro pořadatele“ min. jeden 24-hodinový rogaining, kterého jste se zúčastnili během minulých dvou let.</p>
+		</Fragment>
+	),
+	customHint: 'Prosím specifikujte závod, kategorii a umístění.',
+	selectCriterionStarred: 'To jsem já, absolvoval jsem min. jeden 24h rogaining během minulých 2 let',
+};
+
 const enLang = {
 	noMatches: 'No matches found. Please double check your name or select your qualification manually.',
 	searchCriteria: 'Search database of pre-qualified rogainers',
 	searchCriteriaAgain: 'Search database of pre-qualified rogainers again',
 	browseDatabase: 'Look up by country',
-	selectNotQualified: 'I do not qualify',
-	errorLoadingData: 'Error loading qualification data.',
+	selectNotQualified: 'I haven’t  qualified',
+	errorLoadingData: 'Error loading qualification data, please try again.',
 	selectCriterion: 'This is me',
 	notQualified: 'I do not qualify under any of the criteria.',
 	placeholder: (
 		<Fragment>
-			<p>The International Rogaining Federation has estabilished <a href="https://wrc2022.rogaining.cz/files/Entry_Criteria_WRC_2022.pdf">selection criteria</a> for the WRC 2022. If this member meets a criterion for priority entry, please declare the eligibility here.</p>
-			<p>Past WRC champions pre-qualified via criteria 1.1, please name the at least one 24-hour rogaine you participated in the past two years into the message field.</p>
+			<p>The International Rogaining Federation has estabilished <a href="https://wrc2022.rogaining.cz/files/Entry_Criteria_WRC_2022.pdf">selection criteria</a> for the WRC 2022. If this member meets a criterion for priority entry, please declare the eligibility here.</p>
+			<p>Past WRC champions pre-qualified via criteria 1.2, please specify at least one 24-hour rogaine you participated in the past two years into the “message for organizer” field.</p>
 		</Fragment>
 	),
-	customHint: 'Please specify the event, category and place.',
+	customHint: 'Please specify the event, category and placing.',
 	selectCriterionStarred: 'This is me and I have competed in at least one 24-hour rogaine in the last two years',
 };
-const csLang = enLang;
 
 const lang = document.documentElement.lang === 'cs' ? csLang : enLang;
 
