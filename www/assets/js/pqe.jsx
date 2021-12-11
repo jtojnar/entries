@@ -202,7 +202,7 @@ function CustomSelectedReason({
 	selectedReason,
 	setSelectedReason,
 }) {
-	const customCriteriaRef = useRef()
+	const customCriteriaRef = useRef();
 	const customCriteriaBlur = useCallback(
 		() => {
 			if (customCriteriaRef.current) {
@@ -213,7 +213,7 @@ function CustomSelectedReason({
 	);
 
 	return (
-		<input type="text" initialValue={selectedReason} ref={customCriteriaRef} onBlur={setSelectedReason} />
+		<input type="text" defaultValue={selectedReason} ref={customCriteriaRef} onBlur={customCriteriaBlur} />
 	);
 }
 
