@@ -130,8 +130,10 @@ final class TeamFormFactory {
 			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
 			$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
 
-			$container['birth'] = (new DateControl('messages.team.person.birth.label'))->setRequired();
-			$container['birth']->addRule($form::MAX, 'messages.team.person.birth.error.born_too_late', $this->parameters['eventDate']);
+			$birth = new DateControl('messages.team.person.birth.label');
+			$birth->setRequired();
+			$birth->addRule($form::MAX, 'messages.team.person.birth.error.born_too_late', $this->parameters['eventDate']);
+			$container['birth'] = $birth;
 
 			$form->addCustomFields($fields, $container);
 
