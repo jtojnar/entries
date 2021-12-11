@@ -5,9 +5,11 @@ import * as form from './js/form';
 import * as formWarnings from './js/form-warnings';
 import * as icons from './js/icons';
 import * as list from './js/list';
+import * as nextrasForms from './js/nextras-forms';
 import * as noscript from './js/noscript';
 
 netteForms.initOnLoad();
+nextrasForms.register(netteForms);
 changeFormSubmit.register();
 form.register();
 formWarnings.register();
