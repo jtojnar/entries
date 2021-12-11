@@ -36,8 +36,12 @@ class HomepagePresenter extends BasePresenter {
 			$template->status = $identity->status ?? null;
 
 			if (!$this->user->isInRole('admin')) {
-				$team = $this->teams->getByIdChecked($identity->getId());
-				$template->invoice = $team->lastInvoice;
+				$team = $this->teams->getById($identity->getId());
+				if ($team === null) {
+					$this->user->logout(true);
+				} else {
+					$template->invoice = $team->lastInvoice;
+				}
 			}
 		}
 

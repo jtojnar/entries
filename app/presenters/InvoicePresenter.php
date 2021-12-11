@@ -22,6 +22,10 @@ class InvoicePresenter extends BasePresenter {
 	public $invoices;
 
 	public function renderShow(int $id): void {
+		if (!$this->user->isLoggedIn()) {
+			throw new ForbiddenRequestException();
+		}
+
 		/** @var Nette\Security\SimpleIdentity $identity */
 		$identity = $this->user->identity;
 

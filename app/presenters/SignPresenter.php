@@ -68,7 +68,7 @@ class SignPresenter extends BasePresenter {
 	}
 
 	public function actionOut(): void {
-		$this->user->logout();
+		$this->user->logout(true);
 		$this->flashMessage($this->translator->translate('messages.sign.out.notice'));
 		$this->redirect('in');
 	}

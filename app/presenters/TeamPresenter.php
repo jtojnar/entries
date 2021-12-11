@@ -279,8 +279,13 @@ class TeamPresenter extends BasePresenter {
 		$this->cleanNonApplicableFields($form);
 
 		if ($this->action === 'edit') {
+			if (!$this->user->isLoggedIn()) {
+				throw new ForbiddenRequestException();
+			}
+
 			$id = (int) $this->getParameter('id');
 			$team = $this->teams->getById($id);
+
 			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
