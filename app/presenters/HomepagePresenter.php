@@ -59,6 +59,12 @@ class HomepagePresenter extends BasePresenter {
 		$clearCache = Closure::fromCallable([$this, 'clearCache']);
 		$clearCacheButton->onClick[] = $clearCache;
 
+		$updatePqeButton = $form->addSubmit('updatePqe', 'messages.maintenance.update_pqe');
+		$updatePqeButton->controlPrototype->removeClass('btn-primary')->addClass('btn-warning');
+		/** @var callable(SubmitButton): void */
+		$updatePqe = Closure::fromCallable([$this, 'updatePqe']);
+		$updatePqeButton->onClick[] = $updatePqe;
+
 		return $form;
 	}
 
@@ -77,6 +83,24 @@ class HomepagePresenter extends BasePresenter {
 		}
 
 		$this->flashMessage($this->translator->translate('messages.maintenance.cache_cleared'));
+		$this->redirect('Homepage:');
+	}
+
+	private function updatePqe(SubmitButton $form): void {
+		if (!$this->user->isInRole('admin')) {
+			throw new ForbiddenRequestException();
+		}
+
+		$context = stream_context_create([
+			'http' => [
+				'method' => 'GET',
+				'header' => "Accept: application/json\r\n",
+			],
+		]);
+		$data = file_get_contents('https://pqe.rogaining.org/qualified', false, $context);
+		file_put_contents(__DIR__ . '/../../www/pqe.json', $data);
+
+		$this->flashMessage($this->translator->translate('messages.maintenance.pqe_updated'));
 		$this->redirect('Homepage:');
 	}
 

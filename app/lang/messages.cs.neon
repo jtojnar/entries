@@ -138,3 +138,5 @@ email.verification.archivation_request: "Prosím, uschovejte tento mail pro př�
 maintenance.title: "Správa"
 maintenance.clear_cache: "Vymazat cache"
 maintenance.cache_cleared: "Cache byla úspěšně smazána."
+maintenance.update_pqe: "Aktualizovat data z PQE"
+maintenance.pqe_updated: "Data z PQE byla úspěšně aktualizována."

@@ -138,3 +138,5 @@ email.verification.archivation_request: "Please archive this message for future 
 maintenance.title: "Maintenance"
 maintenance.clear_cache: "Clear cache"
 maintenance.cache_cleared: "Cache has been cleared successfully."
+maintenance.update_pqe: "Update PQE data"
+maintenance.pqe_updated: "PQE data has been updated successfully."
