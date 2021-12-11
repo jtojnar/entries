@@ -384,20 +384,20 @@ function QualificationChooser({
 	} else if (widgetState === WidgetState.MATCHES) {
 		if (pqeDataState === LoadingState.SUCCESS) {
 			console.assert(personMatches !== null);
+			buttons.push(
+				<button
+					key="browseDatabase"
+					type="button"
+					className="btn btn-secondary m-1"
+					disabled={pqeDataState === LoadingState.LOADING}
+					onClick={browseDatabaseClicked}
+				>
+					{lang.browseDatabase}
+				</button>
+			);
 			if (personMatches.length === 0) {
 				body = (
 					<p>{lang.noMatches}</p>
-				);
-				buttons.push(
-					<button
-						key="browseDatabase"
-						type="button"
-						className="btn btn-secondary m-1"
-						disabled={pqeDataState === LoadingState.LOADING}
-						onClick={browseDatabaseClicked}
-					>
-						{lang.browseDatabase}
-					</button>
 				);
 			} else {
 				body = (
