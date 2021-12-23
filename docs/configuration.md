@@ -141,21 +141,34 @@ parameters:
 
 ###### Category constraints
 
-Each constraint is a simple expression consisting of either a predicate
+The constrains form a list representing a conjunction of individual constraint expressions. The syntax of a constraint expression is described by the following [EBNF grammar](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form):
 
-- `age`, followed by one of the comparison operators `<`, `<=`, `=`, `>=`, `>` and then a number
-- `gender` followed by `=` and then either `male` or `female`
+```ebnf
+expression ::= quantified_expression | aggregate_expression
+quantified_expression ::= "some(" predicate ")" | "all(" predicate ")"
+predicate ::= numeric_variable comparison_operator number | "gender" "=" sex
+sex ::= "male" | "female"
+numeric_variable ::= "age"
+comparison_operator ::= "<" | "<=" | "=" | ">=" | ">"
+aggregate_expression ::= aggregate_function "(" numeric_variable ")" comparison_operator number
+aggregate_function ::= "sum" | "min" | "max"
+```
 
-quantified by either `some` or `all`, or one of aggregate function `sum`, `min`, `max` applied to `age` and followed by a comparison operator and then a number.
+Or, to put it simply, each constraint expression can be:
 
-The constrains are laid down in a list and all the constraints need to be satisfied.
+- one of the following predicates quantified by either `some` or `all`:
+	- `age`, followed by one of the comparison operators `<`, `<=`, `=`, `>=`, `>` and then a number
+	- `gender` followed by `=` and then either `male` or `female`
+- one of the aggregate functions `sum`, `min`, `max`, applied to `age` and followed by a comparison operator and then a number
+
+`some` quantifier requires at least one member of the team satisfies given predicate, `all` requires that all members of the team do. `age` refers to the number of years since a team member’s birth at the first day of the event **rounded down**. Notably, that means that `age>65` will only match people who are at least 66.
 
 ```neon
 constraints:
 	- 'some(gender=male)'
 	- 'some(gender=female)'
 	- 'all(age<20)'
-	- 'sum(age)>40'
+	- 'sum(age)>=40'
 ```
 
 If the constraints are an empty set, the `constraints` key can be omitted.
