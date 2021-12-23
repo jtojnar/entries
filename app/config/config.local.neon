@@ -35,7 +35,7 @@ parameters:
 					- 'all(gender=male)'
 			WO:
 				constraints:
-					- 'all(gender=male)'
+					- 'all(gender=female)'
 			XO:
 				constraints:
 					- 'some(gender=male)'
@@ -43,42 +43,42 @@ parameters:
 			MV:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
 			WV:
 				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
+					- 'all(gender=female)'
+					- 'all(age>=40)'
 			XV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
 			MSV:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>55)'
+					- 'all(age>=55)'
 			WSV:
 				constraints:
-					- 'all(gender=male)'
-					- 'all(age>55)'
+					- 'all(gender=female)'
+					- 'all(age>=55)'
 			XSV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>55)'
+					- 'all(age>=55)'
 			MUV:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>65)'
+					- 'all(age>=65)'
 			WUV:
 				constraints:
-					- 'all(gender=male)'
-					- 'all(age>65)'
+					- 'all(gender=female)'
+					- 'all(age>=65)'
 			XUV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>65)'
+					- 'all(age>=65)'
 		fields:
 			person:
 				country:
