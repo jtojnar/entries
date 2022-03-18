@@ -1,4 +1,5 @@
 import Enum from 'es6-enum';
+import path from 'path';
 import { distance } from 'fastest-levenshtein';
 import { faSpinner as fasSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -88,7 +89,7 @@ function fetchCriteria() {
 		return Promise.resolve(criteriaData);
 	} else {
 		return (
-			fetch('../../pqe.json')
+			fetch(path.join(document.body.getAttribute('data-basePath'), 'pqe.json'))
 			.then((data) => data.json())
 			.then((data) => {
 				for (let [country, persons] of Object.entries(data.qualified.auto)) {
