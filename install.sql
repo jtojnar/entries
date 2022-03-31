@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `country`;
 CREATE TABLE `country` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
   `aliases` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
   `europe` int(1) NOT NULL,
   PRIMARY KEY (`id`)
@@ -208,7 +208,8 @@ INSERT INTO `country` (`id`, `name`, `code`, `aliases`, `europe`) VALUES
 (190,	'Vietnam',	'vn',	'',	0),
 (191,	'Yemen',	'ye',	'',	0),
 (192,	'Zambia',	'zm',	'',	0),
-(193,	'Zimbabwe',	'zw',	'',	0);
+(193,	'Zimbabwe',	'zw',	'',	0),
+(194,	'Catalonia',	'es-ct',	'',	1);
 
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
