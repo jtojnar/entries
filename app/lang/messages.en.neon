@@ -14,16 +14,20 @@ team.list.info.timezone: "All time data are in Greenwich Mean Time."
 billing.invoice.amountDue: "Amount Due"
 billing.invoice.amountPaid: "Amount Paid"
 billing.invoice.balanceDue: "Balance Due"
+formats.datetime: "%-d. %-m. %Y %H:%M"
+formats.datetime_multiline: "%-d. %-m. %Y<br>%H:%M"
 team.list.category: "Category"
 team.list.filter.category.label: "Category:"
 team.list.filter.submit.label: "Filter"
 team.list.entry.action.confirm: "Confirm payment"
+team.list.action.send_message.label: "Send message"
 team.person.country.label: "Country:"
 country.cze: "Czech Republic"
 team.person.birth.label: "Date of birth:"
 team.person.birth.error.born_too_late: "People born after the event date cannot participate."
 team.person.email.label: "E-Mail:"
 team.list.entry.action.edit: "Edit"
+team.list.entry.action.list_communications: "Communications ({queued, plural, =0 {} other {#/}}{sent})"
 team.action.edit: "Edit"
 home.edit: "Edit entry"
 home.invoice: "Show invoice"
@@ -67,7 +71,54 @@ billing.invoice.unit_price: "Unit Price"
 billing.invoice.total_price: "Total price"
 billing.invoice.fees.person: "Entry fee"
 billing.invoice.fees.si: "SI card loan fee"
+communication.compose.title: "Compose a message"
+communication.compose.recipients.label: "Addressee:"
+communication.compose.recipients.placeholder: "1, 2, 3, 5, 8"
+communication.compose.recipients.error.empty: "Missing addressees."
+communication.compose.subject.label: "Subject:"
+communication.compose.subject.error.empty: "Missing subject."
+communication.compose.body.label: "Body:"
+communication.compose.body.error.empty: "Missing message body."
+communication.compose.enqueue: "Send"
+communication.compose.preview: "Preview"
+communication.compose.enqueue.succeeded: '''
+	Successfully enqueued {count, plural,
+		one {a message}
+		other {messages}
+	} for submission.
+'''
+communication.compose.error.unknown_id: '''
+	{count, plural,
+		one {Unknown team ID: {ids}}
+		other {Unknown team IDs: {ids}}
+	}
+'''
+communication.compose.error.enqueue_failed: '''
+	{count, plural,
+		one {Failed to enqueue a message for submission.}
+		other {Failed to enqueue messages for submission.}
+	}
+'''
+communication.compose.error.preview.template: "Error processing template: {error}"
+communication.list.title: "List of messages sent to team {id}"
+communication.list.id: "#"
+communication.list.subject: "Subject"
+communication.list.date: "Date"
+communication.list.body: "Body"
+communication.list.status: "Status"
+communication.list.actions: "Actions"
+communication.list.entry.status.sent: "Sent"
+communication.list.entry.status.queued: "Queued"
+communication.list.entry.status.cancelled: "Cancelled"
+communication.list.entry.action.view: "View"
+communication.list.empty:  "No messages have been sent to this team."
+communication.view.title: "Message with subject “{title}”"
+communication.view.submitted_on: "Sent on {time} to team {id}."
 team.person.name.last.label: "Last name:"
+communication.send.success: "Successfully sent {count, plural, one {# message} other {# messages}}."
+communication.send.no_messages: "No messages to send."
+communication.send.error.message_collection_failed: "Failed to collect messages to send."
+communication.send.error.submit_failed: "Failed to send messages {count, plural, one {# message} other {# messages}} out of {total}."
 home.list: "List of the registered teams"
 team.list.title: "List of the registered teams"
 home.sign_in: "Sign in"
@@ -150,3 +201,4 @@ maintenance.clear_cache: "Clear cache"
 maintenance.cache_cleared: "Cache has been cleared successfully."
 maintenance.update_pqe: "Update PQE data"
 maintenance.pqe_updated: "PQE data has been updated successfully."
+maintenance.send_outbound_messages: "Send out {count, plural, one {# queued message} other {# queued messages}}"

@@ -254,3 +254,15 @@ CREATE TABLE `invoice` (
   KEY `team_id` (`team_id`),
   CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE `message` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `status` enum('queued','cancelled','sent') NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `team_id` int(11) NOT NULL,
+  `subject` varchar(250) NOT NULL,
+  `body` text NOT NULL,
+  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
+) ENGINE='InnoDB' COLLATE 'utf8mb4_unicode_ci';

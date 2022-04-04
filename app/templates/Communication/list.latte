@@ -1,0 +1,40 @@
+{define title}{_messages.communication.list.title, ['id' => $team->id]}{/define}
+
+{block content}
+{if count($messages)}
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+<tr>
+	<th>{_messages.communication.list.id}</th>
+	<th>{_messages.communication.list.subject}</th>
+	<th>{_messages.communication.list.date}</th>
+	<th>{_messages.communication.list.body}</th>
+	<th>{_messages.communication.list.status}</th>
+	<th>{_messages.communication.list.actions}</th>
+</tr>
+{foreach $messages as $message}
+<tr>
+	<td>{$message->id}</td>
+	<td>{$message->subject}</td>
+	<td>{$message->timestamp|date, ('messages.formats.datetime'|translate)}</td>
+	<td>{$message->body|stripHtml||truncate, 50, '…'}</td>
+	<td>
+		{if $message->status === $message::STATUS_SENT}
+			{_messages.communication.list.entry.status.sent}
+		{elseif $message->status == $message::STATUS_QUEUED}
+			{_messages.communication.list.entry.status.queued}
+		{elseif $message->status == $message::STATUS_CANCELLED}
+			{_messages.communication.list.entry.status.cancelled}
+		{/if}
+	</td>
+	<td>
+		<a n:href="view $message->id">{_messages.communication.list.entry.action.view}</a>
+	</td>
+</tr>
+{/foreach}
+</table>
+
+{else}
+<p>{_messages.communication.list.empty}</p>
+{/if}
+{/block}

@@ -7,6 +7,7 @@ namespace App\Presenters;
 use App;
 use App\Components\LocaleSwitcher;
 use Closure;
+use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
@@ -18,6 +19,9 @@ use Nextras\FormsRendering\Renderers\FormLayout;
  * Presenter for main page.
  */
 class HomepagePresenter extends BasePresenter {
+	/** @var App\Model\MessageRepository @inject */
+	public $messages;
+
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
 
@@ -64,6 +68,27 @@ class HomepagePresenter extends BasePresenter {
 		/** @var callable(SubmitButton): void */
 		$updatePqe = Closure::fromCallable([$this, 'updatePqe']);
 		$updatePqeButton->onClick[] = $updatePqe;
+
+		$queuedMessageCount = $this->messages->findBy([
+			'status' => App\Model\Message::STATUS_QUEUED,
+		])->countStored();
+
+		if ($queuedMessageCount > 0) {
+			$sendMessagesButton = $form->addSubmit(
+				'sendMessages',
+				new NotTranslate(
+					$this->translator->translate(
+						'messages.maintenance.send_outbound_messages',
+						[
+							'count' => $queuedMessageCount,
+						],
+					),
+				),
+			);
+			$sendMessagesButton->onClick[] = function(SubmitButton $btn): void {
+				$this->redirect('Communication:send');
+			};
+		}
 
 		return $form;
 	}
