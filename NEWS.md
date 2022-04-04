@@ -19,7 +19,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 
 ### Other changes
 
-- PHP 7.3 is now the minimum required version.
+- PHP 8.0 is now the minimum required version.
 - Built packages are now hosted on [Cloudsmith](https://cloudsmith.io/~entries-for-rogaining/repos/entries/packages/?q=version%3Alatest).
 - Custom fields will now be hidden by default. You need to add `public: true` to show them in the popovers on the list of teams.
 - Upgraded to Bootstrap 5, for fresh looks.
