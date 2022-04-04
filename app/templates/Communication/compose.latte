@@ -1,0 +1,11 @@
+{define title}{_messages.communication.compose.title}{/define}
+
+{block content}
+{control composeForm}
+
+{ifset $previewMessage}
+<div class="shadow-lg p-3 mb-5 bg-body rounded">
+{$previewMessage|noescape}
+</div>
+{/ifset}
+{/block}

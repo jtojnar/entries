@@ -79,7 +79,7 @@ class TeamPresenter extends BasePresenter {
 		parent::startup();
 	}
 
-	public function renderList(): void {
+	public function actionList(): void {
 		$where = [];
 		$category = $this->request->getQuery('category');
 		if ($category !== null) {
@@ -633,6 +633,37 @@ class TeamPresenter extends BasePresenter {
 			$this->redirect('this');
 		} else {
 			$this->redirect('this', $parameters);
+		}
+	}
+
+	public function createComponentTeamListActionForm(): Form {
+		$form = $this->formFactory->create();
+
+		foreach ($this->template->teams as $team) {
+			$form->addCheckbox('team_' . $team->id);
+		}
+
+		$submit = $form->addSubmit('send_message', 'messages.team.list.action.send_message.label');
+
+		/** @var callable(Nette\Forms\Container): void */
+		$listActionSubmitMessage = Closure::fromCallable([$this, 'listActionSubmitMessage']);
+		$submit->onClick[] = $listActionSubmitMessage;
+
+		return $form;
+	}
+
+	private function listActionSubmitMessage(Nette\Forms\Controls\SubmitButton $button): void {
+		$values = $button->form->getValues();
+		$selectedTeamIds = array_map(function($name) {
+			return substr($name, \strlen('team_'));
+		}, array_keys(array_filter((array) $values, function($value, $name) {
+			return str_starts_with($name, 'team_') && \is_bool($value) && $value;
+		}, \ARRAY_FILTER_USE_BOTH)));
+
+		if (\count($selectedTeamIds) === 0) {
+			$this->redirect('this');
+		} else {
+			$this->redirect('Communication:compose', ['ids' => implode(', ', $selectedTeamIds)]);
 		}
 	}
 

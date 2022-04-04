@@ -3,23 +3,46 @@
 {block content}
 {control teamListFilterForm}
 {if count($teams)}
+
+<form n:name="teamListActionForm" n:tag-if="$user->isInRole('admin')">
+
 <table class="table table-striped table-bordered table-hover table-condensed">
 <tr><th>#</th><th>{_messages.team.list.name}</th><th>{_messages.team.list.timestamp}</th><th>{_messages.team.list.category}</th><th>{_messages.team.list.members}</th><th>{_messages.team.list.status}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.to_pay}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.admin}</th></tr>
 {foreach $teams as $team}
 <tr data-bs-content="{$team->getJsonData()|teamData|wrapInParagraphs}">
-	<td>{$team->id}</td>
+	<td>
+		<input n:name="team_{$team->id}" class="form-check-input" n:if="$user->isInRole('admin')" />
+		<label n:name="team_{$team->id}" n:tag-if="$user->isInRole('admin')">
+			{$team->id}
+		</label>
+	</td>
 	<td>{$team->name}</td>
-	<td>{$team->timestamp|date:'%-d. %-m. %Y<br>%H:%M:%S'|noescape}</td>
+	<td>{$team->timestamp|date, ('messages.formats.datetime_multiline'|translate)|noescape}</td>
 	<td>{$team|categoryFormat}</td>
 	<td><p n:foreach="$team->persons as $person" data-bs-content="{$person->getJsonData()|personData|wrapInParagraphs}">{if $person->gender === $person::MALE}♂{else}♀{/if} {$person->firstname} {$person->lastname}</p></td>
 	<td>{if $team->status === $team::REGISTERED}{_messages.team.list.entry.status.registered}{elseif $team->status == $team::PAID}<i class="fas fa-check" title="{_messages.team.list.entry.status.paid}"></i> {_messages.team.list.entry.status.accepted}{else}N/A{/if}</td>
 	<td n:if="$user->isInRole('admin')"><a n:href="Invoice:show $team->lastInvoice->id"><s n:tag-if="$team->status == $team::PAID">{$team->lastInvoice->getTotal()|price}</s></a></td>
-	<td n:if="$user->isInRole('admin')">{if $team->status == $team::REGISTERED}<a n:href="confirm $team->id">{_messages.team.list.entry.action.confirm}</a> {/if}<a n:href="edit $team->id">{_messages.team.list.entry.action.edit}</a></td>
+	<td n:if="$user->isInRole('admin')">
+		{if $team->status == $team::REGISTERED}
+			<a n:href="confirm $team->id">{_messages.team.list.entry.action.confirm}</a>
+		{/if}
+		<a n:href="edit $team->id">{_messages.team.list.entry.action.edit}</a>
+		<a n:href="Communication:list $team->id">
+			{_messages.team.list.entry.action.list_communications, [
+				queued => $team->getMessagesByStatus(App\Model\Message::STATUS_QUEUED)->countStored(),
+				sent => $team->getMessagesByStatus(App\Model\Message::STATUS_SENT)->countStored()]
+			}
+		</a>
+	</td>
 </tr>
 {/foreach}
 </table>
 
+<input n:name="send_message" class="btn btn-secondary" n:if="$user->isInRole('admin')" />
+
 <a n:if="$user->isInRole('admin')" n:href="export">{_messages.team.list.export.csv}</a>
+
+</form>
 <h3>{_messages.team.list.stats}</h3>
 <p>{_messages.team.list.stats.count, $stats['count']}</p>
 {else}

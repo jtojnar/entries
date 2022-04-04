@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Nette\Utils\Json;
+use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\Entity;
 use Nextras\Orm\Relationships\OneHasMany;
 
@@ -23,6 +24,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $password
  * @property OneHasMany|Person[] $persons {1:m Person::$team}
  * @property OneHasMany|Invoice[] $invoices {1:m Invoice::$team}
+ * @property OneHasMany|Message[] $messages {1:m Message::$team}
  * @property Invoice $lastInvoice {virtual}
  */
 class Team extends Entity {
@@ -51,5 +53,14 @@ class Team extends Entity {
 		}
 
 		return $invoice;
+	}
+
+	/**
+	 * @param Message::STATUS_* $status
+	 *
+	 * @return ICollection<Message>
+	 */
+	public function getMessagesByStatus(string $status): ICollection {
+		return $this->messages->toCollection()->findBy(['status' => $status]);
 	}
 }

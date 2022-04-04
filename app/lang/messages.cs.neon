@@ -14,16 +14,20 @@ team.list.info.timezone: "Všechna data jsou v Greenwich Mean Time"
 billing.invoice.amountDue: "Částka k úhradě"
 billing.invoice.amountPaid: "Zaplacená částka"
 billing.invoice.balanceDue: "Nedoplatek"
+formats.datetime: "%-d. %-m. %Y %H:%M"
+formats.datetime_multiline: "%-d. %-m. %Y<br>%H:%M"
 team.list.category: "Kategorie"
 team.list.filter.category.label: "Kategorie:"
 team.list.filter.submit.label: "Filtrovat"
 team.list.entry.action.confirm: "Potvrdit platbu"
+team.list.action.send_message.label: "Poslat zprávu"
 team.person.country.label: "Země:"
 country.cze: "Česká republika"
 team.person.birth.label: "Datum narození:"
 team.person.birth.error.born_too_late: "Lidé narození po datu závodu se nemohou zúčastnit."
 team.person.email.label: "E-Mail:"
 team.list.entry.action.edit: "Upravit"
+team.list.entry.action.list_communications: "Komunikace ({queued, plural, =0 {} other {#/}}{sent})"
 team.action.edit: "Upravit"
 home.edit: "Upravit přihlášku"
 home.invoice: "Zobrazit vyúčtování"
@@ -69,6 +73,53 @@ billing.invoice.unit_price: "Jednotková cena"
 billing.invoice.total_price: "Celková cena"
 billing.invoice.fees.person: "Startovné"
 billing.invoice.fees.si: "Půjčení SI čipu"
+communication.compose.title: "Napsat zprávu"
+communication.compose.recipients.label: "Příjemci:"
+communication.compose.recipients.placeholder: "1, 2, 3, 5, 8"
+communication.compose.recipients.error.empty: "Chybí příjemce zprávy."
+communication.compose.subject.label: "Předmět:"
+communication.compose.subject.error.empty: "Chybí předmět zprávy."
+communication.compose.body.label: "Zpráva:"
+communication.compose.body.error.empty: "Chybí tělo zprávy."
+communication.compose.preview: "Náhled"
+communication.compose.enqueue: "Odeslat"
+communication.compose.enqueue.succeeded: '''
+	{count, plural,
+		one {Zpráva byla úspěšně přidána}
+		other {Zprávy byly úspěšně přidány}
+	} do fronty k odeslání.
+'''
+communication.compose.error.unknown_id: '''
+	{count, plural,
+		one {Neznámé ID}
+		other {Neznámá ID}
+	} týmu: {ids}
+'''
+communication.compose.error.enqueue_failed: '''
+	Nepodařilo se přidat {count, plural,
+		one {zprávu}
+		other {zprávy}
+	} do fronty k odeslání.
+'''
+communication.compose.error.preview.template: "Chyba v šabloně: {error}"
+communication.list.title: "Seznam zpráv odeslaných týmu {id}"
+communication.list.id: "#"
+communication.list.subject: "Předmět"
+communication.list.date: "Datum"
+communication.list.body: "Tělo"
+communication.list.status: "Stav"
+communication.list.actions: "Akce"
+communication.list.entry.status.sent: "Odesláno"
+communication.list.entry.status.queued: "Ve frontě"
+communication.list.entry.status.cancelled: "Zrušeno"
+communication.list.entry.action.view: "Zobrazit"
+communication.list.empty:  "Tomuto týmu nebyly zaslány žádné zprávy."
+communication.view.title: "Zpráva s předmětem „{title}“"
+communication.view.submitted_on: "Odesláno {time}, týmu {id}."
+communication.send.success: "Úspěšně {count, plural, one {odeslána # zpráva} few {odeslány # zprávy} other {odesláno # zpráv}}."
+communication.send.no_messages: "No messages to send."
+communication.send.error.message_collection_failed: "Failed to collect messages to send."
+communication.send.error.submit_failed: "Nepodařilo se odeslat {count, plural, one {# zprávu} few {# zprávy} other {# zpráv}} {total, plural, one {z #} few {ze #} other {z #}}."
 team.person.name.last.label: "Příjmení:"
 home.list: "Seznam registrovaných týmů"
 team.list.title: "Seznam registrovaných týmů"
@@ -148,3 +199,4 @@ email.verification.archivation_request: "Prosím, uschovejte tento mail pro př�
 maintenance.title: "Správa"
 maintenance.clear_cache: "Vymazat cache"
 maintenance.cache_cleared: "Cache byla úspěšně smazána."
+maintenance.send_outbound_messages: "Odeslat {count, plural, one {# zprávu} few {# zprávy} other {# zpráv}} ve frontě"

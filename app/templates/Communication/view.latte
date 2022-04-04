@@ -1,0 +1,12 @@
+{define title}{_messages.communication.view.title, [title => $message->subject]}{/define}
+
+{block content}
+<p class="text-muted">
+	{_messages.communication.view.submitted_on, [
+		'time' => ($message->timestamp|date, ('messages.formats.datetime'|translate)),
+		'id' => $message->team->id,
+	]|noescape}
+</p>
+
+{$message->body|noescape}
+{/block}
