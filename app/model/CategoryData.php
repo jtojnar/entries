@@ -156,14 +156,10 @@ final class CategoryData {
 						return $categoryValue;
 					}, $categoriesKeys);
 
-					return array_combine($categoriesKeys, $categoriesData) ?: [];
+					return array_combine($categoriesKeys, $categoriesData);
 				}, array_keys($groups));
 
 				$categoryTree = array_combine($groupsKeys, $groupsCategories);
-
-				if ($categoryTree === false || \count($categoryTree) === 0) {
-					throw new \PHPStan\ShouldNotHappenException();
-				}
 
 				$categoryData = [];
 				foreach ($categoryTree as $categories) {
@@ -209,7 +205,7 @@ final class CategoryData {
 
 				$categoryTree = array_combine($categoriesKeys, $categoriesData);
 
-				if ($categoryTree === false || \count($categoryTree) === 0) {
+				if (\count($categoryTree) === 0) {
 					throw new \PHPStan\ShouldNotHappenException();
 				}
 
