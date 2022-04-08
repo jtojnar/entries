@@ -18,7 +18,6 @@ use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Mail\Message;
 use Nette\Utils\DateTime;
-use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
@@ -102,6 +101,7 @@ class TeamPresenter extends BasePresenter {
 		$template = $this->template;
 
 		$template->teams = $this->teams->findBy($where);
+		$template->countries = $this->countries;
 
 		$template->getLatte()->addFilter('personData', Closure::fromCallable([$this, 'personData']));
 		$template->getLatte()->addFilter('teamData', Closure::fromCallable([$this, 'teamData']));
@@ -662,7 +662,7 @@ class TeamPresenter extends BasePresenter {
 					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
 					continue;
 				}
-				$ret[] = (string) Html::el('span', ['class' => 'fi fi-' . $country->code]) . ' ' . $country->name;
+				$ret[] = $country->name;
 				continue;
 			} elseif ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
