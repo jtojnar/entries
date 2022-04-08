@@ -1,0 +1,7 @@
+[deployments.default]
+upload_uri = "ftps://w15132@15132.w32.wedos.net/www/domains/entries.wrc2022.rogaining.cz/"
+web_root = "www"
+web_uri = "https://entries.wrc2022.rogaining.cz/"
+transfer_files = [
+    "app/config/private.neon",
+]
