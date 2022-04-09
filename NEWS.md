@@ -10,12 +10,17 @@ Each minor release (or even commit in the repository) is generally considered a 
 - CSV exporter now includes e-mail addresses.
 - Bank account number in the e-mails can be customized, reducing the need to muck with the templates. See the [`accountNumber`](docs/configuration.md#accountNumber) option.
 - E-Mail messages can now be modified by placing overrides in the config directory. See [documentation](docs/customizing-emails.md).
+- Implement cache busting strategy for assets.
 
 ### Bugs fixed
 
 - Fixed saving team/person data with no custom fields.
 - Fix contact marker in the form.
 - Fixed several small bugs.
+- Fix hiding filter submit button on list page.
+- Show invoice link on homepage even after the team has paid.
+- Disallow registering to people born after event takes place.
+- Fix identity handling after logout.
 
 ### Other changes
 
@@ -29,6 +34,10 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Translated the sign in error messages and made them report incorrect password for admin correctly.
 - `admin` field for admin password has been renamed to `adminPassword` and moved directly to `parameters` section.
 - `config.local.neon` is now included in the source tree, instead of the examples.
+- Reduce discrepancied between Czech and English verification e-mails.
+- Improve docs about category constraints.
+- Use default session storage path instead of `temp/sessions/`.
+- Added Catalonia to the list of countries.
 
 ## 0.5.0 – 2020-02-11
 
