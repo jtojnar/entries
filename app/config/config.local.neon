@@ -12,6 +12,16 @@ dbal:
 	options:
 		charset: utf8mb4
 
+services:
+	exchange: Money\Exchange\ReversedCurrenciesExchange(
+		Money\Exchange\FixedExchange([
+			'EUR': [
+				'CZK': '25'
+			]
+		])
+	)
+
+
 parameters:
 	# Do not forget to set password here or in private.neon
 	adminPassword:

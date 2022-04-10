@@ -122,6 +122,8 @@ Prices will be displayed in choosen currency on the invoice and in the administr
 - GBP – Pound sterling
 - JPY – Japanese yen
 
+You can also set [currency conversion rates](#services-section).
+
 ##### `categories`
 
 This section defines the categories entrants can choose from. The `categories` section can be either nested or flat. Each category defines a set of constraints that need to be satisfied in order for the team to be able to register in the category.
@@ -312,3 +314,25 @@ boarding:
 				cs: 'Nedělní snídaně (120 Kč)'
 			fee: 120
 ```
+
+### `services` section
+
+This section [configures services](https://doc.nette.org/en/dependency-injection/configuration#toc-services) for Nette’s dependency injection and it is extremely powerful. You can use it to change many internal aspects of the application. Here we are listing just the few interesting ones.
+
+#### Setting currency exchange rates
+
+The app currently only supports defining prices in a single currency but you can set exchange rates by overriding the `exchange` service:
+
+```neon
+exchange: Money\Exchange\ReversedCurrenciesExchange(
+	Money\Exchange\FixedExchange([
+		'EUR': [
+			'CZK': 25
+		]
+	])
+)
+```
+
+Then you will be able to use `exchangeCurrency:'CZK'` [Latte filter](https://latte.nette.org/en/filters) in templates such as e-mails.
+
+See [moneyphp documentation](https://www.moneyphp.org/en/stable/features/currency-conversion.html) for more information.
