@@ -12,4 +12,4 @@ parameters:
 	treatPhpDocTypesAsCertain: false
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
-		- '(Call to an undefined method App\\Components\\TeamForm::addDynamic\(\))'
+		- '(Call to an undefined method App\\Components\\TeamForm::addMultiplier\(\))'

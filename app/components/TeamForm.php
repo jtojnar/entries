@@ -6,7 +6,6 @@ namespace App\Components;
 
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI;
-use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls;
 use Nette\Utils\Json;
@@ -24,31 +23,11 @@ class TeamForm extends UI\Form {
 	/** @var string */
 	private $locale;
 
-	public function __construct(array $countries, array $parameters, string $locale, IContainer $parent = null, string $name = null) {
-		parent::__construct($parent, $name);
+	public function __construct(array $countries, array $parameters, string $locale) {
+		parent::__construct();
 		$this->countries = $countries;
 		$this->parameters = $parameters;
 		$this->locale = $locale;
-	}
-
-	public function onRender(): void {
-		/** @var \Kdyby\Replicator\Container */
-		$persons = $this['persons'];
-		$count = iterator_count($persons->getContainers());
-		$minMembers = $this->parameters['minMembers'];
-		$maxMembers = $this->parameters['maxMembers'];
-
-		if ($count >= $maxMembers) {
-			/** @var Controls\SubmitButton */
-			$add = $this['add'];
-			$add->setDisabled();
-		}
-
-		if ($count <= $minMembers) {
-			/** @var Controls\SubmitButton */
-			$remove = $this['remove'];
-			$remove->setDisabled();
-		}
 	}
 
 	public function addCustomFields(array $fields, Container $container): void {

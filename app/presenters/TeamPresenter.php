@@ -208,11 +208,11 @@ class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	protected function createComponentTeamForm(string $name): Form {
+	protected function createComponentTeamForm(): Form {
 		$idParam = $this->getParameter('id');
 		$editing = $idParam !== null;
-		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->locale, $editing, $this, $name);
-		if ($editing && !$form->isSubmitted()) {
+		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->locale, $editing);
+		if ($editing) {
 			\assert(\is_string($idParam)); // For PHPStan.
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
@@ -258,21 +258,20 @@ class TeamPresenter extends BasePresenter {
 
 				$default['persons'][] = $personDefault;
 			}
-			$form->setValues($default);
+			$form->setDefaults($default);
 		}
 		/** @var \Nette\Forms\Controls\SubmitButton */
 		$save = $form['save'];
 		if ($this->getParameter('id')) {
 			$save->caption = 'messages.team.action.edit';
 		}
-		/** @var callable(Nette\Forms\Controls\SubmitButton): void */
 		$processTeamForm = Closure::fromCallable([$this, 'processTeamForm']);
-		$save->onClick[] = $processTeamForm;
+		$form->onSuccess[] = $processTeamForm;
 
 		return $form;
 	}
 
-	private function processTeamForm(Nette\Forms\Controls\SubmitButton $button): void {
+	private function processTeamForm(App\Components\TeamForm $form): void {
 		if (!$this->user->isInRole('admin')) {
 			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
 				throw new App\TooLateForAccessException();
@@ -281,8 +280,6 @@ class TeamPresenter extends BasePresenter {
 			}
 		}
 
-		/** @var App\Components\TeamForm $form */
-		$form = $button->form;
 		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
 		$values = $form->getValues();
 		/** @var string $password */

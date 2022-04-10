@@ -38,7 +38,7 @@ extensions:
 	translation: Contributte\Translation\DI\TranslationExtension
 	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
 	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
-	replicator: Kdyby\Replicator\DI\ReplicatorExtension
+	multiplier: Contributte\FormMultiplier\DI\MultiplierExtension
 	contribMail: Contributte\Mail\DI\MailExtension
 
 contribMail:

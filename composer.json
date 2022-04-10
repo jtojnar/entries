@@ -12,10 +12,10 @@
 	],
 	"require": {
 		"php": ">= 8.0",
+		"contributte/forms-multiplier": "^3.2",
 		"contributte/mail": "^0.6.0",
 		"contributte/translation": "^1.0",
 		"ihor/nspl": "^1.3",
-		"kdyby/forms-replicator": "^2.0.0",
 		"latte/latte": "~2.5",
 		"moneyphp/money": "^4.0",
 		"nette/application": "~3.0",
