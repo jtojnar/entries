@@ -15,7 +15,7 @@ parameters:
 		closing: 2050-06-23T01:00:00
 		fees:
 			currency: EUR
-			person: 80.0
+			person: 80
 		categories:
 			MY:
 				constraints:
