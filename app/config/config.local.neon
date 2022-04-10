@@ -85,5 +85,3 @@ parameters:
 					type: country
 					default: 46
 					public: true
-				pqe:
-					type: pqe
