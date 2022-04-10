@@ -14,9 +14,9 @@ use App\Model\InvoiceModifier;
 use App\Model\Orm\Invoice\Invoice;
 use App\Model\Orm\ItemReservation\ItemReservation;
 use App\Model\Orm\Team\Team;
+use Contributte\FormMultiplier\Multiplier;
 use DateTimeImmutable;
 use Exception;
-use Kdyby\Replicator\Container as ReplicatorContainer;
 use Latte;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
@@ -123,10 +123,10 @@ final class TeamPresenter extends BasePresenter {
 		if ($form->isSubmitted() === false) {
 			// Create sufficient number of person subforms for the most common team size (when it is greater than minimum team size).
 			$remainingMembers = $this->entries->initialMembers - $this->entries->minMembers;
-			/** @var ReplicatorContainer */
-			$replicator = $form['persons'];
+			/** @var Multiplier */ // For PHPStan.
+			$multiplier = $form['persons'];
 			for ($i = $remainingMembers; $i > 0; --$i) {
-				$replicator->createOne();
+				$multiplier->addCopy();
 			}
 		}
 	}
@@ -156,50 +156,48 @@ final class TeamPresenter extends BasePresenter {
 			}
 
 			$form = $this->getComponent('teamForm');
-			if ($form->isSubmitted() === false) {
-				$default = [];
-				$default['name'] = $team->name;
-				$default['category'] = $team->category;
-				$default['message'] = $team->message;
-				$default['persons'] = [];
+			$default = [];
+			$default['name'] = $team->name;
+			$default['category'] = $team->category;
+			$default['message'] = $team->message;
+			$default['persons'] = [];
 
-				$fields = $this->entries->teamFields;
+			$fields = $this->entries->teamFields;
+			foreach ($fields as $field) {
+				$name = $field->name;
+				if (isset($team->getJsonData()->$name)) {
+					$default[$name] = $team->getJsonData()->$name;
+				} elseif ($field instanceof Fields\SportidentField) {
+					$default[$name] = [
+						SportidentControl::NAME_NEEDED => true,
+					];
+				}
+			}
+
+			$fields = $this->entries->personFields;
+			foreach ($team->persons as $person) {
+				$personDefault = [
+					'firstname' => $person->firstname,
+					'lastname' => $person->lastname,
+					'gender' => $person->gender,
+					'email' => $person->email,
+					'birth' => $person->birth,
+				];
+
 				foreach ($fields as $field) {
 					$name = $field->name;
-					if (isset($team->getJsonData()->$name)) {
-						$default[$name] = $team->getJsonData()->$name;
+					if (isset($person->getJsonData()->$name)) {
+						$personDefault[$name] = $person->getJsonData()->$name;
 					} elseif ($field instanceof Fields\SportidentField) {
-						$default[$name] = [
+						$personDefault[$name] = [
 							SportidentControl::NAME_NEEDED => true,
 						];
 					}
 				}
 
-				$fields = $this->entries->personFields;
-				foreach ($team->persons as $person) {
-					$personDefault = [
-						'firstname' => $person->firstname,
-						'lastname' => $person->lastname,
-						'gender' => $person->gender,
-						'email' => $person->email,
-						'birth' => $person->birth,
-					];
-
-					foreach ($fields as $field) {
-						$name = $field->name;
-						if (isset($person->getJsonData()->$name)) {
-							$personDefault[$name] = $person->getJsonData()->$name;
-						} elseif ($field instanceof Fields\SportidentField) {
-							$personDefault[$name] = [
-								SportidentControl::NAME_NEEDED => true,
-							];
-						}
-					}
-
-					$default['persons'][] = $personDefault;
-				}
-				$form->setValues($default);
+				$default['persons'][] = $personDefault;
 			}
+			$form->setDefaults($default);
 		}
 	}
 
@@ -489,9 +487,9 @@ final class TeamPresenter extends BasePresenter {
 			/** @var ?string $firstMemberName */
 			$firstMemberName = null;
 
-			/** @var ReplicatorContainer */
-			$replicator = $form['persons'];
-			$personContainers = iterator_to_array($replicator->getContainers());
+			/** @var Multiplier */ // For PHPStan.
+			$multiplier = $form['persons'];
+			$personContainers = iterator_to_array($multiplier->getContainers());
 			foreach ($values['persons'] as $personKey => $member) {
 				$personContainer = $personContainers[$personKey];
 				$firstname = $member['firstname'];
