@@ -80,7 +80,7 @@ class InvoicePresenter extends BasePresenter {
 			return $label . ': ' . $field['options'][$value]['label'][$this->locale];
 		}
 
-		if ($type === 'checkboxlist' && !empty($value)) {
+		if ($type === 'checkboxlist' && !empty($value) && isset($field['items'][$value]['label'][$this->locale])) {
 			return $label . ': ' . $field['items'][$value]['label'][$this->locale];
 		}
 
