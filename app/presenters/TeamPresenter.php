@@ -567,7 +567,7 @@ class TeamPresenter extends BasePresenter {
 
 		$personFields = $this->context->parameters['entries']['fields']['person'];
 		$members = $form->values['persons'];
-		\assert(\is_iterable($members)); // For PHPStan.
+		\assert(is_iterable($members)); // For PHPStan.
 		foreach ($members as $member) {
 			foreach ($personFields as $name => $field) {
 				if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
