@@ -1,6 +1,15 @@
 php:
 	date.timezone: Europe/Prague
 
+services:
+	exchange: Money\Exchange\ReversedCurrenciesExchange(
+		Money\Exchange\FixedExchange([
+			'EUR': [
+				'CZK': '25'
+			]
+		])
+	)
+
 parameters:
 	siteTitle:
 		cs: Mistrovství světa v rogainingu 2022
