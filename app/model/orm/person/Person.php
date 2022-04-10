@@ -25,11 +25,11 @@ class Person extends Entity {
 	public const MALE = 'male';
 	public const FEMALE = 'female';
 
-	/**
-	 * @return \stdClass
-	 */
-	public function getJsonData() {
-		return Json::decode($this->details);
+	public function getJsonData(): \stdClass {
+		$data = Json::decode($this->details);
+		\assert($data instanceof \stdClass); // For PHPStan.
+
+		return $data;
 	}
 
 	/**

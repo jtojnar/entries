@@ -40,6 +40,7 @@ class SportidentControl extends BaseControl {
 		// Asking for cardIdControl->htmlId before the control is attached
 		// to a form freezes it at `frm-cardId`
 		$this->monitor(Form::class, function(Form $form) use ($recommendedCardCapacity): void {
+			\assert(\is_string($this->cardIdControl->htmlId)); // For PHPStan.
 			$this->cardIdControl->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
 			$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId, false);
 

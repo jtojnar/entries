@@ -67,7 +67,9 @@ class HomepagePresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		foreach (Nette\Utils\Finder::find('*')->from($this->context->parameters['tempDir'] . '/cache')->childFirst() as $entry) {
+		/** @var \IteratorAggregate<string, \SplFileInfo> */ // For PHPStan.
+		$cacheIterator = Nette\Utils\Finder::find('*')->from($this->context->parameters['tempDir'] . '/cache')->childFirst();
+		foreach ($cacheIterator as $entry) {
 			$path = (string) $entry;
 			if ($entry->isDir()) { // collector: remove empty dirs
 				@rmdir($path); // @ - removing dirs is not necessary

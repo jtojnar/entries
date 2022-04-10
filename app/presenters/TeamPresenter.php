@@ -83,6 +83,7 @@ class TeamPresenter extends BasePresenter {
 		$where = [];
 		$category = $this->request->getQuery('category');
 		if ($category !== null) {
+			\assert(\is_string($category)); // For PHPStan.
 			$where = ['category' => explode('|', $category)];
 		}
 
@@ -166,6 +167,7 @@ class TeamPresenter extends BasePresenter {
 
 		$category = $this->request->getQuery('category');
 		if ($category !== null) {
+			\assert(\is_string($category)); // For PHPStan.
 			$where = ['category' => explode('|', $category)];
 		}
 
@@ -201,10 +203,12 @@ class TeamPresenter extends BasePresenter {
 	}
 
 	protected function createComponentTeamForm(string $name): Form {
-		$editing = $this->getParameter('id') !== null;
+		$idParam = $this->getParameter('id');
+		$editing = $idParam !== null;
 		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->locale, $editing, $this, $name);
 		if ($editing && !$form->isSubmitted()) {
-			$id = (int) $this->getParameter('id');
+			\assert(\is_string($idParam)); // For PHPStan.
+			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
 			if (!$team) {
 				$this->error($this->translator->translate('messages.team.edit.error.404'));
@@ -273,6 +277,7 @@ class TeamPresenter extends BasePresenter {
 
 		/** @var App\Components\TeamForm $form */
 		$form = $button->form;
+		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
 		$values = $form->getValues();
 		/** @var string $password */
 		$password = null;
@@ -284,7 +289,9 @@ class TeamPresenter extends BasePresenter {
 				throw new ForbiddenRequestException();
 			}
 
-			$id = (int) $this->getParameter('id');
+			$idParam = $this->getParameter('id');
+			\assert(\is_string($idParam)); // For PHPStan.
+			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
 
 			/** @var \Nette\Security\SimpleIdentity $identity */
@@ -315,8 +322,7 @@ class TeamPresenter extends BasePresenter {
 
 			$team->name = $values['name'];
 			$team->message = $values['message'];
-
-			$team->category = isset($form['category']) ? $values['category'] : '';
+			$team->category = $values['category'];
 
 			$currency = new Currency($this->context->parameters['entries']['fees']['currency']);
 			$fields = $this->context->parameters['entries']['fields']['team'];
@@ -560,7 +566,9 @@ class TeamPresenter extends BasePresenter {
 		}
 
 		$personFields = $this->context->parameters['entries']['fields']['person'];
-		foreach ($form->values['persons'] as $member) {
+		$members = $form->values['persons'];
+		\assert(\is_iterable($members)); // For PHPStan.
+		foreach ($members as $member) {
 			foreach ($personFields as $name => $field) {
 				if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
 					/** @var Nette\Utils\ArrayHash */
@@ -581,15 +589,19 @@ class TeamPresenter extends BasePresenter {
 		$category->setPrompt('messages.team.list.filter.category.all');
 		$category->setHtmlAttribute('style', 'width:auto;');
 
-		if ($this->request->getQuery('category')) {
-			$category->setValue($this->request->getQuery('category'));
+		if (($catParam = $this->request->getQuery('category')) !== '' && \assert($catParam === null || \is_string($catParam))) {
+			// Set value based on query-string (even after we strip the do=teamListFilterForm-submit param).
+			// Empty string (which corresponds to prompt) is ignored, since it cannot be passed to setValue.
+			$category->setValue($catParam);
 		}
 		$category->controlPrototype->class[] = 'change-form-submit';
 
 		if ($this->user->isInRole('admin')) {
 			$status = $form->addSelect('status', 'messages.team.list.filter.status.label', ['registered' => 'messages.team.list.filter.status.registered', 'paid' => 'messages.team.list.filter.status.paid'])->setPrompt('messages.team.list.filter.status.all')->setHtmlAttribute('style', 'width:auto;');
-			if ($this->request->getQuery('status')) {
-				$status->setValue($this->request->getQuery('status'));
+			if (($statusParam = $this->request->getQuery('status')) !== '' && \assert($statusParam === null || \is_string($statusParam))) {
+				// Set value based on query-string (even after we strip the do=teamListFilterForm-submit param).
+				// Empty string (which corresponds to prompt) is ignored, since it cannot be passed to setValue.
+				$status->setValue($statusParam);
 			}
 			$status->controlPrototype->class[] = 'change-form-submit';
 		}
@@ -603,6 +615,9 @@ class TeamPresenter extends BasePresenter {
 		return $form;
 	}
 
+	/**
+	 * Strips the do=teamListFilterForm-submit parameter from query string.
+	 */
 	private function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 

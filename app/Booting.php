@@ -9,7 +9,7 @@ use Nette\Bootstrap\Configurator;
 class Booting {
 	public static function boot(): Configurator {
 		$configurator = new Configurator();
-		//$configurator->setDebugMode('23.75.345.200'); // enable for your remote IP
+		// $configurator->setDebugMode('23.75.345.200'); // enable for your remote IP
 		$configurator->enableTracy(__DIR__ . '/../log');
 		$configurator->setTimeZone('Europe/Prague');
 		$configurator->setTempDirectory(__DIR__ . '/../temp');

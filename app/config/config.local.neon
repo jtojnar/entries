@@ -30,7 +30,7 @@ parameters:
 		customInputModifier: [App\CustomInputModifier, modify]
 		fees:
 			currency: CZK
-			person: 650.0
+			person: 650
 		categories:
 			HH20:
 				constraints:

@@ -106,9 +106,10 @@ final class TeamFormFactory {
 		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
 			$category = $button->form->getUnsafeValues(null)['category'];
 			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
-			/** @var ReplicatorContainer */
+			/** @var ReplicatorContainer */ // For PHPStan.
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) > $minMembers) {
+				/** @var ?Container */ // For PHPStan.
 				$lastPerson = last($replicator->getContainers());
 				if ($lastPerson) {
 					$replicator->remove($lastPerson, true);

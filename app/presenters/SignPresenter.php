@@ -38,7 +38,7 @@ class SignPresenter extends BasePresenter {
 
 		$form->addSubmit('send', 'messages.sign.in.action');
 
-		/** @var callable(Nette\Forms\Form, array): void */
+		/** @var callable(Form, mixed): void */ // For PHPStan, Nette will convert the value to the correct one (array) based on argument type.
 		$signInFormSucceeded = Closure::fromCallable([$this, 'signInFormSucceeded']);
 		$form->onSuccess[] = $signInFormSucceeded;
 

@@ -29,11 +29,11 @@ class Team extends Entity {
 	public const REGISTERED = 'registered';
 	public const PAID = 'paid';
 
-	/**
-	 * @return \stdClass
-	 */
-	public function getJsonData() {
-		return Json::decode($this->details);
+	public function getJsonData(): \stdClass {
+		$data = Json::decode($this->details);
+		\assert($data instanceof \stdClass); // For PHPStan
+
+		return $data;
 	}
 
 	/**

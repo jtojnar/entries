@@ -33,11 +33,11 @@ final class CategoryData {
 	/** @var array */
 	private $parameters;
 
-	/** @var non-empty-array */
-	private $categoryTree;
+	/** @var ?non-empty-array */
+	private $categoryTree = null;
 
-	/** @var non-empty-array */
-	private $categoryData;
+	/** @var ?non-empty-array */
+	private $categoryData = null;
 
 	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
 	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>(sum|min|max))\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
@@ -105,6 +105,7 @@ final class CategoryData {
 
 			if (self::isNested($this->parameters['categories'])) {
 				$categoryData = [];
+				/** @var array<string, array> */ // For PHPStan.
 				$groups = $this->parameters['categories'];
 
 				$groupsKeys = array_map(function(string $groupKey) use ($groups, $locale): string {
@@ -179,6 +180,7 @@ final class CategoryData {
 				$this->categoryData = $categoryData;
 				$this->categoryTree = $categoryTree;
 			} else {
+				/** @var array<string, array> */ // For PHPStan.
 				$categories = $this->parameters['categories'];
 
 				$categoriesKeys = array_keys($categories);
@@ -220,6 +222,7 @@ final class CategoryData {
 	public function getCategoryData(): array {
 		if (!isset($this->categoryData)) {
 			$this->getCategoryTree();
+			\assert($this->categoryData !== null); // For PHPStan.
 		}
 
 		return $this->categoryData;
@@ -267,9 +270,10 @@ final class CategoryData {
 
 				return [
 					function(SelectBox $entry) use ($quant, $keyProjection, $op, $comparedValue): bool {
-						/** @var App\Components\TeamForm */
+						/** @var App\Components\TeamForm */ // For PHPStan.
 						$form = $entry->getForm();
 						$members = $form->getUnsafeValues(null)['persons'];
+						\assert(is_iterable($members)); // For PHPStan.
 
 						return $quant($members, function(\ArrayAccess $person) use ($op, $keyProjection, $comparedValue): bool {
 							return $op($keyProjection($person), $comparedValue);
@@ -289,11 +293,12 @@ final class CategoryData {
 
 				return [
 					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $comparedValue): bool {
-						/** @var App\Components\TeamForm */
+						/** @var App\Components\TeamForm */ // For PHPStan.
 						$form = $entry->getForm();
-						$members = iterator_to_array($form->getUnsafeValues(null)['persons']);
+						$members = $form->getUnsafeValues(null)['persons'];
+						\assert($members instanceof \Iterator); // For PHPStan.
 
-						return $op($aggr(map($keyProjection, $members)), $comparedValue);
+						return $op($aggr(map($keyProjection, iterator_to_array($members))), $comparedValue);
 					},
 					$this->translator->translate($message),
 				];
@@ -307,6 +312,7 @@ final class CategoryData {
 		if (!isset($person['birth'])) {
 			return null;
 		}
+		\assert($person['birth'] instanceof \DateTimeInterface); // For PHPStan.
 
 		$eventDate = $this->parameters['eventDate'];
 		$age = $diff = $person['birth']->diff($eventDate, true)->y;
@@ -315,6 +321,8 @@ final class CategoryData {
 	}
 
 	private function genderProjection(\ArrayAccess $person): ?string {
+		\assert($person['gender'] === null || \is_string($person['gender'])); // For PHPStan.
+
 		return $person['gender'];
 	}
 }

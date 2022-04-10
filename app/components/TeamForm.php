@@ -150,9 +150,10 @@ class TeamForm extends UI\Form {
 	 */
 	public function getDefaultFieldValue(array $field) {
 		if ($field['type'] === 'enum') {
+			/** @var array<string, array> */ // For PHPStan.
 			$full_options = $field['options'];
 
-			return array_reduce(array_keys($field['options']), function(?string $carry, string $key) use ($full_options): ?string {
+			return array_reduce(array_keys($full_options), function(?string $carry, string $key) use ($full_options): ?string {
 				$item = $full_options[$key];
 				if (isset($item['default']) && $item['default'] === true) {
 					return $key;
