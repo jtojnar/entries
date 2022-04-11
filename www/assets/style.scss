@@ -12,3 +12,7 @@
 	vertical-align: baseline;
 	color: #ccc;
 }
+
+.smart-checkboxes input[type="checkbox"] {
+	user-select: none;
+}

@@ -1,6 +1,7 @@
 // Application
 import netteForms from 'nette-forms';
 import * as changeFormSubmit from './js/change-form-submit';
+import * as checkboxes from './js/checkboxes';
 import * as form from './js/form';
 import * as formWarnings from './js/form-warnings';
 import * as icons from './js/icons';
@@ -11,6 +12,7 @@ import * as noscript from './js/noscript';
 netteForms.initOnLoad();
 nextrasForms.register(netteForms);
 changeFormSubmit.register();
+checkboxes.register();
 form.register();
 formWarnings.register();
 icons.register();

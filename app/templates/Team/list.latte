@@ -4,10 +4,18 @@
 {control teamListFilterForm}
 {if count($teams)}
 
-<form n:name="teamListActionForm" n:tag-if="$user->isInRole('admin')">
+<form n:name="teamListActionForm" class="smart-checkboxes" n:tag-if="$user->isInRole('admin')">
 
 <table class="table table-striped table-bordered table-hover table-condensed">
-<tr><th>#</th><th>{_messages.team.list.name}</th><th>{_messages.team.list.timestamp}</th><th>{_messages.team.list.category}</th><th>{_messages.team.list.members}</th><th>{_messages.team.list.status}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.to_pay}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.admin}</th></tr>
+<tr>
+	<th>
+		<input type="checkbox" class="form-check-input toggle-all" n:if="$user->isInRole('admin')" id="teams-toggle-all" />
+		<label n:tag-if="$user->isInRole('admin')" for="teams-toggle-all">
+			#
+		</label>
+	</th>
+	<th>{_messages.team.list.name}</th><th>{_messages.team.list.timestamp}</th><th>{_messages.team.list.category}</th><th>{_messages.team.list.members}</th><th>{_messages.team.list.status}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.to_pay}</th><th n:if="$user->isInRole('admin')">{_messages.team.list.admin}</th>
+</tr>
 {foreach $teams as $team}
 <tr data-bs-content="{$team->getJsonData()|teamData|wrapInParagraphs}">
 	<td>
