@@ -26,6 +26,8 @@ final class ErrorAccessPresenter extends BasePresenter {
 		$this->template->openingDate = $this->context->parameters['entries']['opening']->format($fmt);
 
 		$this->template->errorType = $errorType;
-		$this->setView('access');
+
+		$file = __DIR__ . '/../templates/Error/access.latte';
+		$this->template->setFile($file);
 	}
 }
