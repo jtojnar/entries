@@ -66,6 +66,8 @@ services:
 			- addFilter(wrapInParagraphs, @App\Templates\Filters\WrapInParagraphsFilter)
 
 translation:
+	loaders:
+		neon: App\Helpers\NeonIntlLoader
 	locales:
 		whitelist: [en, cs]
 		default: cs
