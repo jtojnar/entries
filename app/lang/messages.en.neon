@@ -36,14 +36,24 @@ team.list.entry.status.registered: "Entry registered"
 team.list.filter.status.registered: "Registered"
 team.list.export.csv: "Export (CSV)"
 team.person.name.first.label: "First name:"
-team.error.too_few_members: "one: Your team needs to have at least %count% member to register in category %category%.|other: Your team needs to have at least %count% members to register in category %category%."
+team.error.too_few_members: '''
+	Your team needs to have at least {count, plural,
+		one {# member}
+		other {# members}
+	} to register in category {category}.
+'''
 team.error.too_few_members_simple: "Your team needs to have more members to register in this category."
-team.error.too_many_members: "one: Your team can have at most %count% member to register in category %category%.|other: Your team can have at most %count% members to register in category %category%."
+team.error.too_many_members: '''
+	Your team can have at most {count, plural,
+		one {# member}
+		other {# members}
+	} to register in category {category}.
+'''
 team.error.too_many_members_simple: "Your team needs less members to register in this category."
 team.error.gender_mismatch: "Gender category does not match gender of team members!"
 team.person.gender.label: "Gender:"
 team.list: "Hover name of a team member to display SportIdent card number."
-home.contact_us_for_late_registration: 'Registration period is over, if you still want to sign up, please contact us at <a href="mailto:%mail%">%mail%</a>.'
+home.contact_us_for_late_registration: 'Registration period is over, if you still want to sign up, please contact us at <a href="mailto:{mail}">{mail}</a>.'
 home.contact_instructions: "If you find any bug please report it on following e-mail:"
 billing.invoice.title: "Invoice"
 billing.invoice.number: "Invoice No."
@@ -93,12 +103,12 @@ billing.invoice.subtotal: "Subtotal"
 team.success.edit: "Team information has been edited."
 team.error.edit_general: "We are sorry but team information could not be edited. Try it again later"
 team.error.add_general: "We are very sorry but your team could not be added. Try it again later"
-team.person.label: "Team member %count%:"
+team.person.label: "Team member {count}:"
 team.info.label: "Team info:"
 team.list.empty: "There are currently no teams registered in this category."
 team.list.timestamp: "Timestamp"
-team.list.stats.count: "Total teams: %count%"
-team.success.add: "Your team has been added. Details have been sent to your e-mail. Your password: %password%"
+team.list.stats.count: "Total teams: {count}"
+team.success.add: "Your team has been added. Details have been sent to your e-mail. Your password: {password}"
 team.person.gender.male: "Male"
 team.person.gender.female: "Female"
 sign.in.error.incorrect_id: "The ID of the team is incorrect."
@@ -113,7 +123,7 @@ team.data.country.unknown: "Unknown country"
 team.error.late.title: "Too late"
 team.error.early.title: "Too soon"
 team.error.late: "We are sorry, the registration period is over."
-team.error.early: "We are sorry, the registration period hasn’t yet started. Please wait until %date%."
+team.error.early: "We are sorry, the registration period hasn’t yet started. Please wait until {date}."
 date: "M j, Y"
 email.verification.subject: "Registration Acknowledgement"
 email.verification.entry_details.heading: "Entry details:"
@@ -123,8 +133,8 @@ email.verification.entry_details.team.name: "Team name:"
 email.verification.entry_details.team.password: "Password:"
 email.verification.entry_details.team.category: "Team category:"
 email.verification.entry_details.message: "Message:"
-email.verification.entry_details.person.heading: "Team member %number%"
-email.verification.entry_details.person.heading.contact: "Team member %number% (contact person)"
+email.verification.entry_details.person.heading: "Team member {number}"
+email.verification.entry_details.person.heading.contact: "Team member {number} (contact person)"
 email.verification.entry_details.person.name: "Name:"
 email.verification.entry_details.person.gender: "Gender:"
 email.verification.entry_details.person.gender.male: "♂ Male"

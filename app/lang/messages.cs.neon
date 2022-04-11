@@ -36,14 +36,26 @@ team.list.entry.status.registered: "Přihláška registrována"
 team.list.filter.status.registered: "Registrováno"
 team.list.export.csv: "Exportovat (CSV)"
 team.person.name.first.label: "Jméno:"
-team.error.too_few_members: "one: Týmy v kategorii %category% musí mít nejméně %count% člena.|few: Týmy v kategorii %category% musí mít nejméně %count% členy.|other: Týmy v kategorii %category% musí mít nejméně %count% členů."
+team.error.too_few_members: '''
+	Týmy v kategorii {category} musí mít nejméně {count, plural,
+		one {# člena}
+		few {# členy}
+		other {# členů}
+	}.
+'''
 team.error.too_few_members_simple: "Týmy v této kategorii musí mít více členů."
-team.error.too_many_members: "one: Týmy v kategorii %category% smí mít nejvýše %count% člena.|few: Týmy v kategorii %category% smí mít nejvýše %count% členy.|other: Týmy v kategorii %category% smí mít nejvýše %count% členů."
+team.error.too_many_members: '''
+	Týmy v kategorii {category} smí mít nejvýše {count, plural,
+		one {# člena}
+		few {# členy}
+		other {# členů}
+	}.
+'''
 team.error.too_many_members_simple: "Týmy v této kategorii musí mít méně členů."
 team.error.gender_mismatch: "Zvolená kategorie neodpovídá pohlaví členů týmu!"
 team.person.gender.label: "Pohlaví:"
 team.list: "Pro zobrazení čísla čipu SportIdent najeďte na člena týmu."
-home.contact_us_for_late_registration: 'Registrace už skončila, chcete-li se ještě registrovat, napište na adresu <a href="mailto:%mail%">%mail%</a>.'
+home.contact_us_for_late_registration: 'Registrace už skončila, chcete-li se ještě registrovat, napište na adresu <a href="mailto:{mail}">{mail}</a>.'
 home.contact_instructions: "Pokud najdete nějakou chybu, oznamte ji prosím na následující e-mail:"
 billing.invoice.title: "Faktura"
 billing.invoice.number: "Faktura č."
@@ -93,12 +105,12 @@ billing.invoice.subtotal: "Mezisoučet"
 team.success.edit: "Informace o týmu byly upraveny."
 team.error.edit_general: "Je nám líto, ale informace o týmu nemohly být upraveny. Zkuste to prosím později."
 team.error.add_general: "Je nám líto, ale váš tým nemohl být přidán. Zkuste to prosím později."
-team.person.label: "Člen týmu č. %count%:"
+team.person.label: "Člen týmu č. {count}:"
 team.info.label: "Informace o týmu:"
 team.list.empty: "V současné době nejsou v této kategorii registrovány žádné týmy."
 team.list.timestamp: "Čas"
-team.list.stats.count: "Celkový počet týmů: %count%"
-team.success.add: "Váš tým byl přidán. Podrobnosti byly zaslány na váš e-mail. Vaše heslo: %password%"
+team.list.stats.count: "Celkový počet týmů: {count}"
+team.success.add: "Váš tým byl přidán. Podrobnosti byly zaslány na váš e-mail. Vaše heslo: {password}"
 team.person.gender.male: "Muž"
 team.person.gender.female: "Žena"
 sign.in.error.incorrect_id: "Zadané ID týmu neexistuje."
@@ -113,7 +125,7 @@ team.data.country.unknown: "Neznámá země"
 team.error.late.title: "Příliš pozdě"
 team.error.early.title: "Příliš brzy"
 team.error.late: "Je nám líto, ale doba pro registrace či úpravy přihlášky již vypršela."
-team.error.early: "Je nám líto, ale přihlašování ještě nezačalo. Bude zahájeno %date%."
+team.error.early: "Je nám líto, ale přihlašování ještě nezačalo. Bude zahájeno {date}."
 date: "j. n. Y"
 email.verification.subject: "Potvrzení registrace"
 email.verification.entry_details.heading: "Detaily přihlášky:"
@@ -123,8 +135,8 @@ email.verification.entry_details.team.name: "Název týmu:"
 email.verification.entry_details.team.password: "Heslo:"
 email.verification.entry_details.team.category: "Kategorie:"
 email.verification.entry_details.message: "Zpráva:"
-email.verification.entry_details.person.heading: "%number%. člen týmu"
-email.verification.entry_details.person.heading.contact: "%number%. člen týmu (kontaktní osoba)"
+email.verification.entry_details.person.heading: "{number}. člen týmu"
+email.verification.entry_details.person.heading.contact: "{number}. člen týmu (kontaktní osoba)"
 email.verification.entry_details.person.name: "Jméno:"
 email.verification.entry_details.person.gender: "Pohlaví:"
 email.verification.entry_details.person.gender.male: "♂ Muž"
