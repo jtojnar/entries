@@ -57,9 +57,11 @@ class CommunicationPresenter extends BasePresenter {
 		$form->addText('subject', 'messages.communication.compose.subject.label')
 			->setRequired('messages.communication.compose.subject.error.empty');
 
-		$form->addTextArea('body', 'messages.communication.compose.body.label')
+		$body = $form->addTextArea('body', 'messages.communication.compose.body.label')
 			->setHtmlAttribute('rows', 15)
 			->setRequired('messages.communication.compose.body.error.empty');
+
+		$body->getControlPrototype()->class[] = 'codemirror';
 
 		$preview = $form->addSubmit('preview', 'messages.communication.compose.preview');
 		$enquee = $form->addSubmit('enqueue', 'messages.communication.compose.enqueue');
