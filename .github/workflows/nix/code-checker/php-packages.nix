@@ -128,7 +128,7 @@ in
 composerEnv.buildPackage {
   inherit packages devPackages noDev;
   name = "nette-code-checker";
-  src = ./.;
+  src = composerEnv.filterSrc ./.;
   executable = true;
   symlinkDependencies = false;
   meta = {};
