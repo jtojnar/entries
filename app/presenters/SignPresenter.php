@@ -8,6 +8,8 @@ use App;
 use Closure;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
+use Nette\Application\BadRequestException;
+use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Security\IAuthenticator;
 use Nette\Security\IUserStorage;
@@ -21,6 +23,12 @@ class SignPresenter extends BasePresenter {
 
 	/** @var App\Forms\FormFactory @inject */
 	public $formFactory;
+
+	/** @var App\Model\TeamManager @inject */
+	public $teamManager;
+
+	/** @var App\Model\TeamRepository @inject */
+	public $teams;
 
 	/**
 	 * Sign-in form factory.
@@ -71,5 +79,24 @@ class SignPresenter extends BasePresenter {
 		$this->user->logout(true);
 		$this->flashMessage($this->translator->translate('messages.sign.out.notice'));
 		$this->redirect('in');
+	}
+
+	public function actionAs(int $teamId): void {
+		if (!$this->user->isInRole('admin')) {
+			throw new ForbiddenRequestException();
+		}
+
+		$team = $this->teams->getById($teamId);
+		if ($team === null) {
+			throw new BadRequestException();
+		}
+
+		$identity = $this->teamManager->createUserIdentity($team);
+		$this->user->login($identity);
+
+		$this->flashMessage(
+			$this->translator->translate('messages.sign.as.notice', ['id' => $teamId])
+		);
+		$this->redirect('Homepage:');
 	}
 }
