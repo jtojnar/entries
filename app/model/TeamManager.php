@@ -9,7 +9,6 @@ use Nette\Security\AuthenticationException;
 use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
-use Nextras\Orm\Entity\ToArrayConverter;
 
 final class TeamManager implements Nette\Security\IAuthenticator {
 	use Nette\SmartObject;
@@ -60,12 +59,10 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 	}
 
 	public function createUserIdentity(Team $team): SimpleIdentity {
-		$arr = ToArrayConverter::toArray($team);
-		unset($arr['persons']);
-		unset($arr['password']);
-		unset($arr['invoices']);
-		unset($arr['lastInvoice']);
+		$data = [
+			'id' => $team->id,
+		];
 
-		return new SimpleIdentity($team->id, 'user', $arr);
+		return new SimpleIdentity($team->id, 'user', $data);
 	}
 }
