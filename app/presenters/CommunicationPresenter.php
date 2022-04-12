@@ -220,6 +220,7 @@ class CommunicationPresenter extends BasePresenter {
 					'messages.communication.compose.error.enqueue_failed',
 					[
 						'count' => \count($teams),
+						'error' => $e->getMessage(),
 					]
 				),
 				false,

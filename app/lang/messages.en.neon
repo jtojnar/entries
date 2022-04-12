@@ -95,10 +95,10 @@ communication.compose.error.unknown_id: '''
 	}
 '''
 communication.compose.error.enqueue_failed: '''
-	{count, plural,
-		one {Failed to enqueue a message for submission.}
-		other {Failed to enqueue messages for submission.}
-	}
+	Failed to enqueue {count, plural,
+		one {a message}
+		other {Failed to enqueue messages}
+	} for submission: {error}
 '''
 communication.compose.error.preview.template: "Error processing template: {error}"
 communication.list.title: "List of messages sent to team {id}"
