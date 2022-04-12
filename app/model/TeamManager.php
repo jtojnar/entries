@@ -56,6 +56,10 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 			$this->teams->persistAndFlush($team);
 		}
 
+		return $this->createUserIdentity($team);
+	}
+
+	public function createUserIdentity(Team $team): SimpleIdentity {
 		$arr = ToArrayConverter::toArray($team);
 		unset($arr['persons']);
 		unset($arr['password']);

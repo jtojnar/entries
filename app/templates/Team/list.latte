@@ -34,7 +34,8 @@
 		{if $team->status == $team::REGISTERED}
 			<a n:href="confirm $team->id">{_messages.team.list.entry.action.confirm}</a>
 		{/if}
-		<a n:href="edit $team->id">{_messages.team.list.entry.action.edit}</a>
+		<a n:href="edit $team->id">{_messages.team.list.entry.action.edit}</a><br>
+		<a n:href="Sign:as $team->id">{_messages.team.list.entry.action.sign_as}</a>
 		<a n:href="Communication:list $team->id">
 			{_messages.team.list.entry.action.list_communications, [
 				queued => $team->getMessagesByStatus(App\Model\Message::STATUS_QUEUED)->countStored(),
