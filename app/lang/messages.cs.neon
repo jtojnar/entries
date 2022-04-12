@@ -100,7 +100,7 @@ communication.compose.error.enqueue_failed: '''
 	Nepodařilo se přidat {count, plural,
 		one {zprávu}
 		other {zprávy}
-	} do fronty k odeslání.
+	} do fronty k odeslání: {error}
 '''
 communication.compose.error.preview.template: "Chyba v šabloně: {error}"
 communication.list.title: "Seznam zpráv odeslaných týmu {id}"
