@@ -1,5 +1,4 @@
 includes:
-	- ../vendor/johnstoncode/phpstan-moneyphp/extension.neon
 	- ../vendor/phpstan/phpstan-nette/extension.neon
 	- ../vendor/phpstan/phpstan-nette/rules.neon
 	- ../vendor/nextras/orm-phpstan/extension.neon
