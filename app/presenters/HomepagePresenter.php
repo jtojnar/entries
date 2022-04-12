@@ -37,13 +37,13 @@ class HomepagePresenter extends BasePresenter {
 		if ($this->user->isLoggedIn()) {
 			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
-			$template->status = $identity->status ?? null;
 
 			if (!$this->user->isInRole('admin')) {
 				$team = $this->teams->getById($identity->getId());
 				if ($team === null) {
 					$this->user->logout(true);
 				} else {
+					$template->status = $team->status;
 					$template->invoice = $team->lastInvoice;
 				}
 			}
