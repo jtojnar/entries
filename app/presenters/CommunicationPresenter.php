@@ -43,6 +43,9 @@ class CommunicationPresenter extends BasePresenter {
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
 
+	/** @var App\Model\TokenRepository @inject */
+	public $tokens;
+
 	/**
 	 * Message composition form factory.
 	 */
@@ -124,7 +127,8 @@ class CommunicationPresenter extends BasePresenter {
 		try {
 			foreach ($teams as $id => $team) {
 				\assert($team !== null); // For PHPStan.
-				$this->template->previewMessage = $this->renderMessageBody($team, $values['body']);
+				$grant = $this->tokens->createForTeam($team);
+				$this->template->previewMessage = $this->renderMessageBody($team, $grant, $values['body']);
 				break;
 			}
 		} catch (\Throwable $e) {
@@ -184,13 +188,18 @@ class CommunicationPresenter extends BasePresenter {
 		try {
 			foreach ($teams as $id => $team) {
 				\assert($team !== null); // For PHPStan.
+
+				$grant = $this->tokens->createForTeam($team);
+				$body = $this->renderMessageBody($team, $grant, $values['body']);
+
 				$message = new App\Model\Message();
 				$message->team = $team;
 				$message->subject = $values['subject'];
-				$message->body = $this->renderMessageBody($team, $values['body']);
+				$message->body = $body;
 				$this->messages->persist($message);
 			}
 
+			$this->tokens->flush();
 			$this->messages->flush();
 			$this->flashMessage(
 				$this->translator->translate(
@@ -218,7 +227,7 @@ class CommunicationPresenter extends BasePresenter {
 		}
 	}
 
-	private function renderMessageBody(Team $team, string $message): string {
+	private function renderMessageBody(Team $team, string $grant, string $message): string {
 		$latte = $this->latteFactory->create();
 		// /** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
 		$latte->setLoader(new Latte\Loaders\StringLoader([
@@ -244,6 +253,7 @@ class CommunicationPresenter extends BasePresenter {
 				?? throw new \PHPStan\ShouldNotHappenException(),
 				invoice: $team->lastInvoice,
 				organiserMail: $this->context->parameters['webmasterEmail'],
+				grant: $grant,
 			),
 		);
 
@@ -292,8 +302,11 @@ class CommunicationPresenter extends BasePresenter {
 	}
 
 	public function actionView(int $id): void {
-		/** @var \Nette\Security\SimpleIdentity $identity */
-		$identity = $this->user->identity;
+		$authorizedTeams = [];
+
+		if (($grant = $this->request->getQuery('grant')) !== null && \assert(\is_string($grant)) && ($team = $this->tokens->getAllowedTeam($grant)) !== null) { // Assertion for PHPStan.
+			$authorizedTeams[] = $team->id;
+		}
 
 		$message = $this->messages->getById($id);
 
@@ -301,7 +314,18 @@ class CommunicationPresenter extends BasePresenter {
 			throw new BadRequestException();
 		}
 
-		if (!$this->user->isInRole('admin') && $identity->id !== $message->team->id) {
+		if ($this->user->isLoggedIn()) {
+			/** @var Nette\Security\SimpleIdentity $identity */
+			$identity = $this->user->identity;
+
+			if ($this->user->isInRole('admin')) {
+				$authorizedTeams[] = $message->team->id;
+			} else {
+				$authorizedTeams[] = $identity->id;
+			}
+		}
+
+		if (!\in_array($message->team->id, $authorizedTeams, true)) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}

@@ -21,22 +21,39 @@ class InvoicePresenter extends BasePresenter {
 	/** @var App\Model\InvoiceRepository @inject */
 	public $invoices;
 
-	public function renderShow(int $id): void {
-		if (!$this->user->isLoggedIn()) {
-			throw new ForbiddenRequestException();
-		}
+	/** @var \Nette\Http\Request @inject */
+	public $request;
 
-		/** @var Nette\Security\SimpleIdentity $identity */
-		$identity = $this->user->identity;
+	/** @var App\Model\TokenRepository @inject */
+	public $tokens;
+
+	public function renderShow(int $id): void {
+		$authorizedTeams = [];
+
+		if (($grant = $this->request->getQuery('grant')) !== null && \assert(\is_string($grant)) && ($team = $this->tokens->getAllowedTeam($grant)) !== null) { // Assertion for PHPStan.
+			$authorizedTeams[] = $team->id;
+		}
 
 		/** @var Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
-
 		$template->invoice = $this->invoices->getById($id);
 
-		if (!$template->invoice) {
+		if ($template->invoice === null) {
 			throw new BadRequestException();
-		} elseif (!$this->user->isInRole('admin') && $identity->id !== $template->invoice->team->id) {
+		}
+
+		if ($this->user->isLoggedIn()) {
+			/** @var Nette\Security\SimpleIdentity $identity */
+			$identity = $this->user->identity;
+
+			if ($this->user->isInRole('admin')) {
+				$authorizedTeams[] = $template->invoice->team->id;
+			} else {
+				$authorizedTeams[] = $identity->id;
+			}
+		}
+
+		if (!\in_array($template->invoice->team->id, $authorizedTeams, true)) {
 			throw new ForbiddenRequestException();
 		}
 

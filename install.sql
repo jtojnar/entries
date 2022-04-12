@@ -266,3 +266,14 @@ CREATE TABLE `message` (
   `body` text NOT NULL,
   FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
 ) ENGINE='InnoDB' COLLATE 'utf8mb4_unicode_ci';
+
+
+DROP TABLE IF EXISTS `token`;
+CREATE TABLE `token` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `team_id` int(11) NOT NULL,
+  `hash` varchar(255) NOT NULL,
+  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`),
+  INDEX `hash` (`hash`)
+) ENGINE='InnoDB';
