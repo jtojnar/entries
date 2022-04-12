@@ -25,6 +25,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property OneHasMany|Person[] $persons {1:m Person::$team}
  * @property OneHasMany|Invoice[] $invoices {1:m Invoice::$team}
  * @property OneHasMany|Message[] $messages {1:m Message::$team}
+ * @property OneHasMany|Token[] $tokens {1:m Token::$team}
  * @property Invoice $lastInvoice {virtual}
  */
 class Team extends Entity {

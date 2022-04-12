@@ -14,6 +14,7 @@ use Nextras\Orm\Model\Model;
  * @property CountryRepository $countries
  * @property InvoiceRepository $invoices
  * @property MessageRepository $messages
+ * @property TokenRepository $tokens
  */
 class Orm extends Model {
 }

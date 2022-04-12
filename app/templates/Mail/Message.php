@@ -22,6 +22,7 @@ class Message {
 		public string $name,
 		public Invoice $invoice,
 		public string $organiserMail,
+		public string $grant,
 	) {
 	}
 }
