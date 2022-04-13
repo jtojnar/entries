@@ -37,4 +37,8 @@
 {else}
 <p>{_messages.communication.list.empty}</p>
 {/if}
+
+<p>
+	<a n:href="compose, ids => $team->id">{_messages.communication.list.compose_new}</a>
+</p>
 {/block}
