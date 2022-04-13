@@ -131,7 +131,12 @@ class CommunicationPresenter extends BasePresenter {
 			foreach ($teams as $id => $team) {
 				\assert($team !== null); // For PHPStan.
 				$grant = $this->tokens->createForTeam($team);
-				$this->template->previewMessage = $this->renderMessageBody($team, $grant, $values['body']);
+				$this->template->previewMessage = $this->renderMessageBody(
+					team: $team,
+					subject: $values['subject'],
+					grant: $grant,
+					body: $values['body'],
+				);
 				break;
 			}
 		} catch (\Throwable $e) {
@@ -157,6 +162,7 @@ class CommunicationPresenter extends BasePresenter {
 
 		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
 		$values = $form->getValues();
+		$subject = $values['subject'];
 
 		/** @var int[] */
 		$teamsIds = with(explode(',', $values['recipients']))
@@ -193,11 +199,16 @@ class CommunicationPresenter extends BasePresenter {
 				\assert($team !== null); // For PHPStan.
 
 				$grant = $this->tokens->createForTeam($team);
-				$body = $this->renderMessageBody($team, $grant, $values['body']);
+				$body = $this->renderMessageBody(
+					team: $team,
+					subject: $subject,
+					grant: $grant,
+					body: $values['body'],
+				);
 
 				$message = new App\Model\Message();
 				$message->team = $team;
-				$message->subject = $values['subject'];
+				$message->subject = $subject;
 				$message->body = $body;
 				$this->messages->persist($message);
 			}
@@ -231,17 +242,22 @@ class CommunicationPresenter extends BasePresenter {
 		}
 	}
 
-	private function renderMessageBody(Team $team, string $grant, string $message): string {
+	private function renderMessageBody(Team $team, string $subject, string $grant, string $body): string {
 		$latte = $this->latteFactory->create();
-		// /** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
+
+		$appDir = $this->context->parameters['appDir'];
+		$layout = file_get_contents($appDir . '/templates/Mail/@layout.latte');
+		\assert(\is_string($layout));
+
 		$latte->setLoader(new Latte\Loaders\StringLoader([
-			'message.latte' => $message,
+			'@layout.latte' => $layout,
+			'message.latte' => '{layout @layout.latte}{block body}' . $body . '{/block}',
 		]));
 
 		$latte->addProvider('uiControl', $this->linkGenerator);
 		Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
 
-		$mtemplate = $latte->renderToString(
+		$messageHtml = $latte->renderToString(
 			'message.latte',
 			new App\Templates\Mail\Message(
 				// Define variables for use in the e-mail template.
@@ -260,6 +276,7 @@ class CommunicationPresenter extends BasePresenter {
 				?? throw new \PHPStan\ShouldNotHappenException(),
 				invoice: $team->lastInvoice,
 				organiserMail: $this->context->parameters['webmasterEmail'],
+				subject: $subject,
 				grant: $grant,
 			),
 		);
@@ -267,7 +284,6 @@ class CommunicationPresenter extends BasePresenter {
 		$appDir = $this->context->parameters['appDir'];
 
 		// Inline styles into the e-mail
-		$messageHtml = $mtemplate;
 		$domDocument = CssInliner::fromHtml($messageHtml)
 			->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
 			->getDomDocument();
