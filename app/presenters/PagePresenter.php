@@ -29,19 +29,26 @@ class PagePresenter extends BasePresenter {
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
 
+	/** @var App\Model\TokenRepository @inject */
+	public $tokens;
+
 	protected function startup(): void {
 		parent::startup();
 
-		if (!$this->user->isLoggedIn() || $this->user->isInRole('admin')) {
-			$this->redirect('Sign:in');
+		$team = null;
+
+		if ($this->user->isLoggedIn() && !$this->user->isInRole('admin')) {
+			/** @var \Nette\Security\SimpleIdentity $identity */
+			$identity = $this->user->identity;
+			$team = $this->teams->getById($identity->getId());
 		}
 
-		/** @var \Nette\Security\SimpleIdentity $identity */
-		$identity = $this->user->identity;
-		$team = $this->teams->getById($identity->getId());
+		if (($grant = $this->request->getQuery('grant')) !== null && \assert(\is_string($grant))) { // Assertion for PHPStan.
+			// Granted team takes precedence.
+			$team = $this->tokens->getAllowedTeam($grant);
+		}
 
 		if ($team === null) {
-			$this->user->logout(true);
 			$this->redirect('Sign:in');
 		}
 
@@ -55,6 +62,7 @@ class PagePresenter extends BasePresenter {
 		$this->template->dateFormat = $this->translator->translate('messages.email.verification.entry_details.person.birth.format');
 		$this->template->team = $team;
 		$this->template->people = $team->persons;
+		$this->template->grant = $this->request->getQuery('grant');
 		$this->template->id = $team->id;
 		$this->template->name = iterator_to_array($team->persons)[0]->firstname
 		?? throw new \PHPStan\ShouldNotHappenException();

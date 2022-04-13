@@ -1,0 +1,27 @@
+{define title}{if $locale == 'cs'}Instrukce k zaplacení{else}Payment instructions{/if}{/define}
+
+{block content}
+
+<p>The total amount to pay is <strong>{$invoice->getTotal()|price}</strong>.</p>
+<p>We haven´t managed to arrange suitable Payment Gateway (all addressed companies intended to withhold 100 % of the transfered money up to the date of the WRC 2022 event). With regard to the expensive trasaction cost of the transfer from overseas we have decided to let all the overseas participants to pay at the event registration desk.</p>
+<p>Therefore you can choose from the following payment options:</p>
+<ul>
+	<li>
+		<p>
+			If you have a Bank Account in Europe, please send the total amount of <strong>{$invoice->getTotal()|price}</strong> to&nbsp;the bank account:<br>
+			Bank address: Česká spořitelna, a.s., Olbrachtova 1929/62, Praha 4, PSČ 140 00, Czech Republic<br>
+			BIC (=SWIFT): GIBACZPX<br>
+			IBAN: CZ0508000000002107625253<br>
+			Account owner: Czech Rogaining association
+		</p>
+		<p>Write the variable symbol <strong>{$id}</strong> in the “Reason for payment” section. You have to pay an amount, such that the correct amount of EUR arrives in our account. You can look up exchange rates on the <a href="https://www.csas.cz/en/exchange-rates#/type/NONCASH/from/CZK/to/EUR" target="_blank">web page of our bank</a>. If you pay in EUR, our bank does not take any fee.&nbsp;If you pay in any other currency add 100 CZK (4 EUR) for bank fee of our bank.</p>
+	</li>
+	<li>
+		<p>If you have a Czech Bank Account, please send the total amount of <strong>{$invoice->getTotal()|exchangeCurrency:'CZK'|price}</strong> with&nbsp;reference number (variabilní symbol) <strong>{$id}</strong> to the&nbsp;bank account of&nbsp;the Czech Rogaining association: <strong>721206359/0800</strong>.</p>
+	</li>
+	<li>
+		<p>If you have neither, you can pay in cash at the event registration desk.</p>
+	</li>
+</ul>
+<p>Your entry will be fully accepted then.</p>
+<p>You can check <a n:href="Invoice:show, $invoice->id, grant => $grant">entry fee statement</a>.</p>
