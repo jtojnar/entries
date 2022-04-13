@@ -11,6 +11,9 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Bank account number in the e-mails can be customized, reducing the need to muck with the templates. See the [`accountNumber`](docs/configuration.md#accountNumber) option.
 - E-Mail messages can now be modified by placing overrides in the config directory. See [documentation](docs/customizing-emails.md).
 - Implement cache busting strategy for assets.
+- Added ability to send messages to teams.
+- Added currency exchange filter for templates.
+- Added ability for admin to log in as a team.
 
 ### Bugs fixed
 
