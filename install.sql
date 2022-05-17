@@ -209,7 +209,8 @@ INSERT INTO `country` (`id`, `name`, `code`, `aliases`, `europe`) VALUES
 (191,	'Yemen',	'ye',	'',	0),
 (192,	'Zambia',	'zm',	'',	0),
 (193,	'Zimbabwe',	'zw',	'',	0),
-(194,	'Catalonia',	'es-ct',	'',	1);
+(194,	'Catalonia',	'es-ct',	'',	1),
+(195, 'Unaffiliated', 'xx', '', '0');
 
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
