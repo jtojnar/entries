@@ -26,68 +26,91 @@ parameters:
 			currency: EUR
 			person: 80
 		categories:
-			MY:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age<23)'
-			WY:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age<23)'
-			XY:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age<23)'
-			MO:
-				constraints:
-					- 'all(gender=male)'
-			WO:
-				constraints:
-					- 'all(gender=female)'
-			XO:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-			MV:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>=40)'
-			WV:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age>=40)'
-			XV:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age>=40)'
-			MSV:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>=55)'
-			WSV:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age>=55)'
-			XSV:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age>=55)'
-			MUV:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>=65)'
-			WUV:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age>=65)'
-			XUV:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age>=65)'
+			24:
+				label:
+					cs: 'Mistrovství světa (24 hodin)'
+					en: 'World championships (24 hours)'
+				categories:
+					MY:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age<23)'
+					WY:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age<23)'
+					XY:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age<23)'
+					MO:
+						constraints:
+							- 'all(gender=male)'
+					WO:
+						constraints:
+							- 'all(gender=female)'
+					XO:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+					MV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=40)'
+					WV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=40)'
+					XV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=40)'
+					MSV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=55)'
+					WSV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=55)'
+					XSV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=55)'
+					MUV:
+						constraints:
+							- 'all(gender=male)'
+							- 'all(age>=65)'
+					WUV:
+						constraints:
+							- 'all(gender=female)'
+							- 'all(age>=65)'
+					XUV:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
+							- 'all(age>=65)'
+			6:
+				label:
+					cs: 'Doprovodný závod (šestihodinový rogaining)'
+					en: 'Side event (six-hour rogaine)'
+				fees:
+					currency: EUR
+					person: 30
+				categories:
+					MO6:
+						constraints:
+							- 'all(gender=male)'
+					WO6:
+						constraints:
+							- 'all(gender=female)'
+					XO6:
+						constraints:
+							- 'some(gender=male)'
+							- 'some(gender=female)'
 		fields:
 			person:
 				country:
