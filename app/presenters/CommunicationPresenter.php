@@ -63,6 +63,11 @@ class CommunicationPresenter extends BasePresenter {
 		$form->addText('subject', 'messages.communication.compose.subject.label')
 			->setRequired('messages.communication.compose.subject.error.empty');
 
+		$organiserMail = $this->context->parameters['webmasterEmail'];
+		$form->addEmail('sender', 'messages.communication.compose.sender.label')
+			->setRequired('messages.communication.compose.sender.error.empty')
+			->setDefaultValue($organiserMail);
+
 		$body = $form->addTextArea('body', 'messages.communication.compose.body.label')
 			->setHtmlAttribute('rows', 15)
 			->setRequired('messages.communication.compose.body.error.empty');
@@ -209,6 +214,7 @@ class CommunicationPresenter extends BasePresenter {
 				$message = new App\Model\Message();
 				$message->team = $team;
 				$message->subject = $subject;
+				$message->sender = $values['sender'];
 				$message->body = $body;
 				$this->messages->persist($message);
 			}
@@ -362,7 +368,6 @@ class CommunicationPresenter extends BasePresenter {
 		}
 
 		$appDir = $this->context->parameters['appDir'];
-		$organiserMail = $this->context->parameters['webmasterEmail'];
 
 		$total = null;
 		$count = 0;
@@ -387,7 +392,7 @@ class CommunicationPresenter extends BasePresenter {
 
 				$mail = new Nette\Mail\Message();
 				$firstMemberAddress = iterator_to_array($message->team->persons)[0]->email;
-				$mail->setFrom($organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
+				$mail->setFrom($message->sender)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
 
 				$mailer = $this->mailer;
 				$mailer->send($mail);

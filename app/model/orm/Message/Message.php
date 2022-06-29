@@ -14,6 +14,7 @@ use Nextras\Orm\Entity\Entity;
  * @property \DateTimeImmutable $timestamp {default now}
  * @property Team $team {m:1 Team::$messages}
  * @property string $subject
+ * @property string $sender
  * @property string $body
  */
 class Message extends Entity {
