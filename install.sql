@@ -278,3 +278,6 @@ CREATE TABLE `token` (
   FOREIGN KEY (`team_id`) REFERENCES `team` (`id`),
   INDEX `hash` (`hash`)
 ) ENGINE='InnoDB';
+
+ALTER TABLE `message`
+ADD COLUMN `sender` varchar(250) COLLATE 'utf8mb4_unicode_ci' NOT NULL AFTER `subject`;
