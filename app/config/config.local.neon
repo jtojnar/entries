@@ -99,7 +99,7 @@ parameters:
 					en: 'Side event (six-hour rogaine)'
 				fees:
 					currency: EUR
-					person: 30
+					person: 40
 				categories:
 					MO6:
 						constraints:
