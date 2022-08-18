@@ -11,7 +11,8 @@ use Nextras\Orm\Entity\Entity;
  *
  * @property int $id {primary}
  * @property string $name
- * @property string $code
+ * @property string $codeIoc
+ * @property string $codeAlpha2
  * @property string $aliases
  * @property bool $europe
  */

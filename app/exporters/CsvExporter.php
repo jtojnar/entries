@@ -139,7 +139,7 @@ class CsvExporter implements IExporter {
 			if ($f) {
 				if ($field['type'] === 'country') {
 					$country = $this->countries->getByIdChecked($f);
-					$row[$prefix . $name] = $country->name;
+					$row[$prefix . $name] = $country->codeIoc;
 				} elseif ($field['type'] === 'checkboxlist') {
 					foreach ($field['items'] as $itemKey => $_) {
 						$row[$prefix . $name . '-' . $itemKey] = \in_array($itemKey, $f, true);
