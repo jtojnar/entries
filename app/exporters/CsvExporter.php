@@ -8,6 +8,7 @@ use App;
 use App\Helpers\CsvWriter;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
+use Helpers\CountryCodes;
 use Nextras\Orm\Collection\ICollection;
 use function nspl\a\map;
 use function nspl\a\reduce;
@@ -139,7 +140,7 @@ class CsvExporter implements IExporter {
 			if ($f) {
 				if ($field['type'] === 'country') {
 					$country = $this->countries->getByIdChecked($f);
-					$row[$prefix . $name] = $country->name;
+					$row[$prefix . $name] = CountryCodes::alpha2ToIoc($country->code);
 				} elseif ($field['type'] === 'checkboxlist') {
 					foreach ($field['items'] as $itemKey => $_) {
 						$row[$prefix . $name . '-' . $itemKey] = \in_array($itemKey, $f, true);
