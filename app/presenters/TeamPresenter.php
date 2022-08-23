@@ -93,8 +93,11 @@ class TeamPresenter extends BasePresenter {
 				case 'registered':
 					$where['status'] = 'registered';
 					break;
-				default:
 			}
+		}
+
+		if (!isset($where['status'])) {
+			$where['status!='] = 'withdrawn';
 		}
 
 		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
@@ -176,7 +179,10 @@ class TeamPresenter extends BasePresenter {
 			case 'registered':
 				$where['status'] = 'registered';
 				break;
+			case 'all':
+				break;
 			default:
+				$where['status!='] = 'withdrawn';
 		}
 
 		$teams = $this->teams->findBy($where);

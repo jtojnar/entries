@@ -16,7 +16,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $name
  * @property string $category
  * @property string $message
- * @property string $status {default registered} {enum self::REGISTERED, self::PAID}
+ * @property string $status {default registered} {enum self::REGISTERED, self::PAID, self::WITHDRAWN}
  * @property \DateTimeImmutable $timestamp {default now}
  * @property array $jsonData {virtual}
  * @property string $details
@@ -31,6 +31,7 @@ use Nextras\Orm\Relationships\OneHasMany;
 class Team extends Entity {
 	public const REGISTERED = 'registered';
 	public const PAID = 'paid';
+	public const WITHDRAWN = 'withdrawn';
 
 	/**
 	 * @return \stdClass

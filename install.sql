@@ -235,7 +235,7 @@ CREATE TABLE `team` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('registered','paid') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'registered',
+  `status` enum('registered','paid','withdrawn') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'registered',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `details` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `ip` varchar(39) COLLATE utf8mb4_unicode_ci NOT NULL,
