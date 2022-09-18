@@ -376,6 +376,7 @@ class CommunicationPresenter extends BasePresenter {
 				'status' => App\Model\Message::STATUS_QUEUED,
 			]);
 
+			/** @throws \Exception */
 			$total = $messages->countStored();
 
 			foreach ($messages as $message) {
