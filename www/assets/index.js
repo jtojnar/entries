@@ -13,7 +13,7 @@ netteForms.initOnLoad();
 nextrasForms.register(netteForms);
 changeFormSubmit.register();
 checkboxes.register();
-form.register();
+form.register(netteForms);
 formWarnings.register();
 icons.register();
 list.register();

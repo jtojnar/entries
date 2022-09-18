@@ -1,5 +1,6 @@
 import { EditorView, basicSetup } from 'codemirror';
 import { html } from '@codemirror/lang-html';
+import { PRESUBMIT_EVENT } from './form';
 
 function editorFromTextArea(textarea, extensions) {
 	let view = new EditorView({
@@ -11,7 +12,7 @@ function editorFromTextArea(textarea, extensions) {
 	textarea.style.display = 'none';
 
 	if (textarea.form) {
-		textarea.form.addEventListener('submit', () => {
+		textarea.form.addEventListener(PRESUBMIT_EVENT, (event) => {
 			textarea.value = view.state.doc.toString();
 		});
 	}

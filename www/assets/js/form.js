@@ -1,5 +1,7 @@
 import selectParent from 'select-parent';
 
+export const PRESUBMIT_EVENT = 'nette-presubmit';
+
 function categoryChanged(categoryField, conditionalFields) {
 	const category = categoryField.value;
 	conditionalFields.forEach(({formGroup, categories}) => {
@@ -7,7 +9,7 @@ function categoryChanged(categoryField, conditionalFields) {
 	});
 }
 
-export function register() {
+export function register(Nette) {
 	document.addEventListener('DOMContentLoaded', (event) => {
 		const categoryField = document.getElementById('frm-teamForm-category');
 
@@ -23,4 +25,12 @@ export function register() {
 			categoryChanged(categoryField, conditionalFields);
 		}
 	});
+
+	// Allow attaching callbacks to run before form validation.
+	const originalValidateForm = Nette.validateForm;
+	Nette.validateForm = function(sender, onlyCheck) {
+		const form = sender.form || sender
+		form.dispatchEvent(new Event(PRESUBMIT_EVENT));
+		return originalValidateForm(sender, onlyCheck);
+	};
 }
