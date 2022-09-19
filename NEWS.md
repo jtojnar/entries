@@ -36,7 +36,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - URLs with ynknown locales are now redirected to the default one.
 - Translated the sign in error messages and made them report incorrect password for admin correctly.
 - `admin` field for admin password has been renamed to `adminPassword` and moved directly to `parameters` section.
-- `config.local.neon` is now included in the source tree, instead of the examples.
+- `config.local.neon` was renamed to `local.neon` and is now included in the source tree, instead of examples.
 - Reduce discrepancied between Czech and English verification e-mails.
 - Improve docs about category constraints.
 - Use default session storage path instead of `temp/sessions/`.

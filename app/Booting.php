@@ -14,9 +14,9 @@ final class Booting {
 		$configurator->setTimeZone('UTC');
 		$configurator->setTempDirectory(__DIR__ . '/../temp');
 		$configurator
-			->addConfig(__DIR__ . '/config/config.neon');
+			->addConfig(__DIR__ . '/config/common.neon');
 		$configurator
-			->addConfig(__DIR__ . '/config/config.local.neon');
+			->addConfig(__DIR__ . '/config/local.neon');
 		if (file_exists(__DIR__ . '/config/private.neon')) {
 			$configurator->addConfig(__DIR__ . '/config/private.neon');
 		}
