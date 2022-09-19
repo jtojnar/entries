@@ -54,10 +54,10 @@ class SportidentControl extends BaseControl {
 				$translator = $this->getTranslator();
 
 				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
-				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2000001, 2999999]); // @ - negative rules are deprecated
+				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2_000_001, 2_999_999]); // @ - negative rules are deprecated
 
 				if ($recommendedCardCapacity > 50) {
-					@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1000000, 1999999]); // @ - negative rules are deprecated
+					@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1_000_000, 1_999_999]); // @ - negative rules are deprecated
 				}
 
 				if ($recommendedCardCapacity > 64) {

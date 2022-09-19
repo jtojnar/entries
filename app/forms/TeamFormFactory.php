@@ -22,19 +22,15 @@ use function nspl\a\last;
 final class TeamFormFactory {
 	use Nette\SmartObject;
 
-	/** @var CategoryData */
-	private $categories;
-
 	/** @var array */
 	public $parameters;
 
-	/** @var Translator */
-	private $translator;
-
-	public function __construct(CategoryData $categories, Nette\DI\Container $context, Translator $translator) {
-		$this->categories = $categories;
+	public function __construct(
+		private CategoryData $categories,
+		Nette\DI\Container $context,
+		private Translator $translator
+	) {
 		$this->parameters = $context->parameters['entries'];
-		$this->translator = $translator;
 	}
 
 	public function create(array $countries, string $locale, bool $editing = false, IContainer $parent = null, string $name = null): TeamForm {

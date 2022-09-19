@@ -63,12 +63,22 @@ class Invoice extends Entity {
 	}
 
 	public function getTotal(array $filter = null): Money {
-		$relevantItems = $filter === null ? $this->items : array_filter($this->items, function(string $name) use ($filter): bool {
-			return \in_array($name, $filter, true);
-		}, \ARRAY_FILTER_USE_KEY);
+		$relevantItems =
+			$filter === null
+			? $this->items
+			: array_filter(
+				$this->items,
+				fn(string $name): bool => \in_array($name, $filter, true),
+				\ARRAY_FILTER_USE_KEY
+			);
 
-		return Money::sum(...array_values(array_map(function(InvoiceItem $item): Money {
-			return $item->price->multiply($item->amount);
-		}, $relevantItems)));
+		return Money::sum(
+			...array_values(
+				array_map(
+					fn(InvoiceItem $item): Money => $item->price->multiply($item->amount),
+					$relevantItems
+				)
+			)
+		);
 	}
 }

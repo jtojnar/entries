@@ -62,16 +62,12 @@ class InvoicePresenter extends BasePresenter {
 	}
 
 	private function formatInvoiceStatus(string $status): string {
-		switch ($status) {
-			case Invoice::STATUS_CANCELLED:
-				return 'messages.billing.invoice.status.cancelled';
-			case Invoice::STATUS_NEW:
-				return 'messages.billing.invoice.status.new';
-			case Invoice::STATUS_PAID:
-				return 'messages.billing.invoice.status.paid';
-			default:
-				throw new \PHPStan\ShouldNotHappenException();
-		}
+		return match ($status) {
+			Invoice::STATUS_CANCELLED => 'messages.billing.invoice.status.cancelled',
+			Invoice::STATUS_NEW => 'messages.billing.invoice.status.new',
+			Invoice::STATUS_PAID => 'messages.billing.invoice.status.paid',
+			default => throw new \PHPStan\ShouldNotHappenException(),
+		};
 	}
 
 	private function itemLabel(string $item): string {

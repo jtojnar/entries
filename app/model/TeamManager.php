@@ -13,19 +13,12 @@ use Nette\Security\SimpleIdentity;
 final class TeamManager implements Nette\Security\IAuthenticator {
 	use Nette\SmartObject;
 
-	/** @var TeamRepository */
-	private $teams;
-
-	/** @var string administrator password */
-	private $adminPassword;
-
-	/** @var Passwords */
-	private $passwords;
-
-	public function __construct(string $adminPassword, TeamRepository $teams, Passwords $passwords) {
-		$this->teams = $teams;
-		$this->adminPassword = $adminPassword;
-		$this->passwords = $passwords;
+	public function __construct(
+		/** @var string administrator password */
+		private string $adminPassword,
+		private TeamRepository $teams,
+		private Passwords $passwords,
+	) {
 	}
 
 	/**

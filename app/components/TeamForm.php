@@ -15,20 +15,15 @@ use Nette\Utils\Json;
  * Form for creating and editing teams.
  */
 class TeamForm extends UI\Form {
-	/** @var array<string, string> */
-	private $countries;
-
-	/** @var array */
-	private $parameters;
-
-	/** @var string */
-	private $locale;
-
-	public function __construct(array $countries, array $parameters, string $locale, IContainer $parent = null, string $name = null) {
+	public function __construct(
+		/** @var array<string, string> */
+		private array $countries,
+		private array $parameters,
+		private string $locale,
+		IContainer $parent = null,
+		string $name = null,
+	) {
 		parent::__construct($parent, $name);
-		$this->countries = $countries;
-		$this->parameters = $parameters;
-		$this->locale = $locale;
 	}
 
 	public function onRender(): void {
@@ -132,9 +127,10 @@ class TeamForm extends UI\Form {
 		} else {
 			$label = new NotTranslate($name . ':');
 		}
-		$options = array_map(function(array $option) use ($locale): string {
-			return $option['label'][$locale];
-		}, $field['options']);
+		$options = array_map(
+			fn(array $option): string => $option['label'][$locale],
+			$field['options']
+		);
 
 		$default = $this->getDefaultFieldValue($field);
 

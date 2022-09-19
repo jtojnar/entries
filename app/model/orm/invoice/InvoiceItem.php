@@ -17,19 +17,11 @@ use Nette;
 final class InvoiceItem implements \JsonSerializable {
 	use Nette\SmartObject;
 
-	/** @var string */
-	private $name;
-
-	/** @var Money */
-	private $price;
-
-	/** @var int */
-	private $amount;
-
-	public function __construct(string $name, Money $price, int $amount) {
-		$this->name = $name;
-		$this->price = $price;
-		$this->amount = $amount;
+	public function __construct(
+		private string $name,
+		private Money $price,
+		private int $amount,
+	) {
 	}
 
 	public function getName(): string {

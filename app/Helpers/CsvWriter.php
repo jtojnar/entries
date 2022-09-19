@@ -9,20 +9,16 @@ use SplFileObject;
 
 class CsvWriter {
 	/**
-	 * @var SplFileObject
-	 */
-	private $file;
-
-	/**
 	 * @var string[]
 	 */
-	private $columns = [];
+	private array $columns = [];
 
 	/**
 	 * @param SplFileObject $file handle to write the CSV file to
 	 */
-	public function __construct(SplFileObject $file) {
-		$this->file = $file;
+	public function __construct(
+		private SplFileObject $file,
+	) {
 	}
 
 	/**
@@ -30,7 +26,7 @@ class CsvWriter {
 	 *
 	 * @param string|string[] $columns
 	 */
-	public function addColumns($columns): void {
+	public function addColumns(string|array $columns): void {
 		if (\is_string($columns)) {
 			$columns = [$columns];
 		}
@@ -57,9 +53,12 @@ class CsvWriter {
 			}
 		}
 
-		$result = $this->file->fputcsv(array_map(function($column) use ($data) {
-			return $data[$column] ?? '';
-		}, $this->columns));
+		$result = $this->file->fputcsv(
+			array_map(
+				fn($column) => $data[$column] ?? '',
+				$this->columns
+			)
+		);
 
 		if ($result === false) {
 			throw new Exception('Error writing in CSV file.');

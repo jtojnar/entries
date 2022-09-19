@@ -6,6 +6,7 @@ namespace App\Exporters;
 
 use App;
 use App\Helpers\CsvWriter;
+use App\Model\Person;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
@@ -31,30 +32,14 @@ use SplFileObject;
  * (i.e. either registered, or paid).
  */
 class CsvExporter implements IExporter {
-	/** @var Team[]|ICollection */
-	private $teams;
-
-	/** @var App\Model\CountryRepository */
-	private $countries;
-
-	/** @var array */
-	private $teamFields;
-
-	/** @var array */
-	private $personFields;
-
-	/** @var CategoryFormatFilter */
-	private $categoryFormatter;
-
-	/**
-	 * @param Team[]|ICollection $teams
-	 */
-	public function __construct(ICollection $teams, App\Model\CountryRepository $countries, array $teamFields, array $personFields, CategoryFormatFilter $categoryFormatter) {
-		$this->teams = $teams;
-		$this->countries = $countries;
-		$this->teamFields = $teamFields;
-		$this->personFields = $personFields;
-		$this->categoryFormatter = $categoryFormatter;
+	public function __construct(
+		/** @var ICollection<Team> $teams */
+		private ICollection $teams,
+		private App\Model\CountryRepository $countries,
+		private array $teamFields,
+		private array $personFields,
+		private CategoryFormatFilter $categoryFormatter,
+	) {
 	}
 
 	public function getMimeType(): string {
@@ -65,17 +50,22 @@ class CsvExporter implements IExporter {
 		$file = new SplFileObject('php://output', 'a');
 		$writer = new CsvWriter($file);
 		$writer->addColumns(['#', 'name', 'registered', 'category', 'message']);
-		$maxMembers = reduce(function($maximum, $personsCount) {
-			return max($maximum, $personsCount);
-		}, map(function($team) {
-			return $team->persons->count();
-		}, $this->teams));
+		$maxMembers = reduce(
+			fn($maximum, $personsCount) => max($maximum, $personsCount),
+			map(
+				fn($team) => $team->persons->count(),
+				$this->teams
+			)
+		);
 
 		foreach ($this->teamFields as $name => $field) {
 			if ($field['type'] === 'checkboxlist') {
-				$writer->addColumns(array_map(function($itemKey) use ($name) {
-					return $name . '-' . $itemKey;
-				}, array_keys($field['items'])));
+				$writer->addColumns(
+					array_map(
+						fn($itemKey) => $name . '-' . $itemKey,
+						array_keys($field['items'])
+					)
+				);
 			} else {
 				$writer->addColumns($name);
 			}
@@ -90,9 +80,12 @@ class CsvExporter implements IExporter {
 			]);
 			foreach ($this->personFields as $name => $field) {
 				if ($field['type'] === 'checkboxlist') {
-					$writer->addColumns(array_map(function($itemKey) use ($i, $name) {
-						return 'm' . $i . $name . '-' . $itemKey;
-					}, array_keys($field['items'])));
+					$writer->addColumns(
+						array_map(
+							fn($itemKey) => 'm' . $i . $name . '-' . $itemKey,
+							array_keys($field['items'])
+						)
+					);
 				} else {
 					$writer->addColumns('m' . $i . $name);
 				}
@@ -128,13 +121,14 @@ class CsvExporter implements IExporter {
 		exit;
 	}
 
-	/**
-	 * @param App\Model\Team|App\Model\Person $container
-	 */
-	private function addCustomFields(array $fields, $container, string $prefix = ''): array {
+	private function addCustomFields(
+		array $fields,
+		Person|Team $container,
+		string $prefix = '',
+	): array {
 		$row = [];
 		foreach ($fields as $name => $field) {
-			$f = isset($container->getJsonData()->$name) ? $container->getJsonData()->$name : null;
+			$f = $container->getJsonData()->$name ?? null;
 			if ($f) {
 				if ($field['type'] === 'country') {
 					$country = $this->countries->getByIdChecked($f);

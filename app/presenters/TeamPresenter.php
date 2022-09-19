@@ -412,7 +412,7 @@ class TeamPresenter extends BasePresenter {
 
 				$jsonData = [];
 				foreach ($fields as $name => $field) {
-					$member[$name] = $member[$name] ?? null;
+					$member[$name] ??= null;
 					$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
 					$type = $field['type'];
 
@@ -660,11 +660,16 @@ class TeamPresenter extends BasePresenter {
 
 	private function listActionSubmitMessage(Nette\Forms\Controls\SubmitButton $button): void {
 		$values = $button->form->getValues();
-		$selectedTeamIds = array_map(function($name) {
-			return substr($name, \strlen('team_'));
-		}, array_keys(array_filter((array) $values, function($value, $name) {
-			return str_starts_with($name, 'team_') && \is_bool($value) && $value;
-		}, \ARRAY_FILTER_USE_BOTH)));
+		$selectedTeamIds = array_map(
+			fn($name) => substr($name, \strlen('team_')),
+			array_keys(
+				array_filter(
+					(array) $values,
+					fn($value, $name) => str_starts_with($name, 'team_') && \is_bool($value) && $value,
+					\ARRAY_FILTER_USE_BOTH
+				)
+			)
+		);
 
 		if (\count($selectedTeamIds) === 0) {
 			$this->redirect('this');
@@ -720,9 +725,10 @@ class TeamPresenter extends BasePresenter {
 				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
 				continue;
 			} elseif ($field['type'] === 'checkboxlist' && isset($data->$name)) {
-				$items = array_map(function(string $item) use ($field): string {
-					return $field['items'][$item]['label'][$this->locale] ?? $item;
-				}, $data->$name);
+				$items = array_map(
+					fn(string $item): string => $field['items'][$item]['label'][$this->locale] ?? $item,
+					$data->$name
+				);
 				$ret[] = $label . ' ' . implode(', ', $items);
 				continue;
 			}

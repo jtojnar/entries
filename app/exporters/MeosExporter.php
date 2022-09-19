@@ -23,18 +23,11 @@ use SplFileObject;
 class MeosExporter implements IExporter {
 	public const DELIMITER = ';';
 
-	/** @var Team[]|ICollection */
-	private $teams;
-
-	/** @var CategoryFormatFilter */
-	private $categoryFormatter;
-
-	/**
-	 * @param Team[]|ICollection $teams
-	 */
-	public function __construct(ICollection $teams, CategoryFormatFilter $categoryFormatter) {
-		$this->teams = $teams;
-		$this->categoryFormatter = $categoryFormatter;
+	public function __construct(
+		/** @var ICollection<Team> */
+		private ICollection $teams,
+		private CategoryFormatFilter $categoryFormatter,
+	) {
 	}
 
 	public function getMimeType(): string {

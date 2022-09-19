@@ -40,10 +40,7 @@ class Team extends Entity {
 		return $data;
 	}
 
-	/**
-	 * @param array|\stdClass $data
-	 */
-	public function setJsonData($data): void {
+	public function setJsonData(array|\stdClass $data): void {
 		$this->details = \is_array($data) && \count($data) == 0 ? '{}' : Json::encode($data);
 	}
 

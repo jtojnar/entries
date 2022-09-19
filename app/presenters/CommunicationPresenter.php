@@ -112,13 +112,20 @@ class CommunicationPresenter extends BasePresenter {
 			->map(\nspl\op\int)
 			->toArray();
 
-		$teams = array_combine($teamsIds, array_map(function(int $teamId): ?Team {
-			return $this->teams->getById($teamId);
-		}, $teamsIds));
+		$teams = array_combine(
+			$teamsIds,
+			array_map(
+				fn(int $teamId): ?Team => $this->teams->getById($teamId),
+				$teamsIds
+			)
+		);
 
-		$nullTeamIds = array_keys(array_filter($teams, function(?Team $team): bool {
-			return $team === null;
-		}));
+		$nullTeamIds = array_keys(
+			array_filter(
+				$teams,
+				fn(?Team $team): bool => $team === null
+			)
+		);
 
 		if (\count($nullTeamIds) > 0) {
 			$form->addError(
@@ -179,13 +186,20 @@ class CommunicationPresenter extends BasePresenter {
 			->map(\nspl\op\int)
 			->toArray();
 
-		$teams = array_combine($teamsIds, array_map(function(int $teamId): ?Team {
-			return $this->teams->getById($teamId);
-		}, $teamsIds));
+		$teams = array_combine(
+			$teamsIds,
+			array_map(
+				fn(int $teamId): ?Team => $this->teams->getById($teamId),
+				$teamsIds
+			)
+		);
 
-		$nullTeamIds = array_keys(array_filter($teams, function(?Team $team): bool {
-			return $team === null;
-		}));
+		$nullTeamIds = array_keys(
+			array_filter(
+				$teams,
+				fn(?Team $team): bool => $team === null
+			)
+		);
 
 		if (\count($nullTeamIds) > 0) {
 			$form->addError(

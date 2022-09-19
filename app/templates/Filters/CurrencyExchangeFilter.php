@@ -11,11 +11,9 @@ use Money\Exchange;
 use Money\Money;
 
 class CurrencyExchangeFilter {
-	/** @var Exchange */
-	public $exchange;
-
-	public function __construct(Exchange $exchange) {
-		$this->exchange = $exchange;
+	public function __construct(
+		public Exchange $exchange,
+	) {
 	}
 
 	/**

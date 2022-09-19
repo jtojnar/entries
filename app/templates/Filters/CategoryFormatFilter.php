@@ -8,11 +8,9 @@ use App\Model\CategoryData;
 use App\Model\Team;
 
 class CategoryFormatFilter {
-	/** @var CategoryData */
-	private $categories;
-
-	public function __construct(CategoryData $categories) {
-		$this->categories = $categories;
+	public function __construct(
+		private CategoryData $categories,
+	) {
 	}
 
 	public function __invoke(Team $team): string {

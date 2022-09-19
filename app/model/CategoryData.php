@@ -27,12 +27,6 @@ use const nspl\op\lt;
 final class CategoryData {
 	use Nette\SmartObject;
 
-	/** @var Application */
-	private $app;
-
-	/** @var Translator */
-	private $translator;
-
 	/** @var array */
 	private $parameters;
 
@@ -84,10 +78,12 @@ final class CategoryData {
 		'some' => any,
 	];
 
-	public function __construct(Application $app, Nette\DI\Container $context, Translator $translator) {
-		$this->app = $app;
+	public function __construct(
+		private Application $app,
+		Nette\DI\Container $context,
+		private Translator $translator,
+	) {
 		$this->parameters = $context->parameters['entries'];
-		$this->translator = $translator;
 	}
 
 	/**
@@ -278,9 +274,10 @@ final class CategoryData {
 						$members = $form->getUnsafeValues(null)['persons'];
 						\assert(is_iterable($members)); // For PHPStan.
 
-						return $quant($members, function(\ArrayAccess $person) use ($op, $keyProjection, $comparedValue): bool {
-							return $op($keyProjection($person), $comparedValue);
-						});
+						return $quant(
+							$members,
+							fn(\ArrayAccess $person): bool => $op($keyProjection($person), $comparedValue)
+						);
 					},
 					$this->translator->translate($message),
 				];

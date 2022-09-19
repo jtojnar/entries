@@ -10,11 +10,9 @@ use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 
 class PriceFilter {
-	/** @var Translator */
-	public $translator;
-
-	public function __construct(Translator $translator) {
-		$this->translator = $translator;
+	public function __construct(
+		public Translator $translator,
+	) {
 	}
 
 	public function __invoke(Money $money): string {

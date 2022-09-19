@@ -13,11 +13,9 @@ use Nextras\FormsRendering\Renderers\FormLayout;
 final class FormFactory {
 	use Nette\SmartObject;
 
-	/** @var Translator */
-	private $translator;
-
-	public function __construct(Translator $translator) {
-		$this->translator = $translator;
+	public function __construct(
+		private Translator $translator,
+	) {
 	}
 
 	public function create(string $layout = FormLayout::HORIZONTAL): Form {

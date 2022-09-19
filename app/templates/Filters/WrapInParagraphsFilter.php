@@ -6,8 +6,12 @@ namespace App\Templates\Filters;
 
 class WrapInParagraphsFilter {
 	public function __invoke(array $arr): string {
-		return implode('', array_map(function($e) {
-			return '<p>' . $e . '</p>';
-		}, $arr));
+		return implode(
+			'',
+			array_map(
+				fn($e) => '<p>' . $e . '</p>',
+				$arr
+			)
+		);
 	}
 }

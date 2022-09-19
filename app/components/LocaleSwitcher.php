@@ -17,9 +17,11 @@ class LocaleSwitcher extends Control {
 		if ($allowedLocales === null) {
 			$this->locales = $locales;
 		} else {
-			$this->locales = array_filter($locales, function(string $code) use ($allowedLocales): bool {
-				return \in_array($code, $allowedLocales, true);
-			}, \ARRAY_FILTER_USE_KEY);
+			$this->locales = array_filter(
+				$locales,
+				fn(string $code): bool => \in_array($code, $allowedLocales, true),
+				\ARRAY_FILTER_USE_KEY
+			);
 		}
 	}
 

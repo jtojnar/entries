@@ -5,13 +5,7 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 class Parameters {
-	/**
-	 * @var array
-	 */
-	private $parameters;
-
-	public function __construct(array $parameters) {
-		$this->parameters = $parameters;
+	public function __construct(private array $parameters) {
 	}
 
 	/**
