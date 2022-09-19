@@ -14,16 +14,20 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Added ability to send messages to teams.
 - Added currency exchange filter for templates.
 - Added ability for admin to log in as a team.
+- Added Tracy toolbar for viewing sent e-mails in debug mode.
+- Allow withdrawing teams from the registration in database.
 
 ### Bugs fixed
 
 - Fixed saving team/person data with no custom fields.
 - Fix contact marker in the form.
+- Fix CSV exporter skipping SI field of teams.
 - Fixed several small bugs.
 - Fix hiding filter submit button on list page.
 - Show invoice link on homepage even after the team has paid.
 - Disallow registering to people born after event takes place.
 - Fix identity handling after logout.
+- Fix rendering unknown checkbox list items on an invoice.
 
 ### Other changes
 
@@ -33,14 +37,16 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Upgraded to Bootstrap 5, for fresh looks.
 - [Nix](https://nixos.org) files were added for more convenient development.
 - Slightly improved wording in the default e-mail templates and made the use more data from the config.
-- URLs with ynknown locales are now redirected to the default one.
+- URLs with unknown locales are now redirected to the default one.
 - Translated the sign in error messages and made them report incorrect password for admin correctly.
 - `admin` field for admin password has been renamed to `adminPassword` and moved directly to `parameters` section.
 - `config.local.neon` was renamed to `local.neon` and is now included in the source tree, instead of examples.
-- Reduce discrepancied between Czech and English verification e-mails.
+- Reduce discrepancies between Czech and English verification e-mails.
 - Improve docs about category constraints.
+- Expose site language on `<html>` element.
 - Use default session storage path instead of `temp/sessions/`.
-- Added Catalonia to the list of countries.
+- Added Catalonia and “Unaffiliated” to the list of countries.
+- Use IOC country codes in CSV export.
 
 ## 0.5.0 – 2020-02-11
 
