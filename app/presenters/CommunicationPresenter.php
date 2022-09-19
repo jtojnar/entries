@@ -14,8 +14,11 @@ use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
+
 use function nspl\a\with;
+
 use const nspl\args\nonEmpty;
+
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
@@ -414,7 +417,7 @@ class CommunicationPresenter extends BasePresenter {
 				$this->flashMessage(
 					$this->translator->translate(
 						'messages.communication.send.success',
-							[
+						[
 							'count' => $count,
 						]
 					),

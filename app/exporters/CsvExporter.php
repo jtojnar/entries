@@ -9,6 +9,7 @@ use App\Helpers\CsvWriter;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
+
 use function nspl\a\map;
 use function nspl\a\reduce;
 

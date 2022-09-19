@@ -10,9 +10,12 @@ use Nette;
 use Nette\Application\Application;
 use Nette\Forms\Controls\SelectBox;
 use Nette\Localization\Translator;
+
 use const nspl\a\all;
 use const nspl\a\any;
+
 use function nspl\a\map;
+
 use const nspl\f\id;
 use const nspl\op\ge;
 use const nspl\op\gt;
@@ -119,14 +122,14 @@ final class CategoryData {
 						}
 					}
 
-					throw new \Exception("Category group #${groupKey} lacks a label");
+					throw new \Exception("Category group #{$groupKey} lacks a label");
 				}, array_keys($groups));
 
 				$groupsCategories = array_map(function(string $groupKey) use ($groups): array {
 					$group = $groups[$groupKey];
 
 					if (!isset($group['categories']) || !\is_array($group['categories']) || \count($group['categories']) === 0) {
-						throw new \Exception("Category group #${groupKey} lacks categories");
+						throw new \Exception("Category group #{$groupKey} lacks categories");
 					}
 
 					$categories = $group['categories'];
@@ -143,7 +146,7 @@ final class CategoryData {
 						} elseif (isset($this->parameters['fees']) && isset($this->parameters['fees']['person'])) {
 							$fee = $this->parameters['fees']['person'];
 						} else {
-							throw new \Exception("No fee set for category “${categoryKey}”");
+							throw new \Exception("No fee set for category “{$categoryKey}”");
 						}
 
 						$categoryValue = [
@@ -166,7 +169,7 @@ final class CategoryData {
 				foreach ($categoryTree as $categories) {
 					foreach ($categories as $categoryKey => $categoryValue) {
 						if (isset($categoryData[$categoryKey])) {
-							throw new \Exception("Category “${categoryKey}” is already defined");
+							throw new \Exception("Category “{$categoryKey}” is already defined");
 						}
 
 						$categoryData[$categoryKey] = $categoryValue;
@@ -193,7 +196,7 @@ final class CategoryData {
 					} elseif (isset($this->parameters['fees']) && isset($this->parameters['fees']['person'])) {
 						$fee = $this->parameters['fees']['person'];
 					} else {
-						throw new \Exception("No fee set for category “${categoryKey}”");
+						throw new \Exception("No fee set for category “{$categoryKey}”");
 					}
 
 					return [
@@ -263,7 +266,7 @@ final class CategoryData {
 				$message = self::KEY_MESSAGES[$match['key']];
 
 				if (!\in_array($match['op'], self::KEY_SUPPORTED_OPS[$match['key']], true)) {
-					throw new \Exception("Constraint “${constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
+					throw new \Exception("Constraint “{$constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
 				}
 
 				$comparedValue = Closure::fromCallable(self::VALUE_PARSERS[$match['key']])($match['val']);
@@ -304,7 +307,7 @@ final class CategoryData {
 				];
 			}
 
-			throw new \Exception("Constraint “${constraint}” is invalid");
+			throw new \Exception("Constraint “{$constraint}” is invalid");
 		}, $category['constraints']);
 	}
 

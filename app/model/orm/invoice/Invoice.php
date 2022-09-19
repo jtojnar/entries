@@ -27,7 +27,7 @@ class Invoice extends Entity {
 		if (isset($items[$name])) {
 			$existingPrice = $items[$name]->price;
 			if (!$price->equals($existingPrice)) {
-				throw new \Exception("This invoice item “${name}” already exists with a different price.");
+				throw new \Exception("This invoice item “{$name}” already exists with a different price.");
 			}
 
 			return $this;
@@ -48,7 +48,7 @@ class Invoice extends Entity {
 		$items = $this->items;
 
 		if (!isset($items[$name])) {
-			throw new \Exception("Invoice item “${name}” was not defined.");
+			throw new \Exception("Invoice item “{$name}” was not defined.");
 		}
 
 		$items[$name] = $items[$name]->addAmount(1);
