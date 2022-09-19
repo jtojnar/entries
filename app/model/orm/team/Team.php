@@ -16,7 +16,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $name
  * @property string $category
  * @property string $message
- * @property string $status {default registered} {enum self::REGISTERED, self::PAID, self::WITHDRAWN}
+ * @property string $status {default self::STATUS_REGISTERED} {enum self::STATUS_*}
  * @property \DateTimeImmutable $timestamp {default now}
  * @property array $jsonData {virtual}
  * @property string $details
@@ -27,11 +27,13 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property OneHasMany|Message[] $messages {1:m Message::$team}
  * @property OneHasMany|Token[] $tokens {1:m Token::$team}
  * @property Invoice $lastInvoice {virtual}
+ *
+ * @phpstan-property self::STATUS_* $status
  */
 final class Team extends Entity {
-	public const REGISTERED = 'registered';
-	public const PAID = 'paid';
-	public const WITHDRAWN = 'withdrawn';
+	public const STATUS_REGISTERED = 'registered';
+	public const STATUS_PAID = 'paid';
+	public const STATUS_WITHDRAWN = 'withdrawn';
 
 	public function getJsonData(): \stdClass {
 		$data = Json::decode($this->details);

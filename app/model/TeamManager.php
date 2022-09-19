@@ -13,6 +13,8 @@ use Nette\Security\SimpleIdentity;
 final class TeamManager implements Nette\Security\IAuthenticator {
 	use Nette\SmartObject;
 
+	public const ENTRY_WITHDRAWN = 317806432;
+
 	public function __construct(
 		/** @var string administrator password */
 		private string $adminPassword,
@@ -43,6 +45,8 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 			throw new AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
 		} elseif (!$this->passwords->verify($password, $team->password)) {
 			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
+		} elseif ($team->status === Team::STATUS_WITHDRAWN) {
+			throw new AuthenticationException('The entry has been withdrawn.', self::ENTRY_WITHDRAWN);
 		} elseif ($this->passwords->needsRehash($team->password)) {
 			$team->password = $this->passwords->hash($password);
 			$this->teams->persistAndFlush($team);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Model\TeamManager;
 use Closure;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
@@ -24,7 +25,7 @@ final class SignPresenter extends BasePresenter {
 	/** @var App\Forms\FormFactory @inject */
 	public $formFactory;
 
-	/** @var App\Model\TeamManager @inject */
+	/** @var TeamManager @inject */
 	public $teamManager;
 
 	/** @var App\Model\TeamRepository @inject */
@@ -66,11 +67,12 @@ final class SignPresenter extends BasePresenter {
 			$this->redirect('Homepage:');
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError(
-				$e->getCode() === IAuthenticator::IDENTITY_NOT_FOUND
-				? 'messages.sign.in.error.incorrect_id'
-				: ($e->getCode() === IAuthenticator::INVALID_CREDENTIAL
-				? 'messages.sign.in.error.incorrect_password'
-				: new NotTranslate($e->getMessage()))
+				match ($e->getCode()) {
+					IAuthenticator::IDENTITY_NOT_FOUND => 'messages.sign.in.error.incorrect_id',
+					IAuthenticator::INVALID_CREDENTIAL => 'messages.sign.in.error.incorrect_password',
+					TeamManager::ENTRY_WITHDRAWN => 'messages.team.error.withdrawn',
+					default => new NotTranslate($e->getMessage()),
+				}
 			);
 		}
 	}

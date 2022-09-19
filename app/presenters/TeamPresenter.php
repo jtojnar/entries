@@ -8,6 +8,7 @@ use App;
 use App\Components\SportidentControl;
 use App\Exporters;
 use App\Model\Invoice;
+use App\Model\Team;
 use Closure;
 use Exception;
 use Latte;
@@ -307,8 +308,13 @@ final class TeamPresenter extends BasePresenter {
 				$form->addError('messages.team.edit.error.404');
 
 				return;
-			} elseif (!$this->user->isInRole('admin') && $team->status === 'paid') {
-				$form->addError('messages.team.edit.error.already_paid');
+			} elseif (!$this->user->isInRole('admin') && $team->status !== Team::STATUS_REGISTERED) {
+				$form->addError(
+					match ($team->status) {
+						Team::STATUS_PAID => 'messages.team.edit.error.already_paid',
+						Team::STATUS_WITHDRAWN => 'messages.team.error.withdrawn',
+					}
+				);
 			} elseif (!$this->user->isInRole('admin') && $identity->id !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
