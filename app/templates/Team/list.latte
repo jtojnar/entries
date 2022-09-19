@@ -27,7 +27,7 @@
 	<td>{$team->name}</td>
 	<td>{$team->timestamp|date, ('messages.formats.datetime_multiline'|translate)|noescape}</td>
 	<td>{$team|categoryFormat}</td>
-	<td><p n:foreach="$team->persons as $person" data-bs-content="{$person->getJsonData()|personData|wrapInParagraphs}">{if $person->gender === $person::MALE}♂{else}♀{/if} {$person->firstname} {$person->lastname}</p></td>
+	<td><p n:foreach="$team->persons as $person" data-bs-content="{$person->getJsonData()|personData|wrapInParagraphs}">{switch $person->gender}{case $person::GENDER_MALE}♂{case $person::GENDER_FEMALE}♀{/switch} {$person->firstname} {$person->lastname}</p></td>
 	<td>
 		{switch $team->status}
 			{case $team::STATUS_REGISTERED}

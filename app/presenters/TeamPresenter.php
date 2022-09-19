@@ -88,16 +88,11 @@ final class TeamPresenter extends BasePresenter {
 			$where = ['category' => explode('|', $category)];
 		}
 
-		if ($this->request->getQuery('status') !== null) {
-			switch ($this->request->getQuery('status')) {
-				case 'paid':
-					$where['status'] = 'paid';
-					break;
-				case 'registered':
-					$where['status'] = 'registered';
-					break;
-			}
-		}
+		match ($this->request->getQuery('status')) {
+			'paid' => $where['status'] = 'paid',
+			'registered' => $where['status'] = 'registered',
+			default => null,
+		};
 
 		if (!isset($where['status'])) {
 			$where['status!='] = 'withdrawn';
@@ -175,18 +170,12 @@ final class TeamPresenter extends BasePresenter {
 			$where = ['category' => explode('|', $category)];
 		}
 
-		switch ($this->request->getQuery('status')) {
-			case 'paid':
-				$where['status'] = 'paid';
-				break;
-			case 'registered':
-				$where['status'] = 'registered';
-				break;
-			case 'all':
-				break;
-			default:
-				$where['status!='] = 'withdrawn';
-		}
+		match ($this->request->getQuery('status')) {
+			'paid' => $where['status'] = 'paid',
+			'registered' => $where['status'] = 'registered',
+			'all' => null,
+			default => $where['status!='] = 'withdrawn',
+		};
 
 		$teams = $this->teams->findBy($where);
 

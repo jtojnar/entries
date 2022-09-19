@@ -14,16 +14,18 @@ use Nextras\Orm\Entity\Entity;
  * @property Team|null $team {m:1 Team::$persons}
  * @property string $firstname
  * @property string $lastname
- * @property string $gender {enum self::MALE, self::FEMALE}
+ * @property string $gender {enum self::GENDER_*}
  * @property \DateTimeImmutable $birth
  * @property array $jsonData {virtual}
  * @property string $details
  * @property string $email
  * @property bool $contact {default false}
+ *
+ * @property-phpstan self::GENDER_* $gender
  */
 final class Person extends Entity {
-	public const MALE = 'male';
-	public const FEMALE = 'female';
+	public const GENDER_MALE = 'male';
+	public const GENDER_FEMALE = 'female';
 
 	public function getJsonData(): \stdClass {
 		$data = Json::decode($this->details);

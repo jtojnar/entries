@@ -15,6 +15,8 @@ use Nextras\Orm\Entity\Entity;
  * @property \DateTimeImmutable $timestamp {default now}
  * @property Team $team {m:1 Team::$invoices}
  * @property array $items
+ *
+ * @phpstan-property self::STATUS_* $status
  */
 final class Invoice extends Entity {
 	public const STATUS_CANCELLED = 'cancelled';

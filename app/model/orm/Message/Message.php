@@ -16,6 +16,8 @@ use Nextras\Orm\Entity\Entity;
  * @property string $subject
  * @property string $sender
  * @property string $body
+ *
+ * @property-phpstan self::STATUS_* $status
  */
 final class Message extends Entity {
 	public const STATUS_QUEUED = 'queued';

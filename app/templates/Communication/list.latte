@@ -19,13 +19,14 @@
 	<td>{$message->timestamp|date, ('messages.formats.datetime'|translate)}</td>
 	<td>{$message->body|stripHtml||truncate, 50, '…'}</td>
 	<td>
-		{if $message->status === $message::STATUS_SENT}
-			{_messages.communication.list.entry.status.sent}
-		{elseif $message->status == $message::STATUS_QUEUED}
-			{_messages.communication.list.entry.status.queued}
-		{elseif $message->status == $message::STATUS_CANCELLED}
-			{_messages.communication.list.entry.status.cancelled}
-		{/if}
+		{switch $message->status}
+			{case $message::STATUS_SENT}
+				{_messages.communication.list.entry.status.sent}
+			{case $message::STATUS_QUEUED}
+				{_messages.communication.list.entry.status.queued}
+			{case $message::STATUS_CANCELLED}
+				{_messages.communication.list.entry.status.cancelled}
+		{/switch}
 	</td>
 	<td>
 		<a n:href="view $message->id">{_messages.communication.list.entry.action.view}</a>
