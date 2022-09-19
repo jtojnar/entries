@@ -13,6 +13,8 @@ use Nextras\Orm\Collection\ICollection;
 use function nspl\a\map;
 use function nspl\a\reduce;
 
+use SplFileObject;
+
 /**
  * Legacy CSV Exporter.
  *
@@ -60,11 +62,8 @@ class CsvExporter implements IExporter {
 	}
 
 	public function output(): void {
-		$fp = fopen('php://output', 'a');
-		if ($fp === false) {
-			throw new \PHPStan\ShouldNotHappenException();
-		}
-		$writer = new CsvWriter($fp);
+		$file = new SplFileObject('php://output', 'a');
+		$writer = new CsvWriter($file);
 		$writer->addColumns(['#', 'name', 'registered', 'category', 'message']);
 		$maxMembers = reduce(function($maximum, $personsCount) {
 			return max($maximum, $personsCount);
@@ -126,7 +125,6 @@ class CsvExporter implements IExporter {
 			$row['status'] = $team->status;
 			$writer->write($row);
 		}
-		fclose($fp);
 		exit;
 	}
 

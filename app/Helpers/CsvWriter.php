@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 use Exception;
+use SplFileObject;
 
 class CsvWriter {
 	/**
-	 * @var resource
+	 * @var SplFileObject
 	 */
-	private $handle;
+	private $file;
 
 	/**
 	 * @var string[]
@@ -18,10 +19,10 @@ class CsvWriter {
 	private $columns = [];
 
 	/**
-	 * @param resource $handle handle of file to write the CSV file to
+	 * @param SplFileObject $file handle to write the CSV file to
 	 */
-	public function __construct($handle) {
-		$this->handle = $handle;
+	public function __construct(SplFileObject $file) {
+		$this->file = $file;
 	}
 
 	/**
@@ -41,7 +42,7 @@ class CsvWriter {
 	 * Write headers.
 	 */
 	public function writeHeaders(): void {
-		fputcsv($this->handle, $this->columns);
+		$this->file->fputcsv($this->columns);
 	}
 
 	/**
@@ -56,7 +57,7 @@ class CsvWriter {
 			}
 		}
 
-		$result = fputcsv($this->handle, array_map(function($column) use ($data) {
+		$result = $this->file->fputcsv(array_map(function($column) use ($data) {
 			return $data[$column] ?? '';
 		}, $this->columns));
 

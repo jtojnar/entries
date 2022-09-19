@@ -8,6 +8,7 @@ use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;
+use SplFileObject;
 
 /**
  * Exporter to MeOS format or something.
@@ -40,32 +41,25 @@ class MeosExporter implements IExporter {
 		return 'text/plain';
 	}
 
-	/**
-	 * @param resource $fp
-	 */
-	private function outputRow($fp, array $row): void {
-		fwrite($fp, Strings::toAscii(implode(self::DELIMITER, $row)) . \PHP_EOL);
+	private function outputRow(SplFileObject $file, array $row): void {
+		$file->fwrite(Strings::toAscii(implode(self::DELIMITER, $row)) . \PHP_EOL);
 	}
 
 	public function output(): void {
-		$fp = fopen('php://output', 'a');
-		if ($fp === false) {
-			throw new \PHPStan\ShouldNotHappenException();
-		}
+		$file = new SplFileObject('php://output', 'a');
 		foreach ($this->teams as $team) {
 			$category = $this->categoryFormatter->__invoke($team);
 			$club = '';
-			$this->outputRow($fp, [$category, $team->name, $club]);
+			$this->outputRow($file, [$category, $team->name, $club]);
 
 			foreach ($team->persons as $person) {
 				$additionalData = $person->getJsonData();
 				$fullName = $person->lastname . ' ' . $person->firstname;
 				$sportident = $additionalData->sportident->cardId ?? '';
 				$club = '';
-				$this->outputRow($fp, [$fullName, $sportident, $club, $category]);
+				$this->outputRow($file, [$fullName, $sportident, $club, $category]);
 			}
 		}
-		fclose($fp);
 		exit;
 	}
 }
