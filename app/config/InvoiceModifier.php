@@ -10,7 +10,7 @@ use App\Model\Team;
 use Money\Money;
 use Nette;
 
-class InvoiceModifier {
+final class InvoiceModifier {
 	use Nette\SmartObject;
 
 	public static function modify(Team $team, Invoice $invoice, array $parameters): void {

@@ -27,7 +27,7 @@ use Tracy\Debugger;
 /**
  * Presenter for signing in and out.
  */
-class CommunicationPresenter extends BasePresenter {
+final class CommunicationPresenter extends BasePresenter {
 	/** @var App\Forms\FormFactory @inject */
 	public $formFactory;
 

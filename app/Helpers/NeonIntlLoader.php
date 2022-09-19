@@ -6,7 +6,7 @@ namespace App\Helpers;
 
 use Contributte\Translation;
 
-class NeonIntlLoader extends Translation\Loaders\Neon {
+final class NeonIntlLoader extends Translation\Loaders\Neon {
 	/**
 	 * {@inheritdoc}
 	 */

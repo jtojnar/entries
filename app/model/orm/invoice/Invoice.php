@@ -16,7 +16,7 @@ use Nextras\Orm\Entity\Entity;
  * @property Team $team {m:1 Team::$invoices}
  * @property array $items
  */
-class Invoice extends Entity {
+final class Invoice extends Entity {
 	public const STATUS_CANCELLED = 'cancelled';
 	public const STATUS_NEW = 'new';
 	public const STATUS_PAID = 'paid';

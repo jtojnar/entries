@@ -17,7 +17,7 @@ use Nette\Security\IUserStorage;
 /**
  * Presenter for signing in and out.
  */
-class SignPresenter extends BasePresenter {
+final class SignPresenter extends BasePresenter {
 	/** @var string @persistent */
 	public $backlink = '';
 

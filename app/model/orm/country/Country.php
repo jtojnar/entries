@@ -16,5 +16,5 @@ use Nextras\Orm\Entity\Entity;
  * @property string $aliases
  * @property bool $europe
  */
-class Country extends Entity {
+final class Country extends Entity {
 }

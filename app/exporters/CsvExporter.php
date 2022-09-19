@@ -31,7 +31,7 @@ use SplFileObject;
  * (as configured by user). The last column contains the status of the team
  * (i.e. either registered, or paid).
  */
-class CsvExporter implements IExporter {
+final class CsvExporter implements IExporter {
 	public function __construct(
 		/** @var ICollection<Team> $teams */
 		private ICollection $teams,

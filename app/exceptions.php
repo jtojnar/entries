@@ -18,13 +18,13 @@ class LimitedAccessException extends Nette\Application\BadRequestException {
 	}
 }
 
-class TooSoonForAccessException extends LimitedAccessException {
+final class TooSoonForAccessException extends LimitedAccessException {
 	public function __construct() {
 		parent::__construct(self::SOON);
 	}
 }
 
-class TooLateForAccessException extends LimitedAccessException {
+final class TooLateForAccessException extends LimitedAccessException {
 	public function __construct() {
 		parent::__construct(self::LATE);
 	}

@@ -4,5 +4,5 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class CountryMapper extends BaseMapper {
+final class CountryMapper extends BaseMapper {
 }

@@ -28,7 +28,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property OneHasMany|Token[] $tokens {1:m Token::$team}
  * @property Invoice $lastInvoice {virtual}
  */
-class Team extends Entity {
+final class Team extends Entity {
 	public const REGISTERED = 'registered';
 	public const PAID = 'paid';
 	public const WITHDRAWN = 'withdrawn';

@@ -17,7 +17,7 @@ use Nextras\Orm\Entity\Entity;
  * @property string $sender
  * @property string $body
  */
-class Message extends Entity {
+final class Message extends Entity {
 	public const STATUS_QUEUED = 'queued';
 	public const STATUS_CANCELLED = 'cancelled';
 	public const STATUS_SENT = 'sent';

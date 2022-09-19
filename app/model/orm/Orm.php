@@ -16,5 +16,5 @@ use Nextras\Orm\Model\Model;
  * @property MessageRepository $messages
  * @property TokenRepository $tokens
  */
-class Orm extends Model {
+final class Orm extends Model {
 }

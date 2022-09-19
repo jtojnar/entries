@@ -11,7 +11,7 @@ use Nette\Schema\Expect;
 use Nette\Utils\Json;
 use Nextras\Orm\Mapper\Dbal\Conventions\IConventions;
 
-class InvoiceMapper extends BaseMapper {
+final class InvoiceMapper extends BaseMapper {
 	protected function createConventions(): IConventions {
 		$conventions = parent::createConventions();
 

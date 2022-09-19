@@ -28,7 +28,7 @@ use Tracy\Debugger;
 /**
  * The main presenter of the application.
  */
-class TeamPresenter extends BasePresenter {
+final class TeamPresenter extends BasePresenter {
 	/** @var App\Model\CountryRepository @inject */
 	public $countries;
 

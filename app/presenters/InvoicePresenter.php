@@ -14,7 +14,7 @@ use Nette\Application\ForbiddenRequestException;
 /**
  * Presenter for displaying invoices.
  */
-class InvoicePresenter extends BasePresenter {
+final class InvoicePresenter extends BasePresenter {
 	/** @var App\Model\TeamRepository @inject */
 	public $teams;
 

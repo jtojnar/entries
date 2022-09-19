@@ -6,7 +6,7 @@ namespace App\Model;
 
 use Nextras\Orm\Repository\Repository;
 
-class TeamRepository extends Repository {
+final class TeamRepository extends Repository {
 	public static function getEntityClassNames(): array {
 		return [Team::class];
 	}

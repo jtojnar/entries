@@ -10,7 +10,7 @@ use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-class ExampleTest extends Tester\TestCase {
+final class ExampleTest extends Tester\TestCase {
 	private $container;
 
 	public function __construct(Nette\DI\Container $container) {

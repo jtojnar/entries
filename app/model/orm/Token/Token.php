@@ -14,5 +14,5 @@ use Nextras\Orm\Entity\Entity;
  * @property Team $team {m:1 Team::$tokens}
  * @property string $hash
  */
-class Token extends Entity {
+final class Token extends Entity {
 }

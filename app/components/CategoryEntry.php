@@ -13,7 +13,7 @@ use Nette;
  * It can be used for either editing team category or filtering
  * teams by category.
  */
-class CategoryEntry extends Nette\Forms\Controls\SelectBox {
+final class CategoryEntry extends Nette\Forms\Controls\SelectBox {
 	/**
 	 * @param string $label label of the field
 	 * @param CategoryData $categories categories defined in the configuration

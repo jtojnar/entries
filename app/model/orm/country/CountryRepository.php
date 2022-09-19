@@ -6,7 +6,7 @@ namespace App\Model;
 
 use Nextras\Orm\Repository\Repository;
 
-class CountryRepository extends Repository {
+final class CountryRepository extends Repository {
 	public static function getEntityClassNames(): array {
 		return [Country::class];
 	}

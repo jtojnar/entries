@@ -10,7 +10,7 @@ use Nette\Forms\Control;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
 
-class CustomInputModifier {
+final class CustomInputModifier {
 	use Nette\SmartObject;
 
 	public static function modify(Control $input, IContainer $container): void {

@@ -9,7 +9,7 @@ use App\Model\Person;
 use App\Model\Team;
 use Nextras\Orm\Relationships\OneHasMany;
 
-class Message {
+final class Message {
 	public function __construct(
 		public string $accountNumber,
 		public string $eventName,

@@ -12,7 +12,7 @@ use Nette\Forms\Helpers;
 use Nette\Forms\Rules;
 use Nextras\FormComponents\Fragments\UIComponent\BaseControl;
 
-class SportidentControl extends BaseControl {
+final class SportidentControl extends BaseControl {
 	/** @var string */
 	public const NAME_CARD_ID = 'cardId';
 

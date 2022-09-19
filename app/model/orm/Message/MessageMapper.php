@@ -4,5 +4,5 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class MessageMapper extends BaseMapper {
+final class MessageMapper extends BaseMapper {
 }

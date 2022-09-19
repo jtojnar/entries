@@ -9,7 +9,7 @@ use Money\Currencies\ISOCurrencies;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 
-class PriceFilter {
+final class PriceFilter {
 	public function __construct(
 		public Translator $translator,
 	) {

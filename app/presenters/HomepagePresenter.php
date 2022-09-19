@@ -18,7 +18,7 @@ use Nextras\FormsRendering\Renderers\FormLayout;
 /**
  * Presenter for main page.
  */
-class HomepagePresenter extends BasePresenter {
+final class HomepagePresenter extends BasePresenter {
 	/** @var App\Model\MessageRepository @inject */
 	public $messages;
 

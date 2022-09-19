@@ -14,7 +14,7 @@ use Nette\Utils\Json;
 /**
  * Form for creating and editing teams.
  */
-class TeamForm extends UI\Form {
+final class TeamForm extends UI\Form {
 	public function __construct(
 		/** @var array<string, string> */
 		private array $countries,

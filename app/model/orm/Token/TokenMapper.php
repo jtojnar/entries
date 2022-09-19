@@ -4,5 +4,5 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class TokenMapper extends BaseMapper {
+final class TokenMapper extends BaseMapper {
 }

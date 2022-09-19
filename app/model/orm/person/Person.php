@@ -21,7 +21,7 @@ use Nextras\Orm\Entity\Entity;
  * @property string $email
  * @property bool $contact {default false}
  */
-class Person extends Entity {
+final class Person extends Entity {
 	public const MALE = 'male';
 	public const FEMALE = 'female';
 

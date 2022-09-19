@@ -9,7 +9,7 @@ use Nette\Application\UI\Control;
 /**
  * Control for switching locale of the application.
  */
-class LocaleSwitcher extends Control {
+final class LocaleSwitcher extends Control {
 	/** @var string[] */
 	private $locales;
 

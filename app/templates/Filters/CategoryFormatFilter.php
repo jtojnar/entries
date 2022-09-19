@@ -7,7 +7,7 @@ namespace App\Templates\Filters;
 use App\Model\CategoryData;
 use App\Model\Team;
 
-class CategoryFormatFilter {
+final class CategoryFormatFilter {
 	public function __construct(
 		private CategoryData $categories,
 	) {

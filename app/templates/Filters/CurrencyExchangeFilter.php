@@ -10,7 +10,7 @@ use Money\Currency;
 use Money\Exchange;
 use Money\Money;
 
-class CurrencyExchangeFilter {
+final class CurrencyExchangeFilter {
 	public function __construct(
 		public Exchange $exchange,
 	) {

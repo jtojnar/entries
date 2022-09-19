@@ -7,7 +7,7 @@ namespace App\Helpers;
 use Exception;
 use SplFileObject;
 
-class CsvWriter {
+final class CsvWriter {
 	/**
 	 * @var string[]
 	 */

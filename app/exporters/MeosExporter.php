@@ -20,7 +20,7 @@ use SplFileObject;
  * Team row contains these values: category, team name, club
  * Person row contains these values: full name, sportident card, club, category
  */
-class MeosExporter implements IExporter {
+final class MeosExporter implements IExporter {
 	public const DELIMITER = ';';
 
 	public function __construct(
