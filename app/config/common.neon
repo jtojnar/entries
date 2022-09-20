@@ -49,12 +49,12 @@ services:
 	- App\Model\CategoryData
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
+	- App\Router\RouterFactory::createRouter
 	- App\Templates\Filters\CategoryFormatFilter
 	- App\Templates\Filters\CurrencyExchangeFilter
 	- App\Templates\Filters\PriceFilter
 	- App\Templates\Filters\WrapInParagraphsFilter
 	exchange: Money\Exchange\FixedExchange([])
-	router: App\Router\RouterFactory::createRouter
 	nette.latteFactory:
 		setup:
 			- addFilter(categoryFormat, @App\Templates\Filters\CategoryFormatFilter)
