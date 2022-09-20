@@ -6,7 +6,7 @@ namespace App;
 
 use Nette\Bootstrap\Configurator;
 
-final class Booting {
+final class Bootstrap {
 	public static function boot(): Configurator {
 		$configurator = new Configurator();
 		// $configurator->setDebugMode('23.75.345.200'); // enable for your remote IP

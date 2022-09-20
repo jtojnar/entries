@@ -10,7 +10,7 @@ use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$configurator = \App\Booting::bootForTests();
+$configurator = \App\Bootstrap::bootForTests();
 
 $configurator->addConfig([
 	'translation' => [

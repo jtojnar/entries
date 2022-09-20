@@ -22,7 +22,7 @@ final class ExampleTest extends Tester\TestCase {
 	}
 }
 
-$container = \App\Booting::bootForTests()->createContainer();
+$container = \App\Bootstrap::bootForTests()->createContainer();
 
 $test = new ExampleTest($container);
 $test->run();
