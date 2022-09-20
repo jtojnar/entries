@@ -23,10 +23,10 @@ final class SportidentControl extends BaseControl {
 	private const SI_PATTERN = '[0-9]+';
 
 	/** @var TextInput cardIdControl entry for card id */
-	protected $cardIdControl;
+	protected TextInput $cardIdControl;
 
 	/** @var Checkbox neededControl checkbox for requesting a loan */
-	protected $neededControl;
+	protected Checkbox $neededControl;
 
 	public function __construct(string $label, int $recommendedCardCapacity) {
 		$this->cardIdControl = new TextInput();

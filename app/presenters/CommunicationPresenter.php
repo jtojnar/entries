@@ -31,19 +31,19 @@ final class CommunicationPresenter extends BasePresenter {
 	/** @var App\Forms\FormFactory @inject */
 	public $formFactory;
 
-	/** @var Nette\Bridges\ApplicationLatte\ILatteFactory @inject */
+	/** @var Nette\Bridges\ApplicationLatte\LatteFactory @inject */
 	public $latteFactory;
 
 	/** @var Nette\Application\LinkGenerator @inject */
 	public $linkGenerator;
 
-	/** @var \Nette\Mail\Mailer @inject */
+	/** @var Nette\Mail\Mailer @inject */
 	public $mailer;
 
 	/** @var App\Model\MessageRepository @inject */
 	public $messages;
 
-	/** @var \Nette\Http\Request @inject */
+	/** @var Nette\Http\Request @inject */
 	public $request;
 
 	/** @var App\Model\TeamRepository @inject */
@@ -326,7 +326,7 @@ final class CommunicationPresenter extends BasePresenter {
 	}
 
 	public function actionList(int $id = null): void {
-		/** @var \Nette\Security\SimpleIdentity $identity */
+		/** @var Nette\Security\SimpleIdentity $identity */
 		$identity = $this->user->identity;
 
 		if ($id === null) {
