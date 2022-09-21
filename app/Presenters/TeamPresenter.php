@@ -608,7 +608,7 @@ final class TeamPresenter extends BasePresenter {
 
 					$appDir = $this->context->parameters['appDir'];
 
-					$baseMailTemplateLocalizedPath = $appDir . '/templates/Mail/verification.' . $this->locale . '.latte';
+					$baseMailTemplateLocalizedPath = $appDir . '/Templates/Mail/verification.' . $this->locale . '.latte';
 
 					// If the override templates exist in the config directory,
 					// let’s use them.
@@ -620,7 +620,7 @@ final class TeamPresenter extends BasePresenter {
 					}
 
 					// If not, let’s use the built-in templates.
-					$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : $appDir . '/templates/Mail/verification.latte';
+					$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : $appDir . '/Templates/Mail/verification.latte';
 					if ($mailTemplatePath === null) {
 						$mailTemplatePath = $baseMailTemplatePath;
 					} else {
@@ -655,7 +655,7 @@ final class TeamPresenter extends BasePresenter {
 					// Inline styles into the e-mail
 					$mailHtml = (string) $mtemplate;
 					$domDocument = CssInliner::fromHtml($mailHtml)
-						->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
+						->inlineCss(file_get_contents($appDir . '/Templates/Mail/style.css') ?: '')
 						->getDomDocument();
 					HtmlPruner::fromDomDocument($domDocument)
 						->removeElementsWithDisplayNone();

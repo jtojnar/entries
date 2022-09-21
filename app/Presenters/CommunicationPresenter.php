@@ -279,7 +279,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$latte = $this->latteFactory->create();
 
 		$appDir = $this->context->parameters['appDir'];
-		$layout = file_get_contents($appDir . '/templates/Mail/@layout.latte');
+		$layout = file_get_contents($appDir . '/Templates/Mail/@layout.latte');
 		\assert(\is_string($layout));
 
 		$latte->setLoader(new Latte\Loaders\StringLoader([
@@ -318,7 +318,7 @@ final class CommunicationPresenter extends BasePresenter {
 
 		// Inline styles into the e-mail
 		$domDocument = CssInliner::fromHtml($messageHtml)
-			->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
+			->inlineCss(file_get_contents($appDir . '/Templates/Mail/style.css') ?: '')
 			->getDomDocument();
 		HtmlPruner::fromDomDocument($domDocument)
 			->removeElementsWithDisplayNone();
@@ -410,7 +410,7 @@ final class CommunicationPresenter extends BasePresenter {
 				// Inline styles into the e-mail
 				$mailHtml = $message->body;
 				$domDocument = CssInliner::fromHtml($mailHtml)
-					->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
+					->inlineCss(file_get_contents($appDir . '/Templates/Mail/style.css') ?: '')
 					->getDomDocument();
 				HtmlPruner::fromDomDocument($domDocument)
 					->removeElementsWithDisplayNone();

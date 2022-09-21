@@ -38,7 +38,7 @@ jobs:
 
     - name: Run tests
       run: |
-        cp .github/workflows/private.neon app/config/private.neon
+        cp .github/workflows/private.neon app/Config/private.neon
         nix-shell --run 'composer test'
 
     - name: Build a zipball

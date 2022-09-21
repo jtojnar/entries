@@ -14,11 +14,11 @@ final class Bootstrap {
 		$configurator->setTimeZone('UTC');
 		$configurator->setTempDirectory(__DIR__ . '/../temp');
 		$configurator
-			->addConfig(__DIR__ . '/config/common.neon');
+			->addConfig(__DIR__ . '/Config/common.neon');
 		$configurator
-			->addConfig(__DIR__ . '/config/local.neon');
-		if (file_exists(__DIR__ . '/config/private.neon')) {
-			$configurator->addConfig(__DIR__ . '/config/private.neon');
+			->addConfig(__DIR__ . '/Config/local.neon');
+		if (file_exists(__DIR__ . '/Config/private.neon')) {
+			$configurator->addConfig(__DIR__ . '/Config/private.neon');
 		}
 		$configurator
 			->addConfig(__DIR__ . '/lang/locales.neon');

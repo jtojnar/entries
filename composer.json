@@ -48,7 +48,7 @@
 	"autoload": {
 		"classmap": ["app/"],
 		"psr-4": {
-			"App\\Config\\": "app/config"
+			"App\\Config\\": "app/Config"
 		}
 	},
 	"scripts": {

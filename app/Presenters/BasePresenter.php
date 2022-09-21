@@ -41,4 +41,32 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 			throw new Nette\InvalidStateException('Missing siteTitle argument');
 		}
 	}
+
+	/**
+	 * Formats layout template file names.
+	 *
+	 * @return string[]
+	 */
+	public function formatLayoutTemplateFiles(): array {
+		$list = array_map(
+			fn(string $path): string => str_replace('/templates/', '/Templates/', $path),
+			parent::formatLayoutTemplateFiles(),
+		);
+
+		return $list;
+	}
+
+	/**
+	 * Formats view template file names.
+	 *
+	 * @return string[]
+	 */
+	public function formatTemplateFiles(): array {
+		$list = array_map(
+			fn(string $path): string => str_replace('/templates/', '/Templates/', $path),
+			parent::formatTemplateFiles(),
+		);
+
+		return $list;
+	}
 }

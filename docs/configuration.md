@@ -1,6 +1,6 @@
 # Configuring Entries
 
-The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `local.neon` and `private.neon` files in the `app/config` directory. It is also possible to [customize e-mail messages](customizing-emails.md), hook into input fields and modify invoices.
+The system currently uses [NEON language](https://ne-on.org/) for creating the entry form as well as setting other parameters. The configuration is loaded from `local.neon` and `private.neon` files in the `app/Config` directory. It is also possible to [customize e-mail messages](customizing-emails.md), hook into input fields and modify invoices.
 
 > If you put database credentials (`dbal` section) and `parameters.adminPassword` into `private.neon` file, it will be safe to commit `local.neon` to version control and it will also make it easy to share the local config across multiple servers (e.g. developer’s computer and production server).
 
