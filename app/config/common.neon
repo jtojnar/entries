@@ -17,6 +17,14 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
+di:
+	export:
+		tags: false
+		types:
+			- Contributte\Translation\LocalesResolvers\Session
+			- Contributte\Translation\LocalesResolvers\Router
+			- Nette\Localization\Translator
+
 session:
 	autoStart: yes
 	expiration: 31 days
