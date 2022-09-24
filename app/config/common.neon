@@ -21,8 +21,9 @@ di:
 	export:
 		tags: false
 		types:
-			- Contributte\Translation\LocalesResolvers\Session
+			- Contributte\Translation\LocalesResolvers\Header
 			- Contributte\Translation\LocalesResolvers\Router
+			- Contributte\Translation\LocalesResolvers\Session
 			- Nette\Localization\Translator
 
 session:
@@ -73,6 +74,10 @@ services:
 translation:
 	loaders:
 		neon: App\Helpers\NeonIntlLoader
+	localeResolvers:
+		- Contributte\Translation\LocalesResolvers\Router
+		- Contributte\Translation\LocalesResolvers\Session
+		- Contributte\Translation\LocalesResolvers\Header
 	locales:
 		whitelist: [en, cs]
 		default: cs
