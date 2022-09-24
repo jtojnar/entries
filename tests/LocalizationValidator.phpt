@@ -12,13 +12,6 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $configurator = \App\Bootstrap::bootForTests();
 
-$configurator->addConfig([
-	'translation' => [
-		// Avoid warnings about session.
-		'localeResolvers' => ['Contributte\Translation\LocalesResolvers\Router'],
-	],
-]);
-
 $container = $configurator->createContainer();
 $translator = $container->getByType(Nette\Localization\Translator::class);
 

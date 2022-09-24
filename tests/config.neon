@@ -1,0 +1,4 @@
+translation:
+	# Avoid warnings about session.
+	localeResolvers!:
+		- Contributte\Translation\LocalesResolvers\Router

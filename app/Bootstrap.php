@@ -28,6 +28,7 @@ final class Bootstrap {
 
 	public static function bootForTests(): Configurator {
 		$configurator = self::boot();
+		$configurator->addConfig(__DIR__ . '/../tests/config.neon');
 		\Tester\Environment::setup();
 
 		return $configurator;
