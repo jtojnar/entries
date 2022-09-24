@@ -1,0 +1,7 @@
+[deployments.default]
+upload_uri = "sftp://ogion.cz/var/www/krk-litvinov.cz/entries.hrob-2022/current/"
+web_root = "www/"
+web_uri = "https://entries.hrob-2022.krk-litvinov.cz/"
+transfer_files = [
+    "app/config/private.neon",
+]

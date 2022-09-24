@@ -1,17 +1,6 @@
 php:
 	date.timezone: Europe/Prague
 
-# Do not forget to configure database here or in private.neon
-dbal:
-	driver: mysqli
-	host: localhost
-	database: entries
-	username: root
-	password:
-	connectionTz: +01:00
-	options:
-		charset: utf8mb4
-
 services:
 	exchange: Money\Exchange\ReversedCurrenciesExchange(
 		Money\Exchange\FixedExchange([
@@ -21,162 +10,302 @@ services:
 		])
 	)
 
-
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: MČR v horském orientačním běhu 2022
+		en: Czech Mountain Orienteering Championships 2022
 	entries:
+		maxMembers: 2
 		minMembers: 2
-		maxMembers: 5
-		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
-		invoiceModifier: [App\InvoiceModifier, modify]
+		eventDate: 2022-11-05 # used for age calculations
+		opening: 2022-09-14T00:00:00
+		closing: 2022-11-14T12:00:00
 		customInputModifier: [App\CustomInputModifier, modify]
+		accountNumber: '2800039826/2010'
 		fees:
 			currency: CZK
-			person: 650
+			person: 350
+		limits:
+			monastery: 100
+			atc-six: 100
+			atc-five: 4
+			atc-four: 4
+			atc-two: 7
+			atc-tent: 50
 		categories:
 			HH20:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age<20)'
+					- 'all(age<=20)'
 			HD20:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+					- 'all(age<=20)'
+			DD20:
 				constraints:
-					- 'all(gender=male)'
-			DD:
+					- 'all(gender=female)'
+					- 'all(age<=20)'
+			HH:
 				constraints:
 					- 'all(gender=male)'
 			HD:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
+			DD:
+				constraints:
+					- 'all(gender=female)'
 			HH40:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
 			HD40:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
+			DD40:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=40)'
+			HH60:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>=60)'
+			HD60:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age>=60)'
+			DD60:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=60)'
+			PO:
+				label:
+					en: 'Skilled Newcomers (PO)'
+					cs: 'Příchozí orienťáci (PO)'
+				short: 'PO'
+				fees:
+					person: 250.0
+			PZ:
+				label:
+					en: 'Newcomers – Beginners (PZ)'
+					cs: 'Příchozí začátečníci (PZ)'
+				short: 'PZ'
+				fees:
+					person: 250.0
 		fields:
 			team:
-				friday2h:
+				stage:
 					type: enum
 					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
-					public: true
+						en: 'Stage:'
+						cs: 'Etapa:'
 					options:
-						yes:
-							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 50
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
+						both:
 							default: true
-				saturday5h:
-					type: enum
-					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
-					public: true
-					options:
-						yes:
 							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 150
-						no:
+								en: 'Saturday & Sunday'
+								cs: 'Sobota i neděle'
+						saturday:
 							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
-				sunday4h:
-					type: enum
-					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					public: true
-					options:
-						yes:
+								en: 'Saturday only'
+								cs: 'Pouze sobota'
+							fee: -200
+						sunday:
 							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 150
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
+								en: 'Sunday only'
+								cs: 'Pouze neděle'
+							fee: -200
 			person:
+				sportident:
+					type: sportident
+					fee: 70
 				country:
 					type: country
 					default: 46
-					public: true
-				sportident:
-					type: sportident
-					fee: 50
-					public: true
-				mug:
-					type: checkbox
+				accommodation:
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accommodation:'
+						cs: 'Ubytování:'
+					description:
+						en: 'Accommodation must be ordered and paid until Sunday October 23, 2022'
+						cs: 'Ubytování se musí objednat a zaplatit do neděle 23. 10. 2022'
+					type: enum
+					options:
+						monastery-friday:
+							label:
+								en: 'Pension Osek Monastery, 2 nights only, 52 € per person from Friday to Sunday'
+								cs: 'Pension Osecký klášter, pouze na 2 noci, 1200 Kč/os. pátek až neděle'
+							fee: 1200
+							limit: monastery
+						atc-six-friday:
+							label:
+								en: 'Autocamp Osek - whole bungalow 6 persons, 184 € from Friday to Sunday'
+								cs: 'Autokemp Osek - celý bungalov 6 osob za 4400 Kč pátek až neděle'
+							fee: 4400
+							limit: atc-six
+						atc-six-saturday:
+							label:
+								en: 'Autocamp Osek - whole bungalow 6 persons, 92 € from Saturday to Sunday'
+								cs: 'Autokemp Osek - celý bungalov 6 osob za 2200 Kč sobota až neděle'
+							fee: 2200
+							limit: atc-six
+						atc-five-friday:
+							label:
+								en: 'Autocamp Osek - whole cottage 5 persons, 88 € per cottage from Friday to Sunday'
+								cs: 'Autokemp Osek - celá chata 5 osob za 2100 Kč pátek až neděle'
+							fee: 2100
+							limit: atc-five
+						atc-five-saturday:
+							label:
+								en: 'Autocamp Osek - whole cottage 5 persons, 44 € per cottage from Saturday to Sunday'
+								cs: 'Autokemp Osek - celá chata 5 osob za 1050 Kč sobota až neděle'
+							fee: 1050
+							limit: atc-five
+						atc-four-friday:
+							label:
+								en: 'Autocamp Osek - whole cottage 4 persons, 80 € per cottage from Friday to Sunday'
+								cs: 'Autokemp Osek - celá chata 4 osoby za 1900 Kč pátek až neděle'
+							fee: 1900
+							limit: atc-four
+						atc-four-saturday:
+							label:
+								en: 'Autocamp Osek - whole cottage 4 persons, 40 € per cottage from Saturday to Sunday'
+								cs: 'Autokemp Osek - celá chata 4 osoby za 950 Kč sobota až neděle'
+							fee: 950
+							limit: atc-four
+						atc-two-friday:
+							label:
+								en: 'Autocamp Osek - whole cottage 2 persons, 48 € per cottage from Friday to Sunday'
+								cs: 'Autokemp Osek - celá chata 2 osoby za 1100 Kč pátek až neděle'
+							fee: 1100
+							limit: atc-two
+						atc-two-saturday:
+							label:
+								en: 'Autocamp Osek - whole cottage 2 persons, 24 € per cottage from Saturday to Sunday'
+								cs: 'Autokemp Osek - celá chata 2 osoby za 550 Kč sobota až neděle'
+							fee: 550
+							limit: atc-two
+						atc-tent-friday:
+							label:
+								en: 'Autocamp Osek - tent 2 persons, 17 € from Friday to Sunday'
+								cs: 'Autokemp Osek - stan 2 osoby, 410 Kč pátek až neděle'
+							fee: 410
+							limit: atc-tent
+						atc-tent-saturday:
+							label:
+								en: 'Autocamp Osek - tent 2 persons, 10 € from Saturday to Sunday'
+								cs: 'Autokemp Osek - stan 2 osoby, 230 Kč sobota až neděle'
+							fee: 230
+							limit: atc-tent
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 				boarding:
 					label:
 						en: 'Boarding:'
 						cs: 'Stravování:'
+					description:
+						en: 'Boarding must be ordered and paid until Sunday October 23, 2022'
+						cs: 'Stravování se musí objednat a zaplatit do neděle 23. 10. 2022'
 					type: checkboxlist
 					items:
-						fri_supper:
+						fri-soup:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
-							fee: 95
-						sat_breakfast:
-							type: checkbox
+								en: 'Friday vegetable cream soup (35 CZK, available between 17:00 and 19:00)'
+								cs: 'Páteční zeleninový krém (35 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 35
+						fri-chicken:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
-							type: checkbox
+								en: 'Friday chicken with mashed potatoes (140 CZK, available between 17:00 and 19:00)'
+								cs: 'Páteční kuře s bramborovou kaší (140 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 140
+						fri-penne:
 							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
-							fee: 95
+								en: 'Friday penne arrabbiata (140 CZK, available between 17:00 and 19:00)'
+								cs: 'Páteční penne arrabbiata (140 Kč, odběr mezi 17:00 až 18:00)'
+							fee: 140
+						sat-breakfast-sausage:
+							label:
+								en: 'Saturday sausage breakfast (90 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní párek k snídani (90 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 90
+						sat-breakfast-eggs:
+							label:
+								en: 'Saturday scrambled eggs breakfast (90 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně míchaná vejce (90 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 90
+						sat-breakfast-jam:
+							label:
+								en: 'Saturday bread/butter/jam/cheese breakfast (90 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně chléb, máslo, marmeláda, sýr (90 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 90
+						sat-soup:
+							label:
+								en: 'Saturday garlic creme (35 CZK, available between 17:30 and 20:00)'
+								cs: 'Sobotní česnekový krém (35 Kč, odběr mezi 17:30 až 20:00)'
+							fee: 35
+						sat-goulash:
+							label:
+								en: 'Saturday pork goulash & dumplings (140 CZK, available between 17:30 and 20:00)'
+								cs: 'Sobotní vepřový guláš, houskový knedlík (140 Kč, odběr mezi 17:30 až 20:00)'
+							fee: 140
+						sat-risotto:
+							label:
+								en: 'Saturday Parmesan risotto (140 CZK, available between 17:30 and 20:00)'
+								cs: 'Sobotní parmazánové rizoto (140 Kč, odběr mezi 17:30 až 20:00)'
+							fee: 140
+						sun-breakfast-sausage:
+							label:
+								en: 'Sunday sausage breakfast (90 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní párek k snídani (90 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 90
+						sun-breakfast-eggs:
+							label:
+								en: 'Sunday scrambled eggs breakfast (90 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně míchaná vejce (90 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 90
+						sun-breakfast-jam:
+							label:
+								en: 'Sunday bread/butter/jam/cheese breakfast (90 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně chléb, máslo, marmeláda, sýr (90 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 90
+				culture:
+					label:
+						en: 'Culture:'
+						cs: 'Kultura:'
 					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
+						en: 'Guided tour and concert in Osek monastery must be ordered and paid until Sunday October 23, 2022'
+						cs: 'Prohlídka kláštera a koncert se musí objednat a zaplatit do neděle 23. 10. 2022'
+					type: checkboxlist
+					items:
+						guided-tour-regular:
+							label:
+								en: 'Saturday guided tour (180 CZK, between 16:00 and 18:00)'
+								cs: 'Sobotní prohlídka kláštera (180 Kč, mezi 16:00 až 18:00)'
+							fee: 180
+						guided-tour-reduced:
+							label:
+								en: 'Saturday guided tour students and seniors over 65 years (150 CZK, between 16:00 and 18:00)'
+								cs: 'Sobotní prohlídka kláštera studenti a senioři nad 65 let (150 Kč, mezi 16:00 až 18:00)'
+							fee: 150
+						concert:
+							label:
+								en: 'Saturday concert in monastery (150 CZK, from 20:00)'
+								cs: 'Sobotní koncert v klášteře (150 Kč, od 20:00)'
+							fee: 150
 				registry_address:
 					type: text
 					label:
 						cs: 'Bydliště:'
 						en: 'Address:'
 					description:
-						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
-						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
+						cs: 'Adresa pro účely rejstříku sportovců, sím vyplňte bydliště přesně podle občanky'
+						en: 'Address is needed from Czech competitors only - please input any text'
+
+	webmasterEmail: "jan.tojnar@rogaining.cz"
