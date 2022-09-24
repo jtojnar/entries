@@ -28,6 +28,9 @@ final class Bootstrap {
 
 	public static function bootForTests(): Configurator {
 		$configurator = self::boot();
+		$tempDir = sys_get_temp_dir() . \DIRECTORY_SEPARATOR . 'entries-tests.' . mt_rand();
+		mkdir($tempDir);
+		$configurator->setTempDirectory($tempDir);
 		$configurator->addConfig(__DIR__ . '/../tests/config.neon');
 		\Tester\Environment::setup();
 
