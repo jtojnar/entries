@@ -338,28 +338,34 @@ final class TeamPresenter extends BasePresenter {
 						'scope' => 'team',
 						'key' => $name,
 					]), new Money($field['fee'] * 100, $currency));
-				} elseif ($type === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
-					$invoice->addItem(self::serializeInvoiceItem([
-						'type' => $type,
-						'scope' => 'team',
-						'key' => $name,
-					]), new Money($field['fee'] * 100, $currency));
-				} elseif ($type === 'enum' && isset($field['options'][$values[$name]]) && isset($field['options'][$values[$name]]['fee']) && $jsonData[$name]) {
-					$invoice->addItem(self::serializeInvoiceItem([
-						'type' => $type,
-						'scope' => 'team',
-						'key' => $name,
-						'value' => $values[$name],
-					]), new Money($field['options'][$values[$name]]['fee'] * 100, $currency));
+				} elseif ($type === 'checkbox' && $jsonData[$name]) {
+					if (isset($field['fee'])) {
+						$invoice->addItem(self::serializeInvoiceItem([
+							'type' => $type,
+							'scope' => 'team',
+							'key' => $name,
+						]), new Money($field['fee'] * 100, $currency));
+					}
+				} elseif ($type === 'enum' && isset($field['options'][$values[$name]]) && $jsonData[$name]) {
+					$option = $field['options'][$values[$name]];
+					if (isset($option['fee'])) {
+						$invoice->addItem(self::serializeInvoiceItem([
+							'type' => $type,
+							'scope' => 'team',
+							'key' => $name,
+							'value' => $values[$name],
+						]), new Money($option['fee'] * 100, $currency));
+					}
 				} elseif ($type === 'checkboxlist') {
 					foreach ($jsonData[$name] as $item) {
-						if (isset($field['items'][$item]['fee'])) {
+						$option = $field['items'][$item];
+						if (isset($option['fee'])) {
 							$invoice->addItem(self::serializeInvoiceItem([
 								'type' => $type,
 								'scope' => 'team',
 								'key' => $name,
 								'value' => $item,
-							]), new Money($field['items'][$item]['fee'] * 100, $currency));
+							]), new Money($option['fee'] * 100, $currency));
 						}
 					}
 				}
@@ -417,28 +423,34 @@ final class TeamPresenter extends BasePresenter {
 							'scope' => 'person',
 							'key' => $name,
 						]), new Money($field['fee'] * 100, $currency));
-					} elseif ($type === 'checkbox' && isset($field['fee']) && $jsonData[$name]) {
-						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $type,
-							'scope' => 'person',
-							'key' => $name,
-						]), new Money($field['fee'] * 100, $currency));
-					} elseif ($type === 'enum' && isset($field['options'][$member[$name]]) && isset($field['options'][$member[$name]]['fee']) && $jsonData[$name]) {
-						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $type,
-							'scope' => 'person',
-							'key' => $name,
-							'value' => $member[$name],
-						]), new Money($field['options'][$member[$name]]['fee'] * 100, $currency));
+					} elseif ($type === 'checkbox' && $jsonData[$name]) {
+						if (isset($field['fee'])) {
+							$invoice->addItem(self::serializeInvoiceItem([
+								'type' => $type,
+								'scope' => 'person',
+								'key' => $name,
+							]), new Money($field['fee'] * 100, $currency));
+						}
+					} elseif ($type === 'enum' && isset($field['options'][$member[$name]]) && $jsonData[$name]) {
+						$option = $field['options'][$member[$name]];
+						if (isset($option['fee'])) {
+							$invoice->addItem(self::serializeInvoiceItem([
+								'type' => $type,
+								'scope' => 'person',
+								'key' => $name,
+								'value' => $member[$name],
+							]), new Money($option['fee'] * 100, $currency));
+						}
 					} elseif ($type === 'checkboxlist') {
 						foreach ($jsonData[$name] as $item) {
-							if (isset($field['items'][$item]['fee'])) {
+							$option = $field['items'][$item];
+							if (isset($option['fee'])) {
 								$invoice->addItem(self::serializeInvoiceItem([
 									'type' => $type,
 									'scope' => 'person',
 									'key' => $name,
 									'value' => $item,
-								]), new Money($field['items'][$item]['fee'] * 100, $currency));
+								]), new Money($option['fee'] * 100, $currency));
 							}
 						}
 					}
