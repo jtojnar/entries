@@ -75,7 +75,8 @@ final class TeamForm extends UI\Form {
 				} elseif ($field['type'] === 'enum') {
 					$input = $this->addEnum($name, $container, $field)->setRequired();
 				} elseif ($field['type'] === 'checkbox') {
-					$input = $container->addCheckbox($name, $label);
+					$input = new BootstrapCheckbox($label);
+					$container->addComponent($input, $name);
 					if (isset($field['default'])) {
 						$input->setDefaultValue($field['default']);
 					}
@@ -84,8 +85,8 @@ final class TeamForm extends UI\Form {
 					foreach ($field['items'] as $itemKey => $item) {
 						$items[$itemKey] = $item['label'][$locale];
 					}
-
-					$input = $container->addCheckBoxList($name, $label, $items);
+					$input = new BootstrapCheckboxList($label, $items);
+					$container->addComponent($input, $name);
 					$input->setDefaultValue($this->getDefaultFieldValue($field));
 				} else {
 					$input = $container->addText($name, $label)->setRequired();
@@ -119,7 +120,7 @@ final class TeamForm extends UI\Form {
 		return $si;
 	}
 
-	public function addEnum(string $name, Container $container, array $field): Controls\RadioList {
+	public function addEnum(string $name, Container $container, array $field): BootstrapRadioList {
 		$locale = $this->locale;
 
 		if (isset($field['label'][$locale])) {
@@ -134,7 +135,11 @@ final class TeamForm extends UI\Form {
 
 		$default = $this->getDefaultFieldValue($field);
 
-		return $container->addRadioList($name, $label, $options)->setDefaultValue($default);
+		$input = new BootstrapRadioList($label, $options);
+		$input->setDefaultValue($default);
+		$container->addComponent($input, $name);
+
+		return $input;
 	}
 
 	public function isFieldDisabled(array $field): bool {
