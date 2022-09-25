@@ -255,6 +255,7 @@ fields:
 - `type` – Each field will need to declare its type, see [field types](#field-types).
 - `label` – Some fields may define a default label (`sportident`, `country`) but otherwise you should define one for each language.
 - `public` – By default, no custom field will be shown in the team list publicly to prevent leaking personal information and as not to clutter the list with items only relevant to organizers. You can set this option to `true` to make it visible to everyone.
+- `disabled` – Setting this to `true` makes the field insensitive.
 - `applicableCategories` – A list of categories to show this field in. If not present, every category is implied.
 
 ###### Field types
