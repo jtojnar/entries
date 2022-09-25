@@ -8,15 +8,18 @@ use App;
 use App\Components\SportidentControl;
 use App\Exporters;
 use App\Model\Invoice;
+use App\Model\ItemReservation;
 use App\Model\Team;
 use Closure;
 use Exception;
+use Kdyby;
 use Latte;
 use Money\Currency;
 use Money\Money;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
@@ -44,6 +47,9 @@ final class TeamPresenter extends BasePresenter {
 
 	/** @var App\Model\CategoryData @inject */
 	public $categories;
+
+	/** @var App\Model\ItemReservationRepository @inject */
+	public $itemReservations;
 
 	/** @var App\Templates\Filters\CategoryFormatFilter @inject */
 	public $categoryFormatter;
@@ -201,14 +207,37 @@ final class TeamPresenter extends BasePresenter {
 	protected function createComponentTeamForm(string $name): Form {
 		$idParam = $this->getParameter('id');
 		$editing = $idParam !== null;
-		$form = $this->teamFormFactory->create($this->countries->fetchIdNamePairs(), $this->locale, $editing, $this, $name);
-		if ($editing && !$form->isSubmitted()) {
+		$reservationStats = $this->itemReservations->getStats();
+
+		if ($editing) {
 			\assert(\is_string($idParam)); // For PHPStan.
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
 			if (!$team) {
 				$this->error($this->translator->translate('messages.team.edit.error.404'));
 			}
+
+			// Unlock items reserved by this team to it.
+			foreach ($team->itemReservations as $reservation) {
+				--$reservationStats[$reservation->name];
+			}
+			foreach ($team->persons as $person) {
+				foreach ($person->itemReservations as $reservation) {
+					--$reservationStats[$reservation->name];
+				}
+			}
+		}
+
+		$form = $this->teamFormFactory->create(
+			$this->countries->fetchIdNamePairs(),
+			$this->locale,
+			$editing,
+			$reservationStats,
+			$this,
+			$name,
+		);
+		if ($editing && !$form->isSubmitted()) {
+			\assert(isset($team)); // For PHPStan
 			$default = [];
 			$default['name'] = $team->name;
 			$default['category'] = $team->category;
@@ -327,7 +356,16 @@ final class TeamPresenter extends BasePresenter {
 
 			$currency = new Currency($this->context->parameters['entries']['fees']['currency']);
 			$fields = $this->context->parameters['entries']['fields']['team'];
+
+			$limits = $this->context->parameters['entries']['limits'];
+			$reservationStats = $this->itemReservations->getStats();
+			foreach ($team->itemReservations as $reservation) {
+				--$reservationStats[$reservation->name];
+				$this->itemReservations->remove($reservation);
+			}
+
 			$jsonData = [];
+
 			foreach ($fields as $name => $field) {
 				$jsonData[$name] = $values[$name];
 				$type = $field['type'];
@@ -346,6 +384,17 @@ final class TeamPresenter extends BasePresenter {
 							'key' => $name,
 						]), new Money($field['fee'] * 100, $currency));
 					}
+
+					if (isset($field['limit'])) {
+						$limitName = $field['limit'];
+						$team->itemReservations->add(new ItemReservation($limitName));
+						$reservationStats[$limitName] ??= 0;
+						if (++$reservationStats[$limitName] > $limits[$limitName]) {
+							/** @var Controls\BaseControl */
+							$control = $form[$name];
+							$control->addError('messages.team.field.error.no_longer_available');
+						}
+					}
 				} elseif ($type === 'enum' && isset($field['options'][$values[$name]]) && $jsonData[$name]) {
 					$option = $field['options'][$values[$name]];
 					if (isset($option['fee'])) {
@@ -355,6 +404,17 @@ final class TeamPresenter extends BasePresenter {
 							'key' => $name,
 							'value' => $values[$name],
 						]), new Money($option['fee'] * 100, $currency));
+					}
+
+					if (isset($option['limit'])) {
+						$limitName = $option['limit'];
+						$team->itemReservations->add(new ItemReservation($limitName));
+						$reservationStats[$limitName] ??= 0;
+						if (++$reservationStats[$limitName] > $limits[$limitName]) {
+							/** @var Controls\BaseControl */
+							$control = $form[$name];
+							$control->addError('messages.team.field.error.no_longer_available');
+						}
 					}
 				} elseif ($type === 'checkboxlist') {
 					foreach ($jsonData[$name] as $item) {
@@ -367,6 +427,17 @@ final class TeamPresenter extends BasePresenter {
 								'value' => $item,
 							]), new Money($option['fee'] * 100, $currency));
 						}
+
+						if (isset($option['limit'])) {
+							$limitName = $option['limit'];
+							$team->itemReservations->add(new ItemReservation($limitName));
+							$reservationStats[$limitName] ??= 0;
+							if (++$reservationStats[$limitName] > $limits[$limitName]) {
+								/** @var Controls\BaseControl */
+								$control = $form[$name];
+								$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $option['label'][$this->locale]]), false);
+							}
+						}
 					}
 				}
 			}
@@ -376,6 +447,10 @@ final class TeamPresenter extends BasePresenter {
 
 			if ($this->action === 'edit') {
 				foreach ($team->persons as $person) {
+					foreach ($person->itemReservations as $reservation) {
+						--$reservationStats[$reservation->name];
+						$this->itemReservations->remove($reservation);
+					}
 					$this->persons->remove($person);
 				}
 			}
@@ -393,7 +468,11 @@ final class TeamPresenter extends BasePresenter {
 			/** @var ?string $firstMemberName */
 			$firstMemberName = null;
 
-			foreach ($values['persons'] as $member) {
+			/** @var Kdyby\Replicator\Container */
+			$replicator = $form['persons'];
+			$personContainers = iterator_to_array($replicator->getContainers());
+			foreach ($values['persons'] as $personKey => $member) {
+				$personContainer = $personContainers[$personKey];
 				$firstname = $member['firstname'];
 				if ($firstMemberAddress === null) {
 					$firstMemberAddress = $member['email'];
@@ -431,6 +510,17 @@ final class TeamPresenter extends BasePresenter {
 								'key' => $name,
 							]), new Money($field['fee'] * 100, $currency));
 						}
+
+						if (isset($field['limit'])) {
+							$limitName = $field['limit'];
+							$person->itemReservations->add(new ItemReservation($limitName));
+							$reservationStats[$limitName] ??= 0;
+							if (++$reservationStats[$limitName] > $limits[$limitName]) {
+								/** @var Controls\BaseControl */
+								$control = $personContainer[$name];
+								$control->addError('messages.team.field.error.no_longer_available');
+							}
+						}
 					} elseif ($type === 'enum' && isset($field['options'][$member[$name]]) && $jsonData[$name]) {
 						$option = $field['options'][$member[$name]];
 						if (isset($option['fee'])) {
@@ -440,6 +530,17 @@ final class TeamPresenter extends BasePresenter {
 								'key' => $name,
 								'value' => $member[$name],
 							]), new Money($option['fee'] * 100, $currency));
+						}
+
+						if (isset($option['limit'])) {
+							$limitName = $option['limit'];
+							$person->itemReservations->add(new ItemReservation($limitName));
+							$reservationStats[$limitName] ??= 0;
+							if (++$reservationStats[$limitName] > $limits[$limitName]) {
+								/** @var Controls\BaseControl */
+								$control = $personContainer[$name];
+								$control->addError('messages.team.field.error.no_longer_available');
+							}
 						}
 					} elseif ($type === 'checkboxlist') {
 						foreach ($jsonData[$name] as $item) {
@@ -451,6 +552,17 @@ final class TeamPresenter extends BasePresenter {
 									'key' => $name,
 									'value' => $item,
 								]), new Money($option['fee'] * 100, $currency));
+							}
+
+							if (isset($option['limit'])) {
+								$limitName = $option['limit'];
+								$person->itemReservations->add(new ItemReservation($limitName));
+								$reservationStats[$limitName] ??= 0;
+								if (++$reservationStats[$limitName] > $limits[$limitName]) {
+									/** @var Controls\BaseControl */
+									$control = $personContainer[$name];
+									$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $option['label'][$this->locale]]), false);
+								}
 							}
 						}
 					}
@@ -480,80 +592,82 @@ final class TeamPresenter extends BasePresenter {
 
 			$this->invoices->persist($invoice);
 
-			$this->teams->flush();
+			if (!$form->hasErrors()) {
+				$this->teams->flush();
 
-			if ($this->action === 'edit') {
-				$this->flashMessage($this->translator->translate('messages.team.success.edit'));
-			} else {
-				/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
-				$mtemplate = $this->createTemplate();
-
-				$appDir = $this->context->parameters['appDir'];
-
-				$baseMailTemplateLocalizedPath = $appDir . '/templates/Mail/verification.' . $this->locale . '.latte';
-
-				// If the override templates exist in the config directory,
-				// let’s use them.
-				$mailTemplatePath = null;
-				if (file_exists($appDir . '/config/mail/verification.' . $this->locale . '.latte')) {
-					$mailTemplatePath = $appDir . '/config/mail/verification.' . $this->locale . '.latte';
-				} elseif (file_exists($appDir . '/config/mail/verification.latte')) {
-					$mailTemplatePath = $appDir . '/config/mail/verification.latte';
-				}
-
-				// If not, let’s use the built-in templates.
-				$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : $appDir . '/templates/Mail/verification.latte';
-				if ($mailTemplatePath === null) {
-					$mailTemplatePath = $baseMailTemplatePath;
+				if ($this->action === 'edit') {
+					$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 				} else {
-					// If the overrides exist, pass the built-in template as a parameter
-					// so that they can inherit it and only override what they need.
-					$mtemplate->layout = $baseMailTemplatePath;
-					// TODO: Try to make use of coreParentFinder
-					// so that the templates do not need to carry layout tags.
-					// https://latte.nette.org/en/develop#toc-layout-lookup
+					/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
+					$mtemplate = $this->createTemplate();
+
+					$appDir = $this->context->parameters['appDir'];
+
+					$baseMailTemplateLocalizedPath = $appDir . '/templates/Mail/verification.' . $this->locale . '.latte';
+
+					// If the override templates exist in the config directory,
+					// let’s use them.
+					$mailTemplatePath = null;
+					if (file_exists($appDir . '/config/mail/verification.' . $this->locale . '.latte')) {
+						$mailTemplatePath = $appDir . '/config/mail/verification.' . $this->locale . '.latte';
+					} elseif (file_exists($appDir . '/config/mail/verification.latte')) {
+						$mailTemplatePath = $appDir . '/config/mail/verification.latte';
+					}
+
+					// If not, let’s use the built-in templates.
+					$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : $appDir . '/templates/Mail/verification.latte';
+					if ($mailTemplatePath === null) {
+						$mailTemplatePath = $baseMailTemplatePath;
+					} else {
+						// If the overrides exist, pass the built-in template as a parameter
+						// so that they can inherit it and only override what they need.
+						$mtemplate->layout = $baseMailTemplatePath;
+						// TODO: Try to make use of coreParentFinder
+						// so that the templates do not need to carry layout tags.
+						// https://latte.nette.org/en/develop#toc-layout-lookup
+					}
+
+					$mtemplate->setFile($mailTemplatePath);
+
+					// Define variables for use in the e-mail template.
+					$mtemplate->accountNumber = $this->context->parameters['entries']['accountNumber'];
+					$mtemplate->eventName =
+						$this->parameters->getSiteTitle($this->locale)
+						?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
+					$mtemplate->eventNameShort =
+						$this->parameters->getSiteTitleShort($this->locale)
+						?? $this->parameters->getSiteTitleShort($this->translator->getDefaultLocale())
+						?? $mtemplate->eventName;
+					$mtemplate->dateFormat = $this->translator->translate('messages.email.verification.entry_details.person.birth.format');
+					$mtemplate->team = $team;
+					$mtemplate->people = $team->persons;
+					$mtemplate->id = $team->id;
+					$mtemplate->name = $firstMemberName;
+					$mtemplate->password = $password;
+					$mtemplate->invoice = $invoice;
+					$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
+
+					// Inline styles into the e-mail
+					$mailHtml = (string) $mtemplate;
+					$domDocument = CssInliner::fromHtml($mailHtml)
+						->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
+						->getDomDocument();
+					HtmlPruner::fromDomDocument($domDocument)
+						->removeElementsWithDisplayNone();
+					$mailHtml = CssToAttributeConverter::fromDomDocument($domDocument)
+						->convertCssToVisualAttributes()
+						->render();
+
+					$mail = new Message();
+					$mail->setFrom($mtemplate->organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
+
+					$mailer = $this->mailer;
+					$mailer->send($mail);
+
+					$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
 				}
-
-				$mtemplate->setFile($mailTemplatePath);
-
-				// Define variables for use in the e-mail template.
-				$mtemplate->accountNumber = $this->context->parameters['entries']['accountNumber'];
-				$mtemplate->eventName =
-					$this->parameters->getSiteTitle($this->locale)
-					?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
-				$mtemplate->eventNameShort =
-					$this->parameters->getSiteTitleShort($this->locale)
-					?? $this->parameters->getSiteTitleShort($this->translator->getDefaultLocale())
-					?? $mtemplate->eventName;
-				$mtemplate->dateFormat = $this->translator->translate('messages.email.verification.entry_details.person.birth.format');
-				$mtemplate->team = $team;
-				$mtemplate->people = $team->persons;
-				$mtemplate->id = $team->id;
-				$mtemplate->name = $firstMemberName;
-				$mtemplate->password = $password;
-				$mtemplate->invoice = $invoice;
-				$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
-
-				// Inline styles into the e-mail
-				$mailHtml = (string) $mtemplate;
-				$domDocument = CssInliner::fromHtml($mailHtml)
-					->inlineCss(file_get_contents($appDir . '/templates/Mail/style.css') ?: '')
-					->getDomDocument();
-				HtmlPruner::fromDomDocument($domDocument)
-					->removeElementsWithDisplayNone();
-				$mailHtml = CssToAttributeConverter::fromDomDocument($domDocument)
-					->convertCssToVisualAttributes()
-					->render();
-
-				$mail = new Message();
-				$mail->setFrom($mtemplate->organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
-
-				$mailer = $this->mailer;
-				$mailer->send($mail);
-
-				$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
+				$this->redirect('Homepage:');
 			}
-			$this->redirect('Homepage:');
 		} catch (Nette\Application\AbortException $e) {
 			throw $e;
 		} catch (Exception $e) {

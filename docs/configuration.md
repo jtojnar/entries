@@ -124,6 +124,18 @@ Prices will be displayed in choosen currency on the invoice and in the administr
 
 You can also set [currency conversion rates](#services-section).
 
+##### `limits`
+
+This section allows you to define limits that can be later used to restrict how many counts of a certain item can all teams select in total in `checkbox`, `enum` and `checkboxlist` fields with specified limit. This is useful e.g. for booking accommodation.
+
+```neon
+parameters:
+	entries:
+		limits:
+			luxury_hotel_rooms: 10
+			normal_hotel_rooms: 30
+```
+
 ##### `categories`
 
 This section defines the categories entrants can choose from. The `categories` section can be either nested or flat. Each category defines a set of constraints that need to be satisfied in order for the team to be able to register in the category.
@@ -263,7 +275,7 @@ fields:
 - `country` – Select box listing the countries of the world. You can specify a `default` value – 46 stands for Czechia, see [install.sql](../install.sql) for a complete list. You might want to make the value public to promote nationalism among the participants.
 - `phone` – A telephone number.
 - `sportident` – A field allowing to enter a SI card number or request one for rent. The price is set using the `fee` key. You might want to make the value public to allow people to check if they registered the correct SI card.
-- `enum` – Allows selecting a single value from a list of values. Each option can have a `fee` set.
+- `enum` – Allows selecting a single value from a list of values. Each option can have a `fee` or `limit` (referring to a name of a key in [`limits` section](#limits)) set.
 
 ```neon
 accommodation:
@@ -277,11 +289,13 @@ accommodation:
 				en: 'Friday – Sunday'
 				cs: 'Pátek – Neděle'
 			fee: 500
+			limit: accommodation
 		saturday:
 			label:
 				en: 'Saturday – Sunday'
 				cs: 'Sobota – Neděle'
 			fee: 250
+			limit: accommodation
 		none:
 			default: true
 			label:
@@ -289,8 +303,8 @@ accommodation:
 				cs: 'Žádné'
 ```
 
-- `checkbox` – A simple boolean switch, can have a `fee` or a `default` state associated.
-- `checkboxlist` – Allows selecting multiple values from a list of values. Each option can have a `fee` or a `default` state set.
+- `checkbox` – A simple boolean switch, can have a `fee`, `limit` (referring to a name of a key in [`limits` section](#limits)) or a `default` state associated.
+- `checkboxlist` – Allows selecting multiple values from a list of values. Each option can have a `fee`, `limit` (referring to a name of a key in [`limits` section](#limits)) or a `default` state set.
 
 ```neon
 boarding:

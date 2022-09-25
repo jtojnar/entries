@@ -13,6 +13,7 @@ use Nextras\Orm\Model\Model;
  * @property TeamRepository $teams
  * @property CountryRepository $countries
  * @property InvoiceRepository $invoices
+ * @property ItemReservationRepository $itemReservations
  * @property MessageRepository $messages
  * @property TokenRepository $tokens
  */

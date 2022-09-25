@@ -6,6 +6,7 @@ namespace App\Model;
 
 use Nette\Utils\Json;
 use Nextras\Orm\Entity\Entity;
+use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Person.
@@ -16,6 +17,7 @@ use Nextras\Orm\Entity\Entity;
  * @property string $lastname
  * @property string $gender {enum self::GENDER_*}
  * @property \DateTimeImmutable $birth
+ * @property OneHasMany<ItemReservation> $itemReservations {1:m ItemReservation::$person}
  * @property array $jsonData {virtual}
  * @property string $details
  * @property string $email

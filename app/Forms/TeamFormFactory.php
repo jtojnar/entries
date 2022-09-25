@@ -28,13 +28,21 @@ final class TeamFormFactory {
 	public function __construct(
 		private CategoryData $categories,
 		Nette\DI\Container $context,
-		private Translator $translator
+		private Translator $translator,
 	) {
 		$this->parameters = $context->parameters['entries'];
 	}
 
-	public function create(array $countries, string $locale, bool $editing = false, IContainer $parent = null, string $name = null): TeamForm {
-		$form = new TeamForm($countries, $this->parameters, $locale, $parent, $name);
+	public function create(
+		array $countries,
+		string $locale,
+		bool $editing = false,
+		/* @var array<string, int> */
+		array $reservationStats = [],
+		IContainer $parent = null,
+		string $name = null,
+	): TeamForm {
+		$form = new TeamForm($countries, $this->parameters, $locale, $reservationStats, $parent, $name);
 
 		$form->setTranslator($this->translator);
 		$renderer = new Bs5FormRenderer();

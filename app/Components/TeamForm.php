@@ -20,6 +20,8 @@ final class TeamForm extends UI\Form {
 		private array $countries,
 		private array $parameters,
 		private string $locale,
+		/** @var array<string, int> */
+		private array $reservationStats,
 		IContainer $parent = null,
 		string $name = null,
 	) {
@@ -98,14 +100,32 @@ final class TeamForm extends UI\Form {
 
 				$isDisabled = $field['disabled'] ?? false;
 				if ($field['type'] === 'checkboxlist' || $field['type'] === 'enum') {
-					/** @var array<string, array{disabled: ?bool}> */
+					/** @var array<string, array{disabled: ?bool, limit: ?string}> */
 					$options = $field['type'] === 'enum' ? $field['options'] : $field['items'];
 					$disabledFields = array_filter(
 						array_keys($options),
-						fn(string $optionKey): bool => $options[$optionKey]['disabled'] ?? $isDisabled,
+						function(string $optionKey) use ($options, $isDisabled): bool {
+							$itemDisabled = $options[$optionKey]['disabled'] ?? $isDisabled;
+							$limitName = $options[$optionKey]['limit'] ?? null;
+
+							if ($limitName !== null) {
+								$limit = $this->parameters['limits'][$limitName];
+								$numberReserved = $this->reservationStats[$limitName] ?? 0;
+								$itemDisabled = $isDisabled || $numberReserved >= $limit;
+							}
+
+							return $itemDisabled;
+						},
 					);
 					$input->setDisabled($disabledFields);
 				} else {
+					$limitName = $field['limit'] ?? null;
+					if ($limitName !== null) {
+						$limit = $this->parameters['limits'][$limitName];
+						$numberReserved = $this->reservationStats[$limitName] ?? 0;
+						$isDisabled = $isDisabled || $numberReserved >= $limit;
+					}
+
 					$input->setDisabled($isDisabled);
 				}
 

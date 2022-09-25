@@ -17,6 +17,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Added Tracy toolbar for viewing sent e-mails in debug mode.
 - Support disabling individual options of `checkboxlist` and `enum` fields.
 - Allow withdrawing teams from the registration in database.
+- Implemented “inventory limits” for `checkbox`, `checkboxlist` and `enum` fields.
 
 ### Bugs fixed
 

@@ -282,3 +282,13 @@ CREATE TABLE `token` (
 
 ALTER TABLE `message`
 ADD COLUMN `sender` varchar(250) COLLATE 'utf8mb4_unicode_ci' NOT NULL AFTER `subject`;
+
+CREATE TABLE `item_reservation` (
+  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name` varchar(10) COLLATE 'ascii_general_ci' NOT NULL,
+  `team_id` int(11) NULL,
+  `person_id` int(11) NULL,
+  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE RESTRICT,
+  FOREIGN KEY (`person_id`) REFERENCES `person` (`id`) ON DELETE RESTRICT,
+  INDEX `name` (`name`)
+) COLLATE 'utf8mb4_unicode_ci';

@@ -26,6 +26,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property OneHasMany<Invoice> $invoices {1:m Invoice::$team}
  * @property OneHasMany<Message> $messages {1:m Message::$team}
  * @property OneHasMany<Token> $tokens {1:m Token::$team}
+ * @property OneHasMany<ItemReservation> $itemReservations {1:m ItemReservation::$team}
  * @property Invoice $lastInvoice {virtual}
  *
  * @phpstan-property self::STATUS_* $status

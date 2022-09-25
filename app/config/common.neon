@@ -7,6 +7,7 @@ parameters:
 		accountNumber: '000000-0000000000/0000'
 		fees:
 			currency: CZK
+		limits: []
 		categories: []
 		fields:
 			person: []
