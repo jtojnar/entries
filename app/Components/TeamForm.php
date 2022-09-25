@@ -96,7 +96,18 @@ final class TeamForm extends UI\Form {
 					$input->setOption('description', $field['description'][$locale]);
 				}
 
-				$input->setDisabled($field['disabled'] ?? false);
+				$isDisabled = $field['disabled'] ?? false;
+				if ($field['type'] === 'checkboxlist' || $field['type'] === 'enum') {
+					/** @var array<string, array{disabled: ?bool}> */
+					$options = $field['type'] === 'enum' ? $field['options'] : $field['items'];
+					$disabledFields = array_filter(
+						array_keys($options),
+						fn(string $optionKey): bool => $options[$optionKey]['disabled'] ?? $isDisabled,
+					);
+					$input->setDisabled($disabledFields);
+				} else {
+					$input->setDisabled($isDisabled);
+				}
 
 				if (isset($field['applicableCategories'])) {
 					$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field['applicableCategories']);

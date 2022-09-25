@@ -15,6 +15,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Added currency exchange filter for templates.
 - Added ability for admin to log in as a team.
 - Added Tracy toolbar for viewing sent e-mails in debug mode.
+- Support disabling individual options of `checkboxlist` and `enum` fields.
 - Allow withdrawing teams from the registration in database.
 
 ### Bugs fixed
