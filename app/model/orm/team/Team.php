@@ -22,10 +22,10 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $details
  * @property string $ip
  * @property string $password
- * @property OneHasMany|Person[] $persons {1:m Person::$team}
- * @property OneHasMany|Invoice[] $invoices {1:m Invoice::$team}
- * @property OneHasMany|Message[] $messages {1:m Message::$team}
- * @property OneHasMany|Token[] $tokens {1:m Token::$team}
+ * @property OneHasMany<Person> $persons {1:m Person::$team}
+ * @property OneHasMany<Invoice> $invoices {1:m Invoice::$team}
+ * @property OneHasMany<Message> $messages {1:m Message::$team}
+ * @property OneHasMany<Token> $tokens {1:m Token::$team}
  * @property Invoice $lastInvoice {virtual}
  *
  * @phpstan-property self::STATUS_* $status
