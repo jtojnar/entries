@@ -88,14 +88,14 @@ parameters:
 					cs: 'Příchozí orienťáci (PO)'
 				short: 'PO'
 				fees:
-					person: 250.0
+					person: 250
 			PZ:
 				label:
 					en: 'Newcomers – Beginners (PZ)'
 					cs: 'Příchozí začátečníci (PZ)'
 				short: 'PZ'
 				fees:
-					person: 250.0
+					person: 250
 		fields:
 			team:
 				stage:
