@@ -228,7 +228,7 @@ parameters:
 						fri-penne:
 							label:
 								en: 'Friday penne arrabbiata (140 CZK, available between 17:00 and 19:00)'
-								cs: 'Páteční penne arrabbiata (140 Kč, odběr mezi 17:00 až 18:00)'
+								cs: 'Páteční penne arrabbiata (140 Kč, odběr mezi 17:00 až 19:00)'
 							fee: 140
 						sat-breakfast-sausage:
 							label:
