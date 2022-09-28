@@ -27,7 +27,7 @@ parameters:
 			person: 350
 		limits:
 			monastery: 100
-			atc-six: 100
+			atc-six: 10
 			atc-five: 4
 			atc-four: 4
 			atc-two: 7
