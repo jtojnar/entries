@@ -1,0 +1,15 @@
+{layout "$layout"}
+
+{block payment}
+<p>Please pay <strong>{$invoice->getTotal()|price}</strong> to the bank account of the Krušnohorský rogainingový klub Litvínov:</p>
+
+<ul>
+<li><p>If you have a Czech bank account, pay to <strong>{$accountNumber}</strong> and use <strong>{$id}</strong> as the variable symbol.</p></li>
+<li><p>Otherwise, pay to the account:<br>
+BIC (=SWIFT): FIOBCZPPXXX<br>
+IBAN: CZ8620100000002800039826<br>
+Bank address: Fio banka, a.s., V Celnici 1028/10, Praha 1, Czech Republic<br>
+Account owner: Krušnohorský rogainingový klub Litvínov</p>
+<p>Write the variable symbol <strong>{$id}</strong> in the “Note” or “Reason for payment” section.</p></li>
+</ul>
+{/block}
