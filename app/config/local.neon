@@ -26,7 +26,7 @@ parameters:
 			currency: CZK
 			person: 350
 		limits:
-			monastery: 100
+			monastery: 102
 			atc-six: 10
 			atc-five: 4
 			atc-four: 4
