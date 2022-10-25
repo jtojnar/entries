@@ -24,7 +24,7 @@ parameters:
 		accountNumber: '2800039826/2010'
 		fees:
 			currency: CZK
-			person: 350
+			person: 450
 		limits:
 			monastery: 102
 			atc-six: 10
