@@ -5,7 +5,9 @@ declare(strict_types=1);
 $finder = PhpCsFixer\Finder::create()
 	->exclude('log')
 	->exclude('temp')
-	->in(__DIR__ . '/..');
+	->in(__DIR__ . '/..')
+	->files()
+	->name('*.phpt');
 
 $rules = [
 	'@Symfony' => true,
