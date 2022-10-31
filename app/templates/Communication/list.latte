@@ -17,7 +17,7 @@
 	<td>{$message->id}</td>
 	<td>{$message->subject}</td>
 	<td>{$message->timestamp|date, ('messages.formats.datetime'|translate)}</td>
-	<td>{$message->body|stripHtml||truncate, 50, '…'}</td>
+	<td>{$message->body|stripHtml|truncate, 50, '…'}</td>
 	<td>
 		{switch $message->status}
 			{case $message::STATUS_SENT}
