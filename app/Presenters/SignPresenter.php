@@ -11,8 +11,7 @@ use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
-use Nette\Security\IAuthenticator;
-use Nette\Security\IUserStorage;
+use Nette\Security\Authenticator;
 
 /**
  * Presenter for signing in and out.
@@ -57,7 +56,7 @@ final class SignPresenter extends BasePresenter {
 		if ($values['remember']) {
 			$this->user->setExpiration('30 days');
 		} else {
-			$this->user->setExpiration('20 minutes', IUserStorage::CLEAR_IDENTITY);
+			$this->user->setExpiration('20 minutes', true);
 		}
 
 		try {
@@ -67,8 +66,8 @@ final class SignPresenter extends BasePresenter {
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError(
 				match ($e->getCode()) {
-					IAuthenticator::IDENTITY_NOT_FOUND => 'messages.sign.in.error.incorrect_id',
-					IAuthenticator::INVALID_CREDENTIAL => 'messages.sign.in.error.incorrect_password',
+					Authenticator::IDENTITY_NOT_FOUND => 'messages.sign.in.error.incorrect_id',
+					Authenticator::INVALID_CREDENTIAL => 'messages.sign.in.error.incorrect_password',
 					TeamManager::ENTRY_WITHDRAWN => 'messages.team.error.withdrawn',
 					default => new NotTranslate($e->getMessage()),
 				}

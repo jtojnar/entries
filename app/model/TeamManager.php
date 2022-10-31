@@ -10,7 +10,7 @@ use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
-final class TeamManager implements Nette\Security\IAuthenticator {
+final class TeamManager implements Nette\Security\Authenticator {
 	use Nette\SmartObject;
 
 	public const ENTRY_WITHDRAWN = 317806432;
@@ -28,9 +28,7 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 	 *
 	 * @throws AuthenticationException
 	 */
-	public function authenticate(array $credentials): IIdentity {
-		[$teamId, $password] = $credentials;
-
+	public function authenticate(string $teamId, string $password): IIdentity {
 		if ($teamId === 'admin') {
 			if ($password === $this->adminPassword) {
 				return new SimpleIdentity('admin', 'admin');
