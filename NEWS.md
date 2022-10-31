@@ -2,6 +2,20 @@
 
 Each minor release (or even commit in the repository) is generally considered a separate product with different database schema and upgrading is not supported. This is usually not a problem since most deployments are limited time only but we can create a backwards-compatible patch release if you are affected by a security issue.
 
+## 0.7.0 – unreleased
+
+### New features
+
+-
+
+### Bugs fixed
+
+-
+
+### Other changes
+
+-
+
 ## 0.6.0 – 2022-10-31
 
 ### New features
