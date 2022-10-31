@@ -79,9 +79,9 @@ final class CategoryData {
 	];
 
 	public function __construct(
-		private Application $app,
+		private readonly Application $app,
 		Nette\DI\Container $context,
-		private Translator $translator,
+		private readonly Translator $translator,
 	) {
 		$this->parameters = $context->parameters['entries'];
 	}

@@ -17,7 +17,7 @@ final class CsvWriter {
 	 * @param SplFileObject $file handle to write the CSV file to
 	 */
 	public function __construct(
-		private SplFileObject $file,
+		private readonly SplFileObject $file,
 	) {
 	}
 

@@ -34,11 +34,11 @@ use SplFileObject;
 final class CsvExporter implements IExporter {
 	public function __construct(
 		/** @var ICollection<Team> $teams */
-		private ICollection $teams,
-		private App\Model\CountryRepository $countries,
-		private array $teamFields,
-		private array $personFields,
-		private CategoryFormatFilter $categoryFormatter,
+		private readonly ICollection $teams,
+		private readonly App\Model\CountryRepository $countries,
+		private readonly array $teamFields,
+		private readonly array $personFields,
+		private readonly CategoryFormatFilter $categoryFormatter,
 	) {
 	}
 

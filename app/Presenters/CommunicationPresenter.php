@@ -6,7 +6,6 @@ namespace App\Presenters;
 
 use App;
 use App\Model\Team;
-use Closure;
 use Latte;
 use Nette;
 use Nette\Application\BadRequestException;
@@ -14,11 +13,6 @@ use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
-
-use function nspl\a\with;
-
-use const nspl\args\nonEmpty;
-
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
@@ -78,15 +72,10 @@ final class CommunicationPresenter extends BasePresenter {
 		$body->getControlPrototype()->class[] = 'codemirror';
 
 		$preview = $form->addSubmit('preview', 'messages.communication.compose.preview');
+		$preview->onClick[] = $this->composeFormPreview(...);
+
 		$enquee = $form->addSubmit('enqueue', 'messages.communication.compose.enqueue');
-
-		/** @var callable(SubmitButton): void */
-		$composeFormPreview = Closure::fromCallable([$this, 'composeFormPreview']);
-		$preview->onClick[] = $composeFormPreview;
-
-		/** @var callable(SubmitButton): void */
-		$composeFormEnqueue = Closure::fromCallable([$this, 'composeFormEnqueue']);
-		$enquee->onClick[] = $composeFormEnqueue;
+		$enquee->onClick[] = $this->composeFormEnqueue(...);
 
 		/** @var Bs5FormRenderer */
 		$renderer = $form->renderer;
@@ -105,12 +94,20 @@ final class CommunicationPresenter extends BasePresenter {
 		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
 		$values = $form->getValues();
 
+		$teamsIds = explode(',', $values['recipients']);
+		$teamsIds = array_map(
+			trim(...),
+			$teamsIds,
+		);
+		$teamsIds = array_filter(
+			$teamsIds,
+			static fn(string $id): bool => $id !== '',
+		);
 		/** @var int[] */
-		$teamsIds = with(explode(',', $values['recipients']))
-			->map(Closure::fromCallable('trim'))
-			->filter(nonEmpty)
-			->map(\nspl\op\int)
-			->toArray();
+		$teamsIds = array_map(
+			static fn(string $id): int => (int) $id,
+			$teamsIds,
+		);
 
 		$teams = array_combine(
 			$teamsIds,
@@ -179,12 +176,20 @@ final class CommunicationPresenter extends BasePresenter {
 		$values = $form->getValues();
 		$subject = $values['subject'];
 
+		$teamsIds = explode(',', $values['recipients']);
+		$teamsIds = array_map(
+			trim(...),
+			$teamsIds,
+		);
+		$teamsIds = array_filter(
+			$teamsIds,
+			static fn(string $id): bool => $id !== '',
+		);
 		/** @var int[] */
-		$teamsIds = with(explode(',', $values['recipients']))
-			->map(Closure::fromCallable('trim'))
-			->filter(nonEmpty)
-			->map(\nspl\op\int)
-			->toArray();
+		$teamsIds = array_map(
+			static fn(string $id): int => (int) $id,
+			$teamsIds,
+		);
 
 		$teams = array_combine(
 			$teamsIds,

@@ -25,8 +25,8 @@ final class MeosExporter implements IExporter {
 
 	public function __construct(
 		/** @var ICollection<Team> */
-		private ICollection $teams,
-		private CategoryFormatFilter $categoryFormatter,
+		private readonly ICollection $teams,
+		private readonly CategoryFormatFilter $categoryFormatter,
 	) {
 	}
 

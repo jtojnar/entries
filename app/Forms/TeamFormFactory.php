@@ -26,9 +26,9 @@ final class TeamFormFactory {
 	public $parameters;
 
 	public function __construct(
-		private CategoryData $categories,
+		private readonly CategoryData $categories,
 		Nette\DI\Container $context,
-		private Translator $translator,
+		private readonly Translator $translator,
 	) {
 		$this->parameters = $context->parameters['entries'];
 	}

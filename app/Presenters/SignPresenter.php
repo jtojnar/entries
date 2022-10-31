@@ -6,7 +6,6 @@ namespace App\Presenters;
 
 use App;
 use App\Model\TeamManager;
-use Closure;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
 use Nette\Application\BadRequestException;
@@ -48,7 +47,7 @@ final class SignPresenter extends BasePresenter {
 		$form->addSubmit('send', 'messages.sign.in.action');
 
 		/** @var callable(Form, mixed): void */ // For PHPStan, Nette will convert the value to the correct one (array) based on argument type.
-		$signInFormSucceeded = Closure::fromCallable([$this, 'signInFormSucceeded']);
+		$signInFormSucceeded = $this->signInFormSucceeded(...);
 		$form->onSuccess[] = $signInFormSucceeded;
 
 		return $form;

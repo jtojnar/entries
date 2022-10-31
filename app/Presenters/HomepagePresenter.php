@@ -6,7 +6,6 @@ namespace App\Presenters;
 
 use App;
 use App\Components\LocaleSwitcher;
-use Closure;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
@@ -59,9 +58,7 @@ final class HomepagePresenter extends BasePresenter {
 
 		$clearCacheButton = $form->addSubmit('clearCache', 'messages.maintenance.clear_cache');
 		$clearCacheButton->controlPrototype->removeClass('btn-primary')->addClass('btn-warning');
-		/** @var callable(SubmitButton): void */
-		$clearCache = Closure::fromCallable([$this, 'clearCache']);
-		$clearCacheButton->onClick[] = $clearCache;
+		$clearCacheButton->onClick[] = $this->clearCache(...);
 
 		$queuedMessageCount = $this->messages->findBy([
 			'status' => App\Model\Message::STATUS_QUEUED,

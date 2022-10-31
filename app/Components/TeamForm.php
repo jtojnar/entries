@@ -17,11 +17,11 @@ use Nette\Utils\Json;
 final class TeamForm extends UI\Form {
 	public function __construct(
 		/** @var array<string, string> */
-		private array $countries,
-		private array $parameters,
-		private string $locale,
+		private readonly array $countries,
+		private readonly array $parameters,
+		private readonly string $locale,
 		/** @var array<string, int> */
-		private array $reservationStats,
+		private readonly array $reservationStats,
 		IContainer $parent = null,
 		string $name = null,
 	) {

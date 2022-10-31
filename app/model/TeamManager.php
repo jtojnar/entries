@@ -17,9 +17,9 @@ final class TeamManager implements Nette\Security\IAuthenticator {
 
 	public function __construct(
 		/** @var string administrator password */
-		private string $adminPassword,
-		private TeamRepository $teams,
-		private Passwords $passwords,
+		private readonly string $adminPassword,
+		private readonly TeamRepository $teams,
+		private readonly Passwords $passwords,
 	) {
 	}
 

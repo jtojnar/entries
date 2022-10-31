@@ -9,7 +9,7 @@ use App\Model\Team;
 
 final class CategoryFormatFilter {
 	public function __construct(
-		private CategoryData $categories,
+		private readonly CategoryData $categories,
 	) {
 	}
 

@@ -10,7 +10,6 @@ use App\Exporters;
 use App\Model\Invoice;
 use App\Model\ItemReservation;
 use App\Model\Team;
-use Closure;
 use Exception;
 use Kdyby;
 use Latte;
@@ -109,8 +108,8 @@ final class TeamPresenter extends BasePresenter {
 
 		$template->teams = $this->teams->findBy($where);
 
-		$template->getLatte()->addFilter('personData', Closure::fromCallable([$this, 'personData']));
-		$template->getLatte()->addFilter('teamData', Closure::fromCallable([$this, 'teamData']));
+		$template->getLatte()->addFilter('personData', $this->personData(...));
+		$template->getLatte()->addFilter('teamData', $this->teamData(...));
 
 		$template->stats = ['count' => \count($template->teams)];
 	}
@@ -284,9 +283,7 @@ final class TeamPresenter extends BasePresenter {
 		if ($this->getParameter('id')) {
 			$save->caption = 'messages.team.action.edit';
 		}
-		/** @var callable(Nette\Forms\Controls\SubmitButton): void */
-		$processTeamForm = Closure::fromCallable([$this, 'processTeamForm']);
-		$save->onClick[] = $processTeamForm;
+		$save->onClick[] = $this->processTeamForm(...);
 
 		return $form;
 	}
@@ -735,9 +732,7 @@ final class TeamPresenter extends BasePresenter {
 
 		$submit = $form->addSubmit('filter', 'messages.team.list.filter.submit.label');
 		$submit->controlPrototype->class[] = 'noscript';
-		/** @var callable(Nette\Forms\Container): void */
-		$filterRedir = Closure::fromCallable([$this, 'filterRedir']);
-		$form->onValidate[] = $filterRedir;
+		$form->onValidate[] = $this->filterRedir(...);
 
 		return $form;
 	}
@@ -772,9 +767,7 @@ final class TeamPresenter extends BasePresenter {
 
 		$submit = $form->addSubmit('send_message', 'messages.team.list.action.send_message.label');
 
-		/** @var callable(Nette\Forms\Container): void */
-		$listActionSubmitMessage = Closure::fromCallable([$this, 'listActionSubmitMessage']);
-		$submit->onClick[] = $listActionSubmitMessage;
+		$submit->onClick[] = $this->listActionSubmitMessage(...);
 
 		return $form;
 	}

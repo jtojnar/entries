@@ -14,7 +14,7 @@ final class FormFactory {
 	use Nette\SmartObject;
 
 	public function __construct(
-		private Translator $translator,
+		private readonly Translator $translator,
 	) {
 	}
 

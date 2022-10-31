@@ -18,9 +18,9 @@ final class InvoiceItem implements \JsonSerializable {
 	use Nette\SmartObject;
 
 	public function __construct(
-		private string $name,
-		private Money $price,
-		private int $amount,
+		private readonly string $name,
+		private readonly Money $price,
+		private readonly int $amount,
 	) {
 	}
 

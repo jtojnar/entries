@@ -6,7 +6,6 @@ namespace App\Presenters;
 
 use App;
 use App\Model\Invoice;
-use Closure;
 use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
@@ -57,8 +56,8 @@ final class InvoicePresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		$template->getLatte()->addFilter('formatInvoiceStatus', Closure::fromCallable([$this, 'formatInvoiceStatus']));
-		$template->getLatte()->addFilter('itemLabel', Closure::fromCallable([$this, 'itemLabel']));
+		$template->getLatte()->addFilter('formatInvoiceStatus', $this->formatInvoiceStatus(...));
+		$template->getLatte()->addFilter('itemLabel', $this->itemLabel(...));
 	}
 
 	private function formatInvoiceStatus(string $status): string {
