@@ -39,7 +39,7 @@
       in {
         devShell =
           let
-            php = pkgs.php80.withExtensions ({ enabled, all }: with all; enabled ++ [
+            php = pkgs.php81.withExtensions ({ enabled, all }: with all; enabled ++ [
               intl
             ]);
           in

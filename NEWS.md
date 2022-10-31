@@ -14,7 +14,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 
 ### Other changes
 
--
+- PHP 8.1 is now the minimum required version.
 
 ## 0.6.0 – 2022-10-31
 
