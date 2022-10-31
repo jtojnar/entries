@@ -5,24 +5,13 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App;
+use App\Helpers\Iter;
+use App\Helpers\Op;
 use Closure;
 use Nette;
 use Nette\Application\Application;
 use Nette\Forms\Controls\SelectBox;
 use Nette\Localization\Translator;
-
-use const nspl\a\all;
-use const nspl\a\any;
-
-use function nspl\a\map;
-
-use const nspl\f\id;
-use const nspl\op\ge;
-use const nspl\op\gt;
-use const nspl\op\idnt;
-use const nspl\op\int;
-use const nspl\op\le;
-use const nspl\op\lt;
 
 final class CategoryData {
 	use Nette\SmartObject;
@@ -40,11 +29,11 @@ final class CategoryData {
 	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>(sum|min|max))\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
 
 	public const OP_LOOKUP = [
-		'<' => lt,
-		'<=' => le,
-		'=' => idnt,
-		'>=' => ge,
-		'>' => gt,
+		'<' => [Op::class, 'lt'],
+		'<=' => [Op::class, 'le'],
+		'=' => [Op::class, 'idnt'],
+		'>=' => [Op::class, 'ge'],
+		'>' => [Op::class, 'gt'],
 	];
 
 	public const AGGR_LOOKUP = [
@@ -64,8 +53,8 @@ final class CategoryData {
 	];
 
 	public const VALUE_PARSERS = [
-		'age' => int,
-		'gender' => id,
+		'age' => [Op::class, 'int'],
+		'gender' => [Op::class, 'id'],
 	];
 
 	public const KEY_MESSAGES = [
@@ -74,8 +63,8 @@ final class CategoryData {
 	];
 
 	public const QUANT_LOOKUP = [
-		'all' => all,
-		'some' => any,
+		'all' => [Iter::class, 'all'],
+		'some' => [Iter::class, 'any'],
 	];
 
 	public function __construct(
@@ -298,7 +287,7 @@ final class CategoryData {
 						$members = $form->getUnsafeValues(null)['persons'];
 						\assert($members instanceof \Iterator); // For PHPStan.
 
-						return $op($aggr(map($keyProjection, iterator_to_array($members))), $comparedValue);
+						return $op($aggr(array_map($keyProjection, iterator_to_array($members))), $comparedValue);
 					},
 					$this->translator->translate($message),
 				];

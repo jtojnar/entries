@@ -6,14 +6,11 @@ namespace App\Exporters;
 
 use App;
 use App\Helpers\CsvWriter;
+use App\Helpers\Iter;
 use App\Model\Person;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
-
-use function nspl\a\map;
-use function nspl\a\reduce;
-
 use SplFileObject;
 
 /**
@@ -50,12 +47,10 @@ final class CsvExporter implements IExporter {
 		$file = new SplFileObject('php://output', 'a');
 		$writer = new CsvWriter($file);
 		$writer->addColumns(['#', 'name', 'registered', 'category', 'message']);
-		$maxMembers = reduce(
-			fn($maximum, $personsCount) => max($maximum, $personsCount),
-			map(
-				fn($team) => $team->persons->count(),
-				$this->teams
-			)
+		$maxMembers = Iter::reduce(
+			$this->teams,
+			static fn(int $maximum, Team $team): int => max($maximum, $team->persons->count()),
+			0,
 		);
 
 		foreach ($this->teamFields as $name => $field) {

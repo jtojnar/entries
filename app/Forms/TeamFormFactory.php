@@ -6,6 +6,7 @@ namespace App\Forms;
 
 use App\Components\CategoryEntry;
 use App\Components\TeamForm;
+use App\Helpers\Iter;
 use App\Model\CategoryData;
 use Contributte\Translation\Wrappers\Message;
 use Kdyby\Replicator\Container as ReplicatorContainer;
@@ -16,8 +17,6 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\Localization\Translator;
 use Nextras\FormComponents\Controls\DateControl;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
-
-use function nspl\a\last;
 
 final class TeamFormFactory {
 	use Nette\SmartObject;
@@ -114,9 +113,8 @@ final class TeamFormFactory {
 			/** @var ReplicatorContainer */ // For PHPStan.
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) > $minMembers) {
-				/** @var ?Container */ // For PHPStan.
-				$lastPerson = last($replicator->getContainers());
-				if ($lastPerson) {
+				$lastPerson = Iter::last($replicator->getContainers());
+				if ($lastPerson !== null) {
 					$replicator->remove($lastPerson, true);
 				}
 			} else {

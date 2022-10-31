@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "242575cb9177f240800aec5f9929bc7f",
+    "content-hash": "dd219bfa526b0e7fd24b6683de114aa4",
     "packages": [
         {
             "name": "contributte/mail",
@@ -158,78 +158,6 @@
                 }
             ],
             "time": "2022-10-28T06:24:18+00:00"
-        },
-        {
-            "name": "ihor/nspl",
-            "version": "1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ihor/NSPL.git",
-                "reference": "906875858c2783ce7c7c73a4f5a102c544b6cced"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ihor/NSPL/zipball/906875858c2783ce7c7c73a4f5a102c544b6cced",
-                "reference": "906875858c2783ce7c7c73a4f5a102c544b6cced",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "autoload.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ihor Burlachenko",
-                    "email": "ihor.burlachenko@gmail.com"
-                }
-            ],
-            "description": "Non-standard PHP library (NSPL) - functional primitives toolbox and more",
-            "keywords": [
-                "curried",
-                "curry",
-                "defaultarray",
-                "flatten",
-                "functional",
-                "generator",
-                "higher-order",
-                "itemGetter",
-                "iterator",
-                "list",
-                "memoize",
-                "partial",
-                "partial application",
-                "programming",
-                "propertyGetter",
-                "python",
-                "random",
-                "spl",
-                "standard php library",
-                "weighted",
-                "weighted random",
-                "zip"
-            ],
-            "support": {
-                "issues": "https://github.com/ihor/NSPL/issues",
-                "source": "https://github.com/ihor/NSPL/tree/master"
-            },
-            "time": "2019-03-21T20:38:30+00:00"
         },
         {
             "name": "kdyby/forms-replicator",

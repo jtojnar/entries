@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Helpers\Iter;
 use Nette;
-use function nspl\a\cartesianProduct;
 use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -51,7 +51,7 @@ foreach (['en', 'cs'] as $locale) {
 		}
 
 		// Try to translate the message.
-		$assignments = cartesianProduct($variables);
+		$assignments = Iter::cartesianProduct($variables);
 		foreach ($assignments as $assignment) {
 			Assert::noError(function() use ($translator, $key, $assignment): void {
 				$translator->translate('messages.' . $key, $assignment);
