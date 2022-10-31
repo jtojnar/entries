@@ -214,6 +214,7 @@ parameters:
 						en: 'Boarding must be ordered and paid until Sunday October 23, 2022'
 						cs: 'Stravování se musí objednat a zaplatit do neděle 23. 10. 2022'
 					type: checkboxlist
+					disabled: true
 					items:
 						fri-soup:
 							label:
