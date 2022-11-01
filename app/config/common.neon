@@ -73,6 +73,7 @@ services:
 			- addFilter(wrapInParagraphs, @App\Templates\Filters\WrapInParagraphsFilter)
 
 translation:
+	translatorFactory: App\Locale\Translator
 	loaders:
 		neon: App\Helpers\NeonIntlLoader
 	localeResolvers:
