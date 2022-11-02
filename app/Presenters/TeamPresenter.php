@@ -7,22 +7,22 @@ namespace App\Presenters;
 use App;
 use App\Components\SportidentControl;
 use App\Exporters;
+use App\Model\Configuration\Entries;
+use App\Model\Configuration\Fields;
 use App\Model\Invoice;
 use App\Model\InvoiceModifier;
 use App\Model\ItemReservation;
 use App\Model\Team;
+use DateTimeImmutable;
 use Exception;
 use Kdyby;
 use Latte;
-use Money\Currency;
-use Money\Money;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls;
 use Nette\Mail\Message;
-use Nette\Utils\DateTime;
 use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
 use Pelago\Emogrifier\CssInliner;
@@ -44,10 +44,10 @@ final class TeamPresenter extends BasePresenter {
 	public App\Model\PersonRepository $persons;
 
 	#[Inject]
-	public App\Model\InvoiceRepository $invoices;
+	public Entries $entries;
 
 	#[Inject]
-	public App\Model\CategoryData $categories;
+	public App\Model\InvoiceRepository $invoices;
 
 	#[Inject]
 	public App\Model\ItemReservationRepository $itemReservations;
@@ -78,9 +78,10 @@ final class TeamPresenter extends BasePresenter {
 
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
-			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
+			$today = new DateTimeImmutable();
+			if ($this->entries->closing !== null && $this->entries->closing < $today) {
 				throw new App\TooLateForAccessException();
-			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1) {
+			} elseif ($this->entries->opening !== null && $this->entries->opening > $today) {
 				throw new App\TooSoonForAccessException();
 			}
 		}
@@ -186,8 +187,8 @@ final class TeamPresenter extends BasePresenter {
 
 		$teams = $this->teams->findBy($where);
 
-		$teamFields = $this->context->parameters['entries']['fields']['team'];
-		$personFields = $this->context->parameters['entries']['fields']['person'];
+		$teamFields = $this->entries->teamFields;
+		$personFields = $this->entries->personFields;
 
 		if (\count($teams)) {
 			if ($type === 'meos') {
@@ -231,7 +232,6 @@ final class TeamPresenter extends BasePresenter {
 
 		$form = $this->teamFormFactory->create(
 			$this->countries->fetchIdNamePairs(),
-			$this->locale,
 			$editing,
 			$reservationStats,
 			$this,
@@ -244,18 +244,19 @@ final class TeamPresenter extends BasePresenter {
 			$default['message'] = $team->message;
 			$default['persons'] = [];
 
-			$fields = $this->context->parameters['entries']['fields']['team'];
-			foreach ($fields as $name => $field) {
+			$fields = $this->entries->teamFields;
+			foreach ($fields as $field) {
+				$name = $field->name;
 				if (isset($team->getJsonData()->$name)) {
 					$default[$name] = $team->getJsonData()->$name;
-				} elseif ($field['type'] === 'sportident') {
+				} elseif ($field instanceof Fields\SportidentField) {
 					$default[$name] = [
 						SportidentControl::NAME_NEEDED => true,
 					];
 				}
 			}
 
-			$fields = $this->context->parameters['entries']['fields']['person'];
+			$fields = $this->entries->personFields;
 			foreach ($team->persons as $person) {
 				$personDefault = [
 					'firstname' => $person->firstname,
@@ -265,10 +266,11 @@ final class TeamPresenter extends BasePresenter {
 					'birth' => $person->birth,
 				];
 
-				foreach ($fields as $name => $field) {
+				foreach ($fields as $field) {
+					$name = $field->name;
 					if (isset($person->getJsonData()->$name)) {
 						$personDefault[$name] = $person->getJsonData()->$name;
-					} elseif ($field['type'] === 'sportident') {
+					} elseif ($field instanceof Fields\SportidentField) {
 						$personDefault[$name] = [
 							SportidentControl::NAME_NEEDED => true,
 						];
@@ -290,10 +292,11 @@ final class TeamPresenter extends BasePresenter {
 	}
 
 	private function processTeamForm(Nette\Forms\Controls\SubmitButton $button): void {
+		$today = new DateTimeImmutable();
 		if (!$this->user->isInRole('admin')) {
-			if ($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0) {
+			if ($this->entries->closing !== null && $this->entries->closing < $today) {
 				throw new App\TooLateForAccessException();
-			} elseif ($this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1) {
+			} elseif ($this->entries->opening !== null && $this->entries->opening > $today) {
 				throw new App\TooSoonForAccessException();
 			}
 		}
@@ -352,10 +355,9 @@ final class TeamPresenter extends BasePresenter {
 			$team->message = $values['message'];
 			$team->category = $values['category'];
 
-			$currency = new Currency($this->context->parameters['entries']['fees']['currency']);
-			$fields = $this->context->parameters['entries']['fields']['team'];
+			$fields = $this->entries->teamFields;
 
-			$limits = $this->context->parameters['entries']['limits'];
+			$limits = $this->entries->limits;
 			$reservationStats = $this->itemReservations->getStats();
 			foreach ($team->itemReservations as $reservation) {
 				--$reservationStats[$reservation->name];
@@ -364,27 +366,27 @@ final class TeamPresenter extends BasePresenter {
 
 			$jsonData = [];
 
-			foreach ($fields as $name => $field) {
+			foreach ($fields as $field) {
+				$name = $field->name;
 				$jsonData[$name] = $values[$name];
-				$type = $field['type'];
 
-				if ($type === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
+				if ($field instanceof Fields\SportidentField && $field->fee !== null && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 					$invoice->addItem(self::serializeInvoiceItem([
-						'type' => $type,
+						'type' => $field::class,
 						'scope' => 'team',
 						'key' => $name,
-					]), new Money($field['fee'] * 100, $currency));
-				} elseif ($type === 'checkbox' && $jsonData[$name]) {
-					if (isset($field['fee'])) {
+					]), $field->fee);
+				} elseif ($field instanceof Fields\CheckboxField && $jsonData[$name]) {
+					if ($field->fee !== null) {
 						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $type,
+							'type' => $field::class,
 							'scope' => 'team',
 							'key' => $name,
-						]), new Money($field['fee'] * 100, $currency));
+						]), $field->fee);
 					}
 
-					if (isset($field['limit'])) {
-						$limitName = $field['limit'];
+					if ($field->getLimitName() !== null) {
+						$limitName = $field->getLimitName();
 						$team->itemReservations->add(new ItemReservation($limitName));
 						$reservationStats[$limitName] ??= 0;
 						if (++$reservationStats[$limitName] > $limits[$limitName]) {
@@ -393,19 +395,19 @@ final class TeamPresenter extends BasePresenter {
 							$control->addError('messages.team.field.error.no_longer_available');
 						}
 					}
-				} elseif ($type === 'enum' && isset($field['options'][$values[$name]]) && $jsonData[$name]) {
-					$option = $field['options'][$values[$name]];
-					if (isset($option['fee'])) {
+				} elseif ($field instanceof Fields\EnumField && isset($field->options[$values[$name]]) && $jsonData[$name]) {
+					$option = $field->options[$values[$name]];
+					if ($option->fee !== null) {
 						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $type,
+							'type' => $field::class,
 							'scope' => 'team',
 							'key' => $name,
 							'value' => $values[$name],
-						]), new Money($option['fee'] * 100, $currency));
+						]), $option->fee);
 					}
 
-					if (isset($option['limit'])) {
-						$limitName = $option['limit'];
+					if ($option->getLimitName() !== null) {
+						$limitName = $option->getLimitName();
 						$team->itemReservations->add(new ItemReservation($limitName));
 						$reservationStats[$limitName] ??= 0;
 						if (++$reservationStats[$limitName] > $limits[$limitName]) {
@@ -414,26 +416,26 @@ final class TeamPresenter extends BasePresenter {
 							$control->addError('messages.team.field.error.no_longer_available');
 						}
 					}
-				} elseif ($type === 'checkboxlist') {
+				} elseif ($field instanceof Fields\CheckboxlistField) {
 					foreach ($jsonData[$name] as $item) {
-						$option = $field['items'][$item];
-						if (isset($option['fee'])) {
+						$option = $field->items[$item];
+						if ($option->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $type,
+								'type' => $field::class,
 								'scope' => 'team',
 								'key' => $name,
 								'value' => $item,
-							]), new Money($option['fee'] * 100, $currency));
+							]), $option->fee);
 						}
 
-						if (isset($option['limit'])) {
-							$limitName = $option['limit'];
+						if ($option->getLimitName() !== null) {
+							$limitName = $option->getLimitName();
 							$team->itemReservations->add(new ItemReservation($limitName));
 							$reservationStats[$limitName] ??= 0;
 							if (++$reservationStats[$limitName] > $limits[$limitName]) {
 								/** @var Controls\BaseControl */
 								$control = $form[$name];
-								$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $option['label'][$this->locale]]), false);
+								$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $this->translator->translate($option->label)]), false);
 							}
 						}
 					}
@@ -453,13 +455,18 @@ final class TeamPresenter extends BasePresenter {
 				}
 			}
 
-			$personFee = $this->categories->getCategoryData()[$team->category]['fee'];
-			$invoice->createItem(self::serializeInvoiceItem([
-				'type' => '~entry',
-				'scope' => 'person',
-			]), new Money($personFee * 100, $currency));
+			$personFee = $this->entries->categories->allCategories[$team->category]->fees->person;
+			if ($personFee !== null) {
+				$invoice->createItem(
+					self::serializeInvoiceItem([
+						'type' => '~entry',
+						'scope' => 'person',
+					]),
+					$personFee,
+				);
+			}
 
-			$fields = $this->context->parameters['entries']['fields']['person'];
+			$fields = $this->entries->personFields;
 
 			/** @var ?string $firstMemberAddress */
 			$firstMemberAddress = null;
@@ -489,28 +496,28 @@ final class TeamPresenter extends BasePresenter {
 				$person->team = $team;
 
 				$jsonData = [];
-				foreach ($fields as $name => $field) {
+				foreach ($fields as $field) {
+					$name = $field->name;
 					$member[$name] ??= null;
 					$jsonData[$name] = (!$this->user->isInRole('admin') && $form->isFieldDisabled($field)) ? $form->getDefaultFieldValue($field) : $member[$name];
-					$type = $field['type'];
 
-					if ($type === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
+					if ($field instanceof Fields\SportidentField && $field->fee !== null && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $type,
+							'type' => $field::class,
 							'scope' => 'person',
 							'key' => $name,
-						]), new Money($field['fee'] * 100, $currency));
-					} elseif ($type === 'checkbox' && $jsonData[$name]) {
-						if (isset($field['fee'])) {
+						]), $field->fee);
+					} elseif ($field instanceof Fields\CheckboxField && $jsonData[$name]) {
+						if ($field->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $type,
+								'type' => $field::class,
 								'scope' => 'person',
 								'key' => $name,
-							]), new Money($field['fee'] * 100, $currency));
+							]), $field->fee);
 						}
 
-						if (isset($field['limit'])) {
-							$limitName = $field['limit'];
+						if ($field->getLimitName() !== null) {
+							$limitName = $field->getLimitName();
 							$person->itemReservations->add(new ItemReservation($limitName));
 							$reservationStats[$limitName] ??= 0;
 							if (++$reservationStats[$limitName] > $limits[$limitName]) {
@@ -519,19 +526,19 @@ final class TeamPresenter extends BasePresenter {
 								$control->addError('messages.team.field.error.no_longer_available');
 							}
 						}
-					} elseif ($type === 'enum' && isset($field['options'][$member[$name]]) && $jsonData[$name]) {
-						$option = $field['options'][$member[$name]];
-						if (isset($option['fee'])) {
+					} elseif ($field instanceof Fields\EnumField && isset($field->options[$member[$name]]) && $jsonData[$name]) {
+						$option = $field->options[$member[$name]];
+						if ($option->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $type,
+								'type' => $field::class,
 								'scope' => 'person',
 								'key' => $name,
 								'value' => $member[$name],
-							]), new Money($option['fee'] * 100, $currency));
+							]), $option->fee);
 						}
 
-						if (isset($option['limit'])) {
-							$limitName = $option['limit'];
+						if ($option->getLimitName() !== null) {
+							$limitName = $option->getLimitName();
 							$person->itemReservations->add(new ItemReservation($limitName));
 							$reservationStats[$limitName] ??= 0;
 							if (++$reservationStats[$limitName] > $limits[$limitName]) {
@@ -540,26 +547,26 @@ final class TeamPresenter extends BasePresenter {
 								$control->addError('messages.team.field.error.no_longer_available');
 							}
 						}
-					} elseif ($type === 'checkboxlist') {
+					} elseif ($field instanceof Fields\CheckboxlistField) {
 						foreach ($jsonData[$name] as $item) {
-							$option = $field['items'][$item];
-							if (isset($option['fee'])) {
+							$option = $field->items[$item];
+							if ($option->fee !== null) {
 								$invoice->addItem(self::serializeInvoiceItem([
-									'type' => $type,
+									'type' => $field::class,
 									'scope' => 'person',
 									'key' => $name,
 									'value' => $item,
-								]), new Money($option['fee'] * 100, $currency));
+								]), $option->fee);
 							}
 
-							if (isset($option['limit'])) {
-								$limitName = $option['limit'];
+							if ($option->getLimitName() !== null) {
+								$limitName = $option->getLimitName();
 								$person->itemReservations->add(new ItemReservation($limitName));
 								$reservationStats[$limitName] ??= 0;
 								if (++$reservationStats[$limitName] > $limits[$limitName]) {
 									/** @var Controls\BaseControl */
 									$control = $personContainer[$name];
-									$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $option['label'][$this->locale]]), false);
+									$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $this->translator->translate($option->label)]), false);
 								}
 							}
 						}
@@ -576,9 +583,9 @@ final class TeamPresenter extends BasePresenter {
 			}
 
 			/** @var ?class-string<InvoiceModifier> */
-			$invoiceModifier = $this->context->parameters['entries']['invoiceModifier'] ?? null;
+			$invoiceModifier = $this->entries->invoiceModifier;
 			if ($invoiceModifier !== null) {
-				$invoiceModifier::modify($team, $invoice, $this->context->parameters['entries']);
+				$invoiceModifier::modify($team, $invoice, $this->entries);
 			}
 
 			foreach ($team->invoices as $inv) {
@@ -628,7 +635,7 @@ final class TeamPresenter extends BasePresenter {
 					$mtemplate->setFile($mailTemplatePath);
 
 					// Define variables for use in the e-mail template.
-					$mtemplate->accountNumber = $this->context->parameters['entries']['accountNumber'];
+					$mtemplate->accountNumber = $this->entries->accountNumber;
 					$mtemplate->eventName =
 						$this->parameters->getSiteTitle($this->locale)
 						?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());
@@ -681,21 +688,23 @@ final class TeamPresenter extends BasePresenter {
 	public function cleanNonApplicableFields(Nette\Forms\Form $form): void {
 		$category = $form->values['category'];
 
-		$teamFields = $this->context->parameters['entries']['fields']['team'];
-		foreach ($teamFields as $name => $field) {
-			if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
+		$teamFields = $this->entries->teamFields;
+		foreach ($teamFields as $field) {
+			$name = $field->name;
+			if ($field->applicableCategories !== null && !\in_array($category, $field->applicableCategories, true)) {
 				/** @var Nette\Forms\Controls\BaseControl */
 				$control = $form[$name];
 				$control->setValue(null);
 			}
 		}
 
-		$personFields = $this->context->parameters['entries']['fields']['person'];
+		$personFields = $this->entries->personFields;
 		$members = $form->values['persons'];
 		\assert(is_iterable($members)); // For PHPStan.
 		foreach ($members as $member) {
-			foreach ($personFields as $name => $field) {
-				if (isset($field['applicableCategories']) && !\in_array($category, $field['applicableCategories'], true)) {
+			foreach ($personFields as $field) {
+				$name = $field->name;
+				if ($field->applicableCategories !== null && !\in_array($category, $field->applicableCategories, true)) {
 					/** @var Nette\Utils\ArrayHash */
 					$persons = $form['persons'];
 					/** @var Nette\Forms\Controls\BaseControl */
@@ -710,7 +719,7 @@ final class TeamPresenter extends BasePresenter {
 		$form = $this->formFactory->create(FormLayout::INLINE);
 		$form->setMethod($form::GET);
 
-		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->categories, true);
+		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->entries, true);
 		$category->setPrompt('messages.team.list.filter.category.all');
 		$category->setHtmlAttribute('style', 'width:auto;');
 
@@ -794,41 +803,32 @@ final class TeamPresenter extends BasePresenter {
 	}
 
 	private function personData(\stdClass $data): array {
-		$fields = $this->context->parameters['entries']['fields']['person'];
+		$fields = $this->entries->personFields;
 
 		return $this->formatData($data, $fields);
 	}
 
 	private function teamData(\stdClass $data): array {
-		$fields = $this->context->parameters['entries']['fields']['team'];
+		$fields = $this->entries->teamFields;
 
 		return $this->formatData($data, $fields);
 	}
 
 	private function formatData(\stdClass $data, array $fields): array {
 		$ret = [];
-		foreach ($fields as $name => $field) {
-			if (isset($field['label'][$this->locale])) {
-				$label = $field['label'][$this->locale];
-			} elseif ($field['type'] === 'country') {
-				$label = $this->translator->translate('messages.team.person.country.label');
-			} elseif ($field['type'] === 'phone') {
-				$label = $this->translator->translate('messages.team.phone.label');
-			} elseif ($field['type'] === 'sportident') {
-				$label = $this->translator->translate('messages.team.person.si.label');
-			} else {
-				$label = $name . ':';
-			}
+		foreach ($fields as $field) {
+			$name = $field->name;
+			$label = $this->translator->translate($field->label);
 
-			if (!$this->user->isInRole('admin') && (!isset($field['public']) || !$field['public'])) {
+			if (!$this->user->isInRole('admin') && !$field->public) {
 				continue;
 			}
 
-			if ($field['type'] === 'sportident') {
+			if ($field instanceof Fields\SportidentField) {
 				$value = $data->$name->{SportidentControl::NAME_CARD_ID} ?? $this->translator->translate('messages.team.person.si.rent');
 				$ret[] = $label . ' ' . $value;
 				continue;
-			} elseif ($field['type'] === 'country') {
+			} elseif ($field instanceof Fields\CountryField) {
 				$country = isset($data->$name) ? $this->countries->getById($data->$name) : null;
 				if ($country === null) {
 					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
@@ -836,12 +836,13 @@ final class TeamPresenter extends BasePresenter {
 				}
 				$ret[] = (string) Html::el('span', ['class' => 'fi fi-' . $country->codeAlpha2]) . ' ' . $country->name;
 				continue;
-			} elseif ($field['type'] === 'enum' && isset($data->$name) && isset($field['options'][$data->$name]['label'][$this->locale])) {
-				$ret[] = $label . ' ' . $field['options'][$data->$name]['label'][$this->locale];
+			} elseif ($field instanceof Fields\EnumField && isset($data->$name) && isset($field->options[$data->$name])) {
+				$selectedOption = \array_key_exists($data->$name, $field->options) ? $this->translator->translate($field->options[$data->$name]->label) : $data->name;
+				$ret[] = $label . ': ' . $selectedOption;
 				continue;
-			} elseif ($field['type'] === 'checkboxlist' && isset($data->$name)) {
+			} elseif ($field instanceof Fields\CheckboxlistField && isset($data->$name)) {
 				$items = array_map(
-					fn(string $item): string => $field['items'][$item]['label'][$this->locale] ?? $item,
+					fn(string $item): string => isset($field->items[$item]) ? $this->translator->translate($field->items[$item]->label) : $item,
 					$data->$name
 				);
 				$ret[] = $label . ' ' . implode(', ', $items);

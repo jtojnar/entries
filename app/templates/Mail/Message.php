@@ -11,7 +11,7 @@ use Nextras\Orm\Relationships\OneHasMany;
 
 final class Message {
 	public function __construct(
-		public string $accountNumber,
+		public ?string $accountNumber,
 		public string $eventName,
 		public string $eventNameShort,
 		public string $dateFormat,

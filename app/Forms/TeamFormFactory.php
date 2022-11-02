@@ -7,7 +7,7 @@ namespace App\Forms;
 use App\Components\CategoryEntry;
 use App\Components\TeamForm;
 use App\Helpers\Iter;
-use App\Model\CategoryData;
+use App\Model\Configuration\Entries;
 use Contributte\Translation\Wrappers\Message;
 use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette;
@@ -21,26 +21,27 @@ use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 final class TeamFormFactory {
 	use Nette\SmartObject;
 
-	public array $parameters;
-
 	public function __construct(
-		private readonly CategoryData $categories,
-		Nette\DI\Container $context,
 		private readonly Translator $translator,
+		private readonly Entries $entries,
 	) {
-		$this->parameters = $context->parameters['entries'];
 	}
 
 	public function create(
 		array $countries,
-		string $locale,
 		bool $editing = false,
 		/* @var array<string, int> */
 		array $reservationStats = [],
 		IContainer $parent = null,
 		string $name = null,
 	): TeamForm {
-		$form = new TeamForm($countries, $this->parameters, $locale, $reservationStats, $parent, $name);
+		$form = new TeamForm(
+			$countries,
+			$reservationStats,
+			$this->entries,
+			$parent,
+			$name,
+		);
 
 		$form->setTranslator($this->translator);
 		$renderer = new Bs5FormRenderer();
@@ -48,30 +49,33 @@ final class TeamFormFactory {
 		$renderer->wrappers['pair']['container'] = preg_replace('(class=")', '$0form-group ', $renderer->wrappers['pair']['container']);
 		$form->setRenderer($renderer);
 
-		$defaultMinMembers = $this->parameters['minMembers'];
-		$defaultMaxMembers = $this->parameters['maxMembers'];
-		$initialMembers = $form->isSubmitted() || $editing ? $defaultMinMembers : ($this->parameters['initialMembers'] ?? $defaultMinMembers);
+		$defaultMinMembers = $this->entries->minMembers;
+		$defaultMaxMembers = $this->entries->maxMembers;
+		$initialMembers = $form->isSubmitted() || $editing ? $defaultMinMembers : $this->entries->initialMembers;
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
 		$form->addText('name', 'messages.team.name.label')->setRequired();
 
-		$category = new CategoryEntry('messages.team.category.label', $this->categories);
+		$category = new CategoryEntry('messages.team.category.label', $this->entries);
 		$category->setRequired();
 		$form['category'] = $category;
 
 		if ($category->value !== null) {
-			$constraints = $this->categories->getCategoryData()[$category->value]['constraints'];
+			$constraints = $this->entries->categories->allCategories[$category->value]->constraints;
 			foreach ($constraints as $constraint) {
 				$rule = $category->addCondition(true); // not to block the export of rules to JS
-				$rule->addRule(...$constraint);
+				$rule->addRule(
+					static fn(CategoryEntry $entry): bool => $constraint->admits($entry->getForm()?->getUnsafeValues(null)['persons']),
+					$constraint->getErrorMessage(),
+				);
 			}
 		}
 
 		$rule = $category->addCondition(true); // not to block the export of rules to JS
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
 			$category = $entry->getValue();
-			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
+			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
 			/** @var ReplicatorContainer */
 			$replicator = $entry->form['persons'];
 
@@ -81,14 +85,14 @@ final class TeamFormFactory {
 		$rule = $category->addCondition(true); // not to block the export of rules to JS
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
 			$category = $entry->getValue();
-			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
+			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
 			/** @var ReplicatorContainer */
 			$replicator = $entry->form['persons'];
 
 			return iterator_count($replicator->getContainers()) >= $minMembers;
 		}, 'messages.team.error.too_few_members_simple');
 
-		$fields = $this->parameters['fields']['team'];
+		$fields = $this->entries->teamFields;
 		$form->addCustomFields($fields, $form);
 
 		$form->addTextArea('message', 'messages.team.message.label');
@@ -97,7 +101,7 @@ final class TeamFormFactory {
 		$form->addSubmit('save', 'messages.team.action.register');
 		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
 			$category = $button->form->getUnsafeValues(null)['category'];
-			$maxMembers = $this->categories->getCategoryData()[$category]['maxMembers'] ?? $defaultMaxMembers;
+			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
 			/** @var ReplicatorContainer */
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) < $maxMembers) {
@@ -108,7 +112,7 @@ final class TeamFormFactory {
 		};
 		$form->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
 			$category = $button->form->getUnsafeValues(null)['category'];
-			$minMembers = $this->categories->getCategoryData()[$category]['minMembers'] ?? $defaultMinMembers;
+			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
 			/** @var ReplicatorContainer */ // For PHPStan.
 			$replicator = $button->form['persons'];
 			if (iterator_count($replicator->getContainers()) > $minMembers) {
@@ -121,7 +125,7 @@ final class TeamFormFactory {
 			}
 		};
 
-		$fields = $this->parameters['fields']['person'];
+		$fields = $this->entries->personFields;
 		$i = 0;
 		$form->addDynamic('persons', function(Container $container) use (&$i, $fields, $form): void {
 			++$i;
@@ -135,7 +139,7 @@ final class TeamFormFactory {
 
 			$birth = new DateControl('messages.team.person.birth.label');
 			$birth->setRequired();
-			$birth->addRule($form::MAX, 'messages.team.person.birth.error.born_too_late', $this->parameters['eventDate']);
+			$birth->addRule($form::MAX, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
 			$container['birth'] = $birth;
 
 			$form->addCustomFields($fields, $container);

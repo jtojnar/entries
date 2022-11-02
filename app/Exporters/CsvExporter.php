@@ -7,6 +7,7 @@ namespace App\Exporters;
 use App;
 use App\Helpers\CsvWriter;
 use App\Helpers\Iter;
+use App\Model\Configuration\Fields;
 use App\Model\Person;
 use App\Model\Team;
 use App\Templates\Filters\CategoryFormatFilter;
@@ -33,7 +34,9 @@ final class CsvExporter implements IExporter {
 		/** @var ICollection<Team> $teams */
 		private readonly ICollection $teams,
 		private readonly App\Model\CountryRepository $countries,
+		/** @var array<Fields\Field> $teamFields */
 		private readonly array $teamFields,
+		/** @var array<Fields\Field> $personFields */
 		private readonly array $personFields,
 		private readonly CategoryFormatFilter $categoryFormatter,
 	) {
@@ -53,16 +56,16 @@ final class CsvExporter implements IExporter {
 			0,
 		);
 
-		foreach ($this->teamFields as $name => $field) {
-			if ($field['type'] === 'checkboxlist') {
+		foreach ($this->teamFields as $field) {
+			if ($field instanceof Fields\CheckboxlistField) {
 				$writer->addColumns(
 					array_map(
-						fn($itemKey) => $name . '-' . $itemKey,
-						array_keys($field['items'])
+						fn(string $itemKey): string => $field->name . '-' . $itemKey,
+						array_keys($field->items),
 					)
 				);
 			} else {
-				$writer->addColumns($name);
+				$writer->addColumns($field->name);
 			}
 		}
 
@@ -73,16 +76,16 @@ final class CsvExporter implements IExporter {
 				'm' . $i . 'email',
 				'm' . $i . 'gender',
 			]);
-			foreach ($this->personFields as $name => $field) {
-				if ($field['type'] === 'checkboxlist') {
+			foreach ($this->personFields as $field) {
+				if ($field instanceof Fields\CheckboxlistField) {
 					$writer->addColumns(
 						array_map(
-							fn($itemKey) => 'm' . $i . $name . '-' . $itemKey,
-							array_keys($field['items'])
+							fn(string $itemKey): string => 'm' . $i . $field->name . '-' . $itemKey,
+							array_keys($field->items),
 						)
 					);
 				} else {
-					$writer->addColumns('m' . $i . $name);
+					$writer->addColumns('m' . $i . $field->name);
 				}
 			}
 			$writer->addColumns('m' . $i . 'birth');
@@ -116,23 +119,27 @@ final class CsvExporter implements IExporter {
 		exit;
 	}
 
+	/**
+	 * @param array<Fields\Field> $fields
+	 */
 	private function addCustomFields(
 		array $fields,
 		Person|Team $container,
 		string $prefix = '',
 	): array {
 		$row = [];
-		foreach ($fields as $name => $field) {
+		foreach ($fields as $field) {
+			$name = $field->name;
 			$f = $container->getJsonData()->$name ?? null;
 			if ($f) {
-				if ($field['type'] === 'country') {
+				if ($field instanceof Fields\CountryField) {
 					$country = $this->countries->getByIdChecked($f);
 					$row[$prefix . $name] = $country->codeIoc;
-				} elseif ($field['type'] === 'checkboxlist') {
-					foreach ($field['items'] as $itemKey => $_) {
+				} elseif ($field instanceof Fields\CheckboxlistField) {
+					foreach ($field->items as $itemKey => $_) {
 						$row[$prefix . $name . '-' . $itemKey] = \in_array($itemKey, $f, true);
 					}
-				} elseif ($field['type'] === 'sportident') {
+				} elseif ($field instanceof Fields\SportidentField) {
 					$row[$prefix . $name] = $f->cardId ?? 'rent';
 				} else {
 					$row[$prefix . $name] = $f;

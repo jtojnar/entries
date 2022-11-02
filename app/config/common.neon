@@ -4,7 +4,7 @@ parameters:
 		maxMembers: 0
 		allowLateRegistrationsByEmail: false
 		recommendedCardCapacity: 0
-		accountNumber: '000000-0000000000/0000'
+		supportedLocales: [en, cs]
 		fees:
 			currency: CZK
 		limits: []
@@ -55,8 +55,8 @@ orm:
 
 services:
 	- App\Helpers\Parameters(%parameters%)
+	- App\Model\Configuration\Entries::from(%entries%)
 	- App\Model\TeamManager(%adminPassword%)
-	- App\Model\CategoryData
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
 	- App\Router\RouterFactory::createRouter
@@ -81,7 +81,7 @@ translation:
 		- Contributte\Translation\LocalesResolvers\Session
 		- Contributte\Translation\LocalesResolvers\Header
 	locales:
-		whitelist: [en, cs]
+		whitelist: %entries.supportedLocales%
 		default: cs
 	dirs:
 		- %appDir%/lang

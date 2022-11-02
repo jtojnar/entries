@@ -78,6 +78,22 @@ final class Iter {
 	}
 
 	/**
+	 * @template K
+	 * @template A
+	 * @template B
+	 *
+	 * @param callable(A): B $mapper
+	 * @param iterable<K, A> $iterable
+	 *
+	 * @return iterable<K, B>
+	 */
+	public static function map(callable $mapper, iterable $iterable): iterable {
+		foreach ($iterable as $key => $value) {
+			yield $key => $mapper($value);
+		}
+	}
+
+	/**
 	 * @template T
 	 * @template Carry
 	 *

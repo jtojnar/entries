@@ -13,3 +13,6 @@ parameters:
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
 		- '(Call to an undefined method App\\Components\\TeamForm::addDynamic\(\))'
+		# https://github.com/phpstan/phpstan/issues/6402
+		- '(Readonly property App\\Model\\Configuration\\CategoryData::\$allCategories is already assigned.)'
+		- '(Method App\\Model\\Configuration\\Helpers::ensureSubclassOf\(\) should return class-string<V>\|null but returns class-string<U>.)'

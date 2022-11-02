@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Model\Configuration\Entries;
+use App\Model\Configuration\Fields;
 use App\Model\Invoice;
 use Nette;
 use Nette\Application\BadRequestException;
@@ -26,6 +28,9 @@ final class InvoicePresenter extends BasePresenter {
 
 	#[Inject]
 	public App\Model\TokenRepository $tokens;
+
+	#[Inject]
+	public Entries $entries;
 
 	public function renderShow(int $id): void {
 		$authorizedTeams = [];
@@ -77,24 +82,28 @@ final class InvoicePresenter extends BasePresenter {
 			return (string) $this->translator->translate('messages.billing.invoice.fees.person');
 		}
 
-		if ($type === 'sportident') {
-			return (string) $this->translator->translate('messages.billing.invoice.fees.si');
-		}
+		$fields = $scope == 'team' ? 'teamFields' : 'personFields';
+		$field = $this->entries->$fields[$key] ?? null;
 
-		$field = $this->presenter->context->parameters['entries']['fields'][$scope][$key] ?? null;
-
-		if (isset($field) && isset($field['label'][$this->locale])) {
-			$label = $field['label'][$this->locale];
+		if ($field !== null && $field->label !== null) {
+			$label = $this->translator->translate($field->label);
 		} else {
 			$label = $key;
 		}
 
-		if ($type === 'enum' && !empty($value) && isset($field['options'][$value]['label'][$this->locale])) {
-			return $label . ': ' . $field['options'][$value]['label'][$this->locale];
+		if ($field instanceof Fields\SportidentField) {
+			return (string) $this->translator->translate('messages.billing.invoice.fees.si');
 		}
 
-		if ($type === 'checkboxlist' && !empty($value) && isset($field['items'][$value]['label'][$this->locale])) {
-			return $label . ': ' . $field['items'][$value]['label'][$this->locale];
+		if ($field instanceof Fields\EnumField && !empty($value) && ($option = $field->options[$value] ?? null)?->label !== null) {
+			return $label . ' ' . $this->translator->translate($option->label);
+		}
+
+		if ($field instanceof Fields\CheckboxlistField && !empty($value) && ($option = $field->items[$value] ?? null)?->label !== null) {
+			return $label . ' ' . $this->translator->translate($option->label);
+		}
+		if ($field instanceof Fields\CheckboxField) {
+			return $label;
 		}
 
 		return $item;

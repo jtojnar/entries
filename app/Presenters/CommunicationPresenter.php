@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Model\Configuration\Entries;
 use App\Model\Team;
 use Latte;
 use Nette;
@@ -46,6 +47,9 @@ final class CommunicationPresenter extends BasePresenter {
 
 	#[Inject]
 	public App\Model\TokenRepository $tokens;
+
+	#[Inject]
+	public Entries $entries;
 
 	/**
 	 * Message composition form factory.
@@ -290,7 +294,7 @@ final class CommunicationPresenter extends BasePresenter {
 			'message.latte',
 			new App\Templates\Mail\Message(
 				// Define variables for use in the e-mail template.
-				accountNumber: $this->context->parameters['entries']['accountNumber'],
+				accountNumber: $this->entries->accountNumber,
 				eventName: $eventName = $this->parameters->getSiteTitle($this->locale)
 					?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale())
 					?? throw new \PHPStan\ShouldNotHappenException(),

@@ -6,19 +6,23 @@ namespace App\Presenters;
 
 use App;
 use App\Components\LocaleSwitcher;
+use App\Model\Configuration\Entries;
 use Contributte\Translation\Wrappers\NotTranslate;
+use DateTimeImmutable;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Utils\DateTime;
 use Nextras\FormsRendering\Renderers\FormLayout;
 
 /**
  * Presenter for main page.
  */
 final class HomepagePresenter extends BasePresenter {
+	#[Inject]
+	public Entries $entries;
+
 	#[Inject]
 	public App\Model\MessageRepository $messages;
 
@@ -49,8 +53,9 @@ final class HomepagePresenter extends BasePresenter {
 			}
 		}
 
-		$template->registrationOpen = !($this->context->parameters['entries']['closing']->diff(new DateTime())->invert === 0 || $this->context->parameters['entries']['opening']->diff(new DateTime())->invert === 1);
-		$template->allowLateRegistrationsByEmail = $this->context->parameters['entries']['allowLateRegistrationsByEmail'];
+		$today = new DateTimeImmutable();
+		$template->registrationOpen = $this->entries->closing > $today && $this->entries->opening < $today;
+		$template->allowLateRegistrationsByEmail = $this->entries->allowLateRegistrationsByEmail;
 		$template->mail = $this->context->parameters['webmasterEmail'];
 	}
 

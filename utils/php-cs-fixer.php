@@ -30,7 +30,7 @@ $rules = [
 	'array_syntax' => ['syntax' => 'short'],
 	'modernize_types_casting' => true,
 	'ordered_imports' => true,
-	'phpdoc_add_missing_param_annotation' => ['only_untyped' => false],
+	'phpdoc_add_missing_param_annotation' => true,
 	'phpdoc_order' => true,
 	'strict_param' => true,
 ];

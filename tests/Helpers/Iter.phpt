@@ -58,6 +58,36 @@ function testCartesianProduct(): void {
 }
 testCartesianProduct();
 
+function testMap(): void {
+	Assert::same(
+		['A', 'B', 'C'],
+		iterator_to_array(Iter::map(strtoupper(...), ['a', 'b', 'c'])),
+	);
+	Assert::same(
+		[1, 4, 9],
+		iterator_to_array(Iter::map(fn($v) => $v * $v, new \ArrayIterator([1, 2, 3]))),
+	);
+	Assert::same(
+		['a' => 0, 'b' => 1, 'c' => 2],
+		iterator_to_array(Iter::map(abs(...), ['a' => 0, 'b' => -1, 'c' => 2])),
+	);
+	Assert::same(
+		[],
+		iterator_to_array(Iter::map(strtoupper(...), [])),
+	);
+
+	$range = function($min, $max) {
+		for ($i = $min; $i <= $max; ++$i) {
+			yield $i;
+		}
+	};
+	Assert::same(
+		[1, 4, 9],
+		iterator_to_array(Iter::map(fn($v) => $v * $v, $range(1, 3))),
+	);
+}
+testMap();
+
 function testLast(): void {
 	Assert::same(9, Iter::last([1, 2, 3, 4, 5, 6, 7, 8, 9]));
 	Assert::same(9, Iter::last(new \ArrayIterator([1, 2, 3, 4, 5, 6, 7, 8, 9])));

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Config;
 
+use App\Model\Configuration\Entries;
 use App\Model\Invoice;
 use App\Model\InvoiceItem;
 use App\Model\InvoiceModifier;
@@ -11,8 +12,8 @@ use App\Model\Team;
 use Money\Money;
 
 final class CustomInvoiceModifier implements InvoiceModifier {
-	public static function modify(Team $team, Invoice $invoice, array $parameters): void {
-		$eventDate = $parameters['eventDate'];
+	public static function modify(Team $team, Invoice $invoice, Entries $entries): void {
+		$eventDate = $entries->eventDate;
 
 		if ($team->category === 'MJ' || $team->category === 'WJ' || $team->category === 'XJ') {
 			self::adjustJuniorStagePrices($invoice);
