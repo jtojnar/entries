@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App;
+use App\Components\CategoryEntry;
 use App\Helpers\Iter;
 use App\Helpers\Op;
 use Closure;
 use Nette;
 use Nette\Application\Application;
-use Nette\Forms\Controls\SelectBox;
 use Nette\Localization\Translator;
 
 final class CategoryData {
@@ -257,7 +257,7 @@ final class CategoryData {
 				$comparedValue = Closure::fromCallable(self::VALUE_PARSERS[$match['key']])($match['val']);
 
 				return [
-					function(SelectBox $entry) use ($quant, $keyProjection, $op, $comparedValue): bool {
+					function(CategoryEntry $entry) use ($quant, $keyProjection, $op, $comparedValue): bool {
 						/** @var App\Components\TeamForm */ // For PHPStan.
 						$form = $entry->getForm();
 						$members = $form->getUnsafeValues(null)['persons'];
@@ -281,7 +281,7 @@ final class CategoryData {
 				$comparedValue = Closure::fromCallable(self::VALUE_PARSERS[$match['key']])($match['val']);
 
 				return [
-					function(SelectBox $entry) use ($aggr, $keyProjection, $op, $comparedValue): bool {
+					function(CategoryEntry $entry) use ($aggr, $keyProjection, $op, $comparedValue): bool {
 						/** @var App\Components\TeamForm */ // For PHPStan.
 						$form = $entry->getForm();
 						$members = $form->getUnsafeValues(null)['persons'];
