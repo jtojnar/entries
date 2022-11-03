@@ -99,7 +99,10 @@ final class TeamForm extends UI\Form {
 				}
 
 				$isDisabled = $field['disabled'] ?? false;
+				$presenter = $this->getPresenter();
+				\assert($presenter !== null);
 				if ($field['type'] === 'checkboxlist' || $field['type'] === 'enum') {
+					\assert($input instanceof BootstrapCheckboxList || $input instanceof BootstrapRadioList);
 					/** @var array<string, array{disabled: ?bool, limit: ?string}> */
 					$options = $field['type'] === 'enum' ? $field['options'] : $field['items'];
 					$disabledFields = array_filter(
@@ -117,7 +120,11 @@ final class TeamForm extends UI\Form {
 							return $itemDisabled;
 						},
 					);
-					$input->setDisabled($disabledFields);
+					if (!$presenter->getUser()->isInRole('admin')) {
+						$input->setDisabled($disabledFields);
+					} else {
+						$input->getItemLabelPrototype()->{'data-is-visually-disabled?'} = $disabledFields;
+					}
 				} else {
 					$limitName = $field['limit'] ?? null;
 					if ($limitName !== null) {
@@ -126,7 +133,11 @@ final class TeamForm extends UI\Form {
 						$isDisabled = $isDisabled || $numberReserved >= $limit;
 					}
 
-					$input->setDisabled($isDisabled);
+					if (!$presenter->getUser()->isInRole('admin')) {
+						$input->setDisabled($isDisabled);
+					} else {
+						$input->getControlPrototype()->setAttribute('data-is-visually-disabled', $isDisabled);
+					}
 				}
 
 				if (isset($field['applicableCategories'])) {

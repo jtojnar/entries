@@ -6,7 +6,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 
 ### New features
 
--
+- Admin user can edit disabled fields.
 
 ### Bugs fixed
 

@@ -25,3 +25,7 @@ $enable-validation-icons: false;
 @import 'bootstrap/scss/utilities/api';
 
 @include form-validation-state('warning', $warning, '');
+
+[data-is-visually-disabled] {
+	text-decoration: line-through red;
+}
