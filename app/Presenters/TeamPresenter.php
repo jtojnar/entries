@@ -493,7 +493,7 @@ final class TeamPresenter extends BasePresenter {
 				$jsonData = [];
 				foreach ($fields as $name => $field) {
 					$member[$name] ??= null;
-					$jsonData[$name] = $form->isFieldDisabled($field) ? $form->getDefaultFieldValue($field) : $member[$name];
+					$jsonData[$name] = (!$this->user->isInRole('admin') && $form->isFieldDisabled($field)) ? $form->getDefaultFieldValue($field) : $member[$name];
 					$type = $field['type'];
 
 					if ($type === 'sportident' && isset($field['fee']) && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
