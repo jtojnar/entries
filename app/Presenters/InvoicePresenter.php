@@ -9,22 +9,23 @@ use App\Model\Invoice;
 use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
+use Nette\DI\Attributes\Inject;
 
 /**
  * Presenter for displaying invoices.
  */
 final class InvoicePresenter extends BasePresenter {
-	/** @var App\Model\TeamRepository @inject */
-	public $teams;
+	#[Inject]
+	public App\Model\TeamRepository $teams;
 
-	/** @var App\Model\InvoiceRepository @inject */
-	public $invoices;
+	#[Inject]
+	public App\Model\InvoiceRepository $invoices;
 
-	/** @var \Nette\Http\Request @inject */
-	public $request;
+	#[Inject]
+	public \Nette\Http\Request $request;
 
-	/** @var App\Model\TokenRepository @inject */
-	public $tokens;
+	#[Inject]
+	public App\Model\TokenRepository $tokens;
 
 	public function renderShow(int $id): void {
 		$authorizedTeams = [];

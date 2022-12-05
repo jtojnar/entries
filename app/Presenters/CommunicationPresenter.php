@@ -11,6 +11,7 @@ use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use Pelago\Emogrifier\CssInliner;
@@ -22,29 +23,29 @@ use Tracy\Debugger;
  * Presenter for signing in and out.
  */
 final class CommunicationPresenter extends BasePresenter {
-	/** @var App\Forms\FormFactory @inject */
-	public $formFactory;
+	#[Inject]
+	public App\Forms\FormFactory $formFactory;
 
-	/** @var Nette\Bridges\ApplicationLatte\LatteFactory @inject */
-	public $latteFactory;
+	#[Inject]
+	public Nette\Bridges\ApplicationLatte\LatteFactory $latteFactory;
 
-	/** @var Nette\Application\LinkGenerator @inject */
-	public $linkGenerator;
+	#[Inject]
+	public Nette\Application\LinkGenerator $linkGenerator;
 
-	/** @var Nette\Mail\Mailer @inject */
-	public $mailer;
+	#[Inject]
+	public Nette\Mail\Mailer $mailer;
 
-	/** @var App\Model\MessageRepository @inject */
-	public $messages;
+	#[Inject]
+	public App\Model\MessageRepository $messages;
 
-	/** @var Nette\Http\Request @inject */
-	public $request;
+	#[Inject]
+	public Nette\Http\Request $request;
 
-	/** @var App\Model\TeamRepository @inject */
-	public $teams;
+	#[Inject]
+	public App\Model\TeamRepository $teams;
 
-	/** @var App\Model\TokenRepository @inject */
-	public $tokens;
+	#[Inject]
+	public App\Model\TokenRepository $tokens;
 
 	/**
 	 * Message composition form factory.

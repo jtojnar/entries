@@ -7,22 +7,24 @@ namespace App\Presenters;
 use App\Helpers\Parameters;
 use Contributte\Translation\Translator;
 use Nette;
+use Nette\Application\Attributes\Persistent;
+use Nette\DI\Attributes\Inject;
 
 /**
  * Base class for all presenters.
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
-	/** @var string @persistent */
-	public $locale;
+	#[Persistent]
+	public string $locale;
 
-	/** @var Translator @inject */
-	public $translator;
+	#[Inject]
+	public Translator $translator;
 
-	/** @var Parameters @inject */
-	public $parameters;
+	#[Inject]
+	public Parameters $parameters;
 
-	/** @var Nette\DI\Container @inject */
-	public $context;
+	#[Inject]
+	public Nette\DI\Container $context;
 
 	protected function startup(): void {
 		parent::startup();

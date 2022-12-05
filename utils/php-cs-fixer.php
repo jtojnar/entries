@@ -12,8 +12,8 @@ $finder = PhpCsFixer\Finder::create()
 $rules = [
 	'@Symfony' => true,
 	'@Symfony:risky' => true,
-	'@PHP71Migration' => true,
-	'@PHP71Migration:risky' => true,
+	'@PHP81Migration' => true,
+	'@PHP80Migration:risky' => true,
 
 	// overwrite some Symfony rules
 	'braces' => ['position_after_functions_and_oop_constructs' => 'same'],

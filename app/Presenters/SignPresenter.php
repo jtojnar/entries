@@ -8,26 +8,28 @@ use App;
 use App\Model\TeamManager;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Security\Authenticator;
 
 /**
  * Presenter for signing in and out.
  */
 final class SignPresenter extends BasePresenter {
-	/** @var string @persistent */
-	public $backlink = '';
+	#[Persistent]
+	public string $backlink = '';
 
-	/** @var App\Forms\FormFactory @inject */
-	public $formFactory;
+	#[Inject]
+	public App\Forms\FormFactory $formFactory;
 
-	/** @var TeamManager @inject */
-	public $teamManager;
+	#[Inject]
+	public TeamManager $teamManager;
 
-	/** @var App\Model\TeamRepository @inject */
-	public $teams;
+	#[Inject]
+	public App\Model\TeamRepository $teams;
 
 	/**
 	 * Sign-in form factory.

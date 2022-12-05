@@ -16,8 +16,7 @@ use Nette\Localization\Translator;
 final class CategoryData {
 	use Nette\SmartObject;
 
-	/** @var array */
-	private $parameters;
+	private array $parameters;
 
 	/** @var ?non-empty-array */
 	private $categoryTree = null;

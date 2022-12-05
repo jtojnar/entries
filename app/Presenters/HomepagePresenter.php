@@ -10,6 +10,7 @@ use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\DateTime;
 use Nextras\FormsRendering\Renderers\FormLayout;
@@ -18,14 +19,14 @@ use Nextras\FormsRendering\Renderers\FormLayout;
  * Presenter for main page.
  */
 final class HomepagePresenter extends BasePresenter {
-	/** @var App\Model\MessageRepository @inject */
-	public $messages;
+	#[Inject]
+	public App\Model\MessageRepository $messages;
 
-	/** @var App\Model\TeamRepository @inject */
-	public $teams;
+	#[Inject]
+	public App\Model\TeamRepository $teams;
 
-	/** @var App\Forms\FormFactory @inject */
-	public $formFactory;
+	#[Inject]
+	public App\Forms\FormFactory $formFactory;
 
 	public function renderDefault(): void {
 		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */

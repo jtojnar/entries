@@ -18,6 +18,7 @@ use Money\Money;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
+use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\DateTime;
@@ -32,47 +33,47 @@ use Tracy\Debugger;
  * The main presenter of the application.
  */
 final class TeamPresenter extends BasePresenter {
-	/** @var App\Model\CountryRepository @inject */
-	public $countries;
+	#[Inject]
+	public App\Model\CountryRepository $countries;
 
-	/** @var App\Model\TeamRepository @inject */
-	public $teams;
+	#[Inject]
+	public App\Model\TeamRepository $teams;
 
-	/** @var App\Model\PersonRepository @inject */
-	public $persons;
+	#[Inject]
+	public App\Model\PersonRepository $persons;
 
-	/** @var App\Model\InvoiceRepository @inject */
-	public $invoices;
+	#[Inject]
+	public App\Model\InvoiceRepository $invoices;
 
-	/** @var App\Model\CategoryData @inject */
-	public $categories;
+	#[Inject]
+	public App\Model\CategoryData $categories;
 
-	/** @var App\Model\ItemReservationRepository @inject */
-	public $itemReservations;
+	#[Inject]
+	public App\Model\ItemReservationRepository $itemReservations;
 
-	/** @var App\Templates\Filters\CategoryFormatFilter @inject */
-	public $categoryFormatter;
+	#[Inject]
+	public App\Templates\Filters\CategoryFormatFilter $categoryFormatter;
 
-	/** @var App\Forms\FormFactory @inject */
-	public $formFactory;
+	#[Inject]
+	public App\Forms\FormFactory $formFactory;
 
-	/** @var App\Forms\TeamFormFactory @inject */
-	public $teamFormFactory;
+	#[Inject]
+	public App\Forms\TeamFormFactory $teamFormFactory;
 
-	/** @var Nette\Security\Passwords @inject */
-	public $passwords;
+	#[Inject]
+	public Nette\Security\Passwords $passwords;
 
-	/** @var \Nette\Http\Request @inject */
-	public $request;
+	#[Inject]
+	public \Nette\Http\Request $request;
 
-	/** @var \Nette\Http\Response @inject */
-	public $response;
+	#[Inject]
+	public \Nette\Http\Response $response;
 
-	/** @var \Nette\Mail\Mailer @inject */
-	public $mailer;
+	#[Inject]
+	public \Nette\Mail\Mailer $mailer;
 
-	/** @var Nette\DI\Container @inject */
-	public $context;
+	#[Inject]
+	public Nette\DI\Container $context;
 
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {

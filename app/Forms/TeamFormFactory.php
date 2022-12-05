@@ -21,8 +21,7 @@ use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 final class TeamFormFactory {
 	use Nette\SmartObject;
 
-	/** @var array */
-	public $parameters;
+	public array $parameters;
 
 	public function __construct(
 		private readonly CategoryData $categories,

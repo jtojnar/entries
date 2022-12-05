@@ -11,7 +11,7 @@ use Nette\Application\UI\Control;
  */
 final class LocaleSwitcher extends Control {
 	/** @var string[] */
-	private $locales;
+	private array $locales;
 
 	public function __construct(array $locales, ?array $allowedLocales) {
 		if ($allowedLocales === null) {
