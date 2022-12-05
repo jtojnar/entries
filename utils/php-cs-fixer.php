@@ -17,10 +17,14 @@ $rules = [
 
 	// overwrite some Symfony rules
 	'braces' => ['position_after_functions_and_oop_constructs' => 'same'],
-	'function_declaration' => ['closure_function_spacing' => 'none'],
+	'function_declaration' => [
+		'closure_function_spacing' => 'none',
+		'closure_fn_spacing' => 'none',
+	],
 	'concat_space' => ['spacing' => 'one'],
 	'phpdoc_align' => false,
 	'yoda_style' => false,
+	'global_namespace_import' => false,
 
 	// additional rules
 	'array_syntax' => ['syntax' => 'short'],

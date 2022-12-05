@@ -32,7 +32,7 @@
 		"nextras/form-components": "^1.0.0",
 		"nextras/forms-rendering": "@dev",
 		"nextras/orm": "~4.0",
-		"pelago/emogrifier": "^6.0",
+		"pelago/emogrifier": "^7.0",
 		"tracy/tracy": "~2.6",
 		"webrouse/n-asset-macro": "^2.0"
 	},
