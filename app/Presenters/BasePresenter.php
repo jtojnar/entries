@@ -15,7 +15,7 @@ use Nette\DI\Attributes\Inject;
  */
 abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	#[Persistent]
-	public string $locale;
+	public string $locale = '';
 
 	#[Inject]
 	public Translator $translator;
