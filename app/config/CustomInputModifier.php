@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Config;
 
-use Nette;
+use App\Model\InputModifier;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Control;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
 
-final class CustomInputModifier {
-	use Nette\SmartObject;
-
+final class CustomInputModifier implements InputModifier {
 	public static function modify(Control $input, IContainer $container): void {
 		// we also have some inputs that are based on Nextras\FormComponents\Fragments\UIComponent\BaseControl
 		if ($input instanceof BaseControl && $input->getName() === 'registry_address') {

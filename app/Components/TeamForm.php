@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Components;
 
+use App\Model\InputModifier;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI;
 use Nette\ComponentModel\IContainer;
@@ -144,10 +145,10 @@ final class TeamForm extends UI\Form {
 					$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field['applicableCategories']);
 				}
 
-				/** @var ?callable */
-				$customInputModifier = $this->parameters['customInputModifier'] ?? null;
-				if ($customInputModifier !== null) {
-					$customInputModifier($input, $container);
+				/** @var ?class-string<InputModifier> */
+				$inputModifier = $this->parameters['inputModifier'] ?? null;
+				if ($inputModifier !== null) {
+					$inputModifier::modify($input, $container);
 				}
 			}
 		}

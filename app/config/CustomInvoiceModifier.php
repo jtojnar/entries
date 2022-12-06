@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Config;
 
 use App\Model\Invoice;
 use App\Model\InvoiceItem;
+use App\Model\InvoiceModifier;
 use App\Model\Team;
 use Money\Money;
-use Nette;
 
-final class InvoiceModifier {
-	use Nette\SmartObject;
-
+final class CustomInvoiceModifier implements InvoiceModifier {
 	public static function modify(Team $team, Invoice $invoice, array $parameters): void {
 		$eventDate = $parameters['eventDate'];
 

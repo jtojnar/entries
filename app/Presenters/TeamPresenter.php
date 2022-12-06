@@ -8,6 +8,7 @@ use App;
 use App\Components\SportidentControl;
 use App\Exporters;
 use App\Model\Invoice;
+use App\Model\InvoiceModifier;
 use App\Model\ItemReservation;
 use App\Model\Team;
 use Exception;
@@ -575,10 +576,10 @@ final class TeamPresenter extends BasePresenter {
 				$this->persons->persist($person);
 			}
 
-			/** @var ?callable */
+			/** @var ?class-string<InvoiceModifier> */
 			$invoiceModifier = $this->context->parameters['entries']['invoiceModifier'] ?? null;
 			if ($invoiceModifier !== null) {
-				$invoiceModifier($team, $invoice, $this->context->parameters['entries']);
+				$invoiceModifier::modify($team, $invoice, $this->context->parameters['entries']);
 			}
 
 			foreach ($team->invoices as $inv) {
