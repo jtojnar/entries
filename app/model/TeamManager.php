@@ -39,7 +39,7 @@ final class TeamManager implements Nette\Security\Authenticator {
 
 		$team = $this->teams->getById($teamId);
 
-		if (!$team) {
+		if ($team === null) {
 			throw new AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
 		} elseif (!$this->passwords->verify($password, $team->password)) {
 			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);

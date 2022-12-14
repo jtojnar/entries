@@ -132,7 +132,7 @@ final class TeamPresenter extends BasePresenter {
 			}
 
 			$team = $this->teams->getById($id);
-			if (!$team) {
+			if ($team === null) {
 				$this->error($this->translator->translate('messages.team.edit.error.404'));
 			}
 			if (!$this->user->isInRole('admin') && $team->status === 'paid') {
@@ -145,7 +145,7 @@ final class TeamPresenter extends BasePresenter {
 	public function actionConfirm(int $id): void {
 		if ($this->user->isInRole('admin')) {
 			$team = $this->teams->getById($id);
-			if (!$team) {
+			if ($team === null) {
 				$this->error($this->translator->translate('messages.team.edit.error.404'));
 			}
 			if ($team->status === 'registered') {
@@ -214,7 +214,7 @@ final class TeamPresenter extends BasePresenter {
 			\assert(\is_string($idParam)); // For PHPStan.
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
-			if (!$team) {
+			if ($team === null) {
 				$this->error($this->translator->translate('messages.team.edit.error.404'));
 			}
 
@@ -320,7 +320,7 @@ final class TeamPresenter extends BasePresenter {
 			/** @var \Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
-			if (!$team) {
+			if ($team === null) {
 				$form->addError('messages.team.edit.error.404');
 
 				return;
@@ -830,7 +830,7 @@ final class TeamPresenter extends BasePresenter {
 				continue;
 			} elseif ($field['type'] === 'country') {
 				$country = isset($data->$name) ? $this->countries->getById($data->$name) : null;
-				if (!$country) {
+				if ($country === null) {
 					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
 					continue;
 				}
