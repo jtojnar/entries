@@ -87,10 +87,10 @@ final class Iter {
 	 *
 	 * @return Carry
 	 */
-	public static function reduce(iterable $iterable, callable $reducer, mixed $initial): mixed {
+	public static function reduce(iterable $iterable, callable $reducer, mixed $initial = null): mixed {
 		$carry = $initial;
 		foreach ($iterable as $value) {
-			$result = $reducer($carry, $value);
+			$carry = $reducer($carry, $value);
 		}
 
 		return $carry;
