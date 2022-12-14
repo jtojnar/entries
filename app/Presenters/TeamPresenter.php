@@ -238,7 +238,6 @@ final class TeamPresenter extends BasePresenter {
 			$name,
 		);
 		if ($editing && !$form->isSubmitted()) {
-			\assert(isset($team)); // For PHPStan
 			$default = [];
 			$default['name'] = $team->name;
 			$default['category'] = $team->category;
