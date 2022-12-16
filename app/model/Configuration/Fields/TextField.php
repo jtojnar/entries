@@ -8,4 +8,7 @@ declare(strict_types=1);
 namespace App\Model\Configuration\Fields;
 
 class TextField extends Field {
+	public function getType(): string {
+		return 'text';
+	}
 }

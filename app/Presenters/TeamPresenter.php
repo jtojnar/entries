@@ -372,14 +372,14 @@ final class TeamPresenter extends BasePresenter {
 
 				if ($field instanceof Fields\SportidentField && $field->fee !== null && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 					$invoice->addItem(self::serializeInvoiceItem([
-						'type' => $field::class,
+						'type' => $field->getType(),
 						'scope' => 'team',
 						'key' => $name,
 					]), $field->fee);
 				} elseif ($field instanceof Fields\CheckboxField && $jsonData[$name]) {
 					if ($field->fee !== null) {
 						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $field::class,
+							'type' => $field->getType(),
 							'scope' => 'team',
 							'key' => $name,
 						]), $field->fee);
@@ -399,7 +399,7 @@ final class TeamPresenter extends BasePresenter {
 					$option = $field->options[$values[$name]];
 					if ($option->fee !== null) {
 						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $field::class,
+							'type' => $field->getType(),
 							'scope' => 'team',
 							'key' => $name,
 							'value' => $values[$name],
@@ -421,7 +421,7 @@ final class TeamPresenter extends BasePresenter {
 						$option = $field->items[$item];
 						if ($option->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $field::class,
+								'type' => $field->getType(),
 								'scope' => 'team',
 								'key' => $name,
 								'value' => $item,
@@ -503,14 +503,14 @@ final class TeamPresenter extends BasePresenter {
 
 					if ($field instanceof Fields\SportidentField && $field->fee !== null && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $field::class,
+							'type' => $field->getType(),
 							'scope' => 'person',
 							'key' => $name,
 						]), $field->fee);
 					} elseif ($field instanceof Fields\CheckboxField && $jsonData[$name]) {
 						if ($field->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $field::class,
+								'type' => $field->getType(),
 								'scope' => 'person',
 								'key' => $name,
 							]), $field->fee);
@@ -530,7 +530,7 @@ final class TeamPresenter extends BasePresenter {
 						$option = $field->options[$member[$name]];
 						if ($option->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $field::class,
+								'type' => $field->getType(),
 								'scope' => 'person',
 								'key' => $name,
 								'value' => $member[$name],
@@ -552,7 +552,7 @@ final class TeamPresenter extends BasePresenter {
 							$option = $field->items[$item];
 							if ($option->fee !== null) {
 								$invoice->addItem(self::serializeInvoiceItem([
-									'type' => $field::class,
+									'type' => $field->getType(),
 									'scope' => 'person',
 									'key' => $name,
 									'value' => $item,

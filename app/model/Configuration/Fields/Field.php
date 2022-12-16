@@ -21,4 +21,6 @@ abstract class Field {
 		public readonly ?array $applicableCategories,
 	) {
 	}
+
+	abstract public function getType(): string;
 }

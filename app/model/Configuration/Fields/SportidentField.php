@@ -33,4 +33,8 @@ class SportidentField extends Field {
 			$applicableCategories,
 		);
 	}
+
+	public function getType(): string {
+		return 'sportident';
+	}
 }

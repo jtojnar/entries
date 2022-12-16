@@ -39,4 +39,8 @@ class CheckboxField extends Field implements LimitableField {
 	public function getLimitName(): ?string {
 		return $this->limitName;
 	}
+
+	public function getType(): string {
+		return 'checkbox';
+	}
 }

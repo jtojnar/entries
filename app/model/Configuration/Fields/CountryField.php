@@ -32,4 +32,8 @@ class CountryField extends Field {
 			$applicableCategories,
 		);
 	}
+
+	public function getType(): string {
+		return 'country';
+	}
 }
