@@ -1,0 +1,7 @@
+[deployments.default]
+upload_uri = "sftp://ogion.cz/var/www/krk-litvinov.cz/entries/current/"
+web_root = "www/"
+web_uri = "https://entries.krk-litvinov.cz/"
+transfer_files = [
+    "app/config/private.neon",
+]
