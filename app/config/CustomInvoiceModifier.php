@@ -17,32 +17,20 @@ final class CustomInvoiceModifier implements InvoiceModifier {
 
 		if ($team->category === 'MJ' || $team->category === 'WJ' || $team->category === 'XJ') {
 			self::adjustJuniorStagePrices($invoice);
-		} elseif ($team->category === 'HJ') {
-			self::adjustJiretinStagePrices($invoice);
 		}
 
 		self::fixPersonItemAmounts($invoice, \count($team->persons));
-	}
-
-	private static function adjustJiretinStagePrices(Invoice $invoice): void {
-		$items = $invoice->items;
-
-		if (isset($items['team:enum:saturday5h:yes'])) {
-			$items['team:enum:saturday5h:yes'] = self::discount($items['team:enum:saturday5h:yes'], 180);
-		}
-
-		$invoice->items = $items;
 	}
 
 	private static function adjustJuniorStagePrices(Invoice $invoice): void {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {
-			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 20);
+			$items['team:enum:friday2h:yes'] = self::discount($items['team:enum:friday2h:yes'], 0);
 		}
 
 		if (isset($items['team:enum:saturday5h:yes'])) {
-			$items['team:enum:saturday5h:yes'] = self::discount($items['team:enum:saturday5h:yes'], 20);
+			$items['team:enum:saturday5h:yes'] = self::discount($items['team:enum:saturday5h:yes'], 30);
 		}
 
 		if (isset($items['team:enum:sunday4h:yes'])) {

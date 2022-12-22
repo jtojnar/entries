@@ -8,17 +8,15 @@ parameters:
 	entries:
 		maxMembers: 2
 		minMembers: 2
-		eventDate: 2023-03-22 # used for age calculations
-		opening: 2023-03-02T00:00:00
-		closing: 2023-04-23T14:00:00
+		eventDate: 2023-04-07 # used for age calculations
+		opening: 2022-12-21T00:00:00
+		closing: 2023-04-07T12:00:00
 		invoiceModifier: App\Config\CustomInvoiceModifier
 		fees:
 			person: 0
+		limits:
+			hardfloor: 50
 		categories:
-			HJ:
-				label:
-					en: 'Championship of the Horní Jiřetín city'
-					cs: 'Přebor Horního Jiřetína'
 			MJ:
 				constraints:
 					- 'all(gender=male)'
@@ -59,7 +57,7 @@ parameters:
 			team:
 				sportident:
 					type: sportident
-					fee: 50
+					fee: 70
 				friday2h:
 					type: enum
 					label:
@@ -70,7 +68,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 70
+							fee: 90
 						no:
 							label:
 								en: 'No'
@@ -86,7 +84,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 180
+							fee: 210
 						no:
 							label:
 								en: 'No'
@@ -102,7 +100,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 170
+							fee: 200
 						no:
 							label:
 								en: 'No'
@@ -115,99 +113,127 @@ parameters:
 				boarding:
 					disabled: false
 					label:
-						en: 'Boarding (must be ordered and paid up to Friday 15. 4. 2022):'
-						cs: 'Stravování (nutno objednat a zaplatit do pátku 15. 4. 2022):'
+						en: 'Boarding must be ordered and paid until Sunday March 26, 2023'
+						cs: 'Stravování se musí objednat a zaplatit do neděle 26. 3. 2023'
 					type: checkboxlist
 					items:
 						pa-soup:
 							label:
-								en: 'Friday "Dršťková" soup (35 CZK, available between 18:00 and 21:00)'
-								cs: 'Páteční dršťkovka (35 Kč, odběr mezi 18:00 až 21:00)'
+								en: 'Friday hen bouillon (35 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční slepičí vývar (35 Kč, odběr mezi 17:00 až 19:30)'
 							fee: 35
 						pa-gulas-k:
 							label:
-								en: 'Friday pork goulash & dumplings (120 CZK, available between 18:00 and 21:00)'
-								cs: 'Páteční vepřový guláš s knedlíkem (120 Kč, odběr mezi 18:00 až 21:00)'
-							fee: 120
+								en: 'Friday pork goulash & dumplings (139 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční vepřový guláš s knedlíkem (139 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 139
 						pa-gulas-b:
 							label:
-								en: 'Friday pork goulash & bread (120 CZK, available between 18:00 and 21:00)'
-								cs: 'Páteční vepřový guláš s chlebem (120 Kč, odběr mezi 18:00 až 21:00)'
-							fee: 120
+								en: 'Friday pork goulash & bread (139 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční vepřový guláš s chlebem (139 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 139
 						so-breakfast1:
 							label:
-								en: 'Saturday breakfast – scrambled eggs (75 CZK, available between 8:00 and 9:00)'
-								cs: 'Sobotní snídaně – míchaná vejce (75 Kč, odběr mezi 8:00 až 9:00)'
-							fee: 75
+								en: 'Saturday breakfast – scrambled eggs (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně – míchaná vejce (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 						so-breakfast2:
 							label:
-								en: 'Saturday breakfast – sausage & bread (75 CZK, available between 8:00 and 9:00)'
-								cs: 'Sobotní snídaně – párek/pečivo (75 Kč, odběr mezi 8:00 až 9:00)'
-							fee: 75
+								en: 'Saturday breakfast – sausage & bread (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně – párek/pečivo (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 						so-breakfast3:
 							label:
-								en: 'Saturday breakfast – bread/butter/jam (75 CZK, available between 8:00 and 9:00)'
-								cs: 'Sobotní snídaně – pečivo/máslo/džem (75 Kč, odběr mezi 8:00 až 9:00)'
-							fee: 75
+								en: 'Saturday breakfast – bread/butter/jam (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně – pečivo/máslo/džem (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 						so-soup:
 							label:
-								en: 'Saturday goulash soup (35 CZK, available between 17:00 and 21:00)'
-								cs: 'Sobotní gulášovka (35 Kč, odběr mezi 17:00 až 21:00)'
+								en: 'Saturday goulash soup (35 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní gulášovka (35 Kč, odběr mezi 13:00 až 19:00)'
 							fee: 35
 						so-rizoto:
 							label:
-								en: 'Saturday risotto (120 CZK, available between 17:00 and 21:00)'
-								cs: 'Sobotní rizoto (120 Kč, odběr mezi 17:00 až 21:00)'
-							fee: 120
+								en: 'Saturday chicken with paprika sauce & dumplings (139 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní kuře na paprice s knedlíkem (139 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 139
 						so-ptacek:
 							label:
-								en: 'Saturday Beef roll filled with egg & sausage with rice (120 CZK, available between 17:00 and 21:00)'
-								cs: 'Sobotní španělský ptáček s rýží (120 Kč, odběr mezi 17:00 až 21:00)'
-							fee: 120
+								en: 'Saturday chicken with paprika sauce with pasta (139 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní kuře na paprice s těstovinami (139 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 139
 						ne-breakfast1:
 							label:
-								en: 'Sunday breakfast – scrambled eggs (75 CZK, available between 8:00 and 9:00)'
-								cs: 'Nedělní snídaně – míchaná vejce (75 Kč, odběr mezi 8:00 až 9:00)'
-							fee: 75
+								en: 'Sunday breakfast – scrambled eggs (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně – míchaná vejce (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 						ne-breakfast2:
 							label:
-								en: 'Sunday breakfast – sausage & bread (75 CZK, available between 8:00 and 9:00)'
-								cs: 'Nedělní snídaně – párek/pečivo (75 Kč, odběr mezi 8:00 až 9:00)'
-							fee: 75
+								en: 'Sunday breakfast – sausage & bread (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně – párek/pečivo (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 						ne-breakfast3:
 							label:
-								en: 'Sunday breakfast – bread/butter/jam (75 CZK, available between 8:00 and 9:00)'
-								cs: 'Nedělní snídaně – pečivo/máslo/džem (75 Kč, odběr mezi 8:00 až 9:00)'
-							fee: 75
+								en: 'Sunday breakfast – bread/butter/jam (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně – pečivo/máslo/džem (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 						ne-soup:
 							label:
-								en: 'Sunday Ukrainian Borscht (35 CZK, available between 13:00 and 15:00)'
-								cs: 'Nedělní ukrajinský boršč (35 Kč, odběr mezi 13:00 až 15:00)'
+								en: 'Sunday pea soup (35 CZK, available between 13:00 and 15:00)'
+								cs: 'Nedělní hrachovka (35 Kč, odběr mezi 13:00 až 15:00)'
 							fee: 35
 						ne-kure-r:
 							label:
-								en: 'Sunday chicken schnitzel & potatoes (120 CZK, available between 13:00 and 15:00)'
-								cs: 'Nedělní kuřecí řízek s bramborem (120 Kč, odběr mezi 13:00 až 15:00)'
-							fee: 120
+								en: 'Sunday chicken steak with mushroom and potatoes (139 CZK, available between 13:00 and 15:00)'
+								cs: 'Nedělní kuřecí plátek na žampionech, brambor (139 Kč, odběr mezi 13:00 až 15:00)'
+							fee: 139
 						ne-vepr-r:
 							label:
-								en: 'Sunday pork schnitzel & potatoes (120 CZK, available between 13:00 and 15:00)'
-								cs: 'Nedělní vepřový řízek s bramborem (120 Kč, odběr mezi 13:00 až 15:00)'
-							fee: 120
+								en: 'Sunday chicken steak with mushroom and rice (139 CZK, available between 13:00 and 15:00)'
+								cs: 'Nedělní kuřecí plátek na žampionech, rýže (139 Kč, odběr mezi 13:00 až 15:00)'
+							fee: 139
+						po-breakfast1:
+							label:
+								en: 'Monday breakfast – scrambled eggs (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Pondělní snídaně – míchaná vejce (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						po-breakfast2:
+							label:
+								en: 'Monday breakfast – sausage & bread (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Pondělní snídaně – párek/pečivo (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						po-breakfast3:
+							label:
+								en: 'Monday breakfast – bread/butter/jam (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Pondělní snídaně – pečivo/máslo/džem (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
 				accommodation:
 					label:
 						en: 'Hard floor accommodation at the event centre (no shower, WC available):'
 						cs: 'Nouzové ubytování v sále restaurace (bez sprchy, jen s WC):'
-					type: checkboxlist
-					items:
+					type: enum
+					options:
+						gym3:
+							label:
+								en: 'Hard floor accommodation, 3 nights from Friday to Monday (345 CZK)'
+								cs: 'Sál restaurace, 3 noci od pátku do neděle (345 Kč)'
+							fee: 345
+							limit: hardfloor
 						gym2:
 							label:
-								en: 'Hard floor accommodation, 2 nights from Friday to Sunday (200 CZK)'
-								cs: 'Sál restaurace, 2 noci od pátku do neděle (200 Kč)'
-							fee: 200
+								en: 'Hard floor accommodation, 2 nights from Friday to Sunday (230 CZK)'
+								cs: 'Sál restaurace, 2 noci od pátku do neděle (230 Kč)'
+							fee: 230
+							limit: hardfloor
 						gym1:
 							label:
-								en: 'Hard floor accommodation, 1 night from Friday-Saturday or Saturday-Sunday (100 CZK)'
-								cs: 'Sál restaurace, 1 noc pátek-sobota nebo sobota-neděle (100 Kč)'
-							fee: 100
+								en: 'Hard floor accommodation, 1 night from Friday-Saturday or Saturday-Sunday (115 CZK)'
+								cs: 'Sál restaurace, 1 noc pátek-sobota nebo sobota-neděle (115 Kč)'
+							fee: 115
+							limit: hardfloor
+						none:
+							label:
+								en: 'No accommodation'
+								cs: 'Bez ubytování'
+							default: true
 	webmasterEmail: tojnar@gmail.com
