@@ -42,7 +42,7 @@ final class Category {
 	): self {
 		$fees = Fees::from($category['fees'] ?? [], $parentFees);
 		if ($fees->person === null) {
-			throw new \Exception("No person fee set for category “{$key}”");
+			throw new InvalidConfigurationException("No person fee set for category “{$key}”");
 		}
 
 		return new self(
@@ -91,7 +91,7 @@ final class Category {
 				$quant = self::QUANT_LOOKUP[$quant];
 
 				if (!\in_array($op, self::KEY_SUPPORTED_OPS[$key], true)) {
-					throw new \Exception("Constraint “{$constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
+					throw new InvalidConfigurationException("Constraint “{$constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
 				}
 				$op = self::OP_LOOKUP[$op];
 
@@ -137,7 +137,7 @@ final class Category {
 				};
 			}
 
-			throw new \Exception("Constraint “{$constraint}” is invalid");
+			throw new InvalidConfigurationException("Constraint “{$constraint}” is invalid");
 		}, $constraints);
 	}
 }

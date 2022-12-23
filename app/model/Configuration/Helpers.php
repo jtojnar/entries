@@ -11,7 +11,6 @@ use App\Locale\Translated;
 use App\Model\Configuration\Fields\Field;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Money\Money;
-use RuntimeException;
 
 /**
  * Holds information about the event pertaining to registration.
@@ -21,7 +20,7 @@ final class Helpers {
 		$translations = array_keys($translated);
 		foreach ($allLocales as $locale) {
 			if (!\in_array($locale, $translations, true)) {
-				throw new RuntimeException("Missing translation {$locale} for {$context}.");
+				throw new InvalidConfigurationException("Missing translation {$locale} for {$context}.");
 			}
 		}
 	}
@@ -44,7 +43,7 @@ final class Helpers {
 			return new NotTranslate($translatable);
 		}
 
-		throw new RuntimeException("{$context} must be an array or string.");
+		throw new InvalidConfigurationException("{$context} must be an array or string.");
 	}
 
 	/**
@@ -60,7 +59,7 @@ final class Helpers {
 			return $fallback;
 		}
 
-		throw new \RuntimeException("{$context} lacks a label");
+		throw new InvalidConfigurationException("{$context} lacks a label");
 	}
 
 	/**
@@ -78,11 +77,11 @@ final class Helpers {
 		}
 
 		if (!class_exists($class)) {
-			throw new RuntimeException("Class “{$class}” does not exist.");
+			throw new InvalidConfigurationException("Class “{$class}” does not exist.");
 		}
 
 		if (!is_subclass_of($class, $expected)) {
-			throw new RuntimeException("Class “{$class}” is not a subclass of “{$expected}”.");
+			throw new InvalidConfigurationException("Class “{$class}” is not a subclass of “{$expected}”.");
 		}
 
 		return $class;
@@ -93,15 +92,15 @@ final class Helpers {
 	 */
 	public static function ensureFields(string $context, mixed $fields): array {
 		if (!\is_array($fields)) {
-			throw new RuntimeException("Expected array for {$context} fields.");
+			throw new InvalidConfigurationException("Expected array for {$context} fields.");
 		}
 
 		foreach ($fields as $key => $field) {
 			if (!\is_string($key)) {
-				throw new RuntimeException("Keys of {$context} fields should be strings, “{$key}” given.");
+				throw new InvalidConfigurationException("Keys of {$context} fields should be strings, “{$key}” given.");
 			}
 			if (!\is_array($field)) {
-				throw new RuntimeException("Expected array for {$context} field “{$key}”.");
+				throw new InvalidConfigurationException("Expected array for {$context} field “{$key}”.");
 			}
 		}
 
@@ -110,7 +109,7 @@ final class Helpers {
 
 	public static function ensureBool(string $context, mixed $value): bool {
 		if (!\is_bool($value)) {
-			throw new RuntimeException("Expected boolean for {$context}.");
+			throw new InvalidConfigurationException("Expected boolean for {$context}.");
 		}
 
 		return $value;
@@ -122,7 +121,7 @@ final class Helpers {
 		}
 
 		if (!\is_bool($value)) {
-			throw new RuntimeException("Expected boolean for {$context}.");
+			throw new InvalidConfigurationException("Expected boolean for {$context}.");
 		}
 
 		return $value;
@@ -134,7 +133,7 @@ final class Helpers {
 		}
 
 		if (!\is_int($value)) {
-			throw new RuntimeException("Expected integer for {$context}.");
+			throw new InvalidConfigurationException("Expected integer for {$context}.");
 		}
 
 		return $value;
@@ -146,7 +145,7 @@ final class Helpers {
 		}
 
 		if (!\is_string($value)) {
-			throw new RuntimeException("Expected string for {$context}.");
+			throw new InvalidConfigurationException("Expected string for {$context}.");
 		}
 
 		return $value;
@@ -161,12 +160,12 @@ final class Helpers {
 		}
 
 		if (!\is_array($value)) {
-			throw new RuntimeException("Expected list for {$context}.");
+			throw new InvalidConfigurationException("Expected list for {$context}.");
 		}
 
 		foreach ($value as $item) {
 			if (!\is_string($item)) {
-				throw new RuntimeException("Expected string for item of {$context}.");
+				throw new InvalidConfigurationException("Expected string for item of {$context}.");
 			}
 		}
 
@@ -178,16 +177,16 @@ final class Helpers {
 	 */
 	public static function ensureLimits(mixed $limits): array {
 		if (!\is_array($limits)) {
-			throw new RuntimeException('Expected list for limits.');
+			throw new InvalidConfigurationException('Expected list for limits.');
 		}
 
 		foreach ($limits as $key => $limit) {
 			if (!\is_string($key)) {
-				throw new RuntimeException("Limit name must be string, “{$key}” given.");
+				throw new InvalidConfigurationException("Limit name must be string, “{$key}” given.");
 			}
 
 			if (!\is_int($limit) || $limit < 0) {
-				throw new RuntimeException("Limit  “{$key}” must be a natural number, {$limit} given.");
+				throw new InvalidConfigurationException("Limit  “{$key}” must be a natural number, {$limit} given.");
 			}
 		}
 
@@ -200,7 +199,7 @@ final class Helpers {
 		}
 
 		if (!\is_int($fee)) {
-			throw new RuntimeException("{$context} must be an integer.");
+			throw new InvalidConfigurationException("{$context} must be an integer.");
 		}
 
 		return new Money($fee * 100, $fees->currency);
@@ -221,7 +220,7 @@ final class Helpers {
 		?string $limitName,
 	): array {
 		if (!\is_array($items)) {
-			throw new RuntimeException("{$context} must be a list.");
+			throw new InvalidConfigurationException("{$context} must be a list.");
 		}
 
 		return array_combine(
@@ -249,7 +248,7 @@ final class Helpers {
 	public static function makeField(string $name, array $field, array $allLocales, Fees $fees): Field {
 		foreach ($field as $key => $property) {
 			if (!\is_string($key)) {
-				throw new RuntimeException("Keys of {$name} field should be strings, “{$key}” given.");
+				throw new InvalidConfigurationException("Keys of {$name} field should be strings, “{$key}” given.");
 			}
 		}
 
@@ -357,7 +356,7 @@ final class Helpers {
 				description: isset($field['description']) ? self::parseTranslatable("description of {$name} field", $field['description'], $allLocales) : null,
 				applicableCategories: self::ensureStringListMaybe("applicableCategories of {$name}", $field['applicableCategories'] ?? null),
 			),
-			default => throw new RuntimeException("Field “{$name}” has an unknown type “{$type}”."),
+			default => throw new InvalidConfigurationException("Field “{$name}” has an unknown type “{$type}”."),
 		};
 	}
 }

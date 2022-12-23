@@ -30,7 +30,7 @@ final class CategoryGroup {
 		$fees = Fees::from($group['fees'] ?? [], $parentFees);
 
 		if (!isset($group['categories']) || !\is_array($group['categories']) || \count($group['categories']) === 0) {
-			throw new \Exception("Category group #{$key} lacks categories");
+			throw new InvalidConfigurationException("Category group #{$key} lacks categories");
 		}
 
 		$categoriesRaw = $group['categories'];

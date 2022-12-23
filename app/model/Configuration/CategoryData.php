@@ -39,7 +39,7 @@ final class CategoryData {
 			foreach ($groups as $group) {
 				foreach ($group->categories as $category) {
 					if (isset($categoryKeys[$category->name])) {
-						throw new \Exception("Category “{$category->name}” is defined in both “{$group->key}” and “{$categoryKeys[$category->name]}”.");
+						throw new InvalidConfigurationException("Category “{$category->name}” is defined in both “{$group->key}” and “{$categoryKeys[$category->name]}”.");
 					}
 
 					$allCategories[$category->name] = $category;
@@ -64,7 +64,7 @@ final class CategoryData {
 		array $allLocales,
 	): self {
 		if (\count($categories) === 0) {
-			throw new \Exception('No categories defined.');
+			throw new InvalidConfigurationException('No categories defined.');
 		}
 
 		if (are_categories_nested($categories)) {
