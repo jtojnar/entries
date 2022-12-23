@@ -44,7 +44,7 @@ final class Entries {
 	public static function from(
 		array $entries,
 	): self {
-		$allLocales = $entries['supportedLocales'];
+		$allLocales = $entries['supportedLocales'] ?? ['en', 'cs'];
 		$fees = Fees::from($entries['fees'] ?? []);
 		$eventDate = $entries['eventDate'];
 		$minMembers = $entries['minMembers'] ?? 0;
