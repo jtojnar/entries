@@ -3,6 +3,7 @@
 {block content}
 <p>{_messages.billing.invoice.number} {$invoice->id}</p>
 <p>{_messages.billing.invoice.team_id} {$invoice->team->id}</p>
+<p>{_messages.billing.invoice.issue_date} {$invoice->timestamp|date, ('messages.formats.datetime'|translate)}</p>
 <p>{_messages.billing.invoice.status} {$invoice->status|formatInvoiceStatus|translate}</p>
 
 <table class="table table-striped table-bordered table-hover table-condensed">
