@@ -33,6 +33,7 @@
 
         update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
           pushd .github/workflows/nix/code-checker
+          composer update
           env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
           popd
         '';

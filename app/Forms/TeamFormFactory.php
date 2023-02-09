@@ -27,10 +27,12 @@ final class TeamFormFactory {
 	) {
 	}
 
+	/**
+	 * @param array<string, int> $reservationStats
+	 */
 	public function create(
 		array $countries,
 		bool $editing = false,
-		/* @var array<string, int> */
 		array $reservationStats = [],
 		IContainer $parent = null,
 		string $name = null,

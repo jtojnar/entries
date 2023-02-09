@@ -1,5 +1,5 @@
 {
-  "require": {
-    "nette/code-checker": "*"
-  }
+	"require": {
+		"nette/code-checker": "*"
+	}
 }
