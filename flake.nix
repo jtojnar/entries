@@ -37,25 +37,27 @@
           popd
         '';
       in {
-        devShell =
-          let
-            php = pkgs.php81.withExtensions ({ enabled, all }: with all; enabled ++ [
-              intl
-            ]);
-          in
-            pkgs.mkShell {
-              nativeBuildInputs = [
-                php
-                pkgs.python3 # for create-zipball.py
-                nette-code-checker
-                update-php-extradeps
-              ] ++ (with pkgs.nodePackages; [
-                yarn
-              ]) ++ (with php.packages; [
-                composer
-                psalm
+        devShells = {
+          default =
+            let
+              php = pkgs.php81.withExtensions ({ enabled, all }: with all; enabled ++ [
+                intl
               ]);
-            };
+            in
+              pkgs.mkShell {
+                nativeBuildInputs = [
+                  php
+                  pkgs.python3 # for create-zipball.py
+                  nette-code-checker
+                  update-php-extradeps
+                ] ++ (with pkgs.nodePackages; [
+                  yarn
+                ]) ++ (with php.packages; [
+                  composer
+                  psalm
+                ]);
+              };
+        };
       }
     );
 }
