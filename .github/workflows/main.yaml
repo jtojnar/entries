@@ -11,14 +11,15 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v17
+      uses: cachix/install-nix-action@v19
 
     - name: Set outputs
       id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      run: |
+        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
     - name: Install dependencies
       run: nix-shell --run 'composer install --no-interaction --dev --prefer-source'
@@ -44,14 +45,14 @@ jobs:
       run: nix-shell --run 'yarn dist "entries-${{ steps.vars.outputs.sha_short }}.zip"'
 
     - name: Upload the zipball to GitHub
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: entries-${{ steps.vars.outputs.sha_short }}.zip
         if-no-files-found: error
         path: entries-${{ steps.vars.outputs.sha_short }}.zip
 
     - name: Upload the zipball to Cloudsmith
-      uses: cloudsmith-io/action@v0.5.2
+      uses: cloudsmith-io/action@v0.5.3
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
         api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
