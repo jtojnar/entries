@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Config;
 
 use App\Model\Configuration\Entries;
-use App\Model\Invoice;
-use App\Model\InvoiceItem;
 use App\Model\InvoiceModifier;
-use App\Model\Team;
+use App\Model\Orm\Invoice\Invoice;
+use App\Model\Orm\Invoice\InvoiceItem;
+use App\Model\Orm\Team\Team;
 use Money\Money;
 
 final class CustomInvoiceModifier implements InvoiceModifier {

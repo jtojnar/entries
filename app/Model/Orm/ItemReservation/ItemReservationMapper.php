@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\ItemReservation;
 
+use App\Model\Orm\BaseMapper;
 use Nextras\Dbal\Result\Result;
 
 final class ItemReservationMapper extends BaseMapper {

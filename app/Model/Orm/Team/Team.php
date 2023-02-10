@@ -2,8 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Team;
 
+use App\Model\Orm\Invoice\Invoice;
+use App\Model\Orm\ItemReservation\ItemReservation;
+use App\Model\Orm\Message\Message;
+use App\Model\Orm\Person\Person;
+use App\Model\Orm\Token\Token;
 use Nette\Utils\Json;
 use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\Entity;

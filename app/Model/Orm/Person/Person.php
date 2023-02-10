@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Person;
 
+use App\Model\Orm\ItemReservation\ItemReservation;
+use App\Model\Orm\Team\Team;
 use Nette\Utils\Json;
 use Nextras\Orm\Entity\Entity;
 use Nextras\Orm\Relationships\OneHasMany;

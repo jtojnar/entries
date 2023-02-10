@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exporters;
 
-use App\Model\Team;
+use App\Model\Orm\Team\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;

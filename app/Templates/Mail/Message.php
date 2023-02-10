@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Templates\Mail;
 
-use App\Model\Invoice;
-use App\Model\Person;
-use App\Model\Team;
+use App\Model\Orm\Invoice\Invoice;
+use App\Model\Orm\Person\Person;
+use App\Model\Orm\Team\Team;
 use Nextras\Orm\Relationships\OneHasMany;
 
 final class Message {

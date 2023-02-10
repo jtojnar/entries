@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Templates\Filters;
 
 use App\Model\Configuration\Entries;
-use App\Model\Team;
+use App\Model\Orm\Team\Team;
 
 final class CategoryFormatFilter {
 	public function __construct(

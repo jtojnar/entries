@@ -50,7 +50,7 @@ contribMail:
 	trace: %debugMode%
 
 orm:
-	model: App\Model\Orm
+	model: App\Model\Orm\Orm
 
 
 services:

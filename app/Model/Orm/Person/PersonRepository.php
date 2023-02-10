@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Person;
 
 use Nextras\Orm\Repository\Repository;
 

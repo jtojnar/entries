@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Model\Orm\Team\Team;
+use App\Model\Orm\Team\TeamRepository;
 use Nette;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IIdentity;

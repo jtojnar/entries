@@ -6,7 +6,7 @@ namespace App\Presenters;
 
 use App;
 use App\Model\Configuration\Entries;
-use App\Model\Team;
+use App\Model\Orm\Team\Team;
 use Latte;
 use Nette;
 use Nette\Application\BadRequestException;
@@ -37,16 +37,16 @@ final class CommunicationPresenter extends BasePresenter {
 	public Nette\Mail\Mailer $mailer;
 
 	#[Inject]
-	public App\Model\MessageRepository $messages;
+	public App\Model\Orm\Message\MessageRepository $messages;
 
 	#[Inject]
 	public Nette\Http\Request $request;
 
 	#[Inject]
-	public App\Model\TeamRepository $teams;
+	public App\Model\Orm\Team\TeamRepository $teams;
 
 	#[Inject]
-	public App\Model\TokenRepository $tokens;
+	public App\Model\Orm\Token\TokenRepository $tokens;
 
 	#[Inject]
 	public Entries $entries;
@@ -238,7 +238,7 @@ final class CommunicationPresenter extends BasePresenter {
 					body: $values['body'],
 				);
 
-				$message = new App\Model\Message();
+				$message = new App\Model\Orm\Message\Message();
 				$message->team = $team;
 				$message->subject = $subject;
 				$message->sender = $values['sender'];
@@ -400,7 +400,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$count = 0;
 		try {
 			$messages = $this->messages->findBy([
-				'status' => App\Model\Message::STATUS_QUEUED,
+				'status' => App\Model\Orm\Message\Message::STATUS_QUEUED,
 			]);
 
 			/** @throws \Exception */
@@ -425,7 +425,7 @@ final class CommunicationPresenter extends BasePresenter {
 				$mailer = $this->mailer;
 				$mailer->send($mail);
 
-				$message->status = App\Model\Message::STATUS_SENT;
+				$message->status = App\Model\Orm\Message\Message::STATUS_SENT;
 				$this->messages->persistAndFlush($message);
 
 				++$count;

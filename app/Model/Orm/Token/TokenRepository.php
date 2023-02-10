@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Token;
 
+use App\Model\Orm\Team\Team;
 use Nette\Utils\Random;
 use Nextras\Orm\Repository\Repository;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Invoice;
 
 use Money\Money;
 use Nette;

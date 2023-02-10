@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm;
 
 use Nextras\Orm\Model\Model;
 
 /**
  * Model.
  *
- * @property PersonRepository $persons
- * @property TeamRepository $teams
- * @property CountryRepository $countries
- * @property InvoiceRepository $invoices
- * @property ItemReservationRepository $itemReservations
- * @property MessageRepository $messages
- * @property TokenRepository $tokens
+ * @property Person\PersonRepository $persons
+ * @property Team\TeamRepository $teams
+ * @property Country\CountryRepository $countries
+ * @property Invoice\InvoiceRepository $invoices
+ * @property ItemReservation\ItemReservationRepository $itemReservations
+ * @property Message\MessageRepository $messages
+ * @property Token\TokenRepository $tokens
  */
 final class Orm extends Model {
 }

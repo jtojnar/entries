@@ -24,10 +24,10 @@ final class HomepagePresenter extends BasePresenter {
 	public Entries $entries;
 
 	#[Inject]
-	public App\Model\MessageRepository $messages;
+	public App\Model\Orm\Message\MessageRepository $messages;
 
 	#[Inject]
-	public App\Model\TeamRepository $teams;
+	public App\Model\Orm\Team\TeamRepository $teams;
 
 	#[Inject]
 	public App\Forms\FormFactory $formFactory;
@@ -67,7 +67,7 @@ final class HomepagePresenter extends BasePresenter {
 		$clearCacheButton->onClick[] = $this->clearCache(...);
 
 		$queuedMessageCount = $this->messages->findBy([
-			'status' => App\Model\Message::STATUS_QUEUED,
+			'status' => App\Model\Orm\Message\Message::STATUS_QUEUED,
 		])->countStored();
 
 		if ($queuedMessageCount > 0) {

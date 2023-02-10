@@ -7,7 +7,7 @@ namespace App\Presenters;
 use App;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
-use App\Model\Invoice;
+use App\Model\Orm\Invoice\Invoice;
 use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
@@ -18,16 +18,16 @@ use Nette\DI\Attributes\Inject;
  */
 final class InvoicePresenter extends BasePresenter {
 	#[Inject]
-	public App\Model\TeamRepository $teams;
+	public App\Model\Orm\Team\TeamRepository $teams;
 
 	#[Inject]
-	public App\Model\InvoiceRepository $invoices;
+	public App\Model\Orm\Invoice\InvoiceRepository $invoices;
 
 	#[Inject]
 	public \Nette\Http\Request $request;
 
 	#[Inject]
-	public App\Model\TokenRepository $tokens;
+	public App\Model\Orm\Token\TokenRepository $tokens;
 
 	#[Inject]
 	public Entries $entries;

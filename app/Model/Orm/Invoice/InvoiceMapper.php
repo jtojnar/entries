@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Invoice;
 
+use App\Model\Orm\BaseMapper;
 use Money\Currency;
 use Money\Money;
 use Nette;

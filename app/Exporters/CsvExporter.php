@@ -8,8 +8,8 @@ use App;
 use App\Helpers\CsvWriter;
 use App\Helpers\Iter;
 use App\Model\Configuration\Fields;
-use App\Model\Person;
-use App\Model\Team;
+use App\Model\Orm\Person\Person;
+use App\Model\Orm\Team\Team;
 use App\Templates\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
 use SplFileObject;
@@ -33,7 +33,7 @@ final class CsvExporter implements IExporter {
 	public function __construct(
 		/** @var ICollection<Team> $teams */
 		private readonly ICollection $teams,
-		private readonly App\Model\CountryRepository $countries,
+		private readonly App\Model\Orm\Country\CountryRepository $countries,
 		/** @var array<Fields\Field> $teamFields */
 		private readonly array $teamFields,
 		/** @var array<Fields\Field> $personFields */

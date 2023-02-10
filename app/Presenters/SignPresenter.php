@@ -29,7 +29,7 @@ final class SignPresenter extends BasePresenter {
 	public TeamManager $teamManager;
 
 	#[Inject]
-	public App\Model\TeamRepository $teams;
+	public App\Model\Orm\Team\TeamRepository $teams;
 
 	/**
 	 * Sign-in form factory.

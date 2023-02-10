@@ -49,8 +49,8 @@
 		<a n:href="Sign:as $team->id">{_messages.team.list.entry.action.sign_as}</a>
 		<a n:href="Communication:list $team->id">
 			{_messages.team.list.entry.action.list_communications, [
-				queued => $team->getMessagesByStatus(App\Model\Message::STATUS_QUEUED)->countStored(),
-				sent => $team->getMessagesByStatus(App\Model\Message::STATUS_SENT)->countStored()]
+				queued => $team->getMessagesByStatus(App\Model\Orm\Message\Message::STATUS_QUEUED)->countStored(),
+				sent => $team->getMessagesByStatus(App\Model\Orm\Message\Message::STATUS_SENT)->countStored()]
 			}
 		</a>
 	</td>

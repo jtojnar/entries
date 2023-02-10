@@ -9,10 +9,10 @@ use App\Components\SportidentControl;
 use App\Exporters;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
-use App\Model\Invoice;
 use App\Model\InvoiceModifier;
-use App\Model\ItemReservation;
-use App\Model\Team;
+use App\Model\Orm\Invoice\Invoice;
+use App\Model\Orm\ItemReservation\ItemReservation;
+use App\Model\Orm\Team\Team;
 use DateTimeImmutable;
 use Exception;
 use Kdyby;
@@ -35,22 +35,22 @@ use Tracy\Debugger;
  */
 final class TeamPresenter extends BasePresenter {
 	#[Inject]
-	public App\Model\CountryRepository $countries;
+	public App\Model\Orm\Country\CountryRepository $countries;
 
 	#[Inject]
-	public App\Model\TeamRepository $teams;
+	public App\Model\Orm\Team\TeamRepository $teams;
 
 	#[Inject]
-	public App\Model\PersonRepository $persons;
+	public App\Model\Orm\Person\PersonRepository $persons;
 
 	#[Inject]
 	public Entries $entries;
 
 	#[Inject]
-	public App\Model\InvoiceRepository $invoices;
+	public App\Model\Orm\Invoice\InvoiceRepository $invoices;
 
 	#[Inject]
-	public App\Model\ItemReservationRepository $itemReservations;
+	public App\Model\Orm\ItemReservation\ItemReservationRepository $itemReservations;
 
 	#[Inject]
 	public App\Templates\Filters\CategoryFormatFilter $categoryFormatter;
@@ -339,7 +339,7 @@ final class TeamPresenter extends BasePresenter {
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
 		} else {
-			$team = new App\Model\Team();
+			$team = new Team();
 			$password = Nette\Utils\Random::generate();
 			$team->password = $this->passwords->hash($password);
 			$team->ip = $this->request->remoteAddress ?? '';
@@ -485,7 +485,7 @@ final class TeamPresenter extends BasePresenter {
 				if ($firstMemberName === null) {
 					$firstMemberName = $member['firstname'] . ' ' . $member['lastname'];
 				}
-				$person = new App\Model\Person();
+				$person = new App\Model\Orm\Person\Person();
 
 				$person->firstname = $firstname;
 				$person->lastname = $member['lastname'];

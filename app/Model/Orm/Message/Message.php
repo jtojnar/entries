@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Orm\Message;
 
+use App\Model\Orm\Team\Team;
 use Nextras\Orm\Entity\Entity;
 
 /**
