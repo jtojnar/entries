@@ -11,7 +11,6 @@ use App\Model\Configuration\Fields\Field;
 use App\Model\InputModifier;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI;
-use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls;
 use Nette\Utils\Json;
@@ -21,15 +20,14 @@ use Nette\Utils\Json;
  */
 final class TeamForm extends UI\Form {
 	public function __construct(
-		/** @var array<string, string> */
+		/** @var string[] */
 		private readonly array $countries,
 		/** @var array<string, int> */
 		private readonly array $reservationStats,
 		private readonly Entries $entries,
-		IContainer $parent = null,
-		string $name = null,
+		private readonly bool $canModifyLocked,
 	) {
-		parent::__construct($parent, $name);
+		parent::__construct();
 	}
 
 	public function onRender(): void {
@@ -91,8 +89,6 @@ final class TeamForm extends UI\Form {
 			}
 
 			$isDisabled = $field->disabled ?? false;
-			$presenter = $this->getPresenter();
-			\assert($presenter !== null);
 			if ($field instanceof Fields\CheckboxlistField || $field instanceof Fields\EnumField) {
 				\assert($input instanceof BootstrapCheckboxList || $input instanceof BootstrapRadioList);
 				$options = $field instanceof Fields\EnumField ? $field->options : $field->items;
@@ -111,7 +107,7 @@ final class TeamForm extends UI\Form {
 						return $itemDisabled;
 					},
 				);
-				if (!$presenter->getUser()->isInRole('admin')) {
+				if (!$this->canModifyLocked) {
 					$input->setDisabled($disabledFields);
 				} else {
 					$input->getItemLabelPrototype()->{'data-is-visually-disabled?'} = $disabledFields;
@@ -124,7 +120,7 @@ final class TeamForm extends UI\Form {
 					$isDisabled = $isDisabled || $numberReserved >= $limit;
 				}
 
-				if (!$presenter->getUser()->isInRole('admin')) {
+				if (!$this->canModifyLocked) {
 					$input->setDisabled($isDisabled);
 				} else {
 					$input->getControlPrototype()->setAttribute('data-is-visually-disabled', $isDisabled);

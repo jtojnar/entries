@@ -11,7 +11,6 @@ use App\Model\Configuration\Entries;
 use Contributte\Translation\Wrappers\Message;
 use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette;
-use Nette\ComponentModel\IContainer;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Localization\Translator;
@@ -28,20 +27,19 @@ final class TeamFormFactory {
 	}
 
 	/**
+	 * @param string[] $countries
 	 * @param array<string, int> $reservationStats
 	 */
 	public function create(
 		array $countries,
 		array $reservationStats = [],
-		IContainer $parent = null,
-		string $name = null,
+		bool $canModifyLocked = false,
 	): TeamForm {
 		$form = new TeamForm(
-			$countries,
-			$reservationStats,
-			$this->entries,
-			$parent,
-			$name,
+			countries: $countries,
+			reservationStats: $reservationStats,
+			entries: $this->entries,
+			canModifyLocked: $canModifyLocked,
 		);
 
 		$form->setTranslator($this->translator);

@@ -290,10 +290,9 @@ final class TeamPresenter extends BasePresenter {
 		}
 
 		$form = $this->teamFormFactory->create(
-			$this->countries->fetchIdNamePairs(),
-			$reservationStats,
-			$this,
-			$name,
+			countries: $this->countries->fetchIdNamePairs(),
+			reservationStats: $reservationStats,
+			canModifyLocked: $this->getUser()->isInRole('admin'),
 		);
 		/** @var \Nette\Forms\Controls\SubmitButton */
 		$save = $form['save'];
