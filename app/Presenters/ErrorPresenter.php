@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\LimitedAccessException;
+use App\Exceptions\LimitedAccessException;
 use Nette;
 use Nette\Application\Responses;
 use Nette\Http;

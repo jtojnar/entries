@@ -80,9 +80,9 @@ final class TeamPresenter extends BasePresenter {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
 			$today = new DateTimeImmutable();
 			if ($this->entries->closing !== null && $this->entries->closing < $today) {
-				throw new App\TooLateForAccessException();
+				throw new App\Exceptions\TooLateForAccessException();
 			} elseif ($this->entries->opening !== null && $this->entries->opening > $today) {
-				throw new App\TooSoonForAccessException();
+				throw new App\Exceptions\TooSoonForAccessException();
 			}
 		}
 		parent::startup();
@@ -295,9 +295,9 @@ final class TeamPresenter extends BasePresenter {
 		$today = new DateTimeImmutable();
 		if (!$this->user->isInRole('admin')) {
 			if ($this->entries->closing !== null && $this->entries->closing < $today) {
-				throw new App\TooLateForAccessException();
+				throw new App\Exceptions\TooLateForAccessException();
 			} elseif ($this->entries->opening !== null && $this->entries->opening > $today) {
-				throw new App\TooSoonForAccessException();
+				throw new App\Exceptions\TooSoonForAccessException();
 			}
 		}
 

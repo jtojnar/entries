@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Exceptions;
 
 use Nette;
 
@@ -15,17 +15,5 @@ class LimitedAccessException extends Nette\Application\BadRequestException {
 			$code = self::LATE;
 		}
 		parent::__construct('', $code);
-	}
-}
-
-final class TooSoonForAccessException extends LimitedAccessException {
-	public function __construct() {
-		parent::__construct(self::SOON);
-	}
-}
-
-final class TooLateForAccessException extends LimitedAccessException {
-	public function __construct() {
-		parent::__construct(self::LATE);
 	}
 }
