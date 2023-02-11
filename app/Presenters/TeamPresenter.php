@@ -15,7 +15,7 @@ use App\Model\Orm\ItemReservation\ItemReservation;
 use App\Model\Orm\Team\Team;
 use DateTimeImmutable;
 use Exception;
-use Kdyby;
+use Kdyby\Replicator\Container as ReplicatorContainer;
 use Latte;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
@@ -115,6 +115,19 @@ final class TeamPresenter extends BasePresenter {
 		$template->getLatte()->addFilter('teamData', $this->teamData(...));
 
 		$template->stats = ['count' => \count($template->teams)];
+	}
+
+	public function renderRegister(): void {
+		$form = $this->getComponent('teamForm');
+		if (!$form->isSubmitted()) {
+			// Create sufficient number of person subforms for the most common team size (when it is greater than minimum team size).
+			$remainingMembers = $this->entries->initialMembers - $this->entries->minMembers;
+			/** @var ReplicatorContainer */
+			$replicator = $form['persons'];
+			for ($i = $remainingMembers; $i > 0; --$i) {
+				$replicator->createOne();
+			}
+		}
 	}
 
 	public function renderEdit(int $id = null): void {
@@ -278,7 +291,6 @@ final class TeamPresenter extends BasePresenter {
 
 		$form = $this->teamFormFactory->create(
 			$this->countries->fetchIdNamePairs(),
-			$editing,
 			$reservationStats,
 			$this,
 			$name,
@@ -475,7 +487,7 @@ final class TeamPresenter extends BasePresenter {
 			/** @var ?string $firstMemberName */
 			$firstMemberName = null;
 
-			/** @var Kdyby\Replicator\Container */
+			/** @var ReplicatorContainer */
 			$replicator = $form['persons'];
 			$personContainers = iterator_to_array($replicator->getContainers());
 			foreach ($values['persons'] as $personKey => $member) {

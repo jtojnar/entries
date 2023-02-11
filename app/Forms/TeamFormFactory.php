@@ -32,7 +32,6 @@ final class TeamFormFactory {
 	 */
 	public function create(
 		array $countries,
-		bool $editing = false,
 		array $reservationStats = [],
 		IContainer $parent = null,
 		string $name = null,
@@ -53,7 +52,8 @@ final class TeamFormFactory {
 
 		$defaultMinMembers = $this->entries->minMembers;
 		$defaultMaxMembers = $this->entries->maxMembers;
-		$initialMembers = $form->isSubmitted() || $editing ? $defaultMinMembers : $this->entries->initialMembers;
+		// Handled in TeamPresenter::renderCreate.
+		$initialMembers = $this->entries->minMembers;
 
 		$form->addProtection();
 		$form->addGroup('messages.team.info.label');
