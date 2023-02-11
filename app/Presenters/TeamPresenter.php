@@ -140,6 +140,52 @@ final class TeamPresenter extends BasePresenter {
 				$this->flashMessage($this->translator->translate('messages.team.edit.error.already_paid'), 'error');
 				$this->redirect('Homepage:');
 			}
+
+			$form = $this->getComponent('teamForm');
+			if (!$form->isSubmitted()) {
+				$default = [];
+				$default['name'] = $team->name;
+				$default['category'] = $team->category;
+				$default['message'] = $team->message;
+				$default['persons'] = [];
+
+				$fields = $this->entries->teamFields;
+				foreach ($fields as $field) {
+					$name = $field->name;
+					if (isset($team->getJsonData()->$name)) {
+						$default[$name] = $team->getJsonData()->$name;
+					} elseif ($field instanceof Fields\SportidentField) {
+						$default[$name] = [
+							SportidentControl::NAME_NEEDED => true,
+						];
+					}
+				}
+
+				$fields = $this->entries->personFields;
+				foreach ($team->persons as $person) {
+					$personDefault = [
+						'firstname' => $person->firstname,
+						'lastname' => $person->lastname,
+						'gender' => $person->gender,
+						'email' => $person->email,
+						'birth' => $person->birth,
+					];
+
+					foreach ($fields as $field) {
+						$name = $field->name;
+						if (isset($person->getJsonData()->$name)) {
+							$personDefault[$name] = $person->getJsonData()->$name;
+						} elseif ($field instanceof Fields\SportidentField) {
+							$personDefault[$name] = [
+								SportidentControl::NAME_NEEDED => true,
+							];
+						}
+					}
+
+					$default['persons'][] = $personDefault;
+				}
+				$form->setValues($default);
+			}
 		}
 	}
 
@@ -237,50 +283,6 @@ final class TeamPresenter extends BasePresenter {
 			$this,
 			$name,
 		);
-		if ($editing && !$form->isSubmitted()) {
-			$default = [];
-			$default['name'] = $team->name;
-			$default['category'] = $team->category;
-			$default['message'] = $team->message;
-			$default['persons'] = [];
-
-			$fields = $this->entries->teamFields;
-			foreach ($fields as $field) {
-				$name = $field->name;
-				if (isset($team->getJsonData()->$name)) {
-					$default[$name] = $team->getJsonData()->$name;
-				} elseif ($field instanceof Fields\SportidentField) {
-					$default[$name] = [
-						SportidentControl::NAME_NEEDED => true,
-					];
-				}
-			}
-
-			$fields = $this->entries->personFields;
-			foreach ($team->persons as $person) {
-				$personDefault = [
-					'firstname' => $person->firstname,
-					'lastname' => $person->lastname,
-					'gender' => $person->gender,
-					'email' => $person->email,
-					'birth' => $person->birth,
-				];
-
-				foreach ($fields as $field) {
-					$name = $field->name;
-					if (isset($person->getJsonData()->$name)) {
-						$personDefault[$name] = $person->getJsonData()->$name;
-					} elseif ($field instanceof Fields\SportidentField) {
-						$personDefault[$name] = [
-							SportidentControl::NAME_NEEDED => true,
-						];
-					}
-				}
-
-				$default['persons'][] = $personDefault;
-			}
-			$form->setValues($default);
-		}
 		/** @var \Nette\Forms\Controls\SubmitButton */
 		$save = $form['save'];
 		if ($this->getParameter('id')) {
