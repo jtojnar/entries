@@ -34,6 +34,7 @@ final class TeamFormFactory {
 		array $countries,
 		array $reservationStats = [],
 		bool $canModifyLocked = false,
+		bool $isEditing = false,
 	): TeamForm {
 		$form = new TeamForm(
 			countries: $countries,
@@ -98,7 +99,7 @@ final class TeamFormFactory {
 		$form->addTextArea('message', 'messages.team.message.label');
 
 		$form->setCurrentGroup();
-		$form->addSubmit('save', 'messages.team.action.register');
+		$form->addSubmit('save', $isEditing ? 'messages.team.action.edit' : 'messages.team.action.register');
 		$form->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
 			$category = $button->form->getUnsafeValues(null)['category'];
 			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;

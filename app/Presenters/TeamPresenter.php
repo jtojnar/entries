@@ -267,10 +267,10 @@ final class TeamPresenter extends BasePresenter {
 
 	protected function createComponentTeamForm(string $name): Form {
 		$idParam = $this->getParameter('id');
-		$editing = $idParam !== null;
+		$isEditing = $idParam !== null;
 		$reservationStats = $this->itemReservations->getStats();
 
-		if ($editing) {
+		if ($isEditing) {
 			\assert(\is_string($idParam)); // For PHPStan.
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
@@ -293,12 +293,11 @@ final class TeamPresenter extends BasePresenter {
 			countries: $this->countries->fetchIdNamePairs(),
 			reservationStats: $reservationStats,
 			canModifyLocked: $this->getUser()->isInRole('admin'),
+			isEditing: $isEditing,
 		);
+
 		/** @var \Nette\Forms\Controls\SubmitButton */
 		$save = $form['save'];
-		if ($this->getParameter('id')) {
-			$save->caption = 'messages.team.action.edit';
-		}
 		$save->onClick[] = $this->processTeamForm(...);
 
 		return $form;
