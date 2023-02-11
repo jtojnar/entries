@@ -265,7 +265,7 @@ final class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	protected function createComponentTeamForm(string $name): Form {
+	protected function createComponentTeamForm(): Form {
 		$idParam = $this->getParameter('id');
 		$isEditing = $idParam !== null;
 		$reservationStats = $this->itemReservations->getStats();
