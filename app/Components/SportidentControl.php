@@ -66,7 +66,7 @@ final class SportidentControl extends BaseControl {
 
 				$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId . '-warning', false);
 
-				$this->cardIdControl->getControlPrototype()->{'data-form-warning-rules'} = Helpers::exportRules($rules);
+				$this->cardIdControl->getControlPrototype()->setAttribute('data-form-warning-rules', Helpers::exportRules($rules));
 			}
 		});
 

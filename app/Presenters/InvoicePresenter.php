@@ -79,11 +79,11 @@ final class InvoicePresenter extends BasePresenter {
 		[$scope, $type, $key, $value] = array_merge(explode(':', $item), ['', '', '', '']);
 
 		if ($scope === 'person' && $type === '~entry') {
-			return (string) $this->translator->translate('messages.billing.invoice.fees.person');
+			return $this->translator->translate('messages.billing.invoice.fees.person');
 		}
 
-		$fields = $scope == 'team' ? 'teamFields' : 'personFields';
-		$field = $this->entries->$fields[$key] ?? null;
+		$fields = $scope == 'team' ? $this->entries->teamFields : $this->entries->personFields;
+		$field = $fields[$key] ?? null;
 
 		if ($field !== null && $field->label !== null) {
 			$label = $this->translator->translate($field->label);
@@ -92,14 +92,14 @@ final class InvoicePresenter extends BasePresenter {
 		}
 
 		if ($field instanceof Fields\SportidentField) {
-			return (string) $this->translator->translate('messages.billing.invoice.fees.si');
+			return $this->translator->translate('messages.billing.invoice.fees.si');
 		}
 
-		if ($field instanceof Fields\EnumField && !empty($value) && ($option = $field->options[$value] ?? null)?->label !== null) {
+		if ($field instanceof Fields\EnumField && $value !== '' && ($option = $field->options[$value] ?? null)?->label !== null) {
 			return $label . ' ' . $this->translator->translate($option->label);
 		}
 
-		if ($field instanceof Fields\CheckboxlistField && !empty($value) && ($option = $field->items[$value] ?? null)?->label !== null) {
+		if ($field instanceof Fields\CheckboxlistField && $value !== '' && ($option = $field->items[$value] ?? null)?->label !== null) {
 			return $label . ' ' . $this->translator->translate($option->label);
 		}
 		if ($field instanceof Fields\CheckboxField) {

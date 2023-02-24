@@ -110,7 +110,7 @@ final class TeamForm extends UI\Form {
 				if (!$this->canModifyLocked) {
 					$input->setDisabled($disabledFields);
 				} else {
-					$input->getItemLabelPrototype()->{'data-is-visually-disabled?'} = $disabledFields;
+					$input->getItemLabelPrototype()->setAttribute('data-is-visually-disabled?', $disabledFields);
 				}
 			} else {
 				$limitName = $field instanceof Fields\LimitableField ? $field->getLimitName() : null;
@@ -128,7 +128,7 @@ final class TeamForm extends UI\Form {
 			}
 
 			if (isset($field->applicableCategories)) {
-				$input->getControlPrototype()->{'data-applicable-categories'} = Json::encode($field->applicableCategories);
+				$input->getControlPrototype()->setAttribute('data-applicable-categories', Json::encode($field->applicableCategories));
 			}
 
 			/** @var ?class-string<InputModifier> */
@@ -181,7 +181,7 @@ final class TeamForm extends UI\Form {
 			return array_reduce(
 				$field->options,
 				static function(?string $carry, Fields\Item $item): ?string {
-					if ($item->default) {
+					if ($item->default === true) {
 						return $item->name;
 					}
 
@@ -192,7 +192,7 @@ final class TeamForm extends UI\Form {
 			$default = [];
 
 			foreach ($field->items as $item) {
-				if ($item->default) {
+				if ($item->default === true) {
 					$default[] = $item->name;
 				}
 			}

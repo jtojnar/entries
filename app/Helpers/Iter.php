@@ -71,7 +71,8 @@ final class Iter {
 	 */
 	public static function last(iterable $iterable): mixed {
 		$value = null;
-		foreach ($iterable as $value) {
+		foreach ($iterable as $item) {
+			$value = $item;
 		}
 
 		return $value;

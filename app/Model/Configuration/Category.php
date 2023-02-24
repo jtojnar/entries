@@ -86,7 +86,7 @@ final class Category {
 
 	private static function parseConstraints(array $constraints, DateTimeInterface $eventDate): array {
 		return array_map(function(string $constraint) use ($eventDate): Constraints\Constraint {
-			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match)) {
+			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match) === 1) {
 				['quant' => $quant, 'key' => $key, 'op' => $op, 'val' => $val] = $match;
 				$quant = self::QUANT_LOOKUP[$quant];
 
@@ -116,10 +116,8 @@ final class Category {
 						$op,
 						$comparedValue,
 					);
-				} else {
-					throw new \PHPStan\ShouldNotHappenException();
 				}
-			} elseif (preg_match(self::AGGREGATE_CONSTRAINT_REGEX, $constraint, $match)) {
+			} elseif (preg_match(self::AGGREGATE_CONSTRAINT_REGEX, $constraint, $match) === 1) {
 				['aggr' => $aggr, 'key' => $key, 'op' => $op, 'val' => $val] = $match;
 				$aggr = self::AGGR_LOOKUP[$aggr];
 				$op = self::OP_LOOKUP[$op];

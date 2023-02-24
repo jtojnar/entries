@@ -120,7 +120,7 @@ final class TeamPresenter extends BasePresenter {
 
 	public function renderRegister(): void {
 		$form = $this->getComponent('teamForm');
-		if (!$form->isSubmitted()) {
+		if ($form->isSubmitted() === false) {
 			// Create sufficient number of person subforms for the most common team size (when it is greater than minimum team size).
 			$remainingMembers = $this->entries->initialMembers - $this->entries->minMembers;
 			/** @var ReplicatorContainer */
@@ -156,7 +156,7 @@ final class TeamPresenter extends BasePresenter {
 			}
 
 			$form = $this->getComponent('teamForm');
-			if (!$form->isSubmitted()) {
+			if ($form->isSubmitted() === false) {
 				$default = [];
 				$default['name'] = $team->name;
 				$default['category'] = $team->category;
@@ -250,7 +250,7 @@ final class TeamPresenter extends BasePresenter {
 		$teamFields = $this->entries->teamFields;
 		$personFields = $this->entries->personFields;
 
-		if (\count($teams)) {
+		if (\count($teams) > 0) {
 			if ($type === 'meos') {
 				$exporter = new Exporters\MeosExporter($teams, $this->categoryFormatter);
 				$this->response->setContentType($exporter->getMimeType(), 'UTF-8');
@@ -758,11 +758,11 @@ final class TeamPresenter extends BasePresenter {
 	private function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 
-		if ($this->request->getQuery('category')) {
+		if ($this->request->getQuery('category') !== null) {
 			$parameters['category'] = $this->request->getQuery('category');
 		}
 
-		if ($this->request->getQuery('status')) {
+		if ($this->request->getQuery('status') !== null) {
 			$parameters['status'] = $this->request->getQuery('status');
 		}
 
