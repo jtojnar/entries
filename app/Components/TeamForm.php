@@ -29,10 +29,11 @@ final class TeamForm extends UI\Form {
 	) {
 		parent::__construct();
 
+		$this->onRender[] = $this->updatePersonButtonsState(...);
 		$this->onValidate[] = $this->checkCategoryConstraints(...);
 	}
 
-	public function onRender(): void {
+	private function updatePersonButtonsState(): void {
 		/** @var \Kdyby\Replicator\Container */
 		$persons = $this['persons'];
 		$count = iterator_count($persons->getContainers());
