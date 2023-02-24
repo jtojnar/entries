@@ -298,6 +298,9 @@ final class TeamPresenter extends BasePresenter {
 		);
 
 		/** @var \Nette\Forms\Controls\SubmitButton */
+		$save = $form['save_default_submit'];
+		$save->onClick[] = $this->processTeamForm(...);
+		/** @var \Nette\Forms\Controls\SubmitButton */
 		$save = $form['save'];
 		$save->onClick[] = $this->processTeamForm(...);
 

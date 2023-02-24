@@ -43,6 +43,7 @@ final class TeamFormFactory {
 		// We need the class to know what to hide (e.g. for applicableCategories).
 		$renderer->wrappers['pair']['container'] = preg_replace('(class=")', '$0form-group ', $renderer->wrappers['pair']['container']);
 		$form->setRenderer($renderer);
+		$renderer->primaryButton = $form->getComponent('save');
 
 		return $form;
 	}

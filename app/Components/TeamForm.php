@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Components;
 
-use App\Helpers\Iter;
 use App\Locale\Translated;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
@@ -41,6 +40,13 @@ final class TeamForm extends UI\Form {
 		$defaultMaxMembers = $this->entries->maxMembers;
 		// Handled in TeamPresenter::renderCreate.
 		$initialMembers = $this->entries->minMembers;
+
+		// Group for top submit button, since DefaultFormRenderer renders group before all ungrouped Controls.
+		$group = $this->addGroup();
+		$group->setOption('container', 'div aria-hidden="true" class="visually-hidden"');
+		// Browsers consider the first submit button a default submit button for use when submitting the form using Enter key.
+		// Let’s add the save button to the top, to prevent the remove button of the first container from being picked.
+		$this->addSubmit('save_default_submit', 'messages.team.action.register')->getControlPrototype()->setHtmlAttribute('aria-hidden', 'true')->setHtmlAttribute('tabindex', '-1');
 
 		$this->addProtection();
 		$this->addGroup('messages.team.info.label');
@@ -88,25 +94,11 @@ final class TeamForm extends UI\Form {
 				$button->form->addError($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category]), false);
 			}
 		};
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
-			$category = $button->form->getUnsafeValues(null)['category'];
-			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
-			/** @var ReplicatorContainer */ // For PHPStan.
-			$replicator = $button->form['persons'];
-			if (iterator_count($replicator->getContainers()) > $minMembers) {
-				$lastPerson = Iter::last($replicator->getContainers());
-				if ($lastPerson !== null) {
-					$replicator->remove($lastPerson, true);
-				}
-			} else {
-				$button->form->addError($this->translator->translate('messages.team.error.too_few_members', $minMembers, ['category' => $category]), false);
-			}
-		};
 
 		$fields = $this->entries->personFields;
 		$i = 0;
 		$persons = new ReplicatorContainer(
-			factory: function(Container $container) use (&$i, $fields): void {
+			factory: function(Container $container) use (&$i, $fields, $defaultMinMembers): void {
 				++$i;
 				$group = $this->addGroup();
 				$group->setOption('label', new Message('messages.team.person.label', $i));
@@ -129,6 +121,18 @@ final class TeamForm extends UI\Form {
 					$email->setRequired();
 					$group->setOption('description', 'messages.team.person.isContact');
 				}
+
+				$container->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($container, $defaultMinMembers): void {
+					$category = $button->form->getUnsafeValues(null)['category'];
+					$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
+					/** @var ReplicatorContainer */ // For PHPStan.
+					$replicator = $button->form['persons'];
+					if (iterator_count($replicator->getContainers()) > $minMembers) {
+						$replicator->remove($container, true);
+					} else {
+						$button->form->addError($this->translator->translate('messages.team.error.too_few_members', $minMembers, ['category' => $category]), false);
+					}
+				};
 			},
 			createDefault: $initialMembers,
 			forceDefault: true,
@@ -153,9 +157,11 @@ final class TeamForm extends UI\Form {
 		}
 
 		if ($count <= $minMembers) {
-			/** @var Controls\SubmitButton */
-			$remove = $this['remove'];
-			$remove->setDisabled();
+			foreach ($persons->getContainers() as $person) {
+				/** @var Controls\SubmitButton */
+				$remove = $person['remove'];
+				$remove->setDisabled();
+			}
 		}
 	}
 
