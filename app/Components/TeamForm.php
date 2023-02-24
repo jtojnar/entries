@@ -4,30 +4,131 @@ declare(strict_types=1);
 
 namespace App\Components;
 
+use App\Helpers\Iter;
 use App\Locale\Translated;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
 use App\Model\Configuration\Fields\Field;
 use App\Model\InputModifier;
+use Contributte\Translation\Wrappers\Message;
 use Contributte\Translation\Wrappers\NotTranslate;
+use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette\Application\UI;
 use Nette\Forms\Container;
 use Nette\Forms\Controls;
+use Nette\Forms\Controls\SubmitButton;
+use Nette\Localization\Translator;
 use Nette\Utils\Json;
+use Nextras\FormComponents\Controls\DateControl;
 
 /**
  * Form for creating and editing teams.
  */
 final class TeamForm extends UI\Form {
 	public function __construct(
+		private readonly Translator $translator,
 		/** @var string[] */
 		private readonly array $countries,
 		/** @var array<string, int> */
 		private readonly array $reservationStats,
 		private readonly Entries $entries,
 		private readonly bool $canModifyLocked,
+		bool $isEditing,
 	) {
 		parent::__construct();
+
+		$defaultMinMembers = $this->entries->minMembers;
+		$defaultMaxMembers = $this->entries->maxMembers;
+		// Handled in TeamPresenter::renderCreate.
+		$initialMembers = $this->entries->minMembers;
+
+		$this->addProtection();
+		$this->addGroup('messages.team.info.label');
+		$this->addText('name', 'messages.team.name.label')->setRequired();
+
+		$category = new CategoryEntry('messages.team.category.label', $this->entries);
+		$category->setRequired();
+		$this['category'] = $category;
+
+		$rule = $category->addCondition(true); // not to block the export of rules to JS
+		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
+			$category = $entry->getValue();
+			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
+			/** @var ReplicatorContainer */
+			$replicator = $entry->form['persons'];
+
+			return iterator_count($replicator->getContainers()) <= $maxMembers;
+		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
+
+		$rule = $category->addCondition(true); // not to block the export of rules to JS
+		$rule->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
+			$category = $entry->getValue();
+			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
+			/** @var ReplicatorContainer */
+			$replicator = $entry->form['persons'];
+
+			return iterator_count($replicator->getContainers()) >= $minMembers;
+		}, 'messages.team.error.too_few_members_simple');
+
+		$fields = $this->entries->teamFields;
+		$this->addCustomFields($fields, $this);
+
+		$this->addTextArea('message', 'messages.team.message.label');
+
+		$this->setCurrentGroup();
+		$this->addSubmit('save', $isEditing ? 'messages.team.action.edit' : 'messages.team.action.register');
+		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
+			$category = $button->form->getUnsafeValues(null)['category'];
+			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
+			/** @var ReplicatorContainer */
+			$replicator = $button->form['persons'];
+			if (iterator_count($replicator->getContainers()) < $maxMembers) {
+				$replicator->createOne();
+			} else {
+				$button->form->addError($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category]), false);
+			}
+		};
+		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
+			$category = $button->form->getUnsafeValues(null)['category'];
+			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
+			/** @var ReplicatorContainer */ // For PHPStan.
+			$replicator = $button->form['persons'];
+			if (iterator_count($replicator->getContainers()) > $minMembers) {
+				$lastPerson = Iter::last($replicator->getContainers());
+				if ($lastPerson !== null) {
+					$replicator->remove($lastPerson, true);
+				}
+			} else {
+				$button->form->addError($this->translator->translate('messages.team.error.too_few_members', $minMembers, ['category' => $category]), false);
+			}
+		};
+
+		$fields = $this->entries->personFields;
+		$i = 0;
+		$this->addDynamic('persons', function(Container $container) use (&$i, $fields): void {
+			++$i;
+			$group = $this->addGroup();
+			$group->setOption('label', new Message('messages.team.person.label', $i));
+			$container->setCurrentGroup($group);
+			$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
+
+			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
+			$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
+
+			$birth = new DateControl('messages.team.person.birth.label');
+			$birth->setRequired();
+			$birth->addRule($this::MAX, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
+			$container['birth'] = $birth;
+
+			$this->addCustomFields($fields, $container);
+
+			$email = $container->addEmail('email', 'messages.team.person.email.label');
+
+			if ($i === 1) {
+				$email->setRequired();
+				$group->setOption('description', 'messages.team.person.isContact');
+			}
+		}, $initialMembers, true);
 
 		$this->onRender[] = $this->updatePersonButtonsState(...);
 		$this->onValidate[] = $this->checkCategoryConstraints(...);
@@ -53,7 +154,7 @@ final class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addCustomFields(array $fields, Container $container): void {
+	private function addCustomFields(array $fields, Container $container): void {
 		foreach ($fields as $field) {
 			$name = $field->name;
 			$label = $field->label;
@@ -142,7 +243,7 @@ final class TeamForm extends UI\Form {
 		}
 	}
 
-	public function addSportident(string $name, Container $container): SportidentControl {
+	private function addSportident(string $name, Container $container): SportidentControl {
 		$recommendedCardCapacity = $this->entries->recommendedCardCapacity;
 
 		$si = new SportidentControl('messages.team.person.si.label', $recommendedCardCapacity);
@@ -151,7 +252,7 @@ final class TeamForm extends UI\Form {
 		return $si;
 	}
 
-	public function addEnum(string $name, Container $container, Fields\EnumField $field): BootstrapRadioList {
+	private function addEnum(string $name, Container $container, Fields\EnumField $field): BootstrapRadioList {
 		$options = array_combine(
 			array_map(
 				fn(Fields\Item $option): string => $option->name,
