@@ -21,7 +21,7 @@ class AggregateAgeConstraint implements Constraint {
 	}
 
 	public function admits(iterable $members): bool {
-		$ages = Iter::map($this->getAgeFromPerson(...), $members);
+		$ages = Iter::filterNull(Iter::map($this->getAgeFromPerson(...), $members));
 
 		return ($this->operator)(($this->function)($ages), $this->targetAge);
 	}

@@ -21,9 +21,9 @@ class QuantifiedAgeConstraint implements Constraint {
 	}
 
 	public function admits(iterable $members): bool {
-		$ages = Iter::map($this->getAgeFromPerson(...), $members);
+		$ages = Iter::filterNull(Iter::map($this->getAgeFromPerson(...), $members));
 
-		return ($this->quantifier)(fn($age) => ($this->operator)($age, $this->targetAge), $ages);
+		return ($this->quantifier)(fn(int $age): bool => ($this->operator)($age, $this->targetAge), $ages);
 	}
 
 	public function getErrorMessage(): string {

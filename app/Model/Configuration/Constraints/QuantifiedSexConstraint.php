@@ -20,13 +20,12 @@ class QuantifiedSexConstraint implements Constraint {
 
 	public function admits(iterable $members): bool {
 		$sexes = Iter::map(
-			static fn(ArrayAccess $member): Sex => Sex::from(
-				\is_string($member['gender']) ? $member['gender'] : throw new \PHPStan\ShouldNotHappenException()
-			),
+			static fn(ArrayAccess $member): ?Sex => \is_string($member['gender']) ? Sex::from($member['gender']) : null,
 			$members,
 		);
+		$sexes = Iter::filterNull($sexes);
 
-		return ($this->quantifier)(fn($sex) => ($this->operator)($sex, $this->targetSex), $sexes);
+		return ($this->quantifier)(fn(Sex $sex): bool => ($this->operator)($sex, $this->targetSex), $sexes);
 	}
 
 	public function getErrorMessage(): string {

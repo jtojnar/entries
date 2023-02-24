@@ -63,6 +63,22 @@ final class Iter {
 	}
 
 	/**
+	 * @template K
+	 * @template V
+	 *
+	 * @param iterable<K, ?V> $iterable
+	 *
+	 * @return iterable<K, V>
+	 */
+	public static function filterNull(iterable $iterable): iterable {
+		foreach ($iterable as $key => $value) {
+			if ($value !== null) {
+				yield $key => $value;
+			}
+		}
+	}
+
+	/**
 	 * @template T
 	 *
 	 * @param iterable<T> $iterable

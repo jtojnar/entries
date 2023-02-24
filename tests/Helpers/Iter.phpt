@@ -58,6 +58,22 @@ function testCartesianProduct(): void {
 }
 testCartesianProduct();
 
+function testFilterNull(): void {
+	Assert::same(
+		[1 => 1, 4 => 2, 6 => 3],
+		iterator_to_array(Iter::filterNull(new \ArrayIterator([null, 1, null, null, 2, null, 3, null]))),
+	);
+	Assert::same(
+		['b' => 1, 'e' => 2, 'g' => 3],
+		iterator_to_array(Iter::filterNull(['a' => null, 'b' => 1, 'c' => null, 'd' => null, 'e' => 2, 'f' => null, 'g' => 3, 'h' => null])),
+	);
+	Assert::same(
+		[],
+		iterator_to_array(Iter::filterNull([])),
+	);
+}
+testFilterNull();
+
 function testMap(): void {
 	Assert::same(
 		['A', 'B', 'C'],

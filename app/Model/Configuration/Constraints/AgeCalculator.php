@@ -10,10 +10,12 @@ namespace App\Model\Configuration\Constraints;
 use ArrayAccess;
 
 trait AgeCalculator {
-	private function getAgeFromPerson(ArrayAccess $person): int {
-		\assert($person['birth'] instanceof \DateTimeInterface); // For PHPStan.
+	private function getAgeFromPerson(ArrayAccess $person): ?int {
+		if (!$person['birth'] instanceof \DateTimeInterface) {
+			return null;
+		}
 
-		$age = $diff = $person['birth']->diff($this->eventDate, true)->y;
+		$age = $person['birth']->diff($this->eventDate, true)->y;
 
 		return $age;
 	}
