@@ -17,3 +17,5 @@ parameters:
 		- '(Readonly property App\\Model\\Configuration\\CategoryData::\$allCategories is already assigned.)'
 		# https://github.com/phpstan/phpstan/issues/8954
 		- '(Method App\\Model\\Configuration\\Helpers::ensureSubclassOf\(\) should return class-string<V>\|null but returns class-string<U>.)'
+		# https://github.com/phpstan/phpstan-nette/issues/82
+		- '(Property Nette\\Forms\\Container::\$onValidate \(array<callable\(App\\Components\\TeamForm, mixed\): void>\) does not accept non-empty-array<\(callable\(App\\Components\\TeamForm, mixed\): void\)|\(Closure\(App\\Components\\TeamForm, stdClass\): void\)>.)'

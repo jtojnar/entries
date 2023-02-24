@@ -62,17 +62,6 @@ final class TeamFormFactory {
 		$category->setRequired();
 		$form['category'] = $category;
 
-		if ($category->value !== null) {
-			$constraints = $this->entries->categories->allCategories[$category->value]->constraints;
-			foreach ($constraints as $constraint) {
-				$rule = $category->addCondition(true); // not to block the export of rules to JS
-				$rule->addRule(
-					static fn(CategoryEntry $entry): bool => $constraint->admits($entry->getForm()?->getUnsafeValues(null)['persons']),
-					$constraint->getErrorMessage(),
-				);
-			}
-		}
-
 		$rule = $category->addCondition(true); // not to block the export of rules to JS
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
 			$category = $entry->getValue();

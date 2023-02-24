@@ -28,6 +28,8 @@ final class TeamForm extends UI\Form {
 		private readonly bool $canModifyLocked,
 	) {
 		parent::__construct();
+
+		$this->onValidate[] = $this->checkCategoryConstraints(...);
 	}
 
 	public function onRender(): void {
@@ -200,6 +202,27 @@ final class TeamForm extends UI\Form {
 			return $default;
 		} else {
 			return $field->default ?? null;
+		}
+	}
+
+	private function checkCategoryConstraints(self $form, \stdClass $data): void {
+		// If submitter is `true`, no specific submit button was pressed but let’s check the form.
+		// Since `onValidate` is only called on form submission, it cannot be `false` but we will use `is_bool` to satisfy PHPStan.
+		$validationScope = \is_bool($form->isSubmitted()) ? null : $form->isSubmitted()->getValidationScope();
+		if ($validationScope === []) {
+			// onValidate event is called even when submit button’s validation scope is empty.
+			// But we do not want to validate when adding/removing team members, which sets the scope to empty array.
+			return;
+		}
+
+		$categoryField = $form->getComponent('category');
+		$constraints = $this->entries->categories->allCategories[$data->category]->constraints;
+		/** @var iterable<iterable<string, mixed>> */
+		$persons = $data->persons;
+		foreach ($constraints as $constraint) {
+			if (!$constraint->admits($persons)) {
+				$categoryField->addError($constraint->getErrorMessage());
+			}
 		}
 	}
 }
