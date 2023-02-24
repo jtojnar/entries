@@ -7,6 +7,7 @@ namespace App\Presenters;
 use App;
 use App\Components\SportidentControl;
 use App\Exporters;
+use App\Helpers\EmailFactory;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
 use App\Model\InvoiceModifier;
@@ -25,9 +26,6 @@ use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
-use Pelago\Emogrifier\CssInliner;
-use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
-use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 use Tracy\Debugger;
 
 /**
@@ -42,6 +40,9 @@ final class TeamPresenter extends BasePresenter {
 
 	#[Inject]
 	public App\Model\Orm\Person\PersonRepository $persons;
+
+	#[Inject]
+	public EmailFactory $emailFactory;
 
 	#[Inject]
 	public Entries $entries;
@@ -665,15 +666,7 @@ final class TeamPresenter extends BasePresenter {
 					$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
 
 					// Inline styles into the e-mail
-					$mailHtml = (string) $mtemplate;
-					$domDocument = CssInliner::fromHtml($mailHtml)
-						->inlineCss(file_get_contents($appDir . '/Templates/Mail/style.css') ?: '')
-						->getDomDocument();
-					HtmlPruner::fromDomDocument($domDocument)
-						->removeElementsWithDisplayNone();
-					$mailHtml = CssToAttributeConverter::fromDomDocument($domDocument)
-						->convertCssToVisualAttributes()
-						->render();
+					$mailHtml = $this->emailFactory->create((string) $mtemplate);
 
 					$mail = new Message();
 					$mail->setFrom($mtemplate->organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);

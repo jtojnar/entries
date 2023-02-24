@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Helpers\EmailFactory;
 use App\Model\Configuration\Entries;
 use App\Model\Orm\Team\Team;
 use Latte;
@@ -15,9 +16,6 @@ use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
-use Pelago\Emogrifier\CssInliner;
-use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
-use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 use Tracy\Debugger;
 
 /**
@@ -47,6 +45,9 @@ final class CommunicationPresenter extends BasePresenter {
 
 	#[Inject]
 	public App\Model\Orm\Token\TokenRepository $tokens;
+
+	#[Inject]
+	public EmailFactory $emailFactory;
 
 	#[Inject]
 	public Entries $entries;
@@ -314,17 +315,8 @@ final class CommunicationPresenter extends BasePresenter {
 			),
 		);
 
-		$appDir = $this->context->parameters['appDir'];
-
 		// Inline styles into the e-mail
-		$domDocument = CssInliner::fromHtml($messageHtml)
-			->inlineCss(file_get_contents($appDir . '/Templates/Mail/style.css') ?: '')
-			->getDomDocument();
-		HtmlPruner::fromDomDocument($domDocument)
-			->removeElementsWithDisplayNone();
-		$messageHtml = CssToAttributeConverter::fromDomDocument($domDocument)
-			->convertCssToVisualAttributes()
-			->render();
+		$messageHtml = $this->emailFactory->create($messageHtml);
 
 		return $messageHtml;
 	}
@@ -408,15 +400,7 @@ final class CommunicationPresenter extends BasePresenter {
 
 			foreach ($messages as $message) {
 				// Inline styles into the e-mail
-				$mailHtml = $message->body;
-				$domDocument = CssInliner::fromHtml($mailHtml)
-					->inlineCss(file_get_contents($appDir . '/Templates/Mail/style.css') ?: '')
-					->getDomDocument();
-				HtmlPruner::fromDomDocument($domDocument)
-					->removeElementsWithDisplayNone();
-				$mailHtml = CssToAttributeConverter::fromDomDocument($domDocument)
-					->convertCssToVisualAttributes()
-					->render();
+				$mailHtml = $this->emailFactory->create($message->body);
 
 				$mail = new Nette\Mail\Message();
 				$firstMemberAddress = iterator_to_array($message->team->persons)[0]->email;

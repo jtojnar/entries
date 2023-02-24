@@ -54,6 +54,7 @@ orm:
 
 
 services:
+	- App\Helpers\EmailFactory(%appDir%)
 	- App\Helpers\Parameters(%parameters%)
 	- App\Model\Configuration\Entries::from(%entries%)
 	- App\Model\TeamManager(%adminPassword%)
