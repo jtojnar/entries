@@ -12,7 +12,6 @@ parameters:
 	treatPhpDocTypesAsCertain: false
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
-		- '(Call to an undefined method App\\Components\\TeamForm::addDynamic\(\))'
 		# https://github.com/phpstan/phpstan/issues/6402
 		- '(Readonly property App\\Model\\Configuration\\CategoryData::\$allCategories is already assigned.)'
 		# https://github.com/phpstan/phpstan/issues/8954

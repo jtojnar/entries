@@ -105,30 +105,35 @@ final class TeamForm extends UI\Form {
 
 		$fields = $this->entries->personFields;
 		$i = 0;
-		$this->addDynamic('persons', function(Container $container) use (&$i, $fields): void {
-			++$i;
-			$group = $this->addGroup();
-			$group->setOption('label', new Message('messages.team.person.label', $i));
-			$container->setCurrentGroup($group);
-			$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
+		$persons = new ReplicatorContainer(
+			factory: function(Container $container) use (&$i, $fields): void {
+				++$i;
+				$group = $this->addGroup();
+				$group->setOption('label', new Message('messages.team.person.label', $i));
+				$container->setCurrentGroup($group);
+				$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
 
-			$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
-			$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
+				$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
+				$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
 
-			$birth = new DateControl('messages.team.person.birth.label');
-			$birth->setRequired();
-			$birth->addRule($this::MAX, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
-			$container['birth'] = $birth;
+				$birth = new DateControl('messages.team.person.birth.label');
+				$birth->setRequired();
+				$birth->addRule($this::MAX, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
+				$container['birth'] = $birth;
 
-			$this->addCustomFields($fields, $container);
+				$this->addCustomFields($fields, $container);
 
-			$email = $container->addEmail('email', 'messages.team.person.email.label');
+				$email = $container->addEmail('email', 'messages.team.person.email.label');
 
-			if ($i === 1) {
-				$email->setRequired();
-				$group->setOption('description', 'messages.team.person.isContact');
-			}
-		}, $initialMembers, true);
+				if ($i === 1) {
+					$email->setRequired();
+					$group->setOption('description', 'messages.team.person.isContact');
+				}
+			},
+			createDefault: $initialMembers,
+			forceDefault: true,
+		);
+		$this['persons'] = $persons;
 
 		$this->onRender[] = $this->updatePersonButtonsState(...);
 		$this->onValidate[] = $this->checkCategoryConstraints(...);
