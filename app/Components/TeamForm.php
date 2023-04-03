@@ -201,20 +201,22 @@ final class TeamForm extends UI\Form {
 			if ($field instanceof Fields\CheckboxlistField || $field instanceof Fields\EnumField) {
 				\assert($input instanceof BootstrapCheckboxList || $input instanceof BootstrapRadioList);
 				$options = $field instanceof Fields\EnumField ? $field->options : $field->items;
-				$disabledFields = array_filter(
-					$options,
-					function(Fields\Item $item) use ($isDisabled): bool {
-						$itemDisabled = $item->disabled ?? $isDisabled;
-						$limitName = $item->limitName ?? null;
+				$disabledFields = array_keys(
+					array_filter(
+						$options,
+						function(Fields\Item $item) use ($isDisabled): bool {
+							$itemDisabled = $item->disabled ?? $isDisabled;
+							$limitName = $item->limitName ?? null;
 
-						if ($limitName !== null) {
-							$limit = $this->entries->limits[$limitName];
-							$numberReserved = $this->reservationStats[$limitName] ?? 0;
-							$itemDisabled = $isDisabled || $numberReserved >= $limit;
-						}
+							if ($limitName !== null) {
+								$limit = $this->entries->limits[$limitName];
+								$numberReserved = $this->reservationStats[$limitName] ?? 0;
+								$itemDisabled = $isDisabled || $numberReserved >= $limit;
+							}
 
-						return $itemDisabled;
-					},
+							return $itemDisabled;
+						},
+					)
 				);
 				if (!$this->canModifyLocked) {
 					$input->setDisabled($disabledFields);
