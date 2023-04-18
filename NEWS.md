@@ -19,6 +19,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 
 - PHP 8.1 is now the minimum required version.
 - Directories were renamed to title case, including `app/Config/`.
+- Switched from Yarn to npm for installing browser dependencies.
 
 ## 0.6.0 – 2022-10-31
 

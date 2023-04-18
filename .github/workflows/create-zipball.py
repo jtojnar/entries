@@ -97,10 +97,10 @@ def main():
 			filename = f'entries-{short_commit}.zip'
 
 		logger.info('Installing frontend dependencies…')
-		subprocess.check_call(['yarn', 'install'])
+		subprocess.check_call(['npm', 'install'])
 
 		logger.info('Building asset bundles…')
-		subprocess.check_call(['yarn', 'run', 'build'])
+		subprocess.check_call(['npm', 'run', 'build'])
 
 		logger.info('Installing and optimizing backend dependencies…')
 		subprocess.check_call(['composer', 'install', '--no-dev', '--optimize-autoloader'])

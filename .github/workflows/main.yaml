@@ -42,7 +42,7 @@ jobs:
         nix-shell --run 'composer test'
 
     - name: Build a zipball
-      run: nix-shell --run 'yarn dist "entries-${{ steps.vars.outputs.sha_short }}.zip"'
+      run: nix-shell --run 'npm run dist "entries-${{ steps.vars.outputs.sha_short }}.zip"'
 
     - name: Upload the zipball to GitHub
       uses: actions/upload-artifact@v3

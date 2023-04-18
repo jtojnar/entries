@@ -51,9 +51,8 @@
                   pkgs.python3 # for create-zipball.py
                   nette-code-checker
                   update-php-extradeps
-                ] ++ (with pkgs.nodePackages; [
-                  yarn
-                ]) ++ (with php.packages; [
+                  pkgs.nodejs
+                ] ++ (with php.packages; [
                   composer
                   psalm
                 ]);

@@ -11,9 +11,9 @@ Entry registration system for [Rogaining](http://en.wikipedia.org/wiki/Rogaining
 
 ## Development
 
-We do not include dependencies in the git repository, therefore you will need to install the dependencies by running `composer install` and `yarn install` to be able to run the application.
+We do not include dependencies in the git repository, therefore you will need to install the dependencies by running `composer install` and `npm install` to be able to run the application.
 
-Then you will need to build the assets with `yarn run build` or `yarn run dev`. The latter is especially useful when modifying CSS or JavaScript files, as it will monitor them and rebuild them when changed.
+Then you will need to build the assets with `npm run build` or `npm run dev`. The latter is especially useful when modifying CSS or JavaScript files, as it will monitor them and rebuild them when changed.
 
 ## Installation
 
