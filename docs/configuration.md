@@ -96,6 +96,7 @@ allowLateRegistrationsByEmail: true
 minMembers: 1
 initialMembers: 2 # number of members when form is loaded, optional (defaults to the value of minMembers)
 maxMembers: 3
+allowPlaceholders: true # whether to allow registering a placeholder team members
 
 # this will warn users when they try to enter with an SI card
 # with lower capacity

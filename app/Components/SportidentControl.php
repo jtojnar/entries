@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Components;
 
 use Nette;
+use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Form;
 use Nette\Forms\Helpers;
 use Nette\Forms\Rules;
-use Nextras\FormComponents\Fragments\UIComponent\BaseControl;
+use Nextras\FormComponents\Fragments\UIComponent\BaseControl as NextrasBaseControl;
 
-final class SportidentControl extends BaseControl {
+final class SportidentControl extends NextrasBaseControl {
 	/** @var string */
 	public const NAME_CARD_ID = 'cardId';
 
@@ -28,7 +29,10 @@ final class SportidentControl extends BaseControl {
 	/** @var Checkbox neededControl checkbox for requesting a loan */
 	protected Checkbox $neededControl;
 
-	public function __construct(string $label, int $recommendedCardCapacity) {
+	/**
+	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+	 */
+	public function __construct(string $label, int $recommendedCardCapacity, callable $whenNotPlaceholder) {
 		$this->cardIdControl = new TextInput();
 		$this->neededControl = new Checkbox('messages.team.person.si.rent');
 
@@ -39,9 +43,10 @@ final class SportidentControl extends BaseControl {
 
 		// Asking for cardIdControl->htmlId before the control is attached
 		// to a form freezes it at `frm-cardId`
-		$this->monitor(Form::class, function(Form $form) use ($recommendedCardCapacity): void {
+		$this->monitor(Form::class, function(Form $form) use ($recommendedCardCapacity, $whenNotPlaceholder): void {
 			\assert(\is_string($this->cardIdControl->htmlId)); // For PHPStan.
-			$this->cardIdControl->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::FILLED)->addRule(Form::INTEGER);
+			$this->cardIdControl->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::INTEGER);
+			$whenNotPlaceholder($this->cardIdControl)->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::FILLED);
 			$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId, false);
 
 			// We want to warn user when they register with a SI card with

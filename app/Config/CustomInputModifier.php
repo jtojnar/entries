@@ -10,8 +10,11 @@ use Nette\Forms\Control;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
 
+/**
+ * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+ */
 final class CustomInputModifier implements InputModifier {
-	public static function modify(Control $input, IContainer $container): void {
+	public static function modify(Control $input, IContainer $container, callable $whenNotPlaceholder): void {
 		// we also have some inputs that are based on Nextras\FormComponents\Fragments\UIComponent\BaseControl
 		if ($input instanceof BaseControl && $input->getName() === 'registry_address') {
 			$pairId = 'pair-' . $input->htmlId;
@@ -21,7 +24,7 @@ final class CustomInputModifier implements InputModifier {
 			$country = $container->getComponent('country');
 			$country->addCondition(Form::NOT_EQUAL, 46)->toggle($pairId, false);
 			$input->setRequired(false);
-			$input->addConditionOn($country, Form::EQUAL, 46)->setRequired();
+			$whenNotPlaceholder($input)->addConditionOn($country, Form::EQUAL, 46)->setRequired();
 		}
 	}
 }

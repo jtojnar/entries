@@ -184,6 +184,9 @@ final class TeamPresenter extends BasePresenter {
 						'email' => $person->email,
 						'birth' => $person->birth,
 					];
+					if ($this->entries->allowPlaceholders) {
+						$personDefault['placeholder'] = $person->placeholder;
+					}
 
 					foreach ($fields as $field) {
 						$name = $field->name;
@@ -506,6 +509,7 @@ final class TeamPresenter extends BasePresenter {
 				$person->birth = $member['birth'];
 				$person->email = $member['email'];
 				$person->contact = \count($team->persons) === 0;
+				$person->placeholder = $this->entries->allowPlaceholders && $member['placeholder'];
 				$person->team = $team;
 
 				$jsonData = [];

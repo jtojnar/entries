@@ -292,3 +292,9 @@ CREATE TABLE `item_reservation` (
   FOREIGN KEY (`person_id`) REFERENCES `person` (`id`) ON DELETE RESTRICT,
   INDEX `name` (`name`)
 ) COLLATE 'utf8mb4_unicode_ci';
+
+ALTER TABLE `person`
+ADD COLUMN `placeholder` tinyint(1) DEFAULT 0 NOT NULL AFTER `contact`;
+
+ALTER TABLE `person`
+MODIFY `birth` date NULL;

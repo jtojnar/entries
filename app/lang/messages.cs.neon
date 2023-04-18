@@ -44,6 +44,7 @@ team.list.entry.status.registered: "Přihláška registrována"
 team.list.filter.status.registered: "Registrováno"
 team.list.entry.status.withdrawn: "Přihláška stažena"
 team.list.export.csv: "Exportovat (CSV)"
+team.person.is_placeholder.label: "Bude doplněno později"
 team.person.name.first.label: "Jméno:"
 team.error.too_few_members: '''
 	Týmy v kategorii {category} musí mít nejméně {count, plural,

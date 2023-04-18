@@ -44,6 +44,7 @@ team.list.entry.status.registered: "Entry registered"
 team.list.filter.status.registered: "Registered"
 team.list.entry.status.withdrawn: "Entry withdrawn"
 team.list.export.csv: "Export (CSV)"
+team.person.is_placeholder.label: "To be filled in later"
 team.person.name.first.label: "First name:"
 team.error.too_few_members: '''
 	Your team needs to have at least {count, plural,

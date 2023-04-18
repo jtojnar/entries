@@ -6,7 +6,12 @@ namespace App\Model;
 
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Control;
+use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Rules;
 
 interface InputModifier {
-	public static function modify(Control $input, IContainer $container): void;
+	/**
+	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+	 */
+	public static function modify(Control $input, IContainer $container, callable $whenNotPlaceholder): void;
 }

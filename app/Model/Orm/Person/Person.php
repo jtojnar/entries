@@ -18,12 +18,13 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $firstname
  * @property string $lastname
  * @property string $gender {enum self::GENDER_*}
- * @property \DateTimeImmutable $birth
+ * @property \DateTimeImmutable|null $birth
  * @property OneHasMany<ItemReservation> $itemReservations {1:m ItemReservation::$person}
  * @property array $jsonData {virtual}
  * @property string $details
  * @property string $email
  * @property bool $contact {default false}
+ * @property bool $placeholder {default false}
  *
  * @property-phpstan self::GENDER_* $gender
  */

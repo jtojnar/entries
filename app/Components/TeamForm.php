@@ -16,7 +16,9 @@ use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette\Application\UI;
 use Nette\Forms\Container;
 use Nette\Forms\Controls;
+use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Rules;
 use Nette\Localization\Translator;
 use Nette\Utils\Json;
 use Nextras\FormComponents\Controls\DateControl;
@@ -71,7 +73,11 @@ final class TeamForm extends UI\Form {
 		}, 'messages.team.error.too_few_members_simple');
 
 		$fields = $this->entries->teamFields;
-		$this->addCustomFields($fields, $this);
+		$this->addCustomFields(
+			$fields,
+			$this,
+			fn(BaseControl $control): BaseControl => $control,
+		);
 
 		$this->addTextArea('message', 'messages.team.message.label');
 
@@ -111,21 +117,31 @@ final class TeamForm extends UI\Form {
 				$group = $this->addGroup();
 				$group->setOption('label', new Message('messages.team.person.label', $i));
 				$container->setCurrentGroup($group);
-				$container->addText('firstname', 'messages.team.person.name.first.label')->setRequired();
 
-				$container->addText('lastname', 'messages.team.person.name.last.label')->setRequired();
-				$container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male')->setRequired();
+				$whenNotPlaceholder = fn(BaseControl $control): BaseControl => $control;
+				if ($this->entries->allowPlaceholders) {
+					$placeholder = $container->addCheckbox('placeholder', 'messages.team.person.is_placeholder.label');
+					$whenNotPlaceholder = fn(BaseControl $control): Rules => $control->addConditionOn($placeholder, self::Equal, false);
+				}
+
+				$firstname = $container->addText('firstname', 'messages.team.person.name.first.label');
+				$whenNotPlaceholder($firstname)->setRequired();
+				$lastname = $container->addText('lastname', 'messages.team.person.name.last.label');
+				$whenNotPlaceholder($lastname)->setRequired();
+				$gender = $container->addRadioList('gender', 'messages.team.person.gender.label', ['female' => 'messages.team.person.gender.female', 'male' => 'messages.team.person.gender.male'])->setDefaultValue('male');
+				$whenNotPlaceholder($gender)->setRequired();
 
 				$birth = new DateControl('messages.team.person.birth.label');
-				$birth->setRequired();
+				$whenNotPlaceholder($birth)->setRequired();
 				$birth->addRule($this::MAX, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
 				$container['birth'] = $birth;
 
-				$this->addCustomFields($fields, $container);
+				$this->addCustomFields($fields, $container, $whenNotPlaceholder);
 
 				$email = $container->addEmail('email', 'messages.team.person.email.label');
 
 				if ($i === 1) {
+					// Required even for placeholder members to prevent lockout.
 					$email->setRequired();
 					$group->setOption('description', 'messages.team.person.isContact');
 				}
@@ -159,22 +175,28 @@ final class TeamForm extends UI\Form {
 		}
 	}
 
-	private function addCustomFields(array $fields, Container $container): void {
+	/**
+	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+	 */
+	private function addCustomFields(array $fields, Container $container, callable $whenNotPlaceholder): void {
 		foreach ($fields as $field) {
 			$name = $field->name;
 			$label = $field->label;
 
 			if ($field instanceof Fields\SportidentField) {
-				$input = $this->addSportident($name, $container);
+				$input = $this->addSportident($name, $container, $whenNotPlaceholder);
 			} elseif ($field instanceof Fields\CountryField) {
-				$input = $container->addSelect($name, $label, $this->countries)->setPrompt('messages.team.person.country.default')->setRequired();
+				$input = $container->addSelect($name, $label, $this->countries)->setPrompt('messages.team.person.country.default');
+				$whenNotPlaceholder($input)->setRequired();
 				if ($field->default !== null) {
 					$input->setDefaultValue($field->default);
 				}
 			} elseif ($field instanceof Fields\PhoneField) {
-				$input = $container->addText($name, $label)->setHtmlType('tel')->setRequired();
+				$input = $container->addText($name, $label)->setHtmlType('tel');
+				$whenNotPlaceholder($input)->setRequired();
 			} elseif ($field instanceof Fields\EnumField) {
-				$input = $this->addEnum($name, $container, $field)->setRequired();
+				$input = $this->addEnum($name, $container, $field);
+				$whenNotPlaceholder($input)->setRequired();
 			} elseif ($field instanceof Fields\CheckboxField) {
 				$input = new BootstrapCheckbox($label);
 				$container->addComponent($input, $name);
@@ -190,7 +212,8 @@ final class TeamForm extends UI\Form {
 				$container->addComponent($input, $name);
 				$input->setDefaultValue($this->getDefaultFieldValue($field));
 			} else {
-				$input = $container->addText($name, $label)->setRequired();
+				$input = $container->addText($name, $label);
+				$whenNotPlaceholder($input)->setRequired();
 			}
 
 			if ($field->description !== null) {
@@ -245,15 +268,18 @@ final class TeamForm extends UI\Form {
 			/** @var ?class-string<InputModifier> */
 			$inputModifier = $this->entries->inputModifier;
 			if ($inputModifier !== null) {
-				$inputModifier::modify($input, $container);
+				$inputModifier::modify($input, $container, $whenNotPlaceholder);
 			}
 		}
 	}
 
-	private function addSportident(string $name, Container $container): SportidentControl {
+	/**
+	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+	 */
+	private function addSportident(string $name, Container $container, callable $whenNotPlaceholder): SportidentControl {
 		$recommendedCardCapacity = $this->entries->recommendedCardCapacity;
 
-		$si = new SportidentControl('messages.team.person.si.label', $recommendedCardCapacity);
+		$si = new SportidentControl('messages.team.person.si.label', $recommendedCardCapacity, $whenNotPlaceholder);
 		$container->addComponent($si, $name);
 
 		return $si;
