@@ -16,7 +16,10 @@ $rules = [
 	'@PHP80Migration:risky' => true,
 
 	// overwrite some Symfony rules
-	'braces' => ['position_after_functions_and_oop_constructs' => 'same'],
+	'curly_braces_position' => [
+		'functions_opening_brace' => 'same_line',
+		'classes_opening_brace' => 'same_line',
+	],
 	'function_declaration' => [
 		'closure_function_spacing' => 'none',
 		'closure_fn_spacing' => 'none',
