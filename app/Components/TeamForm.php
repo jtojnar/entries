@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Components;
 
-use App\Helpers\Iter;
 use App\Locale\Translated;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
 use App\Model\Configuration\Fields\Field;
 use App\Model\InputModifier;
+use Contributte\FormMultiplier\Multiplier;
 use Contributte\Translation\Wrappers\Message;
 use Contributte\Translation\Wrappers\NotTranslate;
-use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette\Application\UI;
 use Nette\Forms\Container;
 use Nette\Forms\Controls;
-use Nette\Forms\Controls\SubmitButton;
 use Nette\Localization\Translator;
 use Nette\Utils\Json;
 use Nextras\FormComponents\Controls\DateControl;
@@ -42,6 +40,14 @@ final class TeamForm extends UI\Form {
 		// Handled in TeamPresenter::renderCreate.
 		$initialMembers = $this->entries->minMembers;
 
+		// Group for top submit button, since DefaultFormRenderer renders group before all ungrouped Controls.
+		$group = $this->addGroup();
+		$group->setOption('container', 'div aria-hidden="true" class="visually-hidden"');
+		// Browsers consider the first submit button a default submit button for use when submitting the form using Enter key.
+		// Let’s add the save button to the top, to prevent the remove button of the first container from being picked.
+		$defaultSaveButton = $this->addSubmit('save_default_submit', 'messages.team.action.register');
+		$defaultSaveButton->getControlPrototype()->setHtmlAttribute('aria-hidden', 'true')->setHtmlAttribute('tabindex', '-1');
+
 		$this->addProtection();
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
@@ -54,20 +60,20 @@ final class TeamForm extends UI\Form {
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
 			$category = $entry->getValue();
 			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
-			/** @var ReplicatorContainer */
-			$replicator = $entry->form['persons'];
+			/** @var Multiplier */ // For PHPStan.
+			$multiplier = $entry->form['persons'];
 
-			return iterator_count($replicator->getContainers()) <= $maxMembers;
+			return $multiplier->getCopyNumber() <= $maxMembers;
 		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
 
 		$rule = $category->addCondition(true); // not to block the export of rules to JS
 		$rule->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
 			$category = $entry->getValue();
 			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
-			/** @var ReplicatorContainer */
-			$replicator = $entry->form['persons'];
+			/** @var Multiplier */ // For PHPStan.
+			$multiplier = $entry->form['persons'];
 
-			return iterator_count($replicator->getContainers()) >= $minMembers;
+			return $multiplier->getCopyNumber() >= $minMembers;
 		}, 'messages.team.error.too_few_members_simple');
 
 		$fields = $this->entries->teamFields;
@@ -76,37 +82,12 @@ final class TeamForm extends UI\Form {
 		$this->addTextArea('message', 'messages.team.message.label');
 
 		$this->setCurrentGroup();
-		$this->addSubmit('save', $isEditing ? 'messages.team.action.edit' : 'messages.team.action.register');
-		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
-			$category = $button->form->getUnsafeValues(null)['category'];
-			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
-			/** @var ReplicatorContainer */
-			$replicator = $button->form['persons'];
-			if (iterator_count($replicator->getContainers()) < $maxMembers) {
-				$replicator->createOne();
-			} else {
-				$button->form->addError($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category]), false);
-			}
-		};
-		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
-			$category = $button->form->getUnsafeValues(null)['category'];
-			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
-			/** @var ReplicatorContainer */ // For PHPStan.
-			$replicator = $button->form['persons'];
-			if (iterator_count($replicator->getContainers()) > $minMembers) {
-				$lastPerson = Iter::last($replicator->getContainers());
-				if ($lastPerson !== null) {
-					$replicator->remove($lastPerson, true);
-				}
-			} else {
-				$button->form->addError($this->translator->translate('messages.team.error.too_few_members', $minMembers, ['category' => $category]), false);
-			}
-		};
+		$saveButton = $this->addSubmit('save', $isEditing ? 'messages.team.action.edit' : 'messages.team.action.register');
 
 		$fields = $this->entries->personFields;
 		$i = 0;
-		$persons = new ReplicatorContainer(
-			factory: function(Container $container) use (&$i, $fields): void {
+		$persons = new Multiplier(
+			factory: function(Container $container, self $form) use (&$i, $fields): void {
 				++$i;
 				$group = $this->addGroup();
 				$group->setOption('label', new Message('messages.team.person.label', $i));
@@ -130,33 +111,47 @@ final class TeamForm extends UI\Form {
 					$group->setOption('description', 'messages.team.person.isContact');
 				}
 			},
-			createDefault: $initialMembers,
-			forceDefault: true,
+			copyNumber: $initialMembers,
+			maxCopies: $defaultMaxMembers,
 		);
 		$this['persons'] = $persons;
+		$persons->onCreateComponents[] = function(Multiplier $multiplier) use ($defaultMaxMembers): void {
+			if (!$this->isSubmitted()) {
+				return;
+			}
 
-		$this->onRender[] = $this->updatePersonButtonsState(...);
+			$category = $this->getUnsafeValues(null)['category'];
+			$count = iterator_count($multiplier->getContainers());
+
+			$multiplierReflection = new \ReflectionClass(Multiplier::class);
+			$httpData = $multiplierReflection->getProperty('httpData');
+			$httpData->setAccessible(true);
+			$values = $multiplierReflection->getProperty('values');
+			$values->setAccessible(true);
+			$resolver = new \Contributte\FormMultiplier\ComponentResolver($httpData->getValue($multiplier), $values->getValue($multiplier), $multiplier->getMaxCopies(), $multiplier->getMinCopies());
+
+			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
+			if ($resolver->isCreateAction() && $count >= $maxMembers) {
+				$this->addError($this->translator->translate('messages.team.error.too_many_members', $maxMembers, ['category' => $category]), false);
+			}
+		};
+		$persons->setMinCopies($defaultMinMembers);
+		$persons->addCreateButton('messages.team.action.add')->setNoValidate();
+		$persons->addRemoveButton('messages.team.action.remove');
+
 		$this->onValidate[] = $this->checkCategoryConstraints(...);
-	}
 
-	private function updatePersonButtonsState(): void {
-		/** @var \Kdyby\Replicator\Container */
-		$persons = $this['persons'];
-		$count = iterator_count($persons->getContainers());
-		$minMembers = $this->entries->minMembers;
-		$maxMembers = $this->entries->maxMembers;
+		$minMembersCheck = function(Controls\SubmitButton $button) use ($persons, $defaultMinMembers): void {
+			$category = $this->getUnsafeValues(null)['category'];
+			$count = iterator_count($persons->getContainers());
 
-		if ($count >= $maxMembers) {
-			/** @var Controls\SubmitButton */
-			$add = $this['add'];
-			$add->setDisabled();
-		}
-
-		if ($count <= $minMembers) {
-			/** @var Controls\SubmitButton */
-			$remove = $this['remove'];
-			$remove->setDisabled();
-		}
+			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
+			if ($count < $minMembers) {
+				$this->addError($this->translator->translate('messages.team.error.too_few_members', $minMembers, ['category' => $category]), false);
+			}
+		};
+		$defaultSaveButton->onClick[] = $minMembersCheck;
+		$saveButton->onClick[] = $minMembersCheck;
 	}
 
 	private function addCustomFields(array $fields, Container $container): void {

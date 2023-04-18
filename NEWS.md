@@ -9,6 +9,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Admin user can edit disabled fields.
 - Report config errors earlier.
 - Invoice lists issue date.
+- Allow removing individual team members rather than just the last one.
 
 ### Bugs fixed
 
