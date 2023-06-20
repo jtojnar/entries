@@ -65,7 +65,7 @@ class ObjectSelectBox extends Controls\ChoiceControl {
 	 *
 	 * @param array<string,string|Translated|NotTranslate>|array<OptGroup> $items
 	 */
-	public function setItems(array $items, bool $useKeys = null): static {
+	public function setItems(array $items, ?bool $useKeys = null): static {
 		if ($useKeys !== null) {
 			throw new \InvalidArgumentException('useKeys argument is not supported.');
 		}

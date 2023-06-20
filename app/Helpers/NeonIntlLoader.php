@@ -8,9 +8,6 @@ use Contributte\Translation;
 use Symfony\Component\Translation\MessageCatalogue;
 
 final class NeonIntlLoader extends Translation\Loaders\Neon {
-	/**
-	 * {@inheritdoc}
-	 */
 	public function load(
 		mixed $resource,
 		string $locale,

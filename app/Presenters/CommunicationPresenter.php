@@ -327,7 +327,7 @@ final class CommunicationPresenter extends BasePresenter {
 		}
 	}
 
-	public function actionList(int $id = null): void {
+	public function actionList(?int $id = null): void {
 		/** @var Nette\Security\SimpleIdentity $identity */
 		$identity = $this->user->identity;
 

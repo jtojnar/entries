@@ -17,7 +17,6 @@ use App\Model\Orm\Team\Team;
 use DateTimeImmutable;
 use Exception;
 use Kdyby\Replicator\Container as ReplicatorContainer;
-use Latte;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
@@ -131,7 +130,7 @@ final class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	public function renderEdit(int $id = null): void {
+	public function renderEdit(?int $id = null): void {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', ['return' => 'edit']);
 		} else {

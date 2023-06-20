@@ -10,10 +10,6 @@ namespace App\Locale;
 use Contributte\Translation\Translator as ContributeTranslator;
 
 class Translator extends ContributeTranslator {
-	/**
-	 * @param mixed $message
-	 * @param mixed ...$parameters
-	 */
 	public function translate(
 		$message,
 		...$parameters
