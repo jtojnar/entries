@@ -8,3 +8,5 @@
 /.php-cs-fixer.cache
 
 /.parcel-cache/
+
+/.direnv/
