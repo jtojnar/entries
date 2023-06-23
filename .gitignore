@@ -3,7 +3,8 @@
 
 /www/dist/
 
-app/config/private.neon
+/app/Config/private.neon
 
-.php-cs-fixer.cache
-.parcel-cache/
+/.php-cs-fixer.cache
+
+/.parcel-cache/
