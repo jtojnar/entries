@@ -1,17 +1,6 @@
 php:
 	date.timezone: Europe/Prague
 
-# Do not forget to configure database here or in private.neon
-dbal:
-	driver: mysqli
-	host: localhost
-	database: entries
-	username: root
-	password:
-	connectionTz: +01:00
-	options:
-		charset: utf8mb4
-
 services:
 	exchange: Money\Exchange\ReversedCurrenciesExchange(
 		Money\Exchange\FixedExchange([
@@ -21,162 +10,214 @@ services:
 		])
 	)
 
-
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: 'MČR v horském orientačním běhu 2023'
+		en: 'Czech Mountain Orienteering Championships 2023'
 	entries:
+		maxMembers: 2
 		minMembers: 2
-		maxMembers: 5
-		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
-		invoiceModifier: App\Config\CustomInvoiceModifier
-		inputModifier: App\Config\CustomInputModifier
+		eventDate: 2023-11-04 # used for age calculations
+		opening: 2023-07-11T00:00:00
+		closing: 2023-11-14T12:00:00
+		customInputModifier: [App\CustomInputModifier, modify]
+		accountNumber: ';2900553435/2010'
 		fees:
 			currency: CZK
-			person: 650
+			person: 375
+		limits:
+			internat: 32
+
 		categories:
 			HH20:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age<20)'
+					- 'all(age<=20)'
 			HD20:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+					- 'all(age<=20)'
+			DD20:
 				constraints:
-					- 'all(gender=male)'
-			DD:
+					- 'all(gender=female)'
+					- 'all(age<=20)'
+			HH:
 				constraints:
 					- 'all(gender=male)'
 			HD:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
+			DD:
+				constraints:
+					- 'all(gender=female)'
 			HH40:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
 			HD40:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
+			DD40:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=40)'
+			HH60:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>=60)'
+			HD60:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age>=60)'
+			DD60:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=60)'
+			PO:
+				label:
+					en: 'Skilled Newcomers (PO)'
+					cs: 'Příchozí orienťáci (PO)'
+				short: 'PO'
+				fees:
+					person: 250
+			PZ:
+				label:
+					en: 'Newcomers – Beginners (PZ)'
+					cs: 'Příchozí začátečníci (PZ)'
+				short: 'PZ'
+				fees:
+					person: 250
 		fields:
 			team:
-				friday2h:
+				stage:
 					type: enum
 					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
-					public: true
+						en: 'Stage:'
+						cs: 'Etapa:'
 					options:
-						yes:
-							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 50
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
+						both:
 							default: true
-				saturday5h:
-					type: enum
-					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
-					public: true
-					options:
-						yes:
 							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 150
-						no:
+								en: 'Saturday & Sunday'
+								cs: 'Sobota i neděle'
+						saturday:
 							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
-				sunday4h:
-					type: enum
-					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					public: true
-					options:
-						yes:
+								en: 'Saturday only'
+								cs: 'Pouze sobota'
+							fee: -200
+						sunday:
 							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 150
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
+								en: 'Sunday only'
+								cs: 'Pouze neděle'
+							fee: -200
 			person:
+				sportident:
+					type: sportident
+					fee: 70
 				country:
 					type: country
 					default: 46
-					public: true
-				sportident:
-					type: sportident
-					fee: 50
-					public: true
-				mug:
-					type: checkbox
+				accommodation:
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accommodation:'
+						cs: 'Ubytování:'
+					description:
+						en: 'Accommodation must be ordered and paid until Sunday October 22, 2023'
+						cs: 'Ubytování se musí objednat a zaplatit do neděle 22. 10. 2023'
+					type: enum
+					options:
+						internat-friday:
+							label:
+								en: 'Internát SOŠ Šternberk, room for 3 people, 2 nights only, 104 € per room from Friday to Sunday'
+								cs: 'Internát SOŠ Šternberk, pokoj pro 3 osoby, pouze na 2 noci, 2400 Kč/pokoj pátek až neděle'
+							fee: 2400
+							limit: 'internat'
+
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 				boarding:
 					label:
 						en: 'Boarding:'
 						cs: 'Stravování:'
+					description:
+						en: 'Boarding must be ordered and paid until Sunday October 22, 2023'
+						cs: 'Stravování se musí objednat a zaplatit do neděle 22. 10. 2023'
 					type: checkboxlist
 					items:
-						fri_supper:
+						fri-soup:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
-							fee: 95
-						sat_breakfast:
-							type: checkbox
+								en: 'Friday soup (40 CZK, available between 17:00 and 19:00)'
+								cs: 'Páteční polévka (40 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 40
+						fri-meat:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
-							type: checkbox
+								en: 'Friday meat food (150 CZK, available between 17:00 and 19:00)'
+								cs: 'Páteční masové jídlo (150 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 150
+						fri-vegetarian:
 							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
-							fee: 95
-					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
+								en: 'Friday vegetarian food (150 CZK, available between 17:00 and 19:00)'
+								cs: 'Páteční vegetariánské jídlo (150 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 150
+						sat-soup:
+							label:
+								en: 'Saturday soup (40 CZK, available between 17:00 and 19:00)'
+								cs: 'Sobotní polévka (40 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 40
+						sat-meat:
+							label:
+								en: 'Saturday meat food (150 CZK, available between 17:00 and 19:00)'
+								cs: 'Sobotní masové jídlo (150 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 150
+						sat-vegetarian:
+							label:
+								en: 'Saturday vegetarian food (150 CZK, available between 17:00 and 19:00)'
+								cs: 'Sobotní vegetariánské jídlo (150 Kč, odběr mezi 17:00 až 19:00)'
+							fee: 150
+						sun-soup:
+							label:
+								en: 'Sunday soup (40 CZK, available between 12:00 and 15:00)'
+								cs: 'Nedělní polévka (40 Kč, odběr mezi 12:00 až 15:00)'
+							fee: 40
+						sun-meat:
+							label:
+								en: 'Sunday meat food (150 CZK, available between 12:00 and 15:00)'
+								cs: 'Nedělní masové jídlo (150 Kč, odběr mezi 12:00 až 15:00)'
+							fee: 150
+						sun-vegetarian:
+							label:
+								en: 'Sunday vegetarian food (150 CZK, available between 12:00 and 15:00)'
+								cs: 'Nedělní vegetariánské jídlo (150 Kč, odběr mezi 12:00 až 15:00)'
+							fee: 150
+
+
+				culture:
+					label:
+						en: 'Guided tour of Šternberk Castle must be ordered and paid until Sunday October 22, 2023'
+						cs: 'Prohlídku hradu Šternberk se musí objednat a zaplatit do neděle 22. 10. 2023'
+					type: checkboxlist
+					items:
+						guided-tour-regular:
+							label:
+								en: 'Saturday guided tour (180 CZK, between 16:00 and 18:00)'
+								cs: 'Sobotní prohlídka kláštera (180 Kč, mezi 16:00 až 18:00)'
+							fee: 180
+
 				registry_address:
 					type: text
 					label:
 						cs: 'Bydliště:'
 						en: 'Address:'
 					description:
-						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
-						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
+						cs: 'Adresa pro účely rejstříku sportovců, sím vyplňte bydliště přesně podle občanky'
+						en: 'Address is needed from Czech competitors only - please input any text'
+
+	webmasterEmail: "petr.skyva@eso9.cz"
