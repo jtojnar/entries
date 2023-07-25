@@ -266,7 +266,7 @@ CREATE TABLE `message` (
   `team_id` int(11) NOT NULL,
   `subject` varchar(250) NOT NULL,
   `body` text NOT NULL,
-  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
+  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE
 ) ENGINE='InnoDB' COLLATE 'utf8mb4_unicode_ci';
 
 
@@ -276,7 +276,7 @@ CREATE TABLE `token` (
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `team_id` int(11) NOT NULL,
   `hash` varchar(255) NOT NULL,
-  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`),
+  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE,
   INDEX `hash` (`hash`)
 ) ENGINE='InnoDB';
 
@@ -288,8 +288,8 @@ CREATE TABLE `item_reservation` (
   `name` varchar(10) COLLATE 'ascii_general_ci' NOT NULL,
   `team_id` int(11) NULL,
   `person_id` int(11) NULL,
-  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE RESTRICT,
-  FOREIGN KEY (`person_id`) REFERENCES `person` (`id`) ON DELETE RESTRICT,
+  FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`person_id`) REFERENCES `person` (`id`) ON DELETE CASCADE,
   INDEX `name` (`name`)
 ) COLLATE 'utf8mb4_unicode_ci';
 
