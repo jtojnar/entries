@@ -91,7 +91,7 @@ final class Category {
 				$quant = self::QUANT_LOOKUP[$quant];
 
 				if (!\in_array($op, self::KEY_SUPPORTED_OPS[$key], true)) {
-					throw new InvalidConfigurationException("Constraint “{$constraint}” is invalid: using ‘${match['op']}’ with ‘${match['key']}’ is not supported.");
+					throw new InvalidConfigurationException("Constraint “{$constraint}” is invalid: using ‘{$match['op']}’ with ‘{$match['key']}’ is not supported.");
 				}
 				$op = self::OP_LOOKUP[$op];
 
