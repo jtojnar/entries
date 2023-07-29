@@ -285,7 +285,7 @@ ADD COLUMN `sender` varchar(250) COLLATE 'utf8mb4_unicode_ci' NOT NULL AFTER `su
 
 CREATE TABLE `item_reservation` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(10) COLLATE 'ascii_general_ci' NOT NULL,
+  `name` varchar(255) COLLATE 'ascii_general_ci' NOT NULL,
   `team_id` int(11) NULL,
   `person_id` int(11) NULL,
   FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE,
