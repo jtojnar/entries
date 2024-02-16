@@ -10,9 +10,13 @@ use Nette\Application\UI\Control;
  * Control for switching locale of the application.
  */
 final class LocaleSwitcher extends Control {
-	/** @var string[] */
+	/** @var array<string, string> */
 	private array $locales;
 
+	/**
+	 * @param array<string, string> $locales
+	 * @param array<string> $allowedLocales
+	 */
 	public function __construct(array $locales, ?array $allowedLocales) {
 		if ($allowedLocales === null) {
 			$this->locales = $locales;
