@@ -9,7 +9,7 @@
 		"@popperjs/core": "^2.9.2",
 		"bootstrap": "^5.0.1",
 		"codemirror": "^6.0.0",
-		"flag-icons": "^6.1.1",
+		"flag-icons": "^7.1.0",
 		"nette-forms": "^3.0.4",
 		"select-parent": "^1.0.1"
 	},
