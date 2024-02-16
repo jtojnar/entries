@@ -16,7 +16,7 @@ $rules = [
 	'@PHP80Migration:risky' => true,
 
 	// overwrite some Symfony rules
-	'curly_braces_position' => [
+	'braces_position' => [
 		'functions_opening_brace' => 'same_line',
 		'classes_opening_brace' => 'same_line',
 	],

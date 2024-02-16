@@ -33,13 +33,13 @@ final class HomepagePresenter extends BasePresenter {
 	public App\Forms\FormFactory $formFactory;
 
 	public function renderDefault(): void {
-		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
+		/** @var Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
 		$template->invoice = null;
 		$template->status = null;
 
 		if ($this->user->isLoggedIn()) {
-			/** @var \Nette\Security\SimpleIdentity $identity */
+			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if (!$this->user->isInRole('admin')) {

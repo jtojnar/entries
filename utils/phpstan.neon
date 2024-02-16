@@ -12,8 +12,6 @@ parameters:
 	treatPhpDocTypesAsCertain: false
 	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
-		# https://github.com/phpstan/phpstan/issues/6402
-		- '(Readonly property App\\Model\\Configuration\\CategoryData::\$allCategories is already assigned.)'
 		# https://github.com/phpstan/phpstan/issues/8954
 		- '(Method App\\Model\\Configuration\\Helpers::ensureSubclassOf\(\) should return class-string<V>\|null but returns class-string<U>.)'
 		# https://github.com/phpstan/phpstan-nette/issues/82

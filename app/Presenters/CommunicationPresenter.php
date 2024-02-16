@@ -438,7 +438,7 @@ final class CommunicationPresenter extends BasePresenter {
 			throw $e;
 		} catch (\Throwable $e) {
 			Debugger::log($e);
-			\Tracy\Debugger::barDump($e);
+			Debugger::barDump($e);
 			if ($total === null) {
 				$this->flashMessage(
 					$this->translator->translate(

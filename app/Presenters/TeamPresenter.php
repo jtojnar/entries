@@ -65,13 +65,13 @@ final class TeamPresenter extends BasePresenter {
 	public Nette\Security\Passwords $passwords;
 
 	#[Inject]
-	public \Nette\Http\Request $request;
+	public Nette\Http\Request $request;
 
 	#[Inject]
-	public \Nette\Http\Response $response;
+	public Nette\Http\Response $response;
 
 	#[Inject]
-	public \Nette\Mail\Mailer $mailer;
+	public Nette\Mail\Mailer $mailer;
 
 	#[Inject]
 	public Nette\DI\Container $context;
@@ -106,7 +106,7 @@ final class TeamPresenter extends BasePresenter {
 			$where['status!='] = 'withdrawn';
 		}
 
-		/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
+		/** @var Nette\Bridges\ApplicationLatte\DefaultTemplate $template */
 		$template = $this->template;
 
 		$template->teams = $this->teams->findBy($where);
@@ -134,7 +134,7 @@ final class TeamPresenter extends BasePresenter {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in', ['return' => 'edit']);
 		} else {
-			/** @var \Nette\Security\SimpleIdentity $identity */
+			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if ($id === null) {
@@ -299,14 +299,14 @@ final class TeamPresenter extends BasePresenter {
 			isEditing: $isEditing,
 		);
 
-		/** @var \Nette\Forms\Controls\SubmitButton */
+		/** @var Controls\SubmitButton */
 		$save = $form['save'];
 		$save->onClick[] = $this->processTeamForm(...);
 
 		return $form;
 	}
 
-	private function processTeamForm(Nette\Forms\Controls\SubmitButton $button): void {
+	private function processTeamForm(Controls\SubmitButton $button): void {
 		$today = new DateTimeImmutable();
 		if (!$this->user->isInRole('admin')) {
 			if ($this->entries->closing !== null && $this->entries->closing < $today) {
@@ -335,7 +335,7 @@ final class TeamPresenter extends BasePresenter {
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
 
-			/** @var \Nette\Security\SimpleIdentity $identity */
+			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if ($team === null) {
@@ -619,7 +619,7 @@ final class TeamPresenter extends BasePresenter {
 				if ($this->action === 'edit') {
 					$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 				} else {
-					/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
+					/** @var Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
 					$mtemplate = $this->createTemplate();
 
 					$appDir = $this->parameters->getAppDir();
@@ -700,7 +700,7 @@ final class TeamPresenter extends BasePresenter {
 		foreach ($teamFields as $field) {
 			$name = $field->name;
 			if ($field->applicableCategories !== null && !\in_array($category, $field->applicableCategories, true)) {
-				/** @var Nette\Forms\Controls\BaseControl */
+				/** @var Controls\BaseControl */
 				$control = $form[$name];
 				$control->setValue(null);
 			}
@@ -715,7 +715,7 @@ final class TeamPresenter extends BasePresenter {
 				if ($field->applicableCategories !== null && !\in_array($category, $field->applicableCategories, true)) {
 					/** @var Nette\Utils\ArrayHash */
 					$persons = $form['persons'];
-					/** @var Nette\Forms\Controls\BaseControl */
+					/** @var Controls\BaseControl */
 					$control = $persons[$name];
 					$control->setValue(null);
 				}
@@ -790,7 +790,7 @@ final class TeamPresenter extends BasePresenter {
 		return $form;
 	}
 
-	private function listActionSubmitMessage(Nette\Forms\Controls\SubmitButton $button): void {
+	private function listActionSubmitMessage(Controls\SubmitButton $button): void {
 		$values = $button->form->getValues();
 		$selectedTeamIds = array_map(
 			fn($name) => substr($name, \strlen('team_')),

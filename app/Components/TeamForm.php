@@ -15,7 +15,6 @@ use Contributte\Translation\Wrappers\NotTranslate;
 use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette\Application\UI;
 use Nette\Forms\Container;
-use Nette\Forms\Controls;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Rules;
@@ -156,20 +155,20 @@ final class TeamForm extends UI\Form {
 	}
 
 	private function updatePersonButtonsState(): void {
-		/** @var \Kdyby\Replicator\Container */
+		/** @var ReplicatorContainer */
 		$persons = $this['persons'];
 		$count = iterator_count($persons->getContainers());
 		$minMembers = $this->entries->minMembers;
 		$maxMembers = $this->entries->maxMembers;
 
 		if ($count >= $maxMembers) {
-			/** @var Controls\SubmitButton */
+			/** @var SubmitButton */
 			$add = $this['add'];
 			$add->setDisabled();
 		}
 
 		if ($count <= $minMembers) {
-			/** @var Controls\SubmitButton */
+			/** @var SubmitButton */
 			$remove = $this['remove'];
 			$remove->setDisabled();
 		}

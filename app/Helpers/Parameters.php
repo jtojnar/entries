@@ -40,6 +40,7 @@ final class Parameters {
 
 	/**
 	 * Get the array of code => name for supported locales.
+	 *
 	 * @return array<string, string>
 	 */
 	public function getLocales(): array {

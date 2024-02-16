@@ -24,7 +24,7 @@ final class InvoicePresenter extends BasePresenter {
 	public App\Model\Orm\Invoice\InvoiceRepository $invoices;
 
 	#[Inject]
-	public \Nette\Http\Request $request;
+	public Nette\Http\Request $request;
 
 	#[Inject]
 	public App\Model\Orm\Token\TokenRepository $tokens;
