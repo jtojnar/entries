@@ -66,7 +66,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$form->addText('subject', 'messages.communication.compose.subject.label')
 			->setRequired('messages.communication.compose.subject.error.empty');
 
-		$organiserMail = $this->context->parameters['webmasterEmail'];
+		$organiserMail = $this->parameters->getWebmasterEmail();
 		$form->addEmail('sender', 'messages.communication.compose.sender.label')
 			->setRequired('messages.communication.compose.sender.error.empty')
 			->setDefaultValue($organiserMail);
@@ -279,7 +279,7 @@ final class CommunicationPresenter extends BasePresenter {
 	private function renderMessageBody(Team $team, string $subject, string $grant, string $body): string {
 		$latte = $this->latteFactory->create();
 
-		$appDir = $this->context->parameters['appDir'];
+		$appDir = $this->parameters->getAppDir();
 		$layout = file_get_contents($appDir . '/Templates/Mail/@layout.latte');
 		\assert(\is_string($layout));
 
@@ -309,7 +309,7 @@ final class CommunicationPresenter extends BasePresenter {
 				name: iterator_to_array($team->persons)[0]->firstname
 				?? throw new \PHPStan\ShouldNotHappenException(),
 				invoice: $team->lastInvoice,
-				organiserMail: $this->context->parameters['webmasterEmail'],
+				organiserMail: $this->parameters->getWebmasterEmail(),
 				subject: $subject,
 				grant: $grant,
 			),
@@ -386,7 +386,7 @@ final class CommunicationPresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		$appDir = $this->context->parameters['appDir'];
+		$appDir = $this->parameters->getAppDir();
 
 		$total = null;
 		$count = 0;

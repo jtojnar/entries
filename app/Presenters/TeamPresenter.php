@@ -622,7 +622,7 @@ final class TeamPresenter extends BasePresenter {
 					/** @var \Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
 					$mtemplate = $this->createTemplate();
 
-					$appDir = $this->context->parameters['appDir'];
+					$appDir = $this->parameters->getAppDir();
 
 					$baseMailTemplateLocalizedPath = $appDir . '/Templates/Mail/verification.' . $this->locale . '.latte';
 
@@ -666,7 +666,7 @@ final class TeamPresenter extends BasePresenter {
 					$mtemplate->name = $firstMemberName;
 					$mtemplate->password = $password;
 					$mtemplate->invoice = $invoice;
-					$mtemplate->organiserMail = $this->context->parameters['webmasterEmail'];
+					$mtemplate->organiserMail = $this->parameters->getWebmasterEmail();
 
 					// Inline styles into the e-mail
 					$mailHtml = $this->emailFactory->create((string) $mtemplate);

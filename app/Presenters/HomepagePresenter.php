@@ -56,7 +56,7 @@ final class HomepagePresenter extends BasePresenter {
 		$today = new DateTimeImmutable();
 		$template->registrationOpen = $this->entries->closing > $today && $this->entries->opening < $today;
 		$template->allowLateRegistrationsByEmail = $this->entries->allowLateRegistrationsByEmail;
-		$template->mail = $this->context->parameters['webmasterEmail'];
+		$template->mail = $this->parameters->getWebmasterEmail();
 	}
 
 	protected function createComponentMaintenanceForm(): Form {
@@ -96,7 +96,7 @@ final class HomepagePresenter extends BasePresenter {
 		}
 
 		/** @var \IteratorAggregate<string, \SplFileInfo> */ // For PHPStan.
-		$cacheIterator = Nette\Utils\Finder::find('*')->from($this->context->parameters['tempDir'] . '/cache')->childFirst();
+		$cacheIterator = Nette\Utils\Finder::find('*')->from($this->parameters->getTempDir() . '/cache')->childFirst();
 		foreach ($cacheIterator as $entry) {
 			$path = (string) $entry;
 			if ($entry->isDir()) { // collector: remove empty dirs
@@ -114,7 +114,7 @@ final class HomepagePresenter extends BasePresenter {
 		/** @var \Contributte\Translation\Translator */
 		$translator = $this->translator;
 
-		$localeNames = $this->context->parameters['locales'];
+		$localeNames = $this->parameters->getLocales();
 
 		$allowedLocales = $translator->getLocalesWhitelist();
 
