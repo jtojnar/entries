@@ -106,7 +106,12 @@ def main():
 		subprocess.check_call(['composer', 'install', '--no-dev', '--optimize-autoloader'])
 
 		# fill archive with data
-		with ZipFile(source_dir / filename, 'w', zipfile.ZIP_DEFLATED) as archive:
+		with ZipFile(
+			source_dir / filename,
+			'w',
+			zipfile.ZIP_DEFLATED,
+			strict_timestamps=False,
+		) as archive:
 			archive.prefix = Path('entries')
 
 			# Assets are copied by Webpack to www/dist/.
