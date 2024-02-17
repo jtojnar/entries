@@ -22,7 +22,7 @@ jobs:
         echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
     - name: Install dependencies
-      run: nix-shell --run 'composer install --no-interaction --dev --prefer-source'
+      run: nix-shell --run 'composer install --no-interaction'
 
     - name: Check code using Nette code checker
       run: nix-shell --run 'code-checker -d app'
