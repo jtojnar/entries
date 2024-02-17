@@ -11,10 +11,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v20
+      uses: cachix/install-nix-action@v25
 
     - name: Set outputs
       id: vars
@@ -45,7 +45,7 @@ jobs:
       run: nix-shell --run 'npm run dist "entries-${{ steps.vars.outputs.sha_short }}.zip"'
 
     - name: Upload the zipball to GitHub
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: entries-${{ steps.vars.outputs.sha_short }}.zip
         if-no-files-found: error
