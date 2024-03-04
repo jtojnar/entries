@@ -112,7 +112,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 180
+							fee: 210
 						no:
 							label:
 								en: 'No'
@@ -128,7 +128,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 180
+							fee: 200
 						no:
 							label:
 								en: 'No'
@@ -146,16 +146,21 @@ parameters:
 					options:
 						monastery-friday:
 							label:
-								en: 'Pension Osek Monastery, 60 € per person from Friday to Sunday'
+								en: 'Pension Osek Monastery, 1500 CZK per person from Friday to Sunday'
 								cs: 'Pension Osecký klášter, 1500 Kč/os. pátek až neděle'
-							fee: 1200
+							fee: 1500
 							limit: monastery
 						monastery-saturday:
 							label:
-								en: 'Pension Osek Monastery, 30 € per person from Saturday to Sunday'
+								en: 'Pension Osek Monastery, 750 CZK per person from Saturday to Sunday'
 								cs: 'Pension Osecký klášter, 750 Kč/os. sobota až neděle'
-							fee: 1200
+							fee: 750
 							limit: monastery
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 				boarding:
 					label:
 						en: 'Boarding must be ordered and paid until Sunday April 07, 2024'
