@@ -312,15 +312,15 @@ parameters:
 							label:
 								en: 'Saturday guided tour (200 CZK, between 17:45 and 18:45)'
 								cs: 'Sobotní prohlídka kláštera (200 Kč, mezi 16:30 až 17:30)'
-							fee: 180
+							fee: 200
 						guided-tour-reduced:
 							label:
 								en: 'Saturday guided tour students and seniors over 65 years (160 CZK, between 17:45 and 18:45)'
 								cs: 'Sobotní prohlídka kláštera studenti a senioři nad 65 let (160 Kč, mezi 16:30 až 17:30)'
-							fee: 150
+							fee: 160
 						concert:
 							label:
 								en: 'Saturday concert in monastery (200 CZK, from 20:00)'
 								cs: 'Sobotní koncert v klášteře (200 Kč, od 20:00)'
-							fee: 150
+							fee: 200
 	webmasterEmail: "jan.tojnar@rogaining.cz"
