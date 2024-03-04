@@ -21,77 +21,82 @@ services:
 		])
 	)
 
-
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: 10. Sudetské Tojnárkovo Bloudění 2024
+		en: Lost in Tojnarek’s Sudetenland 2024
 	entries:
 		minMembers: 2
-		maxMembers: 5
-		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
+		maxMembers: 2
+		eventDate: 2024-04-19 # used for age calculations
+		opening: 2024-02-07T00:00:00
+		closing: 2024-04-19T12:00:00
+		accountNumber: '2800039826/2010'
 		invoiceModifier: App\Config\CustomInvoiceModifier
-		inputModifier: App\Config\CustomInputModifier
 		fees:
 			currency: CZK
-			person: 650
+			person: 0
+		limits:
+			monastery: 100
+		# 	hardfloor: 50
+		# 	asocial-four: 1
+		# 	apartman-five: 1
+		# 	social-four: 3
+		# 	social-three: 2
+		# 	social-two: 0
 		categories:
-			HH20:
+			MJ:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
+					- 'all(age<=20)'
+			XJ:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age<=20)'
+			WJ:
 				constraints:
 					- 'all(gender=female)'
-					- 'all(age<20)'
-			HD20:
+					- 'all(age<=20)'
+			MO:
+				constraints:
+					- 'all(gender=male)'
+			XO:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+			WO:
+				constraints:
+					- 'all(gender=female)'
+			MV:
 				constraints:
 					- 'all(gender=male)'
-			DD:
-				constraints:
-					- 'all(gender=male)'
-			HD:
+					- 'all(age>=40)'
+			XV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-			HH40:
+					- 'all(age>=40)'
+			WV:
 				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			HD40:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(gender=female)'
+					- 'all(age>=40)'
 		fields:
 			team:
+				sportident:
+					type: sportident
+					fee: 70
 				friday2h:
 					type: enum
 					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
-					public: true
+						en: '2-hour Friday Night:'
+						cs: 'Páteční noční dvouhodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 50
+							fee: 90
 						no:
 							label:
 								en: 'No'
@@ -100,15 +105,14 @@ parameters:
 				saturday5h:
 					type: enum
 					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
-					public: true
+						en: '5-hour Saturday:'
+						cs: 'Sobotní denní pětihodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 180
 						no:
 							label:
 								en: 'No'
@@ -117,15 +121,14 @@ parameters:
 				sunday4h:
 					type: enum
 					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					public: true
+						en: '4-hour  - historical map:'
+						cs: 'Nedělní čtyřhodinovka - mapa 1850:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 180
 						no:
 							label:
 								en: 'No'
@@ -135,48 +138,184 @@ parameters:
 				country:
 					type: country
 					default: 46
-					public: true
-				sportident:
-					type: sportident
-					fee: 50
-					public: true
-				mug:
-					type: checkbox
+				accommodation:
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accommodation must be ordered and paid until Sunday April 07, 2024'
+						cs: 'Ubytování se musí objednat a zaplatit do neděle 7. 4. 2024'
+					type: enum
+					options:
+						monastery-friday:
+							label:
+								en: 'Pension Osek Monastery, 60 € per person from Friday to Sunday'
+								cs: 'Pension Osecký klášter, 1500 Kč/os. pátek až neděle'
+							fee: 1200
+							limit: monastery
+						monastery-saturday:
+							label:
+								en: 'Pension Osek Monastery, 30 € per person from Saturday to Sunday'
+								cs: 'Pension Osecký klášter, 750 Kč/os. sobota až neděle'
+							fee: 1200
+							limit: monastery
 				boarding:
 					label:
-						en: 'Boarding:'
-						cs: 'Stravování:'
+						en: 'Boarding must be ordered and paid until Sunday April 07, 2024'
+						cs: 'Stravování se musí objednat a zaplatit do neděle 7. 4. 2024'
 					type: checkboxlist
 					items:
-						fri_supper:
+						fri-nakladany-hermelin:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
+								en: 'Friday picled Camembert cheese (100 g), bread (95 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční nakládaný hermelín (100 g), chléb (95 Kč, odběr mezi 17:00 až 19:30)'
 							fee: 95
-						sat_breakfast:
-							type: checkbox
+						# fri-utopenec:
+						# 	label:
+						# 		en: 'Friday picled sausage, bread (35 CZK, available between 17:00 and 19:30)'
+						# 		cs: 'Páteční utopenec, chléb (35 Kč, odběr mezi 17:00 až 19:30)'
+						# 	fee: 35
+						fri-klobasa:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
-							type: checkbox
-							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
+								en: 'Friday grilled sausage, bread (95 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční grilovaná klobása, chléb (95 Kč, odběr mezi 17:00 až 19:30)'
 							fee: 95
-					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
-				registry_address:
-					type: text
+						fri-grilled-hermelin:
+							label:
+								en: 'Friday grilled Camembert cheese (100 g), bread (95 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční grilovaný hermelín (100 g), chléb (95 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 95
+						fri-g-soup:
+							label:
+								en: 'Friday goulash soup (55 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční gulášovka (55 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 55
+						sat-nakladany-hermelin:
+							label:
+								en: 'Saturday picled Camembert cheese (100 g), bread (95 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní nakládaný hermelín (100 g), chléb (95 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 95
+						# sat-utopenec:
+						# 	label:
+						# 		en: 'Saturday picled sausage, bread (35 CZK, available between 13:00 and 19:00)'
+						# 		cs: 'Sobotní utopenec, chléb (35 Kč, odběr mezi 13:00 až 19:00)'
+						# 	fee: 35
+						sat-klobasa:
+							label:
+								en: 'Saturday grilled sausage, bread (95 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní grilovaná klobása, chléb (95 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 95
+						sat-grilled-hermelin:
+							label:
+								en: 'Saturday grilled Camembert cheese (100 g), bread (95 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní grilovaný hermelín (100 g), chléb (95 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 95
+						sat-g-soup:
+							label:
+								en: 'Saturday goulash soup (55 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní gulášovka (55 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 55
+						sat-z-soup:
+							label:
+								en: 'Saturday cabbage soup (55 CZK, available between 13:00 and 19:00)'
+								cs: 'Sobotní zelňačka (55 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 55
+						sun-klobasa:
+							label:
+								en: 'Sunday grilled sausage, bread (95 CZK, available between 13:00 and 15:30)'
+								cs: 'Nedělní grilovaná klobása, chléb (95 Kč, odběr mezi 13:00 až 15:30)'
+							fee: 95
+						sun-grilled-hermelin:
+							label:
+								en: 'Sunday grilled Camembert cheese (100 g), bread (95 CZK, available between 13:00 and 15:30)'
+								cs: 'Nedělní grilovaný hermelín (100 g), chléb (95 Kč, odběr mezi 13:00 až 15:30)'
+							fee: 95
+						sun-g-soup:
+							label:
+								en: 'Sunday goulash soup (55 CZK, available between 13:00 and 15:30)'
+								cs: 'Nedělní gulášovka (55 Kč, odběr mezi 13:00 až 15:30)'
+							fee: 55
+						sun-z-soup:
+							label:
+								en: 'Sunday cabbage soup (55 CZK, available between 13:00 and 19:00)'
+								cs: 'Nedělní zelňačka (55 Kč, odběr mezi 13:00 až 19:00)'
+							fee: 55
+						# sat-breakfast-sausage:
+						# 	label:
+						# 		en: 'Saturday sausage breakfast (90 CZK, available between 7:00 and 8:00)'
+						# 		cs: 'Sobotní párek k snídani (90 Kč, odběr mezi 7:00 až 8:00)'
+						# 	fee: 90
+						# sat-breakfast-eggs:
+						# 	label:
+						# 		en: 'Saturday scrambled eggs breakfast (90 CZK, available between 7:00 and 8:00)'
+						# 		cs: 'Sobotní snídaně míchaná vejce (90 Kč, odběr mezi 7:00 až 8:00)'
+						# 	fee: 90
+						# sat-breakfast-jam:
+						# 	label:
+						# 		en: 'Saturday bread/butter/jam/cheese breakfast (90 CZK, available between 7:00 and 8:00)'
+						# 		cs: 'Sobotní snídaně chléb, máslo, marmeláda, sýr (90 Kč, odběr mezi 7:00 až 8:00)'
+						# 	fee: 90
+						# sat-soup:
+						# 	label:
+						# 		en: 'Saturday goulash soup (49 CZK, available between 13:00 and 19:00)'
+						# 		cs: 'Sobotní gulášovka (49 Kč, odběr mezi 13:00 až 19:00)'
+						# 	fee: 49
+						# sat-goulash:
+						# 	label:
+						# 		en: 'Saturday chicken with paprika sauce with dumplings (169 CZK, available between 13:00 and 19:00)'
+						# 		cs: 'Sobotní kuře na paprice, houskový knedlík (169 Kč, odběr mezi 13:00 až 19:00)'
+						# 	fee: 169
+						# sat-risotto:
+						# 	label:
+						# 		en: 'Saturday chicken with paprika sauce with pasta (169 CZK, available between 13:00 and 19:00)'
+						# 		cs: 'Sobotní kuře na paprice, těstoviny(169 Kč, odběr mezi 13:00 až 19:00)'
+						# 	fee: 169
+						# sun-soup:
+						# 	label:
+						# 		en: 'Sunday pea soup (49 CZK, available between 13:00 and 15:30)'
+						# 		cs: 'Nedělní hrachovka (49 Kč, odběr mezi 13:00 až 15:30)'
+						# 	fee: 49
+						# sun-goulash:
+						# 	label:
+						# 		en: 'Sunday chicken steak with mushroom and potatoes (169 CZK, available between 13:00 and 15:30)'
+						# 		cs: 'Nedělní kuřecí plátek na žampionech, brambor (169 Kč, odběr mezi 13:00 až 15:30)'
+						# 	fee: 169
+						# sun-risotto:
+						# 	label:
+						# 		en: 'Sunday chicken steak with mushroom and rice (169 CZK, available between 13:00 and 15:30)'
+						# 		cs: 'Nedělní kuřecí plátek na žampionech, rýže (169 Kč, odběr mezi 13:00 až 15:30)'
+						# 	fee: 169
+						# sun-breakfast-sausage:
+						# 	label:
+						# 		en: 'Sunday sausage breakfast (90 CZK, available between 7:00 and 8:00)'
+						# 		cs: 'Nedělní párek k snídani (90 Kč, odběr mezi 7:00 až 8:00)'
+						# 	fee: 90
+						# sun-breakfast-eggs:
+						# 	label:
+						# 		en: 'Sunday scrambled eggs breakfast (90 CZK, available between 7:00 and 8:00)'
+						# 		cs: 'Nedělní snídaně míchaná vejce (90 Kč, odběr mezi 7:00 až 8:00)'
+						# 	fee: 90
+						# sun-breakfast-jam:
+						# 	label:
+						# 		en: 'Sunday bread/butter/jam/cheese breakfast (90 CZK, available between 7:00 and 8:00)'
+						# 		cs: 'Nedělní snídaně chléb, máslo, marmeláda, sýr (90 Kč, odběr mezi 7:00 až 8:00)'
+						# 	fee: 90
+				culture:
 					label:
-						cs: 'Bydliště:'
-						en: 'Address:'
-					description:
-						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
-						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
+						en: 'Guided tour and concert in Osek monastery must be ordered and paid until Sunday April 7, 2024'
+						cs: 'Prohlídka kláštera a koncert se musí objednat a zaplatit do neděle 7. 4. 2024'
+					type: checkboxlist
+					items:
+						guided-tour-regular:
+							label:
+								en: 'Saturday guided tour (200 CZK, between 17:45 and 18:45)'
+								cs: 'Sobotní prohlídka kláštera (200 Kč, mezi 16:30 až 17:30)'
+							fee: 180
+						guided-tour-reduced:
+							label:
+								en: 'Saturday guided tour students and seniors over 65 years (160 CZK, between 17:45 and 18:45)'
+								cs: 'Sobotní prohlídka kláštera studenti a senioři nad 65 let (160 Kč, mezi 16:30 až 17:30)'
+							fee: 150
+						concert:
+							label:
+								en: 'Saturday concert in monastery (200 CZK, from 20:00)'
+								cs: 'Sobotní koncert v klášteře (200 Kč, od 20:00)'
+							fee: 150
+	webmasterEmail: "jan.tojnar@rogaining.cz"
