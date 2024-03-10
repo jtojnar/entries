@@ -21,111 +21,82 @@ services:
 		])
 	)
 
-
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: 1. Kočkogaining 2024
+		en: Black Cat Cup 2024
 	entries:
+		maxMembers: 2
 		minMembers: 2
-		maxMembers: 5
-		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
-		invoiceModifier: App\Config\CustomInvoiceModifier
-		inputModifier: App\Config\CustomInputModifier
+		eventDate: 2024-05-11 # used for age calculations
+		opening: 2024-02-07T00:00:00
+		closing: 2024-05-10T12:00:00
+		accountNumber: '523144003/5500'
 		fees:
 			currency: CZK
-			person: 650
+			person: 0
+		limits:
+			penzion: 40
+			tent-car: 50
+			hardfloor: 50
 		categories:
-			HH20:
+			MO:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
+			XO:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+			WO:
 				constraints:
 					- 'all(gender=female)'
-					- 'all(age<20)'
-			HD20:
+			MV:
+				constraints:
+					- 'all(gender=male)'
+					- 'all(age>=40)'
+			XV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+					- 'all(age>=40)'
+			WV:
 				constraints:
-					- 'all(gender=male)'
-			DD:
+					- 'all(gender=female)'
+					- 'all(age>=40)'
+			BC:
 				constraints:
-					- 'all(gender=male)'
-			HD:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-			HH40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			HD40:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age>40)'
-		fields:
+		fields: 
 			team:
-				friday2h:
-					type: enum
-					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
-					public: true
-					options:
-						yes:
-							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 50
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
+				sportident:
+					type: sportident
+					fee: 70
 				saturday5h:
 					type: enum
 					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
-					public: true
+						en: '5-hour Saturday:'
+						cs: 'Sobotní pětihodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 180
 						no:
 							label:
 								en: 'No'
 								cs: 'Ne'
 							default: true
-				sunday4h:
+				sunday3h:
 					type: enum
 					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					public: true
+						en: '3-hour Sunday:'
+						cs: 'Nedělní tříhodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 180
 						no:
 							label:
 								en: 'No'
@@ -135,48 +106,98 @@ parameters:
 				country:
 					type: country
 					default: 46
-					public: true
-				sportident:
-					type: sportident
-					fee: 50
-					public: true
-				mug:
-					type: checkbox
+				accommodation:
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accommodation must be ordered and paid until Sunday April 28, 2024'
+						cs: 'Ubytování se musí objednat a zaplatit do neděle 28. 4. 2024'
+					type: enum
+					options:
+						penzion-friday:
+							label:
+								en: '2 nights in pension (Friday to Sunday), no bedlinen, 700 CZK per person'
+								cs: 'Pension bez povlečení (pátek až neděle), 700 Kč/os.'
+							fee: 700
+							limit: penzion
+						penzion-saturday:
+							label:
+								en: '1 night in pension (Saturday to Sunday), no bedlinen, 350 CZK per person'
+								cs: 'Pension bez povlečení (sobota až neděle), 350 Kč/os.'
+							fee: 350
+							limit: penzion
+						bedlinen:
+							label:
+								en: 'Bedlinen, 50 CZK per person'
+								cs: 'Povlečení, 50 Kč/os.'
+							fee: 50
+							limit: penzion
+						tent-car-friday:
+							label:
+								en: '2 nights in tent/car (Friday to Sunday), 360 CZK per person'
+								cs: 'Vlastní stan/auto (pátek až neděle), 360 Kč/os.'
+							fee: 360
+							limit: tent-car
+						tent-car-saturday:
+							label:
+								en: '1 night in tent/car (Saturday to Sunday), 180 CZK per person'
+								cs: 'Vlastní stan/auto (sobota až neděle), 180 Kč/os.'
+							fee: 180
+							limit: tent-car
+						hardfloor-friday:
+							label:
+								en: '2 nights hardfloor (Friday to Sunday), 300 CZK per person'
+								cs: 'V sále na podlaze (pátek až neděle), 300 Kč/os.'
+							fee: 300
+							limit: hardfloor
+						hardfloor-saturday:
+							label:
+								en: '1 night hardfloor (Saturday to Sunday), 150 CZK per person'
+								cs: 'V sále na podlaze (sobota až neděle), 150 Kč/os.'
+							fee: 150
+							limit: hardfloor
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 				boarding:
 					label:
-						en: 'Boarding:'
-						cs: 'Stravování:'
+						en: 'Boarding must be ordered and paid until Sunday April 28, 2024'
+						cs: 'Stravování se musí objednat a zaplatit do neděle 28. 4. 2024'
 					type: checkboxlist
 					items:
-						fri_supper:
+						fri-chicken:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
-							fee: 95
-						sat_breakfast:
-							type: checkbox
+								en: 'Friday roasted chicken leg (120 CZK)'
+								cs: 'Páteční pečené kuřecí stehno, dušená rýže (120 Kč)'
+							fee: 120
+						fri-pork:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
-							type: checkbox
+								en: 'Friday pork mixture, potato wedges (120 CZK)'
+								cs: 'Páteční vepřová směs, americké brambory (120 Kč)'
+							fee: 120
+						sat-breakfast:
 							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
-							fee: 95
-					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
-				registry_address:
-					type: text
-					label:
-						cs: 'Bydliště:'
-						en: 'Address:'
-					description:
-						cs: 'Adresa pro účely rejstříku sportovců MŠMT'
-						en: 'Address for the purpose of Sport registry of the Czech Ministry of Education (Czech nationals only)'
+								en: 'Saturday breakfast, smorgasbord (110 CZK)'
+								cs: 'Sobotní snídaně, švédský stůl (110 Kč)'
+							fee: 110
+						sat-goulash:
+							label:
+								en: 'Saturday supper – goulash, bread or dumpling (for free)'
+								cs: 'Sobotní večeře – guláš, chléb nebo knedlík (zadarmo)'
+							fee: 0
+						sun-breakfast:
+							label:
+								en: 'Sunday breakfast, smorgasbord (110 CZK)'
+								cs: 'Nedělní snídaně, švédský stůl (110 Kč)'
+							fee: 110
+						sun-schnitzel:
+							label:
+								en: 'Sunday soup + chicken schnitzel, potatoes (140 CZK)'
+								cs: 'Nedělní polévka + kuřecí řízek, brambor (140 Kč)'
+							fee: 140
+						sun-cheese:
+							label:
+								en: 'Sunday soup + fried cheese and French fries (140 CZK)'
+								cs: 'Nedělní polévka + smažený sýr s hranolky (140 Kč)'
+							fee: 140
+	webmasterEmail: "jan.tojnar@rogaining.cz"
