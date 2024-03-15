@@ -132,7 +132,8 @@ final class TeamPresenter extends BasePresenter {
 
 	public function renderEdit(?int $id = null): void {
 		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in', ['return' => 'edit']);
+			$backlink = $this->storeRequest('+ 48 hours');
+			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		} else {
 			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
