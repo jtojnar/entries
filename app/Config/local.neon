@@ -36,9 +36,7 @@ parameters:
 			currency: CZK
 			person: 0
 		limits:
-			penzion: 40
-			tent-car: 50
-			hardfloor: 50
+			ubytovna: 40
 		categories:
 			MO:
 				constraints:
@@ -108,72 +106,59 @@ parameters:
 					default: 46
 				accommodation:
 					label:
+						en: 'Accommodation'
+						cs: 'Ubytování'
+					description:
 						en: 'Accommodation must be ordered and paid until Sunday April 28, 2024'
 						cs: 'Ubytování se musí objednat a zaplatit do neděle 28. 4. 2024'
 					type: enum
 					options:
-						penzion-friday:
+						ubytovna-friday:
 							label:
-								en: '2 nights in pension (Friday to Sunday), no bedlinen, 700 CZK per person'
-								cs: 'Pension bez povlečení (pátek až neděle), 700 Kč/os.'
+								en: '2 nights in hostel (Friday to Sunday), no bedlinen, 700 CZK per person'
+								cs: 'Ubytovna bez povlečení (pátek až neděle), 700 Kč/os.'
 							fee: 700
-							limit: penzion
-						penzion-saturday:
+							limit: ubytovna
+						ubytovna-saturday:
 							label:
-								en: '1 night in pension (Saturday to Sunday), no bedlinen, 350 CZK per person'
-								cs: 'Pension bez povlečení (sobota až neděle), 350 Kč/os.'
+								en: '1 night in hostel (Saturday to Sunday), no bedlinen, 350 CZK per person'
+								cs: 'Ubytovna bez povlečení (sobota až neděle), 350 Kč/os.'
 							fee: 350
-							limit: penzion
-						bedlinen:
-							label:
-								en: 'Bedlinen, 50 CZK per person'
-								cs: 'Povlečení, 50 Kč/os.'
-							fee: 50
-							limit: penzion
-						tent-car-friday:
-							label:
-								en: '2 nights in tent/car (Friday to Sunday), 360 CZK per person'
-								cs: 'Vlastní stan/auto (pátek až neděle), 360 Kč/os.'
-							fee: 360
-							limit: tent-car
-						tent-car-saturday:
-							label:
-								en: '1 night in tent/car (Saturday to Sunday), 180 CZK per person'
-								cs: 'Vlastní stan/auto (sobota až neděle), 180 Kč/os.'
-							fee: 180
-							limit: tent-car
-						hardfloor-friday:
-							label:
-								en: '2 nights hardfloor (Friday to Sunday), 300 CZK per person'
-								cs: 'V sále na podlaze (pátek až neděle), 300 Kč/os.'
-							fee: 300
-							limit: hardfloor
-						hardfloor-saturday:
-							label:
-								en: '1 night hardfloor (Saturday to Sunday), 150 CZK per person'
-								cs: 'V sále na podlaze (sobota až neděle), 150 Kč/os.'
-							fee: 150
-							limit: hardfloor
+							limit: ubytovna
 						none:
 							default: true
 							label:
 								en: 'None'
 								cs: 'Žádné'
+				bedlinen:
+					label:
+						en: 'Bedlinen'
+						cs: 'Povlečení navíc'
+					type: checkboxlist
+					items:
+						linen:
+							label:
+								en: 'Bedlinen for weekend (50 CZK per person)'
+								cs: 'Povlečení na víkend (50 Kč/os.)'
+							fee: 50
 				boarding:
 					label:
+						en: 'Boarding'
+						cs: 'Stravování'
+					description:
 						en: 'Boarding must be ordered and paid until Sunday April 28, 2024'
 						cs: 'Stravování se musí objednat a zaplatit do neděle 28. 4. 2024'
 					type: checkboxlist
 					items:
 						fri-chicken:
 							label:
-								en: 'Friday roasted chicken leg (120 CZK)'
-								cs: 'Páteční pečené kuřecí stehno, dušená rýže (120 Kč)'
+								en: 'Friday supper – roasted chicken leg (120 CZK)'
+								cs: 'Páteční večeře – pečené kuřecí stehno, dušená rýže (120 Kč)'
 							fee: 120
 						fri-pork:
 							label:
-								en: 'Friday pork mixture, potato wedges (120 CZK)'
-								cs: 'Páteční vepřová směs, americké brambory (120 Kč)'
+								en: 'Friday supper – pork mixture, potato wedges (120 CZK)'
+								cs: 'Páteční večeře – vepřová směs, americké brambory (120 Kč)'
 							fee: 120
 						sat-breakfast:
 							label:
@@ -192,12 +177,12 @@ parameters:
 							fee: 110
 						sun-schnitzel:
 							label:
-								en: 'Sunday soup + chicken schnitzel, potatoes (140 CZK)'
-								cs: 'Nedělní polévka + kuřecí řízek, brambor (140 Kč)'
+								en: 'Sunday after race soup + chicken schnitzel, potatoes (140 CZK)'
+								cs: 'Nedělní pozávodní polévka + kuřecí řízek, brambor (140 Kč)'
 							fee: 140
 						sun-cheese:
 							label:
-								en: 'Sunday soup + fried cheese and French fries (140 CZK)'
-								cs: 'Nedělní polévka + smažený sýr s hranolky (140 Kč)'
+								en: 'Sunday after race soup + fried cheese and French fries (140 CZK)'
+								cs: 'Nedělní pozávodní polévka + smažený sýr s hranolky (140 Kč)'
 							fee: 140
 	webmasterEmail: "jan.tojnar@rogaining.cz"
