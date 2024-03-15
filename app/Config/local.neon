@@ -78,7 +78,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 180
+							fee: 150
 						no:
 							label:
 								en: 'No'
@@ -94,7 +94,7 @@ parameters:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 180
+							fee: 100
 						no:
 							label:
 								en: 'No'
