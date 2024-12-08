@@ -102,7 +102,6 @@ final readonly class Category {
 				}
 				$op = self::OP_LOOKUP[$op];
 
-				\assert(\in_array($key, ['age', 'gender'], true)); // For PHPStan
 				$comparedValue = parse_value($key, $val);
 
 				if ($key === 'age') {
@@ -129,7 +128,6 @@ final readonly class Category {
 				$aggr = self::AGGR_LOOKUP[$aggr];
 				$op = self::OP_LOOKUP[$op];
 
-				\assert(\in_array($key, ['age'], true)); // For PHPStan
 				$comparedValue = parse_value($key, $val);
 
 				return match ($key) {
