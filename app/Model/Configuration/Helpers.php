@@ -226,19 +226,25 @@ final class Helpers {
 		return array_combine(
 			array_keys($items),
 			array_map(
-				fn(string $name, mixed $item) => new Fields\Item(
-					name: $name,
-					label: self::parseLabel("{$name} field", $item, $allLocales),
-					disabled: self::ensureBool("disabled of {$name} inside {$context}", $item['disabled'] ?? $disabled),
-					limitName: self::ensureStringMaybe("limit of {$name} inside {$context}", $item['limit'] ?? $limitName),
-					default: self::ensureBoolMaybe("default of {$name} inside {$context}", $item['default'] ?? null),
-					fee: self::makeFee(
-						"fee of {$name} inside {$context}",
-						$item['fee'] ?? null,
-						$fees,
-						$fallbackFee,
-					),
-				),
+				function(string $name, mixed $item) use ($allLocales, $context, $disabled, $fallbackFee, $fees, $limitName) {
+					if (!\is_array($item)) {
+						throw new InvalidConfigurationException("Item {$name} inside {$context} must be an array.");
+					}
+
+					return new Fields\Item(
+						name: $name,
+						label: self::parseLabel("{$name} field", $item, $allLocales),
+						disabled: self::ensureBool("disabled of {$name} inside {$context}", $item['disabled'] ?? $disabled),
+						limitName: self::ensureStringMaybe("limit of {$name} inside {$context}", $item['limit'] ?? $limitName),
+						default: self::ensureBoolMaybe("default of {$name} inside {$context}", $item['default'] ?? null),
+						fee: self::makeFee(
+							"fee of {$name} inside {$context}",
+							$item['fee'] ?? null,
+							$fees,
+							$fallbackFee,
+						),
+					);
+				},
 				array_keys($items),
 				$items,
 			),
