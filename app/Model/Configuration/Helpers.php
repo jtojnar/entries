@@ -48,7 +48,6 @@ final class Helpers {
 
 	/**
 	 * @param array<string, mixed> $field
-	 * @param ?string $fallback
 	 */
 	public static function parseLabel(string $context, array $field, array $allLocales, ?string $fallback = null): Translated|NotTranslate|string {
 		if (isset($field['label'])) {

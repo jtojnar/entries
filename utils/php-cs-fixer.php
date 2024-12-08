@@ -25,10 +25,6 @@ $rules = [
 		'closure_fn_spacing' => 'none',
 	],
 	'concat_space' => ['spacing' => 'one'],
-	// Inconsistent with arguments without default value.
-	'nullable_type_declaration_for_default_null_value' => [
-		'use_nullable_type_declaration' => true,
-	],
 	'phpdoc_align' => false,
 	'yoda_style' => false,
 	'global_namespace_import' => false,
