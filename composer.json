@@ -53,7 +53,7 @@
 		"cs": "php-cs-fixer fix --verbose --dry-run --diff --config=utils/php-cs-fixer.php",
 		"fix": "php-cs-fixer fix --verbose --diff --config=utils/php-cs-fixer.php",
 		"lint": "parallel-lint app/ tests/ www/",
-		"phpstan": "phpstan analyse --configuration=utils/phpstan.neon --memory-limit 256M",
+		"phpstan": "phpstan analyse --memory-limit 256M",
 		"test": "tester tests -C -s"
 	},
 	"config": {

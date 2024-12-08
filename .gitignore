@@ -7,6 +7,8 @@
 
 /.php-cs-fixer.cache
 
+phpstan.neon
+
 /.parcel-cache/
 
 /.direnv/
