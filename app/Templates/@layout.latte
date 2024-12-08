@@ -6,7 +6,7 @@
 
 	<title>{$siteTitle|striptags|trim}{ifset #title} – {include title|striptags}{/ifset}</title>
 
-	<link rel="stylesheet" href="{asset style.scss}">
+	<link rel="stylesheet" href="{$basePath}{asset 'style.scss'}">
 	{block head}{/block}
 </head>
 
@@ -25,7 +25,7 @@
 		{include content}
 	</div>
 
-	<script src="{asset index.js}"></script>
+	<script src="{$basePath}{asset 'index.js'}"></script>
 	{block scripts}{/block}
 </body>
 </html>

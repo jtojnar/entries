@@ -18,6 +18,9 @@ final class FormFactory {
 	) {
 	}
 
+	/**
+	 * @param FormLayout::* $layout
+	 */
 	public function create(string $layout = FormLayout::HORIZONTAL): Form {
 		$form = new Form();
 

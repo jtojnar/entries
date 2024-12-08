@@ -29,9 +29,6 @@ final class CommunicationPresenter extends BasePresenter {
 	public Nette\Bridges\ApplicationLatte\LatteFactory $latteFactory;
 
 	#[Inject]
-	public Nette\Application\LinkGenerator $linkGenerator;
-
-	#[Inject]
 	public Nette\Mail\Mailer $mailer;
 
 	#[Inject]
@@ -288,8 +285,7 @@ final class CommunicationPresenter extends BasePresenter {
 			'message.latte' => '{layout @layout.latte}{block body}' . $body . '{/block}',
 		]));
 
-		$latte->addProvider('uiControl', $this->linkGenerator);
-		Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
+		$latte->addExtension(new Nette\Bridges\ApplicationLatte\UIExtension($this));
 
 		$messageHtml = $latte->renderToString(
 			'message.latte',
