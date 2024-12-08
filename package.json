@@ -17,7 +17,8 @@
 		"@parcel/transformer-sass": "^2.0.1",
 		"parcel": "^2.0.0",
 		"parcel-reporter-bundle-manifest": "^1.0.0",
-		"process": "^0.11.10"
+		"process": "^0.11.10",
+		"svgo": "^3.3.2"
 	},
 	"scripts": {
 		"build": "parcel build www/assets/index.html --dist-dir www/dist/ --public-url ./",
