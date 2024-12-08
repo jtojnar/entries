@@ -1,0 +1,631 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Components/Helpers.php
+
+		-
+			message: '#^Method App\\Components\\Helpers\:\:prepareAttrs\(\) should return array\{array\<string, array\<string, mixed\>\>, string\} but returns array\{array\<string, array\<mixed\>\>, non\-falsy\-string\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Components/Helpers.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between '''' and '''' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: app/Components/Helpers.php
+
+		-
+			message: '#^Parameter \#2 \$errorMessage of method Nette\\Forms\\Rules\:\:addRule\(\) expects string\|Stringable\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Components/ObjectSelectBox.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: app/Components/ObjectSelectBox.php
+
+		-
+			message: '#^Cannot call method addError\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Components/TeamForm.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 3
+			path: app/Components/TeamForm.php
+
+		-
+			message: '#^Cannot access property \$cardId on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Exporters/CsvExporter.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of function in_array expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Exporters/CsvExporter.php
+
+		-
+			message: '#^Cannot access property \$cardId on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Exporters/MeosExporter.php
+
+		-
+			message: '#^Cannot access offset ''container'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Forms/TeamFormFactory.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Forms/TeamFormFactory.php
+
+		-
+			message: '#^Cannot access offset string on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Method App\\Helpers\\Parameters\:\:getAppDir\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Method App\\Helpers\\Parameters\:\:getLocales\(\) should return array\<string, string\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Method App\\Helpers\\Parameters\:\:getSiteTitle\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Method App\\Helpers\\Parameters\:\:getSiteTitleShort\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Method App\\Helpers\\Parameters\:\:getTempDir\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Method App\\Helpers\\Parameters\:\:getWebmasterEmail\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Property App\\Helpers\\Parameters\:\:\$accountNumber \(string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Helpers/Parameters.php
+
+		-
+			message: '#^Call to function in_array\(\) with arguments ''age'', array\{''age''\} and true will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: \(App\\Model\\Configuration\\Constraints\\AggregateAgeConstraint\|App\\Model\\Configuration\\Constraints\\QuantifiedAgeConstraint\|App\\Model\\Configuration\\Constraints\\QuantifiedSexConstraint\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Parameter \#1 \$constraints of static method App\\Model\\Configuration\\Category\:\:parseConstraints\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Parameter \#1 \$fees of static method App\\Model\\Configuration\\Fees\:\:from\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Parameter \$constraints of class App\\Model\\Configuration\\Category constructor expects array\<App\\Model\\Configuration\\Constraints\\Constraint\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Parameter \$maxMembers of class App\\Model\\Configuration\\Category constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Parameter \$minMembers of class App\\Model\\Configuration\\Category constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Category.php
+
+		-
+			message: '#^Cannot access offset ''categories'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Model/Configuration/CategoryData.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(int\|string, mixed\)\: mixed\)\|null, Closure\(string, array\)\: App\\Model\\Configuration\\Category given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/CategoryData.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(int\|string, mixed\)\: mixed\)\|null, Closure\(string, array\)\: App\\Model\\Configuration\\CategoryGroup given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/CategoryData.php
+
+		-
+			message: '#^Parameter \#2 \$field of static method App\\Model\\Configuration\\Helpers\:\:parseLabel\(\) expects array\<string, mixed\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/CategoryData.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(int\|string, mixed\)\: mixed\)\|null, Closure\(string, array\)\: App\\Model\\Configuration\\Category given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/CategoryGroup.php
+
+		-
+			message: '#^Parameter \#1 \$fees of static method App\\Model\\Configuration\\Fees\:\:from\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/CategoryGroup.php
+
+		-
+			message: '#^Cannot access offset ''person'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Cannot access offset ''team'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \#1 \$categories of static method App\\Model\\Configuration\\CategoryData\:\:from\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \#1 \$class of static method App\\Model\\Configuration\\Helpers\:\:ensureSubclassOf\(\) expects class\-string\<mixed\>\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \#1 \$fees of static method App\\Model\\Configuration\\Fees\:\:from\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \#3 \$allLocales of static method App\\Model\\Configuration\\Helpers\:\:makeField\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \#3 \$eventDate of static method App\\Model\\Configuration\\CategoryData\:\:from\(\) expects DateTimeInterface, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \#4 \$allLocales of static method App\\Model\\Configuration\\CategoryData\:\:from\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$allowLateRegistrationsByEmail of class App\\Model\\Configuration\\Entries constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$allowPlaceholders of class App\\Model\\Configuration\\Entries constructor expects bool, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$closing of class App\\Model\\Configuration\\Entries constructor expects DateTimeImmutable\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$eventDate of class App\\Model\\Configuration\\Entries constructor expects DateTimeImmutable, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$initialMembers of class App\\Model\\Configuration\\Entries constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$maxMembers of class App\\Model\\Configuration\\Entries constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$minMembers of class App\\Model\\Configuration\\Entries constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$opening of class App\\Model\\Configuration\\Entries constructor expects DateTimeImmutable\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Parameter \$recommendedCardCapacity of class App\\Model\\Configuration\\Entries constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Entries.php
+
+		-
+			message: '#^Binary operation "\*" between mixed and 100 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: app/Model/Configuration/Fees.php
+
+		-
+			message: '#^Parameter \#1 \$code of class Money\\Currency constructor expects non\-empty\-string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Fees.php
+
+		-
+			message: '#^Parameter \#2 \$currency of class Money\\Money constructor expects Money\\Currency, Money\\Currency\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Fees.php
+
+		-
+			message: '#^Parameter \$currency of class App\\Model\\Configuration\\Fees constructor expects Money\\Currency, Money\\Currency\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Fees.php
+
+		-
+			message: '#^Method App\\Locale\\Translated@anonymous/app/Model/Configuration/Helpers\.php\:35\:\:getMessage\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Method App\\Model\\Configuration\\Helpers\:\:ensureFields\(\) should return array\<string, array\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Method App\\Model\\Configuration\\Helpers\:\:ensureLimits\(\) should return array\<string, int\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Method App\\Model\\Configuration\\Helpers\:\:ensureStringListMaybe\(\) should return array\<string\>\|null but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Method App\\Model\\Configuration\\Helpers\:\:makeItems\(\) should return array\<string, App\\Model\\Configuration\\Fields\\Item\> but returns array\<App\\Model\\Configuration\\Fields\\Item\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Parameter \#2 \$field of static method App\\Model\\Configuration\\Helpers\:\:parseLabel\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Parameter \$allLocales of static method App\\Model\\Configuration\\Helpers\:\:makeItems\(\) expects array\<string\>, array given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Part \$limit \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Part \$locale \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 1
+			path: app/Model/Configuration/Helpers.php
+
+		-
+			message: '#^Cannot access an offset on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^Parameter \$body of method App\\Presenters\\CommunicationPresenter\:\:_renderMessageBody\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^Parameter \$eventNameShort of class App\\Presenters\\templates\\Mail\\Message constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^Parameter \$subject of method App\\Presenters\\CommunicationPresenter\:\:_renderMessageBody\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Message\\Message\:\:\$sender \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Message\\Message\:\:\$subject \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/CommunicationPresenter.php
+
+		-
+			message: '#^PHPDoc tag @var with type IteratorAggregate\<string, SplFileInfo\> is not subtype of native type Nette\\Utils\\Finder\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/Presenters/HomepagePresenter.php
+
+		-
+			message: '#^Property Nette\\Forms\\Form\:\:\$onSuccess \(array\<callable\(Nette\\Application\\UI\\Form, mixed\)\: void\>\) does not accept non\-empty\-array\<\(callable\(Nette\\Application\\UI\\Form, mixed\)\: void\)\|\(Closure\(Nette\\Application\\UI\\Form, App\\Forms\\SignInFormData\)\: void\)\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/SignPresenter.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 4
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Binary operation "\." between ''team_'' and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Binary operation "\." between mixed and '' '' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 4
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access an offset on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''birth'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''email'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''firstname'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''gender'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''lastname'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''needed'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset ''placeholder'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access offset string on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access property \$cardId on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^PHPDoc tag @var with type Nette\\Utils\\ArrayHash is not subtype of native type Nette\\ComponentModel\\IComponent\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^PHPDoc tag @var with type string is not subtype of native type null\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function array_map expects \(callable\(mixed\)\: mixed\)\|null, Closure\(string\)\: string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Parameter \#1 \$email of method Nette\\Mail\\Message\:\:addTo\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Parameter \#1 \$item of static method App\\Presenters\\TeamPresenter\:\:serializeInvoiceItem\(\) expects array\{scope\?\: string, type\?\: string, key\?\: string, value\?\: string\}, array\{type\: string, scope\: ''person'', key\: string, value\: mixed\} given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Parameter \#1 \$item of static method App\\Presenters\\TeamPresenter\:\:serializeInvoiceItem\(\) expects array\{scope\?\: string, type\?\: string, key\?\: string, value\?\: string\}, array\{type\: string, scope\: ''team'', key\: string, value\: mixed\} given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 8
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Person\\Person\:\:\$birth \(DateTimeImmutable\|string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Person\\Person\:\:\$email \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Person\\Person\:\:\$firstname \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Person\\Person\:\:\$gender \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Person\\Person\:\:\$lastname \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Team\\Team\:\:\$category \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Team\\Team\:\:\$message \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Property App\\Model\\Orm\\Team\\Team\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Presenters/TeamPresenter.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed~''edit'' and ''edit'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Presenters/TeamPresenter.php
