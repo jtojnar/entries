@@ -58,7 +58,7 @@ final class Category {
 	}
 
 	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
-	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>(sum|min|max))\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
+	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>sum|min|max)\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
 
 	public const OP_LOOKUP = [
 		'<' => Constraints\ComparisonOperator::LessThan,
