@@ -52,6 +52,7 @@
                   nette-code-checker
                   update-php-extradeps
                   pkgs.nodejs
+                  pkgs.phpactor
                 ] ++ (with php.packages; [
                   composer
                   psalm
