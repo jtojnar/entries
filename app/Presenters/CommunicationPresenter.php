@@ -146,7 +146,7 @@ final class CommunicationPresenter extends BasePresenter {
 		}
 
 		try {
-			foreach ($teams as $id => $team) {
+			foreach ($teams as $team) {
 				\assert($team !== null); // For PHPStan.
 				$grant = $this->tokens->createForTeam($team);
 				$this->template->previewMessage = $this->_renderMessageBody(
@@ -228,7 +228,7 @@ final class CommunicationPresenter extends BasePresenter {
 		}
 
 		try {
-			foreach ($teams as $id => $team) {
+			foreach ($teams as $team) {
 				\assert($team !== null); // For PHPStan.
 
 				$grant = $this->tokens->createForTeam($team);
