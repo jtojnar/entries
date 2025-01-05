@@ -37,11 +37,9 @@ class ObjectSelectBox extends Controls\ChoiceControl {
 	public function __construct($label = null, ?array $items = null) {
 		parent::__construct($label, $items);
 		$this->setOption('type', 'select');
-		$this->addCondition(function() {
-			return $this->prompt === false
-				&& $this->options
-				&& $this->control->size < 2;
-		})->addRule(Nette\Forms\Form::FILLED, Nette\Forms\Validator::$messages[self::VALID]);
+		$this
+			->addCondition(fn() => $this->prompt === false && $this->options && $this->control->size < 2)
+			->addRule(Nette\Forms\Form::FILLED, Nette\Forms\Validator::$messages[self::VALID]);
 	}
 
 	/**
