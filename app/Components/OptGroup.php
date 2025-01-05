@@ -10,11 +10,11 @@ namespace App\Components;
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
 
-final class OptGroup {
+final readonly class OptGroup {
 	public function __construct(
-		public readonly string|Translated|NotTranslate $label,
+		public string|Translated|NotTranslate $label,
 		/** @var array<string, string|Translated|NotTranslate> */
-		public readonly array $options,
+		public array $options,
 	) {
 	}
 }

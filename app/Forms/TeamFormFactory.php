@@ -10,12 +10,12 @@ use Nette;
 use Nette\Localization\Translator;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 
-final class TeamFormFactory {
+final readonly class TeamFormFactory {
 	use Nette\SmartObject;
 
 	public function __construct(
-		private readonly Translator $translator,
-		private readonly Entries $entries,
+		private Translator $translator,
+		private Entries $entries,
 	) {
 	}
 

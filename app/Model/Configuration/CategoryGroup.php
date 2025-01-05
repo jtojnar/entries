@@ -11,12 +11,12 @@ use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
 use DateTimeInterface;
 
-final class CategoryGroup {
+final readonly class CategoryGroup {
 	public function __construct(
-		public readonly string $key,
-		public readonly string|Translated|NotTranslate $label,
+		public string $key,
+		public string|Translated|NotTranslate $label,
 		/** @var non-empty-array<Category> */
-		public readonly array $categories,
+		public array $categories,
 	) {
 	}
 

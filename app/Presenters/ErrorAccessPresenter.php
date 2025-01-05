@@ -8,6 +8,7 @@ use App\Exceptions\LimitedAccessException;
 use App\Model\Configuration\Entries;
 use Nette;
 use Nette\DI\Attributes\Inject;
+use Override;
 
 /**
  * @property Nette\Application\UI\Template $template
@@ -16,6 +17,7 @@ final class ErrorAccessPresenter extends BasePresenter {
 	#[Inject]
 	public Entries $entries;
 
+	#[Override]
 	public function startup(): void {
 		parent::startup();
 		if ($this->getRequest() === null || !$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {

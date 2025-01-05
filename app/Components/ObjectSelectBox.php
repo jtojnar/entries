@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Nette;
 use Nette\Forms\Controls;
 use Nette\Utils\Html;
+use Override;
 
 /**
  * Select box control that allows single item selection.
@@ -64,6 +65,7 @@ class ObjectSelectBox extends Controls\ChoiceControl {
 	 *
 	 * @param array<string,string|Translated|NotTranslate>|array<OptGroup> $items
 	 */
+	#[Override]
 	public function setItems(array $items, ?bool $useKeys = null): static {
 		if ($useKeys !== null) {
 			throw new InvalidArgumentException('useKeys argument is not supported.');
@@ -86,6 +88,7 @@ class ObjectSelectBox extends Controls\ChoiceControl {
 		return parent::setItems($items);
 	}
 
+	#[Override]
 	public function getControl(): Html {
 		$items = $this->prompt === false ? [] : ['' => $this->translate($this->prompt)];
 		foreach ($this->options as $key => $value) {

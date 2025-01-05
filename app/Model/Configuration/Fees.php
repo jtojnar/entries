@@ -7,10 +7,10 @@ namespace App\Model\Configuration;
 use Money\Currency;
 use Money\Money;
 
-final class Fees {
+final readonly class Fees {
 	public function __construct(
-		public readonly Currency $currency,
-		public readonly ?Money $person,
+		public Currency $currency,
+		public ?Money $person,
 	) {
 	}
 

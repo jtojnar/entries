@@ -40,9 +40,9 @@ use stdClass;
  * @phpstan-property self::STATUS_* $status
  */
 final class Team extends Entity {
-	public const STATUS_REGISTERED = 'registered';
-	public const STATUS_PAID = 'paid';
-	public const STATUS_WITHDRAWN = 'withdrawn';
+	public const string STATUS_REGISTERED = 'registered';
+	public const string STATUS_PAID = 'paid';
+	public const string STATUS_WITHDRAWN = 'withdrawn';
 
 	public function getJsonData(): stdClass {
 		$data = Json::decode($this->details);

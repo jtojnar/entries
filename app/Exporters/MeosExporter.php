@@ -20,13 +20,13 @@ use SplFileObject;
  * Team row contains these values: category, team name, club
  * Person row contains these values: full name, sportident card, club, category
  */
-final class MeosExporter implements IExporter {
-	public const DELIMITER = ';';
+final readonly class MeosExporter implements IExporter {
+	public const string DELIMITER = ';';
 
 	public function __construct(
 		/** @var ICollection<Team> */
-		private readonly ICollection $teams,
-		private readonly CategoryFormatFilter $categoryFormatter,
+		private ICollection $teams,
+		private CategoryFormatFilter $categoryFormatter,
 	) {
 	}
 

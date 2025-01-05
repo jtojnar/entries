@@ -25,6 +25,7 @@ use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
+use Override;
 use stdClass;
 use Tracy\Debugger;
 
@@ -77,6 +78,7 @@ final class TeamPresenter extends BasePresenter {
 	#[Inject]
 	public Nette\DI\Container $context;
 
+	#[Override]
 	public function startup(): void {
 		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
 			$today = new DateTimeImmutable();

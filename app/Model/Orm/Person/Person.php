@@ -31,8 +31,8 @@ use stdClass;
  * @property-phpstan self::GENDER_* $gender
  */
 final class Person extends Entity {
-	public const GENDER_MALE = 'male';
-	public const GENDER_FEMALE = 'female';
+	public const string GENDER_MALE = 'male';
+	public const string GENDER_FEMALE = 'female';
 
 	public function getJsonData(): stdClass {
 		$data = Json::decode($this->details);

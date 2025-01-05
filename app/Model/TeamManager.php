@@ -12,16 +12,16 @@ use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
-final class TeamManager implements Nette\Security\Authenticator {
+final readonly class TeamManager implements Nette\Security\Authenticator {
 	use Nette\SmartObject;
 
-	public const ENTRY_WITHDRAWN = 317806432;
+	public const int ENTRY_WITHDRAWN = 317806432;
 
 	public function __construct(
 		/** @var string administrator password */
-		private readonly string $adminPassword,
-		private readonly TeamRepository $teams,
-		private readonly Passwords $passwords,
+		private string $adminPassword,
+		private TeamRepository $teams,
+		private Passwords $passwords,
 	) {
 	}
 

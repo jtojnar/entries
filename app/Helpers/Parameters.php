@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
-final class Parameters {
+final readonly class Parameters {
 	public function __construct(
-		private readonly array $parameters,
+		private array $parameters,
 	) {
 	}
 

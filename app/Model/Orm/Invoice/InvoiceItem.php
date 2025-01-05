@@ -15,13 +15,13 @@ use Nette;
  * @property Money $price
  * @property int $amount
  */
-final class InvoiceItem implements JsonSerializable {
+final readonly class InvoiceItem implements JsonSerializable {
 	use Nette\SmartObject;
 
 	public function __construct(
-		private readonly string $name,
-		private readonly Money $price,
-		private readonly int $amount,
+		private string $name,
+		private Money $price,
+		private int $amount,
 	) {
 	}
 

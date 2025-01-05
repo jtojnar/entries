@@ -6,6 +6,7 @@ namespace App\Components;
 
 use Nette\Forms\Controls;
 use Nette\Utils\Html;
+use Override;
 
 /**
  * Radio list input that attempts to render HTML properly for Bootstrap 5.
@@ -15,6 +16,7 @@ final class BootstrapRadioList extends Controls\RadioList {
 	/** @var bool */
 	public $generateId = true;
 
+	#[Override]
 	public function getControl(): Html {
 		if ($this->hasErrors()) {
 			$this->getControlPrototype()->addClass('is-invalid');

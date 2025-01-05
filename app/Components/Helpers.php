@@ -9,6 +9,7 @@ namespace App\Components;
 
 use Nette;
 use Nette\Utils\Html;
+use Override;
 use Stringable;
 
 /**
@@ -20,6 +21,7 @@ class Helpers extends Nette\Forms\Helpers {
 	 * @param array<string, mixed> $labelAttrs
 	 * @param Html|Stringable|null $wrapper
 	 */
+	#[Override]
 	public static function createInputList(
 		array $items,
 		?array $inputAttrs = null,

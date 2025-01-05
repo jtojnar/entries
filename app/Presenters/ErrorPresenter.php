@@ -10,11 +10,11 @@ use Nette\Application\Responses;
 use Nette\Http;
 use Tracy\ILogger;
 
-final class ErrorPresenter implements Nette\Application\IPresenter {
+final readonly class ErrorPresenter implements Nette\Application\IPresenter {
 	use Nette\SmartObject;
 
 	public function __construct(
-		private readonly ILogger $logger,
+		private ILogger $logger,
 	) {
 	}
 
