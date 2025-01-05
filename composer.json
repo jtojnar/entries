@@ -50,8 +50,8 @@
 		}
 	},
 	"scripts": {
-		"cs": "php-cs-fixer fix --verbose --dry-run --diff --config=utils/php-cs-fixer.php",
-		"fix": "php-cs-fixer fix --verbose --diff --config=utils/php-cs-fixer.php",
+		"cs": "php-cs-fixer fix --verbose --dry-run --diff",
+		"fix": "php-cs-fixer fix --verbose --diff",
 		"lint": "parallel-lint app/ tests/ www/",
 		"phpstan": "phpstan analyse --memory-limit 256M",
 		"test": "tester tests -C -s"
