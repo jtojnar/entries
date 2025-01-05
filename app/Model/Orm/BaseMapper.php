@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace App\Model\Orm;
 
+use Nextras\Orm\Entity\IEntity;
 use Nextras\Orm\Mapper\Dbal\Conventions\Conventions;
 use Nextras\Orm\Mapper\Dbal\Conventions\IConventions;
-use Nextras\Orm\Mapper\Mapper;
+use Nextras\Orm\Mapper\Dbal\DbalMapper;
 
-class BaseMapper extends Mapper {
+/**
+ * @template E of IEntity
+ *
+ * @extends DbalMapper<E>
+ */
+class BaseMapper extends DbalMapper {
 	protected function createConventions(): IConventions {
 		$conventions = parent::createConventions();
 		\assert($conventions instanceof Conventions); // property is not available on interface

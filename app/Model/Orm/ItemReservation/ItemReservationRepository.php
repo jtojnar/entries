@@ -7,6 +7,8 @@ namespace App\Model\Orm\ItemReservation;
 use Nextras\Orm\Repository\Repository;
 
 /**
+ * @extends Repository<ItemReservation>
+ *
  * @property ItemReservationMapper $mapper
  */
 final class ItemReservationRepository extends Repository {

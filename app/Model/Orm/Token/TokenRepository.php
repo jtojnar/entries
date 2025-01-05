@@ -8,6 +8,9 @@ use App\Model\Orm\Team\Team;
 use Nette\Utils\Random;
 use Nextras\Orm\Repository\Repository;
 
+/**
+ * @extends Repository<Token>
+ */
 final class TokenRepository extends Repository {
 	public static function getEntityClassNames(): array {
 		return [Token::class];

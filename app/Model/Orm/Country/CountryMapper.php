@@ -6,5 +6,8 @@ namespace App\Model\Orm\Country;
 
 use App\Model\Orm\BaseMapper;
 
+/**
+ * @extends BaseMapper<Country>
+ */
 final class CountryMapper extends BaseMapper {
 }

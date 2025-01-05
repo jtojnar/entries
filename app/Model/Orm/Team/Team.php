@@ -53,7 +53,7 @@ final class Team extends Entity {
 	}
 
 	public function getterLastInvoice(): Invoice {
-		$invoice = $this->invoices->get()->orderBy(['timestamp' => 'DESC'])->fetch();
+		$invoice = $this->invoices->toCollection()->orderBy(['timestamp' => 'DESC'])->fetch();
 
 		if ($invoice === null) {
 			throw new \Exception('Team has no invoice!');
