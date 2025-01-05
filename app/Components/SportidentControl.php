@@ -16,13 +16,10 @@ use Override;
 use stdClass;
 
 final class SportidentControl extends NextrasBaseControl {
-	/** @var string */
 	public const string NAME_CARD_ID = 'cardId';
 
-	/** @var string */
 	public const string NAME_NEEDED = 'needed';
 
-	/** @var string */
 	private const string SI_PATTERN = '[0-9]+';
 
 	/** @var TextInput cardIdControl entry for card id */
