@@ -24,11 +24,13 @@ final class BootstrapRadioList extends Controls\RadioList {
 
 		/** @var Html */
 		$input = Controls\ChoiceControl::getControl();
+		$htmlId = $input->id;
+		\assert(\is_string($htmlId));
 		$items = $this->getItems();
 		$ids = [];
 		if ($this->generateId) {
 			foreach ($items as $value => $label) {
-				$ids[$value] = $input->id . '-' . $value;
+				$ids[$value] = $htmlId . '-' . $value;
 			}
 		}
 

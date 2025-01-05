@@ -41,7 +41,7 @@ final class TeamFormFactory {
 		$form->setTranslator($this->translator);
 		$renderer = new Bs5FormRenderer();
 		// We need the class to know what to hide (e.g. for applicableCategories).
-		$renderer->wrappers['pair']['container'] = preg_replace('(class=")', '$0form-group ', $renderer->wrappers['pair']['container']);
+		$renderer->wrappers['pair']['container'] = preg_replace('(class=")', '$0form-group ', (string) $renderer->wrappers['pair']['container']);
 		$form->setRenderer($renderer);
 
 		return $form;

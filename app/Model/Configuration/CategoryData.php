@@ -71,7 +71,7 @@ final class CategoryData {
 			$groups = $categories;
 
 			$categoryGroups = array_map(
-				fn(string $groupKey, array $group) => CategoryGroup::from(
+				fn(string $groupKey, array $group): CategoryGroup => CategoryGroup::from(
 					$groupKey,
 					Helpers::parseLabel("category group #{$groupKey}", $group, $allLocales),
 					$group,
@@ -88,7 +88,7 @@ final class CategoryData {
 			);
 		} else {
 			$categoriesData = array_map(
-				fn(string $categoryKey, array $category) => Category::from(
+				fn(string $categoryKey, array $category): Category => Category::from(
 					$categoryKey,
 					$category,
 					$fees,
