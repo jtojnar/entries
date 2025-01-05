@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\Orm\Invoice;
 
 use App\Model\Orm\BaseMapper;
+use Exception;
 use Money\Currency;
 use Money\Money;
 use Nette;
@@ -50,7 +51,7 @@ final class InvoiceMapper extends BaseMapper {
 
 				foreach ($items as ['name' => $name, 'price' => $price, 'amount' => $amount]) {
 					if (isset($result[$name])) {
-						throw new \Exception("Duplicate invoice item ‘{$name}’");
+						throw new Exception("Duplicate invoice item ‘{$name}’");
 					}
 
 					$price = new Money($price['amount'], new Currency($price['currency']));

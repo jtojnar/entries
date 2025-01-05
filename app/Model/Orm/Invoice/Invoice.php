@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Model\Orm\Invoice;
 
 use App\Model\Orm\Team\Team;
+use DateTimeImmutable;
+use Exception;
 use Money\Money;
 use Nextras\Orm\Entity\Entity;
 
@@ -13,7 +15,7 @@ use Nextras\Orm\Entity\Entity;
  *
  * @property int $id {primary}
  * @property string $status {default self::STATUS_NEW} {enum self::STATUS_*}
- * @property \DateTimeImmutable $timestamp {default now}
+ * @property DateTimeImmutable $timestamp {default now}
  * @property Team $team {m:1 Team::$invoices}
  * @property array $items
  *
@@ -30,7 +32,7 @@ final class Invoice extends Entity {
 		if (isset($items[$name])) {
 			$existingPrice = $items[$name]->price;
 			if (!$price->equals($existingPrice)) {
-				throw new \Exception("This invoice item “{$name}” already exists with a different price.");
+				throw new Exception("This invoice item “{$name}” already exists with a different price.");
 			}
 
 			return $this;
@@ -51,7 +53,7 @@ final class Invoice extends Entity {
 		$items = $this->items;
 
 		if (!isset($items[$name])) {
-			throw new \Exception("Invoice item “{$name}” was not defined.");
+			throw new Exception("Invoice item “{$name}” was not defined.");
 		}
 
 		$items[$name] = $items[$name]->addAmount(1);

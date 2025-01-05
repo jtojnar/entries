@@ -27,7 +27,7 @@ $rules = [
 	'concat_space' => ['spacing' => 'one'],
 	'phpdoc_align' => false,
 	'yoda_style' => false,
-	'global_namespace_import' => false,
+	'global_namespace_import' => true,
 
 	// additional rules
 	'array_syntax' => ['syntax' => 'short'],

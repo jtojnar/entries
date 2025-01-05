@@ -21,6 +21,7 @@ use Nette\Forms\Rules;
 use Nette\Localization\Translator;
 use Nette\Utils\Json;
 use Nextras\FormComponents\Controls\DateControl;
+use stdClass;
 
 /**
  * Form for creating and editing teams.
@@ -339,7 +340,7 @@ final class TeamForm extends UI\Form {
 		}
 	}
 
-	private function checkCategoryConstraints(self $form, \stdClass $data): void {
+	private function checkCategoryConstraints(self $form, stdClass $data): void {
 		// If submitter is `true`, no specific submit button was pressed but let’s check the form.
 		// Since `onValidate` is only called on form submission, it cannot be `false` but we will use `is_bool` to satisfy PHPStan.
 		$validationScope = \is_bool($form->isSubmitted()) ? null : $form->isSubmitted()->getValidationScope();

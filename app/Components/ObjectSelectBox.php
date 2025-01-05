@@ -10,6 +10,7 @@ namespace App\Components;
 
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
+use InvalidArgumentException;
 use Nette;
 use Nette\Forms\Controls;
 use Nette\Utils\Html;
@@ -65,7 +66,7 @@ class ObjectSelectBox extends Controls\ChoiceControl {
 	 */
 	public function setItems(array $items, ?bool $useKeys = null): static {
 		if ($useKeys !== null) {
-			throw new \InvalidArgumentException('useKeys argument is not supported.');
+			throw new InvalidArgumentException('useKeys argument is not supported.');
 		}
 
 		$this->options = $items;

@@ -8,10 +8,11 @@ declare(strict_types=1);
 namespace App\Model\Configuration\Constraints;
 
 use ArrayAccess;
+use DateTimeInterface;
 
 trait AgeCalculator {
 	private function getAgeFromPerson(ArrayAccess $person): ?int {
-		if (!$person['birth'] instanceof \DateTimeInterface) {
+		if (!$person['birth'] instanceof DateTimeInterface) {
 			return null;
 		}
 

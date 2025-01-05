@@ -12,6 +12,7 @@ use Nette\Forms\Form;
 use Nette\Forms\Helpers;
 use Nette\Forms\Rules;
 use Nextras\FormComponents\Fragments\UIComponent\BaseControl as NextrasBaseControl;
+use stdClass;
 
 final class SportidentControl extends NextrasBaseControl {
 	/** @var string */
@@ -79,7 +80,7 @@ final class SportidentControl extends NextrasBaseControl {
 	}
 
 	/**
-	 * @param array|\stdClass|null $value
+	 * @param array|stdClass|null $value
 	 */
 	public function setValue($value): self {
 		if ($value === null) {
@@ -89,7 +90,7 @@ final class SportidentControl extends NextrasBaseControl {
 			return $this;
 		}
 
-		if (!\is_array($value) && !$value instanceof \stdClass) {
+		if (!\is_array($value) && !$value instanceof stdClass) {
 			throw new Nette\InvalidArgumentException('Sportident takes an array, stdClass or null');
 		}
 

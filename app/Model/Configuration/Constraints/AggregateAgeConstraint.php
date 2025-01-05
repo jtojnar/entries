@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace App\Model\Configuration\Constraints;
 
 use App\Helpers\Iter;
+use DateTimeInterface;
 
 class AggregateAgeConstraint implements Constraint {
 	use AgeCalculator;
@@ -16,7 +17,7 @@ class AggregateAgeConstraint implements Constraint {
 		public readonly AggregateFunction $function,
 		public readonly EqualityOperator|ComparisonOperator $operator,
 		public readonly int $targetAge,
-		private readonly \DateTimeInterface $eventDate,
+		private readonly DateTimeInterface $eventDate,
 	) {
 	}
 

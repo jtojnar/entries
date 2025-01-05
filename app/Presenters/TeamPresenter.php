@@ -25,6 +25,7 @@ use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
+use stdClass;
 use Tracy\Debugger;
 
 /**
@@ -811,19 +812,19 @@ final class TeamPresenter extends BasePresenter {
 		}
 	}
 
-	private function personData(\stdClass $data): array {
+	private function personData(stdClass $data): array {
 		$fields = $this->entries->personFields;
 
 		return $this->formatData($data, $fields);
 	}
 
-	private function teamData(\stdClass $data): array {
+	private function teamData(stdClass $data): array {
 		$fields = $this->entries->teamFields;
 
 		return $this->formatData($data, $fields);
 	}
 
-	private function formatData(\stdClass $data, array $fields): array {
+	private function formatData(stdClass $data, array $fields): array {
 		$ret = [];
 		foreach ($fields as $field) {
 			$name = $field->name;
