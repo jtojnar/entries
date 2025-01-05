@@ -10,8 +10,8 @@ use Nextras\Orm\Mapper\Mapper;
 
 class BaseMapper extends Mapper {
 	protected function createConventions(): IConventions {
-		/** @var Conventions */
 		$conventions = parent::createConventions();
+		\assert($conventions instanceof Conventions); // property is not available on interface
 		$conventions->manyHasManyStorageNamePattern = '%s_%s';
 
 		return $conventions;
