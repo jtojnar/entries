@@ -6,9 +6,11 @@ namespace App\Model\Orm\Person;
 
 use App\Model\Orm\ItemReservation\ItemReservation;
 use App\Model\Orm\Team\Team;
+use DateTimeImmutable;
 use Nette\Utils\Json;
 use Nextras\Orm\Entity\Entity;
 use Nextras\Orm\Relationships\OneHasMany;
+use stdClass;
 
 /**
  * Person.
@@ -18,7 +20,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $firstname
  * @property string $lastname
  * @property string $gender {enum self::GENDER_*}
- * @property \DateTimeImmutable|null $birth
+ * @property DateTimeImmutable|null $birth
  * @property OneHasMany<ItemReservation> $itemReservations {1:m ItemReservation::$person}
  * @property array $jsonData {virtual}
  * @property string $details
@@ -32,14 +34,14 @@ final class Person extends Entity {
 	public const GENDER_MALE = 'male';
 	public const GENDER_FEMALE = 'female';
 
-	public function getJsonData(): \stdClass {
+	public function getJsonData(): stdClass {
 		$data = Json::decode($this->details);
-		\assert($data instanceof \stdClass); // For PHPStan.
+		\assert($data instanceof stdClass); // For PHPStan.
 
 		return $data;
 	}
 
-	public function setJsonData(array|\stdClass $data): void {
+	public function setJsonData(array|stdClass $data): void {
 		$this->details = \is_array($data) && \count($data) == 0 ? '{}' : Json::encode($data);
 	}
 }

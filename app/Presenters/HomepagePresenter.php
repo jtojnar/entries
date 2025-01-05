@@ -9,12 +9,14 @@ use App\Components\LocaleSwitcher;
 use App\Model\Configuration\Entries;
 use Contributte\Translation\Wrappers\NotTranslate;
 use DateTimeImmutable;
+use IteratorAggregate;
 use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\FormLayout;
+use SplFileInfo;
 
 /**
  * Presenter for main page.
@@ -95,7 +97,7 @@ final class HomepagePresenter extends BasePresenter {
 			throw new ForbiddenRequestException();
 		}
 
-		/** @var \IteratorAggregate<string, \SplFileInfo> */ // For PHPStan.
+		/** @var IteratorAggregate<string, SplFileInfo> */ // For PHPStan.
 		$cacheIterator = Nette\Utils\Finder::find('*')->from($this->parameters->getTempDir() . '/cache')->childFirst();
 		foreach ($cacheIterator as $entry) {
 			$path = (string) $entry;

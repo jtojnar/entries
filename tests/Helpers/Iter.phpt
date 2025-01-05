@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace App\Tests\Helpers;
 
 use App\Helpers\Iter;
+use ArrayIterator;
 use Tester\Assert;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -61,7 +62,7 @@ testCartesianProduct();
 function testFilterNull(): void {
 	Assert::same(
 		[1 => 1, 4 => 2, 6 => 3],
-		iterator_to_array(Iter::filterNull(new \ArrayIterator([null, 1, null, null, 2, null, 3, null]))),
+		iterator_to_array(Iter::filterNull(new ArrayIterator([null, 1, null, null, 2, null, 3, null]))),
 	);
 	Assert::same(
 		['b' => 1, 'e' => 2, 'g' => 3],
@@ -81,7 +82,7 @@ function testMap(): void {
 	);
 	Assert::same(
 		[1, 4, 9],
-		iterator_to_array(Iter::map(fn($v) => $v * $v, new \ArrayIterator([1, 2, 3]))),
+		iterator_to_array(Iter::map(fn($v) => $v * $v, new ArrayIterator([1, 2, 3]))),
 	);
 	Assert::same(
 		['a' => 0, 'b' => 1, 'c' => 2],
@@ -106,13 +107,13 @@ testMap();
 
 function testLast(): void {
 	Assert::same(9, Iter::last([1, 2, 3, 4, 5, 6, 7, 8, 9]));
-	Assert::same(9, Iter::last(new \ArrayIterator([1, 2, 3, 4, 5, 6, 7, 8, 9])));
+	Assert::same(9, Iter::last(new ArrayIterator([1, 2, 3, 4, 5, 6, 7, 8, 9])));
 }
 testLast();
 
 function testReduce(): void {
 	Assert::same(6, Iter::reduce([1, 2, 3], fn($a, $b) => $a + $b));
-	Assert::same('abc', Iter::reduce(new \ArrayIterator(['a', 'b', 'c']), fn($a, $b) => $a . $b, ''));
+	Assert::same('abc', Iter::reduce(new ArrayIterator(['a', 'b', 'c']), fn($a, $b) => $a . $b, ''));
 	Assert::same(64, Iter::reduce(['a' => 3, 'b' => 2, 'c' => 1], 'pow', 2));
 	Assert::same(0, Iter::reduce([], fn($a, $b) => $a * $b, 0));
 	Assert::same(1, Iter::reduce([], fn($a, $b) => $a * $b, 1));

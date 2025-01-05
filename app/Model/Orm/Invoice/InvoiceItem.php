@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\Orm\Invoice;
 
+use JsonSerializable;
 use Money\Money;
 use Nette;
 
@@ -14,7 +15,7 @@ use Nette;
  * @property Money $price
  * @property int $amount
  */
-final class InvoiceItem implements \JsonSerializable {
+final class InvoiceItem implements JsonSerializable {
 	use Nette\SmartObject;
 
 	public function __construct(

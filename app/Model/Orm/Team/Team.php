@@ -9,10 +9,13 @@ use App\Model\Orm\ItemReservation\ItemReservation;
 use App\Model\Orm\Message\Message;
 use App\Model\Orm\Person\Person;
 use App\Model\Orm\Token\Token;
+use DateTimeImmutable;
+use Exception;
 use Nette\Utils\Json;
 use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\Entity;
 use Nextras\Orm\Relationships\OneHasMany;
+use stdClass;
 
 /**
  * Team.
@@ -22,7 +25,7 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property string $category
  * @property string $message
  * @property string $status {default self::STATUS_REGISTERED} {enum self::STATUS_*}
- * @property \DateTimeImmutable $timestamp {default now}
+ * @property DateTimeImmutable $timestamp {default now}
  * @property array $jsonData {virtual}
  * @property string $details
  * @property string $ip
@@ -41,14 +44,14 @@ final class Team extends Entity {
 	public const STATUS_PAID = 'paid';
 	public const STATUS_WITHDRAWN = 'withdrawn';
 
-	public function getJsonData(): \stdClass {
+	public function getJsonData(): stdClass {
 		$data = Json::decode($this->details);
-		\assert($data instanceof \stdClass); // For PHPStan
+		\assert($data instanceof stdClass); // For PHPStan
 
 		return $data;
 	}
 
-	public function setJsonData(array|\stdClass $data): void {
+	public function setJsonData(array|stdClass $data): void {
 		$this->details = \is_array($data) && \count($data) == 0 ? '{}' : Json::encode($data);
 	}
 
@@ -56,7 +59,7 @@ final class Team extends Entity {
 		$invoice = $this->invoices->toCollection()->orderBy(['timestamp' => 'DESC'])->fetch();
 
 		if ($invoice === null) {
-			throw new \Exception('Team has no invoice!');
+			throw new Exception('Team has no invoice!');
 		}
 
 		return $invoice;

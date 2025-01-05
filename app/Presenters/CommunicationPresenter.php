@@ -8,6 +8,7 @@ use App;
 use App\Helpers\EmailFactory;
 use App\Model\Configuration\Entries;
 use App\Model\Orm\Team\Team;
+use Exception;
 use Latte;
 use Nette;
 use Nette\Application\BadRequestException;
@@ -16,6 +17,7 @@ use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
+use Throwable;
 use Tracy\Debugger;
 
 /**
@@ -154,7 +156,7 @@ final class CommunicationPresenter extends BasePresenter {
 				);
 				break;
 			}
-		} catch (\Throwable $e) {
+		} catch (Throwable $e) {
 			Debugger::log($e);
 			$form->addError(
 				$this->translator->translate(
@@ -258,7 +260,7 @@ final class CommunicationPresenter extends BasePresenter {
 			$this->redirect('Team:list');
 		} catch (Nette\Application\AbortException $e) {
 			throw $e;
-		} catch (\Throwable $e) {
+		} catch (Throwable $e) {
 			Debugger::log($e);
 			$form->addError(
 				$this->translator->translate(
@@ -391,7 +393,7 @@ final class CommunicationPresenter extends BasePresenter {
 				'status' => App\Model\Orm\Message\Message::STATUS_QUEUED,
 			]);
 
-			/** @throws \Exception */
+			/** @throws Exception */
 			$total = $messages->countStored();
 
 			foreach ($messages as $message) {
@@ -432,7 +434,7 @@ final class CommunicationPresenter extends BasePresenter {
 			$this->redirect('Homepage:');
 		} catch (Nette\Application\AbortException $e) {
 			throw $e;
-		} catch (\Throwable $e) {
+		} catch (Throwable $e) {
 			Debugger::log($e);
 			Debugger::barDump($e);
 			if ($total === null) {
