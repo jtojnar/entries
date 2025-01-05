@@ -54,7 +54,7 @@
         {
           default =
             let
-              php = pkgs.php82;
+              php = pkgs.php83;
             in
             pkgs.mkShell {
               nativeBuildInputs = [
