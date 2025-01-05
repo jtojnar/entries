@@ -45,7 +45,7 @@ final class Entries {
 		array $entries,
 	): self {
 		$allLocales = $entries['supportedLocales'] ?? ['en', 'cs'];
-		$fees = Fees::from($entries['fees'] ?? []);
+		$fees = Fees::fromRoot($entries['fees'] ?? []);
 		$eventDate = $entries['eventDate'];
 		$minMembers = $entries['minMembers'] ?? 0;
 		$personFieldsRaw = Helpers::ensureFields('person', $entries['fields']['person'] ?? []);

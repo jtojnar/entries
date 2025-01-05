@@ -27,7 +27,7 @@ final class CategoryGroup {
 		Fees $parentFees,
 		DateTimeInterface $eventDate,
 	): self {
-		$fees = Fees::from($group['fees'] ?? [], $parentFees);
+		$fees = Fees::from("categories.$key", $group['fees'] ?? [], $parentFees);
 
 		if (!isset($group['categories']) || !\is_array($group['categories']) || \count($group['categories']) === 0) {
 			throw new InvalidConfigurationException("Category group #{$key} lacks categories");

@@ -115,6 +115,31 @@ class BasicReadTest extends TestCase {
 		Assert::equal(new Money(20_00, new Currency('CZK')), $entries->categories->allCategories['inherited']->fees->person);
 	}
 
+	public function testFlatCategoriesFeesWithCurrency(): void {
+		$entries = Entries::from([
+			'eventDate' => new DateTimeImmutable('2050-12-07'),
+			'fees' => [
+				'person' => 20,
+				'currency' => 'GBP',
+			],
+			'categories' => [
+				'overridden' => [
+					'fees' => [
+						'currency' => 'USD',
+						'person' => 10,
+					],
+				],
+				'inherited' => [
+					'fees' => [
+						'person' => 30,
+					],
+				],
+			],
+		]);
+		Assert::equal(new Money(10_00, new Currency('USD')), $entries->categories->allCategories['overridden']->fees->person);
+		Assert::equal(new Money(30_00, new Currency('GBP')), $entries->categories->allCategories['inherited']->fees->person);
+	}
+
 	public function testNestedCategoriesFees(): void {
 		$entries = Entries::from([
 			'eventDate' => new DateTimeImmutable('2050-12-07'),

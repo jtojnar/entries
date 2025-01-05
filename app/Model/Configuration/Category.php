@@ -40,7 +40,7 @@ final class Category {
 		Fees $parentFees,
 		DateTimeInterface $eventDate,
 	): self {
-		$fees = Fees::from($category['fees'] ?? [], $parentFees);
+		$fees = Fees::from("categories.$key", $category['fees'] ?? [], $parentFees);
 		if ($fees->person === null) {
 			throw new InvalidConfigurationException("No person fee set for category “{$key}”");
 		}

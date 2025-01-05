@@ -141,6 +141,21 @@ final class Helpers {
 		return $value;
 	}
 
+	/**
+	 * @return non-empty-string
+	 */
+	public static function ensureNonEmptyString(string $context, mixed $value): string {
+		if (!\is_string($value)) {
+			throw new InvalidConfigurationException("Expected string for {$context}.");
+		}
+
+		if ($value === '') {
+			throw new InvalidConfigurationException("Expected non-empty string for {$context}.");
+		}
+
+		return $value;
+	}
+
 	public static function ensureStringMaybe(string $context, mixed $value): ?string {
 		if ($value === null) {
 			return $value;
