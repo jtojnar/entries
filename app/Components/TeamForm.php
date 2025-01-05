@@ -19,6 +19,7 @@ use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Rules;
 use Nette\Localization\Translator;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nextras\FormComponents\Controls\DateControl;
 use stdClass;
@@ -352,7 +353,7 @@ final class TeamForm extends UI\Form {
 
 		$categoryField = $form->getComponent('category');
 		$constraints = $this->entries->categories->allCategories[$data->category]->constraints;
-		/** @var iterable<iterable<string, mixed>> */
+		/** @var ArrayHash<ArrayHash<string, mixed>> */
 		$persons = $data->persons;
 		foreach ($constraints as $constraint) {
 			if (!$constraint->admits($persons)) {

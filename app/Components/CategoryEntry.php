@@ -26,14 +26,14 @@ final class CategoryEntry extends ObjectSelectBox {
 			$categoryGroups = $categoryTree;
 			$items = array_combine(
 				array_map(
-					static fn(CategoryGroup $group) => $group->key,
+					static fn(CategoryGroup $group): string => $group->key,
 					$categoryGroups,
 				),
 				array_map(
 					function(CategoryGroup $group) use ($showAll): OptGroup {
 						$categoryArray = array_combine(
 							array_map(
-								static fn(Category $category) => $category->name,
+								static fn(Category $category): string => $category->name,
 								$group->categories,
 							),
 							array_map(
@@ -60,7 +60,7 @@ final class CategoryEntry extends ObjectSelectBox {
 			$categories = $categoryTree;
 			$items = array_combine(
 				array_map(
-					static fn(Category $category) => $category->name,
+					static fn(Category $category): string => $category->name,
 					$categories,
 				),
 				array_map(

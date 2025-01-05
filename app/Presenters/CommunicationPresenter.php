@@ -99,7 +99,7 @@ final class CommunicationPresenter extends BasePresenter {
 		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
 		$values = $form->getValues();
 
-		$teamsIds = explode(',', $values['recipients']);
+		$teamsIds = explode(',', (string) $values['recipients']);
 		$teamsIds = array_map(
 			trim(...),
 			$teamsIds,
@@ -181,7 +181,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$values = $form->getValues();
 		$subject = $values['subject'];
 
-		$teamsIds = explode(',', $values['recipients']);
+		$teamsIds = explode(',', (string) $values['recipients']);
 		$teamsIds = array_map(
 			trim(...),
 			$teamsIds,

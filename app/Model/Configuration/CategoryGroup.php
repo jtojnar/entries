@@ -36,7 +36,7 @@ final class CategoryGroup {
 		$categoriesRaw = $group['categories'];
 
 		$categories = array_map(
-			fn(string $categoryKey, array $category) => Category::from(
+			fn(string $categoryKey, array $category): Category => Category::from(
 				$categoryKey,
 				$category,
 				$fees,

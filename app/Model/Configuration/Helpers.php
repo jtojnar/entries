@@ -228,7 +228,7 @@ final class Helpers {
 		return array_combine(
 			array_keys($items),
 			array_map(
-				function(string $name, mixed $item) use ($allLocales, $context, $disabled, $fallbackFee, $fees, $limitName) {
+				function(string $name, mixed $item) use ($allLocales, $context, $disabled, $fallbackFee, $fees, $limitName): Fields\Item {
 					if (!\is_array($item)) {
 						throw new InvalidConfigurationException("Item {$name} inside {$context} must be an array.");
 					}

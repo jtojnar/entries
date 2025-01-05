@@ -24,11 +24,13 @@ final class BootstrapCheckboxList extends Controls\CheckboxList {
 
 		/** @var Html */
 		$input = Controls\MultiChoiceControl::getControl();
+		$htmlId = $input->id;
+		\assert(\is_string($htmlId));
 		$items = $this->getItems();
 		$ids = [];
 		if ($this->generateId) {
 			foreach ($items as $value => $label) {
-				$ids[$value] = $input->id . '-' . $value;
+				$ids[$value] = $htmlId . '-' . $value;
 			}
 		}
 

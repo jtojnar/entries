@@ -820,11 +820,11 @@ final class TeamPresenter extends BasePresenter {
 	private function listActionSubmitMessage(Controls\SubmitButton $button): void {
 		$values = $button->form->getValues();
 		$selectedTeamIds = array_map(
-			fn($name) => substr($name, \strlen('team_')),
+			fn($name): string => substr((string) $name, \strlen('team_')),
 			array_keys(
 				array_filter(
 					(array) $values,
-					fn($value, $name) => str_starts_with($name, 'team_') && \is_bool($value) && $value,
+					fn($value, $name): bool => str_starts_with((string) $name, 'team_') && \is_bool($value) && $value,
 					\ARRAY_FILTER_USE_BOTH
 				)
 			)
@@ -837,18 +837,29 @@ final class TeamPresenter extends BasePresenter {
 		}
 	}
 
+	/**
+	 * @return list<string>
+	 */
 	private function personData(stdClass $data): array {
 		$fields = $this->entries->personFields;
 
 		return $this->formatData($data, $fields);
 	}
 
+	/**
+	 * @return list<string>
+	 */
 	private function teamData(stdClass $data): array {
 		$fields = $this->entries->teamFields;
 
 		return $this->formatData($data, $fields);
 	}
 
+	/**
+	 * @param array<string, Fields\Field> $fields
+	 *
+	 * @return list<string>
+	 */
 	private function formatData(stdClass $data, array $fields): array {
 		$ret = [];
 		foreach ($fields as $field) {
@@ -891,6 +902,9 @@ final class TeamPresenter extends BasePresenter {
 		return $ret;
 	}
 
+	/**
+	 * @param array{scope?: string, type?: string, key?: string, value?: string} $item
+	 */
 	public static function serializeInvoiceItem(array $item): string {
 		$parts = [$item['scope'] ?? '', $item['type'] ?? '', $item['key'] ?? '', $item['value'] ?? ''];
 
