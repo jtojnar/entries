@@ -41,7 +41,7 @@
         devShells = {
           default =
             let
-              php = pkgs.php82.withExtensions ({ enabled, all }: with all; enabled ++ [
+              php = pkgs.php83.withExtensions ({ enabled, all }: with all; enabled ++ [
                 intl
               ]);
             in
