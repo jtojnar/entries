@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"php": ">= 8.2",
+		"php": ">= 8.3",
 		"ext-gd": "*",
 		"ext-intl": "*",
 		"68publishers/asset": "^3.3",
@@ -61,7 +61,7 @@
 	},
 	"config": {
 		"platform": {
-			"php": "8.2.0"
+			"php": "8.3.0"
 		},
 		"sort-packages": true
 	}
