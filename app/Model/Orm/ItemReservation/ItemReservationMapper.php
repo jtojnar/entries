@@ -12,8 +12,8 @@ use Nextras\Dbal\Result\Result;
  */
 final class ItemReservationMapper extends BaseMapper {
 	public function getStats(): Result {
-		$query = $this->builder()->select('name')->addSelect('COUNT(*) AS cnt')->groupBy('name')->getQuerySql();
+		$builder = $this->builder()->select('name')->addSelect('COUNT(*) AS cnt')->groupBy('name');
 
-		return $this->connection->queryArgs([$query, $this->getTableName()]);
+		return $this->connection->queryByQueryBuilder($builder);
 	}
 }
