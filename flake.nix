@@ -15,6 +15,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       devenv,
       systems,
@@ -26,6 +27,10 @@
       forEachSystem = nixpkgs.lib.genAttrs (import systems);
     in
     {
+      packages = forEachSystem (system: {
+        devenv-up = self.devShells.${system}.default.config.procfileScript;
+      });
+
       devShells = forEachSystem (
         system:
         let
@@ -79,6 +84,20 @@
                 languages.php = {
                   enable = true;
                   package = php;
+                };
+
+                processes.http = {
+                  exec = "cd www; php -S localhost:8084 index.php";
+                };
+
+                services.mysql = {
+                  enable = true;
+                  initialDatabases = [
+                    {
+                      name = "entries";
+                      schema = ./install.sql;
+                    }
+                  ];
                 };
               }
             ];
