@@ -16,33 +16,37 @@ jobs:
     - name: Install Nix
       uses: cachix/install-nix-action@v25
 
+    - uses: cachix/cachix-action@v14
+      with:
+        name: devenv
+
     - name: Set outputs
       id: vars
       run: |
         echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
     - name: Install dependencies
-      run: nix-shell --run 'composer install --no-interaction'
+      run: nix develop --no-pure-eval -c composer install --no-interaction
 
     - name: Check code using Nette code checker
-      run: nix-shell --run 'code-checker -d app'
+      run: nix develop --no-pure-eval -c code-checker -d app
 
     - name: Lint coding style
-      run: nix-shell --run 'composer run-script cs'
+      run: nix develop --no-pure-eval -c composer run-script cs
 
     - name: Run static analysis
-      run: nix-shell --run 'composer run-script phpstan'
+      run: nix develop --no-pure-eval -c composer run-script phpstan
 
     - name: Lint source code
-      run: nix-shell --run 'composer run-script lint'
+      run: nix develop --no-pure-eval -c composer run-script lint
 
     - name: Run tests
       run: |
         cp .github/workflows/private.neon app/Config/private.neon
-        nix-shell --run 'composer test'
+        nix develop --no-pure-eval -c composer test
 
     - name: Build a zipball
-      run: nix-shell --run 'npm run dist "entries-${{ steps.vars.outputs.sha_short }}.zip"'
+      run: nix develop --no-pure-eval -c npm run dist "entries-${{ steps.vars.outputs.sha_short }}.zip"
 
     - name: Upload the zipball to GitHub
       uses: actions/upload-artifact@v4

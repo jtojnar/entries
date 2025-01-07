@@ -2,17 +2,13 @@
   description = "Entry registration system for Rogaining";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
+    systems.url = "github:nix-systems/default";
+    devenv.url = "github:cachix/devenv";
+    devenv.inputs.nixpkgs.follows = "nixpkgs";
 
     composer2nixRepo = {
       url = "github:svanderburg/composer2nix";
-      flake = false;
-    };
-
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
       flake = false;
     };
   };
@@ -20,65 +16,74 @@
   outputs =
     {
       nixpkgs,
-      utils,
+      devenv,
+      systems,
       composer2nixRepo,
       ...
-    }:
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
+    }@inputs:
 
-        importComposerPackage =
-          path:
-          (import path {
-            inherit system pkgs;
-            noDev = true;
-          }).override
-            {
-              executable = true;
-            };
+    let
+      forEachSystem = nixpkgs.lib.genAttrs (import systems);
+    in
+    {
+      devShells = forEachSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
 
-        composer2nix = importComposerPackage composer2nixRepo.outPath;
+          importComposerPackage =
+            path:
+            (import path {
+              inherit system pkgs;
+              noDev = true;
+            }).override
+              {
+                executable = true;
+              };
 
-        nette-code-checker = importComposerPackage ./.github/workflows/nix/code-checker;
+          composer2nix = importComposerPackage composer2nixRepo.outPath;
 
-        update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
-          pushd .github/workflows/nix/code-checker
-          composer update
-          env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
-          popd
-        '';
-      in
-      {
-        devShells = {
-          default =
-            let
-              php = pkgs.php81.withExtensions (
-                { enabled, all }:
-                with all;
-                enabled
-                ++ [
-                  intl
-                ]
-              );
-            in
-            pkgs.mkShell {
-              nativeBuildInputs =
-                [
-                  php
+          nette-code-checker = importComposerPackage ./.github/workflows/nix/code-checker;
+
+          update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
+            pushd .github/workflows/nix/code-checker
+            composer update
+            env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
+            popd
+          '';
+
+          php = pkgs.php81.withExtensions (
+            { enabled, all }:
+            with all;
+            enabled
+            ++ [
+              intl
+            ]
+          );
+        in
+        {
+          default = devenv.lib.mkShell {
+            inherit inputs pkgs;
+            modules = [
+              {
+                # https://devenv.sh/reference/options/
+                packages = [
                   pkgs.python3 # for create-zipball.py
                   nette-code-checker
                   update-php-extradeps
                   pkgs.nodejs
                   pkgs.phpactor
-                ]
-                ++ (with php.packages; [
-                  composer
-                  psalm
-                ]);
-            };
-        };
-      }
-    );
+                  php.packages.psalm
+                ];
+
+                languages.php = {
+                  enable = true;
+                  package = php;
+                };
+              }
+            ];
+          };
+        }
+      );
+    };
 }
