@@ -1,2 +1,6 @@
+dbal:
+	driver: mysqli
+	unix_socket: %env.DEVENV_RUNTIME%/mysql.sock
+
 parameters:
 	adminPassword: heslo

@@ -12,3 +12,4 @@ phpstan.neon
 /.parcel-cache/
 
 /.direnv/
+/.devenv/

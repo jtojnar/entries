@@ -1,64 +1,108 @@
 {
   description = "Entry registration system for Rogaining";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs = {
+    nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
+    systems.url = "github:nix-systems/default";
+    devenv.url = "github:cachix/devenv";
+    devenv.inputs.nixpkgs.follows = "nixpkgs";
 
-  inputs.utils.url = "github:numtide/flake-utils";
-
-  inputs.composer2nixRepo = {
-    url = "github:svanderburg/composer2nix";
-    flake = false;
+    composer2nixRepo = {
+      url = "github:svanderburg/composer2nix";
+      flake = false;
+    };
   };
 
-  inputs.flake-compat = {
-    url = "github:edolstra/flake-compat";
-    flake = false;
-  };
+  outputs =
+    {
+      self,
+      nixpkgs,
+      devenv,
+      systems,
+      composer2nixRepo,
+      ...
+    }@inputs:
 
-  outputs = { self, nixpkgs, utils, flake-compat, composer2nixRepo }:
-    utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
+    let
+      forEachSystem = nixpkgs.lib.genAttrs (import systems);
+    in
+    {
+      packages = forEachSystem (system: {
+        devenv-up = self.devShells.${system}.default.config.procfileScript;
+      });
 
-        importComposerPackage = path: (import path {
-          inherit system pkgs;
-          noDev = true;
-        }).override {
-          executable = true;
-        };
+      devShells = forEachSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
 
-        composer2nix = importComposerPackage composer2nixRepo.outPath;
+          importComposerPackage =
+            path:
+            (import path {
+              inherit system pkgs;
+              noDev = true;
+            }).override
+              {
+                executable = true;
+              };
 
-        nette-code-checker = importComposerPackage ./.github/workflows/nix/code-checker;
+          composer2nix = importComposerPackage composer2nixRepo.outPath;
 
-        update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
-          pushd .github/workflows/nix/code-checker
-          composer update
-          env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
-          popd
-        '';
-      in {
-        devShells = {
-          default =
-            let
-              php = pkgs.php81.withExtensions ({ enabled, all }: with all; enabled ++ [
-                intl
-              ]);
-            in
-              pkgs.mkShell {
-                nativeBuildInputs = [
-                  php
+          nette-code-checker = importComposerPackage ./.github/workflows/nix/code-checker;
+
+          update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
+            pushd .github/workflows/nix/code-checker
+            composer update
+            env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
+            popd
+          '';
+
+          php = pkgs.php81.withExtensions (
+            { enabled, all }:
+            with all;
+            enabled
+            ++ [
+              intl
+            ]
+          );
+        in
+        {
+          default = devenv.lib.mkShell {
+            inherit inputs pkgs;
+            modules = [
+              {
+                # https://devenv.sh/reference/options/
+                packages = [
                   pkgs.python3 # for create-zipball.py
                   nette-code-checker
                   update-php-extradeps
                   pkgs.nodejs
                   pkgs.phpactor
-                ] ++ (with php.packages; [
-                  composer
-                  psalm
-                ]);
-              };
-        };
-      }
-    );
+                  php.packages.psalm
+                ];
+
+                languages.php = {
+                  enable = true;
+                  package = php;
+                };
+
+                processes.http = {
+                  exec = "cd www; php -S localhost:8084 index.php";
+                };
+
+                services.mysql = {
+                  enable = true;
+                  initialDatabases = [
+                    {
+                      name = "entries";
+                      schema = ./install.sql;
+                    }
+                  ];
+                };
+              }
+            ];
+          };
+        }
+      );
+    };
 }

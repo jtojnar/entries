@@ -13,6 +13,9 @@ final class Bootstrap {
 		$configurator->enableTracy(__DIR__ . '/../log');
 		$configurator->setTimeZone('UTC');
 		$configurator->setTempDirectory(__DIR__ . '/../temp');
+		$configurator->addDynamicParameters([
+			'env' => getenv(),
+		]);
 		$configurator
 			->addConfig(__DIR__ . '/Config/common.neon');
 		$configurator
