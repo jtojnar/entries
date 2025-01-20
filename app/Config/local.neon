@@ -1,17 +1,6 @@
 php:
 	date.timezone: Europe/Prague
 
-# Do not forget to configure database here or in private.neon
-dbal:
-	driver: mysqli
-	host: localhost
-	database: entries
-	username: root
-	password:
-	connectionTz: +01:00
-	options:
-		charset: utf8mb4
-
 services:
 	exchange: Money\Exchange\ReversedCurrenciesExchange(
 		Money\Exchange\FixedExchange([
@@ -21,77 +10,76 @@ services:
 		])
 	)
 
-
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: 12. Sudetské Tojnárkovo Bloudění 2026
+		en: Lost in Tojnarek’s Sudetenland 2026
 	entries:
 		minMembers: 2
-		maxMembers: 5
-		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
+		maxMembers: 2
+		eventDate: 2026-12-31 # used for age calculations
+		opening: 2025-12-14T00:00:00
+		closing: 2026-04-25T12:00:00
+		accountNumber: '2800039826/2010'
 		invoiceModifier: App\Config\CustomInvoiceModifier
-		inputModifier: App\Config\BcnMandatoryForCzechs
 		fees:
 			currency: CZK
-			person: 650
+			person: 0
+		limits:
+			osecka: 14
+			satlava: 29
+			matraska: 15
 		categories:
-			HH20:
+			MJ:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
+					- 'all(age<=18)'
+			XJ:
+				constraints:
+					- 'some(gender=male)'
+					- 'some(gender=female)'
+					- 'all(age<=18)'
+			WJ:
 				constraints:
 					- 'all(gender=female)'
-					- 'all(age<20)'
-			HD20:
+					- 'all(age<=18)'
+			MO:
+				constraints:
+					- 'all(gender=male)'
+			XO:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+			WO:
+				constraints:
+					- 'all(gender=female)'
+			MV:
 				constraints:
 					- 'all(gender=male)'
-			DD:
-				constraints:
-					- 'all(gender=male)'
-			HD:
+					- 'all(age>=45)'
+			XV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-			HH40:
+					- 'all(age>=40)'
+			WV:
 				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			HD40:
-				constraints:
-					- 'some(gender=male)'
-					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(gender=female)'
+					- 'all(age>=40)'
 		fields:
 			team:
 				friday2h:
 					type: enum
-					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
 					public: true
+					label:
+						en: '2-hour Friday Night:'
+						cs: 'Páteční noční dvouhodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 50
+							fee: 100
 						no:
 							label:
 								en: 'No'
@@ -99,16 +87,16 @@ parameters:
 							default: true
 				saturday5h:
 					type: enum
-					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
 					public: true
+					label:
+						en: '5-hour Saturday:'
+						cs: 'Sobotní denní pětihodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 210
 						no:
 							label:
 								en: 'No'
@@ -116,65 +104,143 @@ parameters:
 							default: true
 				sunday4h:
 					type: enum
-					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
 					public: true
+					label:
+						en: '4-hour  - historical map:'
+						cs: 'Nedělní čtyřhodinovka - mapa 1850:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 210
 						no:
 							label:
 								en: 'No'
 								cs: 'Ne'
 							default: true
+				sportident:
+					public: true
+					type: sportident
+					fee: 70
 			person:
 				country:
 					type: country
 					default: 46
-					public: true
-				sportident:
-					type: sportident
-					fee: 50
-					public: true
-				mug:
-					type: checkbox
+				accommodation:
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accommodation must be ordered and paid until Monday April 13, 2026'
+						cs: 'Ubytování se musí objednat a zaplatit do pondělí 13. 4. 2026'
+					type: enum
+					options:
+						osecka:
+							label:
+								en: 'Pension Osecká Bouda (own sleeping bag), 700 CZK per person from Friday to Sunday'
+								cs: 'Pension Osecká Bouda (vlastní spacák), 700 Kč/os. pátek až neděle'
+							fee: 700
+							limit: osecka
+						satlava:
+							label:
+								en: 'Pension Šatlava (linen included, shared bathroom), 700 CZK per person from Friday to Sunday'
+								cs: 'Pension Šatlava, (s povlečením, společné sociálky), 700 Kč/os. pátek až neděle'
+							fee: 700
+							limit: satlava
+						matraska:
+							label:
+								en: 'Pension Matrasova bouda (linen included, bathroom en suite), 1600 CZK per person from Friday to Sunday'
+								cs: 'Pension Matrasova bouda, (s povlečením, vlastní sociálky), 1600 Kč/os. pátek až neděle'
+							fee: 1600
+							limit: matraska
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
 				boarding:
 					label:
-						en: 'Boarding:'
-						cs: 'Stravování:'
+						en: 'Boarding must be ordered and paid until Monday April 13, 2026'
+						cs: 'Stravování se musí objednat a zaplatit do pondělí 13. 4. 2026'
 					type: checkboxlist
 					items:
-						fri_supper:
+						fri-soup:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
-							fee: 95
-						sat_breakfast:
+								en: 'Friday poultry soup (35 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční kuřecí vývar (35 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 35
+						fri-d-goulash:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
+								en: 'Friday goulash & dumplings (139 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční guláš s knedlíkem (139 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 139
+						fri-b-goulash:
 							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
-							fee: 95
-					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
-				registry_bcn:
-					type: text
+								en: 'Friday goulash & bread (139 CZK, available between 17:00 and 19:30)'
+								cs: 'Páteční guláš s chlebem (139 Kč, odběr mezi 17:00 až 19:30)'
+							fee: 139
+						sat-breakfast-sausage:
+							label:
+								en: 'Saturday sausage breakfast (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní párek k snídani (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						sat-breakfast-eggs:
+							label:
+								en: 'Saturday scrambled eggs breakfast (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně míchaná vejce (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						sat-breakfast-jam:
+							label:
+								en: 'Saturday bread/butter/jam/cheese breakfast (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Sobotní snídaně chléb, máslo, marmeláda, sýr (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						sat-g-soup:
+							label:
+								en: 'Saturday goulash soup (35 CZK, available between 15:00 and 18:30)'
+								cs: 'Sobotní gulášovka (35 Kč, odběr mezi 15:00 až 18:30)'
+							fee: 35
+						sat-d-chicken:
+							label:
+								en: 'Saturday chicken with paprika sauce with dumplings (139 CZK, available between 15:00 až 18:30)'
+								cs: 'Sobotní kuře na paprice knedlík (139 Kč, odběr mezi 15:00 až 18:30)'
+							fee: 139
+						sat-p-chicken:
+							label:
+								en: 'Saturday chicken with paprika sauce with pasta (139 CZK, available between 15:00 až 18:30)'
+								cs: 'Sobotní kuře na paprice s těstovinami (139 Kč, odběr mezi 15:00 až 18:30)'
+							fee: 139
+						sun-breakfast-sausage:
+							label:
+								en: 'Sunday sausage breakfast (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní párek k snídani (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						sun-breakfast-eggs:
+							label:
+								en: 'Sunday scrambled eggs breakfast (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně míchaná vejce (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						sun-breakfast-jam:
+							label:
+								en: 'Sunday bread/butter/jam/cheese breakfast (70 CZK, available between 7:00 and 8:00)'
+								cs: 'Nedělní snídaně chléb, máslo, marmeláda, sýr (70 Kč, odběr mezi 7:00 až 8:00)'
+							fee: 70
+						sun-soup:
+							label:
+								en: 'Sunday pea soup (35 CZK, available between 13:00 and 14:30)'
+								cs: 'Nedělní hrachovka (35 Kč, odběr mezi 13:00 až 14:30)'
+							fee: 35
+						sun-ch-risotto:
+							label:
+								en: 'Sunday chicken risotto (139 CZK, available between 13:00 and 14:30)'
+								cs: 'Nedělní kuřecí rizoto (139 Kč, odběr mezi 13:00 až 14:30)'
+							fee: 139
+						sun-v-risotto:
+							label:
+								en: 'Sunday vegetable risotto (139 CZK, available between 13:00 and 14:30)'
+								cs: 'Nedělní zeleninové rizoto (139 Kč, odběr mezi 13:00 až 14:30)'
+							fee: 139
+				concert:
+					type: checkbox
 					label:
-						cs: 'Rodné číslo:'
-						en: 'Birth certificate number:'
-					description:
-						cs: 'Pro účely rejstříku sportovců ČSA'
-						en: 'For Czech competitors only - input any text'
+						en: 'Saturday concert in the event centre (150 CZK, from 20:00)'
+						cs: 'Sobotní koncert v závodním centru (150 Kč, od 20:00)'
+					fee: 150
+	webmasterEmail: "jan.tojnar@rogaining.cz"
