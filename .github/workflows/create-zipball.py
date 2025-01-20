@@ -22,7 +22,6 @@ DISALLOWED_FILENAME_PATTERNS = list(map(re.compile, [
 	r'(?i)^index',
 	r'(?i)^readme',
 	r'(?i)^licen[cs]e',
-	r'(?i)^version',
 	r'^phpunit',
 	r'^l?gpl\.txt$',
 	r'^composer\.(json|lock)$',
