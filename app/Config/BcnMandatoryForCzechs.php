@@ -12,9 +12,9 @@ use Nette\Forms\Form;
 use Nette\Forms\Rules;
 
 /**
- * Makes the person’s `registry_address` field required if and only if their `country` field is Czechia.
+ * Makes the person’s `registry_bcn` field required if and only if their `country` field is Czechia.
  */
-final class CustomInputModifier implements InputModifier {
+final class BcnMandatoryForCzechs implements InputModifier {
 	private const COUNTRY_ID = 46; // Czechia
 
 	/**
@@ -22,7 +22,7 @@ final class CustomInputModifier implements InputModifier {
 	 */
 	public static function modify(Control $input, IContainer $container, callable $whenNotPlaceholder): void {
 		// we also have some inputs that are based on Nextras\FormComponents\Fragments\UIComponent\BaseControl
-		if ($input instanceof BaseControl && $input->getName() === 'registry_address') {
+		if ($input instanceof BaseControl && $input->getName() === 'registry_bcn') {
 			$pairId = 'pair-' . $input->htmlId;
 			$input->setOption('id', $pairId);
 
