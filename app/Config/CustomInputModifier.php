@@ -9,13 +9,14 @@ use Nette\ComponentModel\IContainer;
 use Nette\Forms\Control;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
+use Nette\Forms\Rules;
 
-/**
- * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
- */
 final class CustomInputModifier implements InputModifier {
 	private const COUNTRY_ID = 46; // Czechia
 
+	/**
+	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+	 */
 	public static function modify(Control $input, IContainer $container, callable $whenNotPlaceholder): void {
 		// we also have some inputs that are based on Nextras\FormComponents\Fragments\UIComponent\BaseControl
 		if ($input instanceof BaseControl && $input->getName() === 'registry_address') {
