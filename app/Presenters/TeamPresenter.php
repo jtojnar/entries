@@ -630,10 +630,10 @@ final class TeamPresenter extends BasePresenter {
 					// If the override templates exist in the config directory,
 					// let’s use them.
 					$mailTemplatePath = null;
-					if (file_exists($appDir . '/config/mail/verification.' . $this->locale . '.latte')) {
-						$mailTemplatePath = $appDir . '/config/mail/verification.' . $this->locale . '.latte';
-					} elseif (file_exists($appDir . '/config/mail/verification.latte')) {
-						$mailTemplatePath = $appDir . '/config/mail/verification.latte';
+					if (file_exists($appDir . '/Config/mail/verification.' . $this->locale . '.latte')) {
+						$mailTemplatePath = $appDir . '/Config/mail/verification.' . $this->locale . '.latte';
+					} elseif (file_exists($appDir . '/Config/mail/verification.latte')) {
+						$mailTemplatePath = $appDir . '/Config/mail/verification.latte';
 					}
 
 					// If not, let’s use the built-in templates.
