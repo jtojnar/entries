@@ -11,11 +11,14 @@ use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
 use Nette\Forms\Rules;
 
+/**
+ * Makes the person’s `registry_address` field required if and only if their `country` field is Czechia.
+ */
 final class CustomInputModifier implements InputModifier {
 	private const COUNTRY_ID = 46; // Czechia
 
 	/**
-	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
+	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder rules attached to the returned value will only be checked if the control passed as the argument to the `callable` does not belong to a placeholder person
 	 */
 	public static function modify(Control $input, IContainer $container, callable $whenNotPlaceholder): void {
 		// we also have some inputs that are based on Nextras\FormComponents\Fragments\UIComponent\BaseControl
