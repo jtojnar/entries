@@ -5,7 +5,9 @@
  * matches the local timezone of the user agent.
  */
 function fromPhpDateTime(datetime, isDate = false) {
-	const parsed = datetime.date.match(/^(?<year>-?[0-9]+)-(?<month>[0-9]{2})-(?<day>[0-9]{2}) (?<hour>[0-9]{2}):(?<min>[0-9]{2}):(?<sec>[0-9]{2})\.(?<msec>[0-9]+)$/);
+	const parsed = datetime.date.match(
+		/^(?<year>-?[0-9]+)-(?<month>[0-9]{2})-(?<day>[0-9]{2}) (?<hour>[0-9]{2}):(?<min>[0-9]{2}):(?<sec>[0-9]{2})\.(?<msec>[0-9]+)$/,
+	);
 
 	let yearString = parsed.groups.year;
 	const year = parseInt(yearString, 10);
@@ -25,49 +27,65 @@ function fromPhpDateTime(datetime, isDate = false) {
 		// which Date will interpret as UTC time.
 		// To make them comparable without having to handle timezones,
 		// let’s use just the date part of the datetime string.
-		return new Date(`${yearString}-${parsed.groups.month}-${parsed.groups.day}`);
+		return new Date(
+			`${yearString}-${parsed.groups.month}-${parsed.groups.day}`,
+		);
 	} else {
-		return new Date(`${yearString}-${parsed.groups.month}-${parsed.groups.day} ${parsed.groups.hour}:${parsed.groups.min}:${parsed.groups.sec}.${parsed.groups.msec}`);
+		return new Date(
+			`${yearString}-${parsed.groups.month}-${parsed.groups.day} ${parsed.groups.hour}:${parsed.groups.min}:${parsed.groups.sec}.${parsed.groups.msec}`,
+		);
 	}
 }
 
 export function register(Nette) {
 	const originalMinValidator = Nette.validators.min;
-	Nette.validators.min = function(elem, arg, val) {
+	Nette.validators.min = function (elem, arg, val) {
 		if (elem.type === 'date' || elem.type === 'datetime-local') {
 			if (elem.validity.rangeUnderflow) {
 				return false;
 			} else if (elem.validity.badInput) {
 				return null;
 			}
-			return arg === null || new Date(val) >= fromPhpDateTime(arg, elem.type === 'date');
+			return (
+				arg === null ||
+				new Date(val) >= fromPhpDateTime(arg, elem.type === 'date')
+			);
 		}
 		return originalMinValidator(elem, arg, val);
 	};
 
 	const originalMaxValidator = Nette.validators.max;
-	Nette.validators.max = function(elem, arg, val) {
+	Nette.validators.max = function (elem, arg, val) {
 		if (elem.type === 'date' || elem.type === 'datetime-local') {
 			if (elem.validity.rangeOverflow) {
 				return false;
 			} else if (elem.validity.badInput) {
 				return null;
 			}
-			return arg === null || new Date(val) <= fromPhpDateTime(arg, elem.type === 'date');
+			return (
+				arg === null ||
+				new Date(val) <= fromPhpDateTime(arg, elem.type === 'date')
+			);
 		}
 		return originalMaxValidator(elem, arg, val);
 	};
 
 	const originalRangeValidator = Nette.validators.range;
-	Nette.validators.range = function(elem, arg, val) {
+	Nette.validators.range = function (elem, arg, val) {
 		if (elem.type === 'date' || elem.type === 'datetime-local') {
 			if (elem.validity.rangeUnderflow || elem.validity.rangeOverflow) {
 				return false;
 			} else if (elem.validity.badInput) {
 				return null;
 			}
-			return Array.isArray(arg) ?
-				((arg[0] === null || new Date(val) >= fromPhpDateTime(arg[0], elem.type === 'date')) && (arg[1] === null || new Date(val) <= fromPhpDateTime(arg[1], elem.type === 'date'))) : null;
+			return Array.isArray(arg)
+				? (arg[0] === null ||
+						new Date(val) >=
+							fromPhpDateTime(arg[0], elem.type === 'date')) &&
+						(arg[1] === null ||
+							new Date(val) <=
+								fromPhpDateTime(arg[1], elem.type === 'date'))
+				: null;
 		}
 		return originalRangeValidator(elem, arg, val);
 	};

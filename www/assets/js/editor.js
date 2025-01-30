@@ -29,8 +29,8 @@ export function register() {
 			EditorView.lineWrapping,
 			EditorView.theme({
 				'.cm-content, .cm-gutter': {
-					minHeight: '18em'
-				}
+					minHeight: '18em',
+				},
 			}),
 			html(),
 		];

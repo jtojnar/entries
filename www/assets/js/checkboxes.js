@@ -4,7 +4,11 @@ export function register() {
 
 		forms.forEach((form) => {
 			let lastCheckbox = null;
-			const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"]:not(.toggle-all)'));
+			const checkboxes = Array.from(
+				form.querySelectorAll(
+					'input[type="checkbox"]:not(.toggle-all)',
+				),
+			);
 
 			// Select consecutive when clicking with shift key.
 			checkboxes.forEach((checkbox, idx) => {
@@ -21,14 +25,16 @@ export function register() {
 					}
 					lastCheckbox = idx;
 				});
-			})
+			});
 
-			const toggleAll = form.querySelector('input[type="checkbox"].toggle-all');
+			const toggleAll = form.querySelector(
+				'input[type="checkbox"].toggle-all',
+			);
 			if (toggleAll) {
 				// Toggle all checkboxes.
 				toggleAll.addEventListener('change', (event) => {
 					checkboxes.forEach((box) => {
-						box.checked = toggleAll.checked
+						box.checked = toggleAll.checked;
 					});
 				});
 			}

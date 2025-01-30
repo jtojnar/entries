@@ -33,6 +33,9 @@ jobs:
     - name: Run static analysis
       run: nix-shell --run 'composer run-script phpstan'
 
+    - name: Check assets coding style
+      run: nix-shell --run 'npm run cs'
+
     - name: Lint source code
       run: nix-shell --run 'composer run-script lint'
 

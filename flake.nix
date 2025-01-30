@@ -52,6 +52,7 @@
                   nette-code-checker
                   update-php-extradeps
                   pkgs.nodejs
+                  pkgs.nodePackages.prettier
                   pkgs.phpactor
                 ] ++ (with php.packages; [
                   composer

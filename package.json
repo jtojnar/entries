@@ -22,6 +22,8 @@
 	"scripts": {
 		"build": "parcel build www/assets/index.html --dist-dir www/dist/ --public-url ./",
 		"dev": "parcel watch www/assets/index.html --dist-dir www/dist/ --public-url ./",
-		"dist": "python3 .github/workflows/create-zipball.py"
+		"dist": "python3 .github/workflows/create-zipball.py",
+		"cs": "prettier www/assets package.json composer.json --check",
+		"fix": "npm run cs -- --write"
 	}
 }
