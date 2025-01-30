@@ -158,13 +158,11 @@ parameters:
 								cs: 'Páteční večeře (95 Kč)'
 							fee: 95
 						sat_breakfast:
-							type: checkbox
 							label:
 								en: 'Saturday Breakfest (100 CZK)'
 								cs: 'Sobotní snídaně (100 Kč)'
 							fee: 100
 						sat_lun:
-							type: checkbox
 							label:
 								en: 'Saturday Lunch (95 CZK)'
 								cs: 'Sobotní oběd (95 Kč)'
