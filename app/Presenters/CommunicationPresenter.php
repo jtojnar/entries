@@ -294,6 +294,7 @@ final class CommunicationPresenter extends BasePresenter {
 			new App\Templates\Mail\Message(
 				// Define variables for use in the e-mail template.
 				accountNumber: $this->parameters->accountNumber,
+				accountNumberIban: $this->parameters->accountNumberIban !== null ? $this->parameters->accountNumberIban->asString() : null,
 				eventName: $eventName = $this->parameters->getSiteTitle($this->locale)
 					?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale())
 					?? throw new \PHPStan\ShouldNotHappenException(),

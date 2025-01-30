@@ -11,6 +11,9 @@ use App\Locale\Translated;
 use App\Model\Configuration\Fields\Field;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Money\Money;
+use Rikudou\Iban\Iban\CzechIbanAdapter;
+use Rikudou\Iban\Iban\IBAN;
+use Rikudou\Iban\Iban\IbanInterface;
 
 /**
  * Holds information about the event pertaining to registration.
@@ -363,5 +366,29 @@ final class Helpers {
 			),
 			default => throw new InvalidConfigurationException("Field “{$name}” has an unknown type “{$type}”."),
 		};
+	}
+
+	public static function parseAccountNumber(?string $accountNumber): ?IbanInterface {
+		if ($accountNumber === null) {
+			return null;
+		}
+
+		// Czech national bank account number as per *vyhláška č. 169/2011 Sb*
+		// https://www.cnb.cz/cs/platebni-styk/iban/iban-mezinarodni-format-cisla-uctu/
+		if (preg_match('(^(?P<client>(?:[0-9]{1,6}-)?[0-9]{2,10})/(?P<bank>[0-9]{4})$)', $accountNumber, $matches) === 1) {
+			$iban = new CzechIbanAdapter($matches['client'], $matches['bank']);
+		} else {
+			$iban = new IBAN($accountNumber);
+		}
+
+		$validator = $iban->getValidator();
+		// For PHPStan: Both CzechIbanAdapter and IBAN return a validator.
+		\assert($validator !== null, 'Missing IBAN validator');
+
+		if (!$validator->isValid()) {
+			throw new InvalidConfigurationException('Invalid account number.');
+		}
+
+		return $iban;
 	}
 }

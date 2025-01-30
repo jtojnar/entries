@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91dcae60c7849d29bc25ce0c738ca671",
+    "content-hash": "153b29b68c5dbf9a4e6f9ef933a14717",
     "packages": [
         {
             "name": "68publishers/asset",
@@ -2058,6 +2058,66 @@
                 "source": "https://github.com/phpstan/phpdoc-parser/tree/2.0.0"
             },
             "time": "2024-10-13T11:29:49+00:00"
+        },
+        {
+            "name": "rikudou/iban",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RikudouSage/IBAN.git",
+                "reference": "7fe69bf9274792c37d5a8d9d38ef5cb000f8377a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RikudouSage/IBAN/zipball/7fe69bf9274792c37d5a8d9d38ef5cb000f8377a",
+                "reference": "7fe69bf9274792c37d5a8d9d38ef5cb000f8377a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 | ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpstan/phpstan": "^0.12.63",
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rikudou\\Iban\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "WTFPL"
+            ],
+            "authors": [
+                {
+                    "name": "Dominik Chrástecký",
+                    "email": "dominik@chrastecky.cz"
+                }
+            ],
+            "description": "Library for working with IBANs",
+            "homepage": "https://github.com/RikudouSage/IBAN",
+            "keywords": [
+                "IBAN"
+            ],
+            "support": {
+                "issues": "https://github.com/RikudouSage/IBAN/issues",
+                "source": "https://github.com/RikudouSage/IBAN/tree/v1.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/dominik_ch",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://liberapay.com/dominik_ch",
+                    "type": "liberapay"
+                }
+            ],
+            "time": "2023-09-11T07:54:00+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
@@ -5502,7 +5562,7 @@
     "platform": {
         "php": ">= 8.3"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "8.3.0"
     },

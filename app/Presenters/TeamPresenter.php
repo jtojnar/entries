@@ -654,6 +654,7 @@ final class TeamPresenter extends BasePresenter {
 
 					// Define variables for use in the e-mail template.
 					$mtemplate->accountNumber = $this->parameters->accountNumber;
+					$mtemplate->accountNumberIban = $this->parameters->accountNumberIban !== null ? $this->parameters->accountNumberIban->asString() : null;
 					$mtemplate->eventName =
 						$this->parameters->getSiteTitle($this->locale)
 						?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale());

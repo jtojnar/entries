@@ -67,6 +67,8 @@ siteTitle:
 
 This is the bank account number to be listed in payment instructions in the Czech e-mail the team receives after registration. (Unless the message text is [overridden](customizing-emails.md).)
 
+This can be in [Czech national format](https://www.cnb.cz/cs/platebni-styk/iban/iban-mezinarodni-format-cisla-uctu/) or in [IBAN format](https://en.wikipedia.org/wiki/International_Bank_Account_Number).
+
 ```neon
 accountNumber: '000000-0000000000/0000'
 ```

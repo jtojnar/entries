@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Helpers;
 
+use App\Model\Configuration\Helpers;
+use Rikudou\Iban\Iban\IbanInterface;
+
 final class Parameters {
 	public readonly ?string $accountNumber;
+	public readonly ?IbanInterface $accountNumberIban;
 
 	public function __construct(
 		private readonly array $parameters,
 	) {
 		$this->accountNumber = $parameters['accountNumber'] ?? null;
+		$this->accountNumberIban = Helpers::parseAccountNumber($this->accountNumber);
 	}
 
 	/**

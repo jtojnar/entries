@@ -10,6 +10,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Report config errors earlier.
 - Invoice lists issue date.
 - Support allowing partially filled placeholder team members.
+- Validate bank account number when provided.
 
 ### Bugs fixed
 
