@@ -17,6 +17,7 @@ use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
+use ReflectionClass;
 use Throwable;
 use Tracy\Debugger;
 
@@ -75,6 +76,8 @@ final class CommunicationPresenter extends BasePresenter {
 			->setRequired('messages.communication.compose.body.error.empty');
 
 		$body->getControlPrototype()->class[] = 'codemirror';
+		$variableSuggestions = json_encode(self::getVariableSuggestions(), \JSON_THROW_ON_ERROR);
+		$body->getControlPrototype()->setAttribute('data-variable-suggestions', $variableSuggestions);
 
 		$preview = $form->addSubmit('preview', 'messages.communication.compose.preview');
 		$preview->onClick[] = $this->composeFormPreview(...);
@@ -460,5 +463,15 @@ final class CommunicationPresenter extends BasePresenter {
 
 			$this->redirect('Homepage:');
 		}
+	}
+
+	/** @return string[]
+	 */
+	private static function getVariableSuggestions(): array {
+		$message = new ReflectionClass(App\Templates\Mail\Message::class);
+		$properties = $message->getProperties();
+		$variables = array_map(fn($property) => $property->name, $properties);
+
+		return $variables;
 	}
 }

@@ -12,6 +12,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Support allowing partially filled placeholder team members.
 - Validate bank account number when provided.
 - Generate QR code for quick payment (requires `gd` extension).
+- Auto-complete variables in message editor.
 
 ### Bugs fixed
 

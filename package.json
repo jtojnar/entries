@@ -3,6 +3,7 @@
 	"license": "MIT",
 	"private": true,
 	"dependencies": {
+		"@codemirror/autocomplete": "^6.18.4",
 		"@codemirror/lang-html": "^6.0.0",
 		"@fortawesome/fontawesome-svg-core": "^6.1.0",
 		"@fortawesome/free-solid-svg-icons": "^6.1.0",
