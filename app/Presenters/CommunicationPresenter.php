@@ -406,6 +406,7 @@ final class CommunicationPresenter extends BasePresenter {
 				$mail->setFrom($message->sender)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
 
 				$mailer = $this->mailer;
+				$mailer->commandArgs = '-f entries@rogaining.cz';
 				$mailer->send($mail);
 
 				$message->status = App\Model\Orm\Message\Message::STATUS_SENT;

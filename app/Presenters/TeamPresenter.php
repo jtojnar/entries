@@ -700,6 +700,7 @@ final class TeamPresenter extends BasePresenter {
 						->setHtmlBody($mailHtml, $this->spaydQrGenerator->getStoragePath());
 
 					$mailer = $this->mailer;
+					$mailer->commandArgs = '-f entries@rogaining.cz';
 					$mailer->send($mail);
 
 					$this->flashMessage($this->translator->translate('messages.team.success.add', null, ['password' => $password]));
