@@ -293,7 +293,7 @@ final class CommunicationPresenter extends BasePresenter {
 			'message.latte',
 			new App\Templates\Mail\Message(
 				// Define variables for use in the e-mail template.
-				accountNumber: $this->entries->accountNumber,
+				accountNumber: $this->parameters->accountNumber,
 				eventName: $eventName = $this->parameters->getSiteTitle($this->locale)
 					?? $this->parameters->getSiteTitle($this->translator->getDefaultLocale())
 					?? throw new \PHPStan\ShouldNotHappenException(),

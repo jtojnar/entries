@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Helpers;
 
 final class Parameters {
+	public readonly ?string $accountNumber;
+
 	public function __construct(
 		private readonly array $parameters,
 	) {
+		$this->accountNumber = $parameters['accountNumber'] ?? null;
 	}
 
 	/**

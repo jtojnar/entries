@@ -24,7 +24,6 @@ final class Entries {
 		public readonly DateTimeImmutable $eventDate,
 		public readonly bool $allowLateRegistrationsByEmail,
 		public readonly int $recommendedCardCapacity,
-		public readonly ?string $accountNumber,
 		public readonly Fees $fees,
 		public readonly CategoryData $categories,
 		/** @var array<string, Field> */
@@ -62,7 +61,6 @@ final class Entries {
 			eventDate: $eventDate,
 			allowLateRegistrationsByEmail: $entries['allowLateRegistrationsByEmail'] ?? false,
 			recommendedCardCapacity: $entries['recommendedCardCapacity'] ?? 0,
-			accountNumber: $entries['accountNumber'] ?? null,
 			fees: $fees,
 			categories: CategoryData::from(
 				$entries['categories'] ?? [],

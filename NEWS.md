@@ -13,7 +13,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 
 ### Bugs fixed
 
--
+- `accountNumber` field is now looked for under `parameters` as documented.
 
 ### Other changes
 
