@@ -2,4 +2,10 @@
 
 {block payment}
 <p>Po zaplacení částky <strong>{$invoice->getTotal()|price}</strong> (startovné + příp. půjčovné čipu, ev. objednané jídlo) s&nbsp;variabilním symbolem <strong>{$id}</strong> na&nbsp;účet číslo <strong>{$accountNumber}</strong> bude přihláška plně akceptována.</p>
+
+{ifset $qrCode}
+<p>Platbu je možné provést také pomocí následujícího QR kódu:</p>
+
+{$qrCode}
+{/ifset}
 {/block}
