@@ -11,6 +11,7 @@ Each minor release (or even commit in the repository) is generally considered a 
 - Invoice lists issue date.
 - Support allowing partially filled placeholder team members.
 - Validate bank account number when provided.
+- Generate QR code for quick payment (requires `gd` extension).
 
 ### Bugs fixed
 

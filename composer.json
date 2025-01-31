@@ -12,8 +12,10 @@
 	],
 	"require": {
 		"php": ">= 8.3",
+		"ext-gd": "*",
 		"ext-intl": "*",
 		"68publishers/asset": "^3.3",
+		"bacon/bacon-qr-code": "^3.0",
 		"contributte/mail": "^0.7.0",
 		"contributte/translation": "^2.0",
 		"kdyby/forms-replicator": "^2.0.0",

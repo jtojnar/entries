@@ -13,6 +13,12 @@
 
 {block payment}
 <p n:ifset="$accountNumber">Po zaplacení částky <strong>{$invoice->getTotal()|price}</strong> s variabilním symbolem <strong>{$id}</strong> na účet číslo <strong>{$accountNumber}</strong> bude přihláška plně akceptována.</p>
+
+{ifset $qrCode}
+<p>Platbu je možné provést také pomocí následujícího QR kódu:</p>
+
+{$qrCode}
+{/ifset}
 {/block}
 
 <p>V případě jakýchkoli problémů s přihláškou pište na e-mail <a href="mailto:{$organiserMail}">{$organiserMail}</a>.</p>

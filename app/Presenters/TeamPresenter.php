@@ -8,6 +8,7 @@ use App;
 use App\Components\SportidentControl;
 use App\Exporters;
 use App\Helpers\EmailFactory;
+use App\Helpers\SpaydQrGenerator;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
 use App\Model\InvoiceModifier;
@@ -43,6 +44,9 @@ final class TeamPresenter extends BasePresenter {
 
 	#[Inject]
 	public EmailFactory $emailFactory;
+
+	#[Inject]
+	public SpaydQrGenerator $spaydQrGenerator;
 
 	#[Inject]
 	public Entries $entries;
@@ -662,6 +666,7 @@ final class TeamPresenter extends BasePresenter {
 						$this->parameters->getSiteTitleShort($this->locale)
 						?? $this->parameters->getSiteTitleShort($this->translator->getDefaultLocale())
 						?? $mtemplate->eventName;
+					\assert($mtemplate->eventNameShort !== null, 'Event name is required'); // For PHPStan
 					$mtemplate->dateFormat = $this->translator->translate('messages.email.verification.entry_details.person.birth.format');
 					$mtemplate->team = $team;
 					$mtemplate->people = $team->persons;
@@ -670,12 +675,29 @@ final class TeamPresenter extends BasePresenter {
 					$mtemplate->password = $password;
 					$mtemplate->invoice = $invoice;
 					$mtemplate->organiserMail = $this->parameters->getWebmasterEmail();
+					$mtemplate->qrCode =
+						$this->parameters->accountNumberIban !== null
+						? Html::el(
+							'img',
+							[
+								'src' => $this->spaydQrGenerator->generate(
+									accountNumber: $this->parameters->accountNumberIban,
+									amount: $invoice->getTotal(),
+									eventName: $mtemplate->eventNameShort,
+									teamId: $team->id,
+								),
+								'alt' => '',
+							]
+						) : null;
 
 					// Inline styles into the e-mail
 					$mailHtml = $this->emailFactory->create((string) $mtemplate);
 
 					$mail = new Message();
-					$mail->setFrom($mtemplate->organiserMail)->addTo($firstMemberAddress)->setHtmlBody($mailHtml);
+					$mail
+						->setFrom($mtemplate->organiserMail)
+						->addTo($firstMemberAddress)
+						->setHtmlBody($mailHtml, $this->spaydQrGenerator->getStoragePath());
 
 					$mailer = $this->mailer;
 					$mailer->send($mail);

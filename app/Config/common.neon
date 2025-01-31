@@ -55,6 +55,7 @@ orm:
 services:
 	- App\Helpers\EmailFactory(%appDir%)
 	- App\Helpers\Parameters(%parameters%)
+	- App\Helpers\SpaydQrGenerator
 	- App\Model\Configuration\Entries::from(%entries%)
 	- App\Model\TeamManager(%adminPassword%)
 	- App\Forms\FormFactory
