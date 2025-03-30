@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Config;
 
+use App\Locale\Translated;
 use App\Model\InputModifier;
+use Exception;
 use Nette\ComponentModel\IContainer;
 use Nette\Forms\Control;
 use Nette\Forms\Controls\BaseControl;
@@ -31,6 +33,17 @@ final class BcnMandatoryForCzechs implements InputModifier {
 			$country->addCondition(Form::NOT_EQUAL, self::COUNTRY_ID)->toggle($pairId, false);
 			$input->setRequired(false);
 			$whenNotPlaceholder($input)->addConditionOn($country, Form::EQUAL, self::COUNTRY_ID)->setRequired();
+		} elseif ($input instanceof BaseControl && $input->getName() === 'accommodation') {
+			$tent = $container->getForm()->getComponent('tent');
+			$input->addConditionOn($tent, Form::Equal, true)->addRule(Form::Equal, new class implements Translated {
+				public function getMessage(string $lang): string {
+					return match ($lang) {
+						'en' => 'You cannot select both team tent accommodation and individual accommodation',
+						'cs' => 'Týmový stan vylučuje individuální ubytování členů týmu',
+						default => throw new Exception("Unsupported language $lang"),
+					};
+				}
+			}, 'none');
 		}
 	}
 }

@@ -25,11 +25,14 @@ parameters:
 		opening: 2025-01-30T01:00:00
 		closing: 2050-06-23T01:00:00
 		inputModifier: App\Config\BcnMandatoryForCzechs
+		invoiceModifier: App\Config\CustomInvoiceModifier
 		fees:
 			currency: CZK
 			person: 900
 		limits:
-			potkavarna: 50
+			potkavarna: 75
+			tent: 50
+			teepee: 14
 		categories:
 			24:
 				label:
@@ -103,7 +106,7 @@ parameters:
 			6:
 				label: '6'
 				fees:
-					person: 600
+					person: 500
 				categories:
 					MO6:
 						constraints:
@@ -119,25 +122,12 @@ parameters:
 			team:
 				tent:
 					private: true
-					type: enum
+					type: checkbox
 					label:
-						en: 'Tent for 6H rogaine participants or accompanying persons'
-						cs: 'Stan pro doprovod nebo závodníky šestihodinovky'
-					options:
-						none:
-							label:
-								en: 'No tent'
-								cs: 'Žádný stan'
-							default: true
-						ws:
-							label:
-								en: '1 tent (100 CZK)'
-								cs: '1 stan (100 Kč)'
-							fee: 100
-					applicableCategories:
-						- MO6
-						- WO6
-						- XO6
+						en: 'Sleeping in your own tent, 200 CZK per person from Friday to Sunday'
+						cs: 'Nocleh ve vlastním stanu, 200 Kč/os. sobota až neděle'
+					fee: 200
+					limit: tent
 					description:
 						cs: 'Účastníci závodů na 12 a 24 hodin stanují zdarma'
 						en: 'Accommodation in tents is free for 12 and 24 hour rogaine participants'
@@ -156,18 +146,18 @@ parameters:
 						cs: 'Ubytování se musí objednat a zaplatit do pondělí 7. 6. 2025'
 					type: enum
 					options:
-						monastery-friday:
+						potkavarna-friday:
 							label:
-								en: 'Pension Potkávárna, 800 CZK per person from Friday to Sunday'
-								cs: 'Pension Potkávárna, 800 Kč/os. pátek až neděle'
-							fee: 1500
+								en: 'Pension Potkávárna/Karlovka, 1000 CZK per person from Friday to Sunday'
+								cs: 'Pension Potkávárna/Karlovka, 1000 Kč/os. pátek až neděle'
+							fee: 1000
 							limit: potkavarna
-						monastery-saturday:
+						potkavarna-teepee:
 							label:
-								en: 'Pension Potkávárna, 400 CZK per person from Saturday to Sunday'
-								cs: 'Pension Potkávárna, 400 Kč/os. sobota až neděle'
-							fee: 750
-							limit: potkavarna
+								en: 'Sleeping in teepee in your own sleeping bag, 400 CZK per person from Friday to Sunday'
+								cs: 'Nocleh v teepee ve vlastním spacáku, 400 Kč/os. sobota až neděle'
+							fee: 400
+							limit: teepee
 						none:
 							default: true
 							label:
@@ -181,29 +171,22 @@ parameters:
 					items:
 						fri_supper:
 							label:
-								en: 'Friday Supper (120 CZK, available between 17:00 and 19:30)'
-								cs: 'Páteční večeře (120 Kč, odběr mezi 17:00 až 19:30)'
-							fee: 120
+								en: 'Friday Supper (200 CZK, available between 18:30 and 21:00)'
+								cs: 'Páteční večeře (200 Kč, odběr mezi 18:30 až 21:00)'
+							fee: 200
 						sat_breakfast:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč, odběr mezi 7:00 až 9:00)'
-							fee: 100
+								en: 'Saturday Breakfest (150 CZK)'
+								cs: 'Sobotní snídaně (150 Kč, odběr mezi 7:00 až 9:00)'
+							fee: 150
 						sat_soup:
 							label:
 								en: 'Saturday Soup (60 CZK, available between 10:00 and 11:00)'
 								cs: 'Sobotní hovězí polévka (60 Kč, odběr mezi 10:00 až 11:00)'
 							fee: 60
-						sat_supper:
-							label:
-								en: 'Saturday Supper (120 CZK, available between 17:00 and 19:30)'
-								cs: 'Sobotní večeře (120 Kč, odběr mezi 17:00 až 19:30)'
-							fee: 120
-						sun_breakfast:
-							label:
-								en: 'Sunday Breakfest (100 CZK, available between 7:00 and 9:00)'
-								cs: 'Nedělní snídaně (100 Kč, odběr mezi 7:00 až 9:00)'
-							fee: 100
+					description:
+						cs: 'Jídlo během závodu a po 24h závodě je zahrnuto v ceně startovného'
+						en: 'Food during the 24 hour race and after the race is included in the entry fee.'
 				registry_bcn:
 					type: text
 					label:
