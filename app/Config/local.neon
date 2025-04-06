@@ -1,17 +1,6 @@
 php:
 	date.timezone: Europe/Prague
 
-# Do not forget to configure database here or in private.neon
-dbal:
-	driver: mysqli
-	host: localhost
-	database: entries
-	username: root
-	password:
-	connectionTz: +01:00
-	options:
-		charset: utf8mb4
-
 services:
 	exchange: Money\Exchange\ReversedCurrenciesExchange(
 		Money\Exchange\FixedExchange([
@@ -23,92 +12,78 @@ services:
 
 
 parameters:
-	# Do not forget to set password here or in private.neon
-	adminPassword:
 	siteTitle:
-		cs: Nějaký závod
-		en: Some event
-	webmasterEmail: email@example.com
+		cs: 2. Kočkogaining 2025
+		en: Black Cat Cup 2025
+	webmasterEmail: jan.tojnar@rogaining.cz
+	accountNumber: '523144003/5500'
 	entries:
 		minMembers: 2
-		maxMembers: 5
+		maxMembers: 2
 		recommendedCardCapacity: 30
-		eventDate: 2012-06-23 # used for age calculations
-		opening: 2021-04-01T01:00:00
-		closing: 2050-06-23T01:00:00
-		invoiceModifier: App\Config\CustomInvoiceModifier
-		inputModifier: App\Config\BcnMandatoryForCzechs
+		eventDate: 2025-12-31 # used for age calculations
+		opening: 2025-04-04T00:00:00
+		closing: 2025-05-31T12:00:00
 		fees:
 			currency: CZK
-			person: 650
+			person: 0
+		limits:
+			chatka: 69
 		categories:
-			HH20:
+			MJ:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age<20)'
-			DD20:
+					- 'all(age<=18)'
+			WJ:
 				constraints:
 					- 'all(gender=female)'
-					- 'all(age<20)'
-			HD20:
+					- 'all(age<=18)'
+			XJ:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age<20)'
-			HH:
+					- 'all(age<=18)'
+			MO:
 				constraints:
 					- 'all(gender=male)'
-			DD:
-				constraints:
-					- 'all(gender=male)'
-			HD:
+			XO:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-			HH40:
+			WO:
+				constraints:
+					- 'all(gender=female)'
+			MV:
 				constraints:
 					- 'all(gender=male)'
-					- 'all(age>40)'
-			DD40:
-				constraints:
-					- 'all(gender=male)'
-					- 'all(age>40)'
-			HD40:
+					- 'all(age>=40)'
+			XV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-					- 'all(age>40)'
+					- 'all(age>=40)'
+			WV:
+				constraints:
+					- 'all(gender=female)'
+					- 'all(age>=40)'
+			C:
+				constraints:
 		fields:
 			team:
-				friday2h:
-					type: enum
-					label:
-						en: '2 hour Friday Night'
-						cs: 'Páteční noční dvouhodinovka'
-					public: true
-					options:
-						yes:
-							label:
-								en: 'Yes'
-								cs: 'Ano'
-							fee: 50
-						no:
-							label:
-								en: 'No'
-								cs: 'Ne'
-							default: true
+				sportident:
+					type: sportident
+					fee: 70
 				saturday5h:
 					type: enum
 					label:
-						en: '5 hour Saturday'
-						cs: 'Sobotní denní pětihodinovka'
-					public: true
+						en: '5-hour Saturday:'
+						cs: 'Sobotní pětihodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 400
 						no:
 							label:
 								en: 'No'
@@ -117,15 +92,14 @@ parameters:
 				sunday4h:
 					type: enum
 					label:
-						en: '4 hour Sunday'
-						cs: 'Nedělní čtyřhodinovka - mapa 1850'
-					public: true
+						en: '4-hour Sunday:'
+						cs: 'Nedělní čtyřhodinovka:'
 					options:
 						yes:
 							label:
 								en: 'Yes'
 								cs: 'Ano'
-							fee: 150
+							fee: 300
 						no:
 							label:
 								en: 'No'
@@ -136,45 +110,69 @@ parameters:
 					type: country
 					default: 46
 					public: true
-				sportident:
-					type: sportident
-					fee: 50
-					public: true
-				mug:
-					type: checkbox
+				accommodation:
 					label:
-						en: 'Mug (100 CZK)'
-						cs: 'Hrnek (100 Kč)'
-					fee: 100
+						en: 'Accommodation must be ordered and paid until Wednesday April 30, 2025'
+						cs: 'Ubytování se musí objednat a zaplatit do středy 30. 4. 2025'
+					type: enum
+					options:
+						chatka-Pa-So:
+							label:
+								en: 'A small gottage Friday to Saturday, no bedlinen, own sleeping bag, 240 CZK per person'
+								cs: 'Chatka pátek až sobota, bez povlečení (vlastní spacák), 240 Kč/os.'
+							fee: 240
+							limit: chatka
+						chatka-So-Ne:
+							label:
+								en: 'A small gottage Saturday to Sunday, no bedlinen, own sleeping bag, 240 CZK per person'
+								cs: 'Chatka sobota až neděle, bez povlečení (vlastní spacák), 240 Kč/os.'
+							fee: 240
+							limit: chatka
+						chatka-Pa-Ne:
+							label:
+								en: 'A small gottage Friday to Sunday, no bedlinen, own sleeping bag, 480 CZK per person'
+								cs: 'Chatka pátek až neděle, bez povlečení (vlastní spacák), 480 Kč/os.'
+							fee: 480
+							limit: chatka
+						none:
+							default: true
+							label:
+								en: 'None'
+								cs: 'Žádné'
+							fee: 0
 				boarding:
 					label:
-						en: 'Boarding:'
-						cs: 'Stravování:'
+						en: 'Boarding must be ordered and paid until Sunday May 18, 2025'
+						cs: 'Stravování se musí objednat a zaplatit do neděle 18. 5. 2025'
 					type: checkboxlist
 					items:
-						fri_supper:
+						fri-chicken:
 							label:
-								en: 'Friday Supper (95 CZK)'
-								cs: 'Páteční večeře (95 Kč)'
-							fee: 95
-						sat_breakfast:
+								en: 'Friday supper – chicken slice with rice (135 CZK)'
+								cs: 'Páteční večeře – kuřecí plátek s rýží (135 Kč)'
+							fee: 135
+						sat-breakfast:
 							label:
-								en: 'Saturday Breakfest (100 CZK)'
-								cs: 'Sobotní snídaně (100 Kč)'
-							fee: 100
-						sat_lun:
+								en: 'Saturday breakfast, smorgasbord (165 CZK)'
+								cs: 'Sobotní snídaně, švédský stůl (165 Kč)'
+							fee: 165
+						sat-goulash:
 							label:
-								en: 'Saturday Lunch (95 CZK)'
-								cs: 'Sobotní oběd (95 Kč)'
-							fee: 95
-					description:
-						en: Half-boarding costs 210 CZK per day
-						cs: Polopenze stojí 210 Kč na den
-				registry_bcn:
-					type: text
-					label:
-						cs: 'Rodné číslo:'
-						en: 'Birth certificate number:'
-					description:
-						cs: 'Pro účely rejstříku sportovců ČSA'
-						en: 'For Czech competitors only - input any text'
+								en: 'Saturday supper – soup, beef goulash with dumplings (165 Kč)'
+								cs: 'Sobotní večeře – polévka, hovězí guláš s knedlíkem (165 Kč)'
+							fee: 165
+						sat-hli-goulash:
+							label:
+								en: 'Saturday supper – soup, oyster mushrooms goulash, bread or dumpling (165 Kč)'
+								cs: 'Sobotní večeře – polévka, hlívový guláš s knedlíkem (165 Kč)'
+							fee: 165
+						sun-breakfast:
+							label:
+								en: 'Sunday breakfast, smorgasbord (165 CZK)'
+								cs: 'Nedělní snídaně, švédský stůl (165 Kč)'
+							fee: 165
+						sun-schnitzel:
+							label:
+								en: 'Sunday after race meal – soup + chicken schnitzel with potatoes (165 CZK)'
+								cs: 'Nedělní pozávodní jídlo – polévka a řízek s bramborem (165 Kč)'
+							fee: 165
