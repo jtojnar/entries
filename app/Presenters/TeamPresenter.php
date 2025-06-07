@@ -786,12 +786,14 @@ final class TeamPresenter extends BasePresenter {
 	private function filterRedir(Nette\Forms\Form $form): void {
 		$parameters = [];
 
-		if ($this->request->getQuery('category') !== null) {
-			$parameters['category'] = $this->request->getQuery('category');
+		$category = $this->request->getQuery('category');
+		if ($category !== null && $category !== '') {
+			$parameters['category'] = $category;
 		}
 
-		if ($this->request->getQuery('status') !== null) {
-			$parameters['status'] = $this->request->getQuery('status');
+		$status = $this->request->getQuery('status');
+		if ($status !== null && $status !== '') {
+			$parameters['status'] = $status;
 		}
 
 		if (\count($parameters) === 0) {
