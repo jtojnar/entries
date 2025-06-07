@@ -883,7 +883,7 @@ final class TeamPresenter extends BasePresenter {
 				$ret[] = (string) Html::el('span', ['class' => 'fi fi-' . $country->codeAlpha2]) . ' ' . $country->name;
 				continue;
 			} elseif ($field instanceof Fields\EnumField && isset($data->$name) && isset($field->options[$data->$name])) {
-				$selectedOption = \array_key_exists($data->$name, $field->options) ? $this->translator->translate($field->options[$data->$name]->label) : $data->name;
+				$selectedOption = \array_key_exists($data->$name, $field->options) ? $this->translator->translate($field->options[$data->$name]->label) : $data->$name;
 				$ret[] = $label . ': ' . $selectedOption;
 				continue;
 			} elseif ($field instanceof Fields\CheckboxlistField && isset($data->$name)) {
