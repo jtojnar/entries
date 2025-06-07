@@ -870,33 +870,38 @@ final class TeamPresenter extends BasePresenter {
 				continue;
 			}
 
+			if (!isset($data->$name)) {
+				continue;
+			}
+
+			$value = $data->$name;
+
 			if ($field instanceof Fields\SportidentField) {
-				$value = $data->$name->{SportidentControl::NAME_CARD_ID} ?? $this->translator->translate('messages.team.person.si.rent');
+				$value = $value->{SportidentControl::NAME_CARD_ID} ?? $this->translator->translate('messages.team.person.si.rent');
 				$ret[] = $label . ' ' . $value;
 				continue;
 			} elseif ($field instanceof Fields\CountryField) {
-				$country = isset($data->$name) ? $this->countries->getById($data->$name) : null;
+				$country = $this->countries->getById($value);
 				if ($country === null) {
 					$ret[] = $this->translator->translate('messages.team.data.country.unknown');
 					continue;
 				}
 				$ret[] = (string) Html::el('span', ['class' => 'fi fi-' . $country->codeAlpha2]) . ' ' . $country->name;
 				continue;
-			} elseif ($field instanceof Fields\EnumField && isset($data->$name) && isset($field->options[$data->$name])) {
-				$selectedOption = \array_key_exists($data->$name, $field->options) ? $this->translator->translate($field->options[$data->$name]->label) : $data->$name;
+			} elseif ($field instanceof Fields\EnumField && isset($field->options[$value])) {
+				$selectedOption = \array_key_exists($value, $field->options) ? $this->translator->translate($field->options[$value]->label) : $value;
 				$ret[] = $label . ': ' . $selectedOption;
 				continue;
-			} elseif ($field instanceof Fields\CheckboxlistField && isset($data->$name)) {
+			} elseif ($field instanceof Fields\CheckboxlistField) {
 				$items = array_map(
 					fn(string $item): string => isset($field->items[$item]) ? $this->translator->translate($field->items[$item]->label) : $item,
-					$data->$name
+					$value
 				);
 				$ret[] = $label . ' ' . implode(', ', $items);
 				continue;
 			}
-			if (isset($data->$name)) {
-				$ret[] = $label . ' ' . $data->$name;
-			}
+
+			$ret[] = $label . ' ' . $value;
 		}
 
 		return $ret;
