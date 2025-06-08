@@ -6,18 +6,11 @@ namespace App\Model\Orm\Invoice;
 
 use JsonSerializable;
 use Money\Money;
-use Nette;
 
 /**
  * Immutable invoice item.
- *
- * @property string $name
- * @property Money $price
- * @property int $amount
  */
 final class InvoiceItem implements JsonSerializable {
-	use Nette\SmartObject;
-
 	public function __construct(
 		private readonly string $name,
 		private readonly Money $price,
@@ -51,9 +44,9 @@ final class InvoiceItem implements JsonSerializable {
 
 	public function jsonSerialize(): array {
 		return [
-			'name' => $this->name,
-			'price' => $this->price,
-			'amount' => $this->amount,
+			'name' => $this->getName(),
+			'price' => $this->getPrice(),
+			'amount' => $this->getAmount(),
 		];
 	}
 }

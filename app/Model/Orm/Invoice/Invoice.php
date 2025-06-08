@@ -30,7 +30,7 @@ final class Invoice extends Entity {
 		$items = $this->items;
 
 		if (isset($items[$name])) {
-			$existingPrice = $items[$name]->price;
+			$existingPrice = $items[$name]->getPrice();
 			if (!$price->equals($existingPrice)) {
 				throw new Exception("This invoice item “{$name}” already exists with a different price.");
 			}
@@ -80,7 +80,7 @@ final class Invoice extends Entity {
 		return Money::sum(
 			...array_values(
 				array_map(
-					fn(InvoiceItem $item): Money => $item->price->multiply($item->amount),
+					fn(InvoiceItem $item): Money => $item->getPrice()->multiply($item->getAmount()),
 					$relevantItems
 				)
 			)

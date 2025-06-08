@@ -11,7 +11,7 @@
 <tr><th>{_messages.billing.invoice.item}</th><th>{_messages.billing.invoice.unit_price}</th><th>{_messages.billing.invoice.quantity}</th><th>{_messages.billing.invoice.price}</th></tr>
 </thead>
 <tbody>
-<tr n:foreach="$invoice->items as $name => $item"><td>{$name|itemLabel}</td><td>{$item->price|price}</td><td>{$item->amount}</td><td>{$item->price->multiply($item->amount)|price}</td></tr>
+<tr n:foreach="$invoice->items as $name => $item"><td>{$name|itemLabel}</td><td>{$item->getPrice()|price}</td><td>{$item->getAmount()}</td><td>{$item->getPrice()->multiply($item->getAmount())|price}</td></tr>
 </tbody>
 <tfoot>
 <tr><td colspan="3"><strong>{_messages.billing.invoice.total_price}</strong></td><td><strong>{$invoice->getTotal()|price}</strong></td></tr>

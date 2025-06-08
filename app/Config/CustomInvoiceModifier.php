@@ -21,7 +21,7 @@ final class CustomInvoiceModifier implements InvoiceModifier {
 
 		$data = $team->getJsonData();
 		if ($data->friday2h === 'yes' && $data->saturday5h === 'yes' && $data->sunday4h === 'yes') {
-			$invoice->addItem('all_stages_discount', $invoice->items['team:enum:friday2h:yes']->price->multiply(-1));
+			$invoice->addItem('all_stages_discount', $invoice->items['team:enum:friday2h:yes']->getPrice()->multiply(-1));
 		}
 
 		self::fixPersonItemAmounts($invoice, \count($team->persons));
@@ -68,6 +68,6 @@ final class CustomInvoiceModifier implements InvoiceModifier {
 	}
 
 	private static function discount(InvoiceItem $item, int $discount): InvoiceItem {
-		return $item->withPrice($item->price->subtract(Money::CZK($discount * 100))); // price in halíř
+		return $item->withPrice($item->getPrice()->subtract(Money::CZK($discount * 100))); // price in halíř
 	}
 }
