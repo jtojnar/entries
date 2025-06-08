@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Forms;
 
-use Nette;
 use Nette\Application\UI\Form;
 use Nette\Localization\Translator;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use Nextras\FormsRendering\Renderers\FormLayout;
 
 final class FormFactory {
-	use Nette\SmartObject;
-
 	public function __construct(
 		private readonly Translator $translator,
 	) {

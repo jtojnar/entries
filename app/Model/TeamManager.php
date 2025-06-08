@@ -13,8 +13,6 @@ use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
 final class TeamManager implements Nette\Security\Authenticator {
-	use Nette\SmartObject;
-
 	public const ENTRY_WITHDRAWN = 317806432;
 
 	public function __construct(

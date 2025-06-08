@@ -6,13 +6,10 @@ namespace App\Forms;
 
 use App\Components\TeamForm;
 use App\Model\Configuration\Entries;
-use Nette;
 use Nette\Localization\Translator;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 
 final class TeamFormFactory {
-	use Nette\SmartObject;
-
 	public function __construct(
 		private readonly Translator $translator,
 		private readonly Entries $entries,
