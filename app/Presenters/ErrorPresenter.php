@@ -10,6 +10,9 @@ use Nette\Application\Responses;
 use Nette\Http;
 use Tracy\ILogger;
 
+/**
+ * Handles uncaught exceptions and errors, and logs them.
+ */
 final class ErrorPresenter implements Nette\Application\IPresenter {
 	public function __construct(
 		private readonly ILogger $logger,
@@ -24,13 +27,17 @@ final class ErrorPresenter implements Nette\Application\IPresenter {
 			$errorPresenter = $module . $sep . 'ErrorAccess';
 
 			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
-		} elseif ($exception instanceof Nette\Application\BadRequestException) {
+		}
+
+		// If the exception is a 4xx HTTP error, forward to the Error4xxPresenter
+		if ($exception instanceof Nette\Application\BadRequestException) {
 			[$module, , $sep] = Nette\Application\Helpers::splitName($request->getPresenterName());
 			$errorPresenter = $module . $sep . 'Error4xx';
 
 			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
 		}
 
+		// Log the exception and display a generic error message to the user
 		$this->logger->log($exception, ILogger::EXCEPTION);
 
 		return new Responses\CallbackResponse(function(Http\IRequest $httpRequest, Http\IResponse $httpResponse): void {
