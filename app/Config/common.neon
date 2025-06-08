@@ -27,6 +27,12 @@ di:
 			- Contributte\Translation\LocalesResolvers\Session
 			- Nette\Localization\Translator
 
+latte:
+	strictTypes: true
+	strictParsing: true
+	extensions:
+		- App\Templates\Accessory\LatteExtension
+
 session:
 	autoStart: yes
 	expiration: 31 days
@@ -66,12 +72,6 @@ services:
 	- App\Templates\Filters\PriceFilter
 	- App\Templates\Filters\WrapInParagraphsFilter
 	exchange: Money\Exchange\FixedExchange([])
-	nette.latteFactory:
-		setup:
-			- addFilter(categoryFormat, @App\Templates\Filters\CategoryFormatFilter)
-			- addFilter(exchangeCurrency, @App\Templates\Filters\CurrencyExchangeFilter)
-			- addFilter(price, @App\Templates\Filters\PriceFilter)
-			- addFilter(wrapInParagraphs, @App\Templates\Filters\WrapInParagraphsFilter)
 
 translation:
 	translatorFactory: App\Locale\Translator
