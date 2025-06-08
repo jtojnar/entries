@@ -12,10 +12,12 @@ use Nette\Utils\Html;
 use Stringable;
 
 /**
- * Nette forms helper modified to work better with Bootstrap styles.
+ * A subset of `Nette\Forms\Helpers` modified to work better with Bootstrap styles.
  */
-class Helpers extends Nette\Forms\Helpers {
+final class Helpers {
 	/**
+	 * The difference from `Nette\Forms\Helpers` is that we move `label` tag after the `input` tag, instead of having the former wrap the latter.
+	 *
 	 * @param array<string, mixed> $inputAttrs
 	 * @param array<string, mixed> $labelAttrs
 	 * @param Html|Stringable|null $wrapper
@@ -44,7 +46,7 @@ class Helpers extends Nette\Forms\Helpers {
 
 			$input->value = $value;
 			$res .= ($res === '' && $wrapperEnd === '' ? '' : $wrapper)
-				. $inputTag . $input->attributes() . (Html::$xhtml ? ' />' : '>')
+				. $inputTag . $input->attributes() . '>'
 				. $labelTag . $label->attributes() . '>'
 				. ($caption instanceof Nette\HtmlStringable ? $caption : htmlspecialchars((string) $caption, \ENT_NOQUOTES, 'UTF-8'))
 				. '</label>'
@@ -55,6 +57,8 @@ class Helpers extends Nette\Forms\Helpers {
 	}
 
 	/**
+	 * This is copied as is from `Nette\Forms\Helpers` since we cannot access it from here.
+	 *
 	 * @param array<string, mixed> $attrs
 	 *
 	 * @return array{array<string, array<string, mixed>>, string}
@@ -66,7 +70,7 @@ class Helpers extends Nette\Forms\Helpers {
 				$p = substr($k, 0, -1);
 				unset($attrs[$k], $attrs[$p]);
 				if ($k[-1] === '?') {
-					$dynamic[$p] = array_fill_keys((array) $v, true);
+					$dynamic[$p] = array_fill_keys((array) $v, value: true);
 				} elseif (\is_array($v) && $v) {
 					$dynamic[$p] = $v;
 				} else {
