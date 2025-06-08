@@ -37,16 +37,16 @@ final class InvoiceItem implements JsonSerializable {
 		return $this->amount;
 	}
 
-	public function setPrice(Money $price): self {
+	public function withPrice(Money $price): self {
 		return new self($this->name, $price, $this->amount);
 	}
 
-	public function setAmount(int $amount): self {
+	public function withAmount(int $amount): self {
 		return new self($this->name, $this->price, $amount);
 	}
 
-	public function addAmount(int $amount): self {
-		return $this->setAmount($this->amount + $amount);
+	public function withAmountAdded(int $amount): self {
+		return $this->withAmount($this->amount + $amount);
 	}
 
 	public function jsonSerialize(): array {

@@ -49,25 +49,25 @@ final class CustomInvoiceModifier implements InvoiceModifier {
 		$items = $invoice->items;
 
 		if (isset($items['team:enum:friday2h:yes'])) {
-			$items['team:enum:friday2h:yes'] = $items['team:enum:friday2h:yes']->setAmount($personCount);
+			$items['team:enum:friday2h:yes'] = $items['team:enum:friday2h:yes']->withAmount($personCount);
 		}
 
 		if (isset($items['team:enum:saturday5h:yes'])) {
-			$items['team:enum:saturday5h:yes'] = $items['team:enum:saturday5h:yes']->setAmount($personCount);
+			$items['team:enum:saturday5h:yes'] = $items['team:enum:saturday5h:yes']->withAmount($personCount);
 		}
 
 		if (isset($items['team:enum:sunday4h:yes'])) {
-			$items['team:enum:sunday4h:yes'] = $items['team:enum:sunday4h:yes']->setAmount($personCount);
+			$items['team:enum:sunday4h:yes'] = $items['team:enum:sunday4h:yes']->withAmount($personCount);
 		}
 
 		if (isset($items['all_stages_discount'])) {
-			$items['all_stages_discount'] = $items['all_stages_discount']->setAmount($personCount);
+			$items['all_stages_discount'] = $items['all_stages_discount']->withAmount($personCount);
 		}
 
 		$invoice->items = $items;
 	}
 
 	private static function discount(InvoiceItem $item, int $discount): InvoiceItem {
-		return $item->setPrice($item->price->subtract(Money::CZK($discount * 100))); // price in halíř
+		return $item->withPrice($item->price->subtract(Money::CZK($discount * 100))); // price in halíř
 	}
 }

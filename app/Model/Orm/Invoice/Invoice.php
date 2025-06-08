@@ -56,7 +56,7 @@ final class Invoice extends Entity {
 			throw new Exception("Invoice item “{$name}” was not defined.");
 		}
 
-		$items[$name] = $items[$name]->addAmount(1);
+		$items[$name] = $items[$name]->withAmountAdded(1);
 
 		$this->items = $items;
 
