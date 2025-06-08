@@ -21,7 +21,7 @@ Then you will need to build the assets with `npm run build` or `npm run dev`. Th
 2. Run SQL from `install.sql`.
 3. Configure the event information in `app/Config/local.neon` as described in the [configuration documentation](docs/configuration.md). Do not forget to set up admin password and database credentials in either `app/Config/local.neon` or `app/Config/private.neon`.
 4. Make `temp` and `log` directories writeable.
-5. Change e-mail templates in `app/Templates/Mail`.
+5. Change e-mail templates in `app/Presenters/templates/Mail`.
 6. The entry point of the application is in the `www` directory, configure your web server accordingly.
 
 ## Thanks

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Templates\Mail;
+namespace App\Presenters\templates\Mail;
 
 use App\Model\Orm\Invoice\Invoice;
 use App\Model\Orm\Person\Person;

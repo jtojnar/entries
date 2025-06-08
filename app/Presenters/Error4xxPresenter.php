@@ -22,9 +22,9 @@ final class Error4xxPresenter extends BasePresenter {
 	public function renderDefault(Nette\Application\BadRequestException $exception): void {
 		// renders the appropriate error template based on the HTTP status code
 		$code = $exception->getCode();
-		$file = is_file($file = __DIR__ . "/../Templates/Error/$code.latte")
+		$file = is_file($file = __DIR__ . "/templates/Error/$code.latte")
 			? $file
-			: __DIR__ . '/../Templates/Error/4xx.latte';
+			: __DIR__ . '/templates/Error/4xx.latte';
 		$this->template->httpCode = $code;
 		$this->template->setFile($file);
 	}

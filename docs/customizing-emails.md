@@ -1,8 +1,8 @@
 # Customizing E-Mail messages
 
-The templates for the e-mail messages sent to the teams after registration are located in [`app/Templates/Mail/` directory](../app/Templates/Mail/) so one can easily modify them. But often, one wants to change just a single section, e.g. payment instructions, and modifying the whole file is not very convenient for that. Also, it makes updating the entries for the next year’s event awkward due to having to manually merge possible changes.
+The templates for the e-mail messages sent to the teams after registration are located in [`app/Presenters/templates/Mail/` directory](../app/Presenters/templates/Mail/) so one can easily modify them. But often, one wants to change just a single section, e.g. payment instructions, and modifying the whole file is not very convenient for that. Also, it makes updating the entries for the next year’s event awkward due to having to manually merge possible changes.
 
-If you look at the [default e-mail template](../app/Templates/Mail/verification.latte), you will see [`block` tags](https://latte.nette.org/en/template-inheritance#toc-blocks) that will allow you to replace specific sections of the message.
+If you look at the [default e-mail template](../app/Presenters/templates/Mail/verification.latte), you will see [`block` tags](https://latte.nette.org/en/template-inheritance#toc-blocks) that will allow you to replace specific sections of the message.
 
 If you create a `verification.$lang.latte` file in the `app/Config/mail/` directory with the following contents, you will change just the greeting and the payment instructions, while keeping the rest of the message body for the e-mail in language `$lang`:
 

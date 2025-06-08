@@ -10,7 +10,7 @@ use App\Helpers\Iter;
 use App\Model\Configuration\Fields;
 use App\Model\Orm\Person\Person;
 use App\Model\Orm\Team\Team;
-use App\Templates\Filters\CategoryFormatFilter;
+use App\Presenters\Accessory\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
 use SplFileObject;
 
