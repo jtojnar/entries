@@ -148,7 +148,7 @@ final class CommunicationPresenter extends BasePresenter {
 			foreach ($teams as $id => $team) {
 				\assert($team !== null); // For PHPStan.
 				$grant = $this->tokens->createForTeam($team);
-				$this->template->previewMessage = $this->renderMessageBody(
+				$this->template->previewMessage = $this->_renderMessageBody(
 					team: $team,
 					subject: $values['subject'],
 					grant: $grant,
@@ -231,7 +231,7 @@ final class CommunicationPresenter extends BasePresenter {
 				\assert($team !== null); // For PHPStan.
 
 				$grant = $this->tokens->createForTeam($team);
-				$body = $this->renderMessageBody(
+				$body = $this->_renderMessageBody(
 					team: $team,
 					subject: $subject,
 					grant: $grant,
@@ -275,7 +275,7 @@ final class CommunicationPresenter extends BasePresenter {
 		}
 	}
 
-	private function renderMessageBody(Team $team, string $subject, string $grant, string $body): string {
+	private function _renderMessageBody(Team $team, string $subject, string $grant, string $body): string {
 		$latte = $this->latteFactory->create();
 
 		$layout = file_get_contents(__DIR__ . '/templates/Mail/@layout.latte');
