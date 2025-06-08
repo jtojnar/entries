@@ -12,8 +12,7 @@ use Nette\Utils\Html;
  * Because Bs5FormRenderer only gets us so far.
  */
 final class BootstrapRadioList extends Controls\RadioList {
-	/** @var bool */
-	public $generateId = true;
+	public bool $generateId = true;
 
 	public function getControl(): Html {
 		if ($this->hasErrors()) {

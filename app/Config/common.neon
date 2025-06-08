@@ -15,8 +15,7 @@ parameters:
 
 application:
 	errorPresenter: Error
-	mapping:
-		*: App\*Module\Presenters\*Presenter
+	mapping: App\*Module\Presenters\*Presenter
 
 di:
 	export:
@@ -60,7 +59,7 @@ orm:
 
 services:
 	- App\Helpers\EmailFactory(%appDir%)
-	- App\Helpers\Parameters(%parameters%)
+	- App\Helpers\Parameters(@container::getParameters())
 	- App\Helpers\SpaydQrGenerator
 	- App\Model\Configuration\Entries::from(%entries%)
 	- App\Model\TeamManager(%adminPassword%)
