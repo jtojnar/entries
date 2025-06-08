@@ -31,7 +31,7 @@ latte:
 	strictTypes: true
 	strictParsing: true
 	extensions:
-		- App\Templates\Accessory\LatteExtension
+		- App\Presenters\Accessory\LatteExtension
 
 session:
 	autoStart: yes
@@ -67,10 +67,10 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\TeamFormFactory
 	- App\Router\RouterFactory::createRouter
-	- App\Templates\Filters\CategoryFormatFilter
-	- App\Templates\Filters\CurrencyExchangeFilter
-	- App\Templates\Filters\PriceFilter
-	- App\Templates\Filters\WrapInParagraphsFilter
+	- App\Presenters\Accessory\Filters\CategoryFormatFilter
+	- App\Presenters\Accessory\Filters\CurrencyExchangeFilter
+	- App\Presenters\Accessory\Filters\PriceFilter
+	- App\Presenters\Accessory\Filters\WrapInParagraphsFilter
 	exchange: Money\Exchange\FixedExchange([])
 
 translation:

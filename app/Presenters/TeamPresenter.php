@@ -58,7 +58,7 @@ final class TeamPresenter extends BasePresenter {
 	public App\Model\Orm\ItemReservation\ItemReservationRepository $itemReservations;
 
 	#[Inject]
-	public App\Templates\Filters\CategoryFormatFilter $categoryFormatter;
+	public Accessory\Filters\CategoryFormatFilter $categoryFormatter;
 
 	#[Inject]
 	public App\Forms\FormFactory $formFactory;
@@ -630,7 +630,7 @@ final class TeamPresenter extends BasePresenter {
 
 					$appDir = $this->parameters->getAppDir();
 
-					$baseMailTemplateLocalizedPath = $appDir . '/Templates/Mail/verification.' . $this->locale . '.latte';
+					$baseMailTemplateLocalizedPath = __DIR__ . '/templates/Mail/verification.' . $this->locale . '.latte';
 
 					// If the override templates exist in the config directory,
 					// let’s use them.
@@ -642,7 +642,7 @@ final class TeamPresenter extends BasePresenter {
 					}
 
 					// If not, let’s use the built-in templates.
-					$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : $appDir . '/Templates/Mail/verification.latte';
+					$baseMailTemplatePath = file_exists($baseMailTemplateLocalizedPath) ? $baseMailTemplateLocalizedPath : __DIR__ . '/templates/Mail/verification.latte';
 					if ($mailTemplatePath === null) {
 						$mailTemplatePath = $baseMailTemplatePath;
 					} else {

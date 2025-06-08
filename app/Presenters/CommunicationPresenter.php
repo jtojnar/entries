@@ -278,8 +278,7 @@ final class CommunicationPresenter extends BasePresenter {
 	private function renderMessageBody(Team $team, string $subject, string $grant, string $body): string {
 		$latte = $this->latteFactory->create();
 
-		$appDir = $this->parameters->getAppDir();
-		$layout = file_get_contents($appDir . '/Templates/Mail/@layout.latte');
+		$layout = file_get_contents(__DIR__ . '/templates/Mail/@layout.latte');
 		\assert(\is_string($layout));
 
 		$latte->setLoader(new Latte\Loaders\StringLoader([
@@ -291,7 +290,7 @@ final class CommunicationPresenter extends BasePresenter {
 
 		$messageHtml = $latte->renderToString(
 			'message.latte',
-			new App\Templates\Mail\Message(
+			new templates\Mail\Message(
 				// Define variables for use in the e-mail template.
 				accountNumber: $this->parameters->accountNumber,
 				accountNumberIban: $this->parameters->accountNumberIban !== null ? $this->parameters->accountNumberIban->asString() : null,
@@ -384,8 +383,6 @@ final class CommunicationPresenter extends BasePresenter {
 		if (!$this->user->isInRole('admin')) {
 			throw new ForbiddenRequestException();
 		}
-
-		$appDir = $this->parameters->getAppDir();
 
 		$total = null;
 		$count = 0;

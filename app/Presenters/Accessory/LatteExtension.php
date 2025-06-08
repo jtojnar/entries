@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Templates\Accessory;
+namespace App\Presenters\Accessory;
 
-use App\Templates\Filters;
 use Latte\Extension;
 
 final class LatteExtension extends Extension {

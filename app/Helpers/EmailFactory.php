@@ -18,7 +18,7 @@ final class EmailFactory {
 	}
 
 	public function create(string $mailHtml): string {
-		$css = @file_get_contents($this->appDir . '/Templates/Mail/style.css');
+		$css = @file_get_contents($this->appDir . '/Presenters/templates/Mail/style.css');
 		\assert($css !== false, 'E-mail stylesheet must be readable');
 		$domDocument = CssInliner::fromHtml($mailHtml)
 			->inlineCss($css)

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Templates\Filters;
+namespace App\Presenters\Accessory\Filters;
 
 use App\Model\Configuration\Entries;
 use App\Model\Orm\Team\Team;

@@ -33,7 +33,7 @@ final class ErrorAccessPresenter extends BasePresenter {
 
 		$this->template->errorType = $errorType;
 
-		$file = __DIR__ . '/../Templates/Error/access.latte';
+		$file = __DIR__ . '/templates/Error/access.latte';
 		$this->template->setFile($file);
 	}
 }
