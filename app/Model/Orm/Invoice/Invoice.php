@@ -17,7 +17,7 @@ use Nextras\Orm\Entity\Entity;
  * @property string $status {default self::STATUS_NEW} {enum self::STATUS_*}
  * @property DateTimeImmutable $timestamp {default now}
  * @property Team $team {m:1 Team::$invoices}
- * @property array $items
+ * @property InvoiceItem[] $items
  *
  * @phpstan-property self::STATUS_* $status
  */
