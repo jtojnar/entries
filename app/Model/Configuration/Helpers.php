@@ -32,7 +32,7 @@ final class Helpers {
 		if (\is_array($translatable)) {
 			self::checkAllLocalesPresent($context, $translatable, $allLocales);
 
-			return new class($translatable) implements Translated {
+			return new class($translatable) extends Translated {
 				public function __construct(
 					private readonly array $translatable,
 				) {

@@ -7,6 +7,14 @@ declare(strict_types=1);
 
 namespace App\Locale;
 
-interface Translated {
-	public function getMessage(string $locale): string;
+use Exception;
+use Stringable;
+
+abstract class Translated implements Stringable {
+	abstract public function getMessage(string $locale): string;
+
+	public function __toString(): string {
+		// We rely on custom Translator to call getMessage instead.
+		throw new Exception(__CLASS__ . ' should not be Stringified');
+	}
 }
