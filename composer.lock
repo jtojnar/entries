@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ed301d88f9f8a6c661ad0258a32628f",
+    "content-hash": "fc3158d93b992dacd18e43f93296a615",
     "packages": [
         {
             "name": "68publishers/asset",
@@ -1894,7 +1894,7 @@
         },
         {
             "name": "nextras/forms-rendering",
-            "version": "dev-master",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextras/forms-rendering.git",
@@ -1920,7 +1920,6 @@
                 "phpstan/phpstan-nette": "~1.0",
                 "tracy/tracy": "^2.5"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1952,7 +1951,7 @@
             ],
             "support": {
                 "issues": "https://github.com/nextras/forms-rendering/issues",
-                "source": "https://github.com/nextras/forms-rendering/tree/master"
+                "source": "https://github.com/nextras/forms-rendering/tree/v2.0.0"
             },
             "time": "2025-02-09T11:47:51+00:00"
         },
@@ -5664,9 +5663,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "nextras/forms-rendering": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
