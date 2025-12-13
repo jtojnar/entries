@@ -11,7 +11,7 @@ final class NeonIntlLoader extends Translation\Loaders\Neon {
 	public function load(
 		mixed $resource,
 		string $locale,
-		string $domain = 'messages'
+		string $domain = 'messages',
 	): MessageCatalogue {
 		return parent::load($resource, $locale, $domain . '+intl-icu');
 	}

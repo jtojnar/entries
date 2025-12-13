@@ -38,7 +38,7 @@ final class Category {
 		string $key,
 		array $category,
 		Fees $parentFees,
-		DateTimeInterface $eventDate
+		DateTimeInterface $eventDate,
 	): self {
 		$fees = Fees::from($category['fees'] ?? [], $parentFees);
 		if ($fees->person === null) {

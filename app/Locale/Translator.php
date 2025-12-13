@@ -12,7 +12,7 @@ use Contributte\Translation\Translator as ContributeTranslator;
 class Translator extends ContributeTranslator {
 	public function translate(
 		$message,
-		...$parameters
+		...$parameters,
 	): string {
 		if ($message instanceof Translated) {
 			return $message->getMessage($this->getLocale());
