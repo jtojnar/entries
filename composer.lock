@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc3158d93b992dacd18e43f93296a615",
+    "content-hash": "306f69ee9df7fb15363eda6ba90c64c2",
     "packages": [
         {
             "name": "68publishers/asset",
@@ -124,32 +124,29 @@
         },
         {
             "name": "contributte/mail",
-            "version": "v0.7.2",
+            "version": "v0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/contributte/mail.git",
-                "reference": "e3a1834ab8f95743c42de866a846ec6f76faf5ab"
+                "reference": "7a1a4cd9e30aecaeb6968ecc936b8c73f4e89c17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/contributte/mail/zipball/e3a1834ab8f95743c42de866a846ec6f76faf5ab",
-                "reference": "e3a1834ab8f95743c42de866a846ec6f76faf5ab",
+                "url": "https://api.github.com/repos/contributte/mail/zipball/7a1a4cd9e30aecaeb6968ecc936b8c73f4e89c17",
+                "reference": "7a1a4cd9e30aecaeb6968ecc936b8c73f4e89c17",
                 "shasum": ""
             },
             "require": {
-                "nette/mail": "^3.1.0 || ^4.0.0",
-                "nette/utils": "^3.2.9 || ^4.0.0",
-                "php": ">=8.0"
+                "nette/mail": "^4.0.2",
+                "nette/utils": "^4.0.3",
+                "php": ">=8.1"
             },
             "require-dev": {
-                "contributte/qa": "^0.4.0",
-                "contributte/tester": "^0.2.0",
-                "mockery/mockery": "^1.5.1",
+                "contributte/phpstan": "^0.1",
+                "contributte/qa": "^0.4",
+                "contributte/tester": "^0.4",
+                "mockery/mockery": "^1.6.6",
                 "nette/di": "^3.1.2",
-                "phpstan/phpstan": "^1.10.11",
-                "phpstan/phpstan-deprecation-rules": "^1.1.3",
-                "phpstan/phpstan-nette": "^1.2.4",
-                "phpstan/phpstan-strict-rules": "^1.5.1",
                 "tracy/tracy": "^2.10.2"
             },
             "suggest": {
@@ -158,7 +155,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.7.x-dev"
+                    "dev-master": "0.9.x-dev"
                 }
             },
             "autoload": {
@@ -185,7 +182,7 @@
             ],
             "support": {
                 "issues": "https://github.com/contributte/mail/issues",
-                "source": "https://github.com/contributte/mail/tree/v0.7.2"
+                "source": "https://github.com/contributte/mail/tree/v0.8.0"
             },
             "funding": [
                 {
@@ -197,7 +194,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-01T16:45:50+00:00"
+            "time": "2023-12-01T16:50:26+00:00"
         },
         {
             "name": "contributte/translation",
@@ -1215,31 +1212,28 @@
         },
         {
             "name": "nette/mail",
-            "version": "v3.1.11",
+            "version": "v4.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/mail.git",
-                "reference": "804d70278458452863a2d6be4c1d5bf5f91b3950"
+                "reference": "5f16f76ed14a32f34580811d1a07ac357352bbc4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/mail/zipball/804d70278458452863a2d6be4c1d5bf5f91b3950",
-                "reference": "804d70278458452863a2d6be4c1d5bf5f91b3950",
+                "url": "https://api.github.com/repos/nette/mail/zipball/5f16f76ed14a32f34580811d1a07ac357352bbc4",
+                "reference": "5f16f76ed14a32f34580811d1a07ac357352bbc4",
                 "shasum": ""
             },
             "require": {
                 "ext-iconv": "*",
-                "nette/utils": "^3.1 || ~4.0.0",
-                "php": "7.1 - 8.3"
-            },
-            "conflict": {
-                "nette/di": "<3.0-stable"
+                "nette/utils": "^4.0",
+                "php": "8.0 - 8.5"
             },
             "require-dev": {
-                "nette/di": "^3.0.0",
-                "nette/tester": "^2.0",
-                "phpstan/phpstan-nette": "^0.12",
-                "tracy/tracy": "^2.4"
+                "nette/di": "^3.1 || ^4.0",
+                "nette/tester": "^2.4",
+                "phpstan/phpstan-nette": "^2.0@stable",
+                "tracy/tracy": "^2.8"
             },
             "suggest": {
                 "ext-fileinfo": "to detect type of attached files",
@@ -1248,10 +1242,13 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.1-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
+                "psr-4": {
+                    "Nette\\": "src"
+                },
                 "classmap": [
                     "src/"
                 ]
@@ -1272,7 +1269,7 @@
                     "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "📧 Nette Mail: handy email creation and transfer library for PHP with both text and MIME-compliant support.",
+            "description": "📧 Nette Mail: A handy library for creating and sending emails in PHP.",
             "homepage": "https://nette.org",
             "keywords": [
                 "mail",
@@ -1283,9 +1280,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/mail/issues",
-                "source": "https://github.com/nette/mail/tree/v3.1.11"
+                "source": "https://github.com/nette/mail/tree/v4.0.4"
             },
-            "time": "2023-11-02T23:18:58+00:00"
+            "time": "2025-08-01T02:09:42+00:00"
         },
         {
             "name": "nette/neon",
@@ -1705,20 +1702,20 @@
         },
         {
             "name": "nette/utils",
-            "version": "v4.0.10",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "2778deb6aab136c8db4ed1f4d6e9f465ca2dbee3"
+                "reference": "fa1f0b8261ed150447979eb22e373b7b7ad5a8e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/2778deb6aab136c8db4ed1f4d6e9f465ca2dbee3",
-                "reference": "2778deb6aab136c8db4ed1f4d6e9f465ca2dbee3",
+                "url": "https://api.github.com/repos/nette/utils/zipball/fa1f0b8261ed150447979eb22e373b7b7ad5a8e0",
+                "reference": "fa1f0b8261ed150447979eb22e373b7b7ad5a8e0",
                 "shasum": ""
             },
             "require": {
-                "php": "8.0 - 8.5"
+                "php": "8.2 - 8.5"
             },
             "conflict": {
                 "nette/finder": "<3",
@@ -1741,7 +1738,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -1788,9 +1785,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v4.0.10"
+                "source": "https://github.com/nette/utils/tree/v4.1.0"
             },
-            "time": "2025-12-01T17:30:42+00:00"
+            "time": "2025-12-01T17:49:23+00:00"
         },
         {
             "name": "nextras/dbal",
