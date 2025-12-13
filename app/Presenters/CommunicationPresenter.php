@@ -313,6 +313,8 @@ final class CommunicationPresenter extends BasePresenter {
 			),
 		);
 
+		\assert($messageHtml !== '');
+
 		// Inline styles into the e-mail
 		$messageHtml = $this->emailFactory->create($messageHtml);
 
@@ -396,7 +398,9 @@ final class CommunicationPresenter extends BasePresenter {
 
 			foreach ($messages as $message) {
 				// Inline styles into the e-mail
-				$mailHtml = $this->emailFactory->create($message->body);
+				$mailHtml = $message->body;
+				\assert($mailHtml !== '');
+				$mailHtml = $this->emailFactory->create($mailHtml);
 
 				$mail = new Nette\Mail\Message();
 				$firstMemberAddress = iterator_to_array($message->team->persons)[0]->email;

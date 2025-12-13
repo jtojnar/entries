@@ -691,7 +691,9 @@ final class TeamPresenter extends BasePresenter {
 						) : null;
 
 					// Inline styles into the e-mail
-					$mailHtml = $this->emailFactory->create((string) $mtemplate);
+					$mailHtml = (string) $mtemplate;
+					\assert($mailHtml !== '');
+					$mailHtml = $this->emailFactory->create($mailHtml);
 
 					$mail = new Message();
 					$mail

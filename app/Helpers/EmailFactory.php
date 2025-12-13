@@ -17,6 +17,9 @@ final class EmailFactory {
 	) {
 	}
 
+	/**
+	 * @param non-empty-string $mailHtml
+	 */
 	public function create(string $mailHtml): string {
 		$css = @file_get_contents($this->appDir . '/Presenters/templates/Mail/style.css');
 		\assert($css !== false, 'E-mail stylesheet must be readable');
