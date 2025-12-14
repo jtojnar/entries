@@ -44,31 +44,31 @@ final class SportidentControl extends NextrasBaseControl {
 		// to a form freezes it at `frm-cardId`
 		$this->monitor(Form::class, function(Form $form) use ($recommendedCardCapacity, $whenNotPlaceholder): void {
 			\assert(\is_string($this->cardIdControl->htmlId)); // For PHPStan.
-			$this->cardIdControl->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::INTEGER);
-			$whenNotPlaceholder($this->cardIdControl)->addConditionOn($this->neededControl, Form::EQUAL, false)->addRule(Form::FILLED);
-			$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId, false);
+			$this->cardIdControl->addConditionOn($this->neededControl, Form::Equal, false)->addRule(Form::Integer);
+			$whenNotPlaceholder($this->cardIdControl)->addConditionOn($this->neededControl, Form::Equal, false)->addRule(Form::Filled);
+			$this->neededControl->addCondition(Form::Equal, true)->toggle($this->cardIdControl->htmlId, false);
 
 			// We want to warn user when they register with a SI card with
 			// a potentially insufficient capacity for the race.
 			// https://www.sportident.co.uk/equipment/information_sheets/SPORTident-CardComparison.PDF
 			if ($recommendedCardCapacity > 30) {
 				$rules = new Rules($this->neededControl);
-				$rules = $rules->addConditionOn($this->neededControl, Form::EQUAL, false);
+				$rules = $rules->addConditionOn($this->neededControl, Form::Equal, false);
 				/** @var \Contributte\Translation\Translator */
 				$translator = $this->getTranslator();
 
-				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
-				@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2_000_001, 2_999_999]); // @ - negative rules are deprecated
+				@$rules->addRule(~Form::Range, $translator->translate('messages.team.person.si.warning.low-capacity-si5'), [1, 499999]); // @ - negative rules are deprecated
+				@$rules->addRule(~Form::Range, $translator->translate('messages.team.person.si.warning.low-capacity-si8'), [2_000_001, 2_999_999]); // @ - negative rules are deprecated
 
 				if ($recommendedCardCapacity > 50) {
-					@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1_000_000, 1_999_999]); // @ - negative rules are deprecated
+					@$rules->addRule(~Form::Range, $translator->translate('messages.team.person.si.warning.low-capacity-si9'), [1_000_000, 1_999_999]); // @ - negative rules are deprecated
 				}
 
 				if ($recommendedCardCapacity > 64) {
-					@$rules->addRule(~Form::RANGE, $translator->translate('messages.team.person.si.warning.low-capacity-si6'), [500001, 999999]); // @ - negative rules are deprecated
+					@$rules->addRule(~Form::Range, $translator->translate('messages.team.person.si.warning.low-capacity-si6'), [500001, 999999]); // @ - negative rules are deprecated
 				}
 
-				$this->neededControl->addCondition(Form::EQUAL, true)->toggle($this->cardIdControl->htmlId . '-warning', false);
+				$this->neededControl->addCondition(Form::Equal, true)->toggle($this->cardIdControl->htmlId . '-warning', false);
 
 				$this->cardIdControl->getControlPrototype()->setAttribute('data-form-warning-rules', Helpers::exportRules($rules));
 			}

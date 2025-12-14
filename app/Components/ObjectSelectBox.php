@@ -22,7 +22,7 @@ use Override;
  */
 class ObjectSelectBox extends Controls\ChoiceControl {
 	/** validation rule */
-	public const VALID = ':selectBoxValid';
+	public const Valid = ':selectBoxValid';
 
 	/** @var array<string,string|Translated|NotTranslate>|array<OptGroup> */
 	private array $options = [];
@@ -41,7 +41,7 @@ class ObjectSelectBox extends Controls\ChoiceControl {
 		$this->setOption('type', 'select');
 		$this
 			->addCondition(fn(): bool => $this->prompt === false && $this->options && $this->control->size < 2)
-			->addRule(Nette\Forms\Form::FILLED, Nette\Forms\Validator::$messages[self::VALID]);
+			->addRule(Nette\Forms\Form::Filled, Nette\Forms\Validator::$messages[self::Valid]);
 	}
 
 	/**

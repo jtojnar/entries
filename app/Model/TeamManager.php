@@ -14,7 +14,7 @@ use Nette\Security\SimpleIdentity;
 use Override;
 
 final readonly class TeamManager implements Nette\Security\Authenticator {
-	public const int ENTRY_WITHDRAWN = 317806432;
+	public const int EntryWithdrawn = 317806432;
 
 	public function __construct(
 		/** @var string administrator password */
@@ -36,17 +36,17 @@ final readonly class TeamManager implements Nette\Security\Authenticator {
 				return new SimpleIdentity('admin', 'admin');
 			}
 
-			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
+			throw new AuthenticationException('The password is incorrect.', self::InvalidCredential);
 		}
 
 		$team = $this->teams->getById($teamId);
 
 		if ($team === null) {
-			throw new AuthenticationException('The ID of the team is incorrect.', self::IDENTITY_NOT_FOUND);
+			throw new AuthenticationException('The ID of the team is incorrect.', self::IdentityNotFound);
 		} elseif (!$this->passwords->verify($password, $team->password)) {
-			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
+			throw new AuthenticationException('The password is incorrect.', self::InvalidCredential);
 		} elseif ($team->status === Team::STATUS_WITHDRAWN) {
-			throw new AuthenticationException('The entry has been withdrawn.', self::ENTRY_WITHDRAWN);
+			throw new AuthenticationException('The entry has been withdrawn.', self::EntryWithdrawn);
 		} elseif ($this->passwords->needsRehash($team->password)) {
 			$team->password = $this->passwords->hash($password);
 			$this->teams->persistAndFlush($team);

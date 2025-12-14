@@ -67,9 +67,9 @@ final class SignPresenter extends BasePresenter {
 		} catch (Nette\Security\AuthenticationException $e) {
 			$form->addError(
 				match ($e->getCode()) {
-					Authenticator::IDENTITY_NOT_FOUND => 'messages.sign.in.error.incorrect_id',
-					Authenticator::INVALID_CREDENTIAL => 'messages.sign.in.error.incorrect_password',
-					TeamManager::ENTRY_WITHDRAWN => 'messages.team.error.withdrawn',
+					Authenticator::IdentityNotFound => 'messages.sign.in.error.incorrect_id',
+					Authenticator::InvalidCredential => 'messages.sign.in.error.incorrect_password',
+					TeamManager::EntryWithdrawn => 'messages.team.error.withdrawn',
 					default => new NotTranslate($e->getMessage()),
 				}
 			);
