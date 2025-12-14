@@ -30,9 +30,9 @@ final class BcnMandatoryForCzechs implements InputModifier {
 
 			/** @var BaseControl */
 			$country = $container->getComponent('country');
-			$country->addCondition(Form::NOT_EQUAL, self::COUNTRY_ID)->toggle($pairId, false);
+			$country->addCondition(Form::NotEqual, self::COUNTRY_ID)->toggle($pairId, false);
 			$input->setRequired(false);
-			$whenNotPlaceholder($input)->addConditionOn($country, Form::EQUAL, self::COUNTRY_ID)->setRequired();
+			$whenNotPlaceholder($input)->addConditionOn($country, Form::Equal, self::COUNTRY_ID)->setRequired();
 		}
 	}
 }

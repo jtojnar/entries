@@ -134,7 +134,7 @@ final class TeamForm extends UI\Form {
 
 				$birth = new DateControl('messages.team.person.birth.label');
 				$whenNotPlaceholder($birth)->setRequired();
-				$birth->addRule($this::MAX, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
+				$birth->addRule(self::Max, 'messages.team.person.birth.error.born_too_late', $this->entries->eventDate);
 				$container['birth'] = $birth;
 
 				$this->addCustomFields($fields, $container, $whenNotPlaceholder);

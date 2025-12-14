@@ -754,7 +754,7 @@ final class TeamPresenter extends BasePresenter {
 
 	public function createComponentTeamListFilterForm(): Form {
 		$form = $this->formFactory->create(FormLayout::INLINE);
-		$form->setMethod($form::GET);
+		$form->setMethod(Form::Get);
 
 		$category = $form['category'] = new App\Components\CategoryEntry('messages.team.list.filter.category.label', $this->entries, true);
 		$category->setPrompt('messages.team.list.filter.category.all');
