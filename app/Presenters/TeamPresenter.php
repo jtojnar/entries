@@ -142,13 +142,12 @@ final class TeamPresenter extends BasePresenter {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		} else {
-			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if ($id === null) {
-				$this->redirect('edit', ['id' => $identity->id]);
+				$this->redirect('edit', ['id' => $identity->getId()]);
 			}
-			if (!$this->user->isInRole('admin') && $identity->id !== $id) {
+			if (!$this->user->isInRole('admin') && $identity->getId() !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
@@ -343,7 +342,6 @@ final class TeamPresenter extends BasePresenter {
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
 
-			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if ($team === null) {
@@ -357,7 +355,7 @@ final class TeamPresenter extends BasePresenter {
 						Team::STATUS_WITHDRAWN => 'messages.team.error.withdrawn',
 					}
 				);
-			} elseif (!$this->user->isInRole('admin') && $identity->id !== $id) {
+			} elseif (!$this->user->isInRole('admin') && $identity->getId() !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}

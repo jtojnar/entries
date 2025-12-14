@@ -41,7 +41,6 @@ final class HomepagePresenter extends BasePresenter {
 		$template->status = null;
 
 		if ($this->user->isLoggedIn()) {
-			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if (!$this->user->isInRole('admin')) {
