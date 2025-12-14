@@ -9,6 +9,7 @@ namespace App\Model\Configuration\Constraints;
 
 use App\Helpers\Iter;
 use DateTimeInterface;
+use Override;
 
 class QuantifiedAgeConstraint implements Constraint {
 	use AgeCalculator;
@@ -21,12 +22,14 @@ class QuantifiedAgeConstraint implements Constraint {
 	) {
 	}
 
+	#[Override]
 	public function admits(iterable $members): bool {
 		$ages = Iter::filterNull(Iter::map($this->getAgeFromPerson(...), $members));
 
 		return ($this->quantifier)(fn(int $age): bool => ($this->operator)($age, $this->targetAge), $ages);
 	}
 
+	#[Override]
 	public function getErrorMessage(): string {
 		return 'messages.team.error.age_mismatch';
 	}

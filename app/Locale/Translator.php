@@ -8,8 +8,10 @@ declare(strict_types=1);
 namespace App\Locale;
 
 use Contributte\Translation\Translator as ContributeTranslator;
+use Override;
 
 class Translator extends ContributeTranslator {
+	#[Override]
 	public function translate(
 		$message,
 		...$parameters,

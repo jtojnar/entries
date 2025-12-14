@@ -10,6 +10,7 @@ namespace App\Model\Configuration\Fields;
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Money\Money;
+use Override;
 
 class SportidentField extends Field {
 	/**
@@ -34,6 +35,7 @@ class SportidentField extends Field {
 		);
 	}
 
+	#[Override]
 	public function getType(): string {
 		return 'sportident';
 	}

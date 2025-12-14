@@ -9,6 +9,7 @@ use Contributte\Translation\Translator;
 use Nette;
 use Nette\Application\Attributes\Persistent;
 use Nette\DI\Attributes\Inject;
+use Override;
 
 /**
  * Base class for all presenters.
@@ -26,6 +27,7 @@ abstract class BasePresenter extends Nette\Application\UI\Presenter {
 	#[Inject]
 	public Nette\DI\Container $context;
 
+	#[Override]
 	protected function startup(): void {
 		parent::startup();
 

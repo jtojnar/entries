@@ -15,29 +15,29 @@ use DateTimeImmutable;
 /**
  * Holds information about the event pertaining to registration.
  */
-final class Entries {
+final readonly class Entries {
 	private function __construct(
-		public readonly int $initialMembers,
-		public readonly int $minMembers,
-		public readonly ?int $maxMembers,
-		public readonly bool $allowPlaceholders,
-		public readonly DateTimeImmutable $eventDate,
-		public readonly bool $allowLateRegistrationsByEmail,
-		public readonly int $recommendedCardCapacity,
-		public readonly Fees $fees,
-		public readonly CategoryData $categories,
+		public int $initialMembers,
+		public int $minMembers,
+		public ?int $maxMembers,
+		public bool $allowPlaceholders,
+		public DateTimeImmutable $eventDate,
+		public bool $allowLateRegistrationsByEmail,
+		public int $recommendedCardCapacity,
+		public Fees $fees,
+		public CategoryData $categories,
 		/** @var array<string, Field> */
-		public readonly array $personFields,
+		public array $personFields,
 		/** @var array<string, Field> */
-		public readonly array $teamFields,
-		public readonly ?DateTimeImmutable $opening,
-		public readonly ?DateTimeImmutable $closing,
+		public array $teamFields,
+		public ?DateTimeImmutable $opening,
+		public ?DateTimeImmutable $closing,
 		/** @var array<string, int> */
-		public readonly array $limits,
+		public array $limits,
 		/** @var ?class-string<InvoiceModifier> */
-		public readonly ?string $invoiceModifier,
+		public ?string $invoiceModifier,
 		/** @var ?class-string<InputModifier> */
-		public readonly ?string $inputModifier,
+		public ?string $inputModifier,
 	) {
 	}
 

@@ -23,14 +23,14 @@ function parse_value(string $type, string $value): int|Constraints\Sex {
 	};
 }
 
-final class Category {
+final readonly class Category {
 	private function __construct(
-		public readonly string $name,
-		public readonly ?int $minMembers,
-		public readonly ?int $maxMembers,
+		public string $name,
+		public ?int $minMembers,
+		public ?int $maxMembers,
 		/** @var array<Constraints\Constraint> */
-		public readonly array $constraints,
-		public readonly Fees $fees,
+		public array $constraints,
+		public Fees $fees,
 	) {
 	}
 
@@ -57,10 +57,10 @@ final class Category {
 		);
 	}
 
-	public const CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
-	public const AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>sum|min|max)\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
+	public const string CONSTRAINT_REGEX = '(^\s*(?P<quant>all|some)\((?P<key>age|gender)(?P<op>[<>]?=?)(?P<val>.+)\)$\s*)';
+	public const string AGGREGATE_CONSTRAINT_REGEX = '(^\s*(?P<aggr>sum|min|max)\((?P<key>age)\)(?P<op>[<>]?=?)(?P<val>[0-9]+)$\s*)';
 
-	public const OP_LOOKUP = [
+	public const array OP_LOOKUP = [
 		'<' => Constraints\ComparisonOperator::LessThan,
 		'<=' => Constraints\ComparisonOperator::LessThanOrEqual,
 		'=' => Constraints\EqualityOperator::Equal,
@@ -68,18 +68,18 @@ final class Category {
 		'>' => Constraints\ComparisonOperator::MoreThan,
 	];
 
-	public const AGGR_LOOKUP = [
+	public const array AGGR_LOOKUP = [
 		'sum' => Constraints\AggregateFunction::Sum,
 		'min' => Constraints\AggregateFunction::Min,
 		'max' => Constraints\AggregateFunction::Max,
 	];
 
-	public const KEY_SUPPORTED_OPS = [
+	public const array KEY_SUPPORTED_OPS = [
 		'age' => ['<', '<=', '=', '>=', '>'],
 		'gender' => ['='],
 	];
 
-	public const QUANT_LOOKUP = [
+	public const array QUANT_LOOKUP = [
 		'all' => Constraints\Quantifier::All,
 		'some' => Constraints\Quantifier::Some,
 	];

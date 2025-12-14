@@ -9,10 +9,10 @@ use App\Model\Configuration\Entries;
 use Nette\Localization\Translator;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 
-final class TeamFormFactory {
+final readonly class TeamFormFactory {
 	public function __construct(
-		private readonly Translator $translator,
-		private readonly Entries $entries,
+		private Translator $translator,
+		private Entries $entries,
 	) {
 	}
 

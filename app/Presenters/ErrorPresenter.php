@@ -8,17 +8,19 @@ use App\Exceptions\LimitedAccessException;
 use Nette;
 use Nette\Application\Responses;
 use Nette\Http;
+use Override;
 use Tracy\ILogger;
 
 /**
  * Handles uncaught exceptions and errors, and logs them.
  */
-final class ErrorPresenter implements Nette\Application\IPresenter {
+final readonly class ErrorPresenter implements Nette\Application\IPresenter {
 	public function __construct(
-		private readonly ILogger $logger,
+		private ILogger $logger,
 	) {
 	}
 
+	#[Override]
 	public function run(Nette\Application\Request $request): Nette\Application\Response {
 		$exception = $request->getParameter('exception');
 

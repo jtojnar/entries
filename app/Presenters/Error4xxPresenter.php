@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use Nette;
+use Override;
 
 /**
  * Handles 4xx HTTP error responses.
@@ -12,6 +13,7 @@ use Nette;
  * @property Nette\Application\UI\Template $template
  */
 final class Error4xxPresenter extends BasePresenter {
+	#[Override]
 	protected function checkHttpMethod(): void {
 		// allow access via all HTTP methods and ensure the request is a forward (internal redirect)
 		if ($this->getRequest() === null || !$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {

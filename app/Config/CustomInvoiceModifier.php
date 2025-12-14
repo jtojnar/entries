@@ -10,8 +10,10 @@ use App\Model\Orm\Invoice\Invoice;
 use App\Model\Orm\Invoice\InvoiceItem;
 use App\Model\Orm\Team\Team;
 use Money\Money;
+use Override;
 
 final class CustomInvoiceModifier implements InvoiceModifier {
+	#[Override]
 	public static function modify(Team $team, Invoice $invoice, Entries $entries): void {
 		$eventDate = $entries->eventDate;
 

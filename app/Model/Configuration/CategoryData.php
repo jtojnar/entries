@@ -20,15 +20,15 @@ function are_categories_nested(array $categories): bool {
 	}
 }
 
-final class CategoryData {
+final readonly class CategoryData {
 	/** @var non-empty-array<string, Category> List of categories across all groups */
-	public readonly array $allCategories;
+	public array $allCategories;
 
 	private function __construct(
 		/** @var non-empty-array<Category>|non-empty-array<CategoryGroup> */
-		public readonly array $categoriesOrGroups,
+		public array $categoriesOrGroups,
 		/** @var bool Whether categories are nested */
-		public readonly bool $nested,
+		public bool $nested,
 	) {
 		$allCategories = [];
 		if ($nested) {
