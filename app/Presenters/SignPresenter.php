@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Forms\SignInFormData;
 use App\Model\TeamManager;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette;
@@ -47,22 +48,20 @@ final class SignPresenter extends BasePresenter {
 
 		$form->addSubmit('send', 'messages.sign.in.action');
 
-		/** @var callable(Form, mixed): void */ // For PHPStan, Nette will convert the value to the correct one (array) based on argument type.
-		$signInFormSucceeded = $this->signInFormSucceeded(...);
-		$form->onSuccess[] = $signInFormSucceeded;
+		$form->onSuccess[] = $this->signInFormSucceeded(...);
 
 		return $form;
 	}
 
-	private function signInFormSucceeded(Form $form, array $values): void {
-		if ($values['remember']) {
+	private function signInFormSucceeded(Form $form, SignInFormData $values): void {
+		if ($values->remember) {
 			$this->user->setExpiration('30 days');
 		} else {
 			$this->user->setExpiration('20 minutes', true);
 		}
 
 		try {
-			$this->user->login($values['teamid'], $values['password']);
+			$this->user->login($values->teamid, $values->password);
 			$this->restoreRequest($this->backlink);
 			$this->redirect('Homepage:');
 		} catch (Nette\Security\AuthenticationException $e) {
