@@ -12,6 +12,7 @@ use App\Model\Orm\Person\Person;
 use App\Model\Orm\Team\Team;
 use App\Presenters\Accessory\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
+use Override;
 use SplFileObject;
 
 /**
@@ -29,23 +30,25 @@ use SplFileObject;
  * (as configured by user). The last column contains the status of the team
  * (i.e. either registered, or paid).
  */
-final class CsvExporter implements IExporter {
+final readonly class CsvExporter implements IExporter {
 	public function __construct(
 		/** @var ICollection<Team> $teams */
-		private readonly ICollection $teams,
-		private readonly App\Model\Orm\Country\CountryRepository $countries,
+		private ICollection $teams,
+		private App\Model\Orm\Country\CountryRepository $countries,
 		/** @var array<Fields\Field> $teamFields */
-		private readonly array $teamFields,
+		private array $teamFields,
 		/** @var array<Fields\Field> $personFields */
-		private readonly array $personFields,
-		private readonly CategoryFormatFilter $categoryFormatter,
+		private array $personFields,
+		private CategoryFormatFilter $categoryFormatter,
 	) {
 	}
 
+	#[Override]
 	public function getMimeType(): string {
 		return 'text/csv';
 	}
 
+	#[Override]
 	public function output(): void {
 		$file = new SplFileObject('php://output', 'a');
 		$writer = new CsvWriter($file);

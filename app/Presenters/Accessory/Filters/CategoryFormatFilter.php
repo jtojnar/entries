@@ -7,9 +7,9 @@ namespace App\Presenters\Accessory\Filters;
 use App\Model\Configuration\Entries;
 use App\Model\Orm\Team\Team;
 
-final class CategoryFormatFilter {
+final readonly class CategoryFormatFilter {
 	public function __construct(
-		private readonly Entries $entries,
+		private Entries $entries,
 	) {
 	}
 

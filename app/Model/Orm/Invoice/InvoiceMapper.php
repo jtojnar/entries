@@ -12,11 +12,13 @@ use Nette;
 use Nette\Schema\Expect;
 use Nette\Utils\Json;
 use Nextras\Orm\Mapper\Dbal\Conventions\IConventions;
+use Override;
 
 /**
  * @extends BaseMapper<Invoice>
  */
 final class InvoiceMapper extends BaseMapper {
+	#[Override]
 	protected function createConventions(): IConventions {
 		$conventions = parent::createConventions();
 

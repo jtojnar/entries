@@ -11,7 +11,7 @@ use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 
-final class EmailFactory {
+final readonly class EmailFactory {
 	public function __construct(
 		private string $appDir,
 	) {

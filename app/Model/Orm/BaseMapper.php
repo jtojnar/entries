@@ -8,6 +8,7 @@ use Nextras\Orm\Entity\IEntity;
 use Nextras\Orm\Mapper\Dbal\Conventions\Conventions;
 use Nextras\Orm\Mapper\Dbal\Conventions\IConventions;
 use Nextras\Orm\Mapper\Dbal\DbalMapper;
+use Override;
 
 /**
  * @template E of IEntity
@@ -15,6 +16,7 @@ use Nextras\Orm\Mapper\Dbal\DbalMapper;
  * @extends DbalMapper<E>
  */
 class BaseMapper extends DbalMapper {
+	#[Override]
 	protected function createConventions(): IConventions {
 		$conventions = parent::createConventions();
 		\assert($conventions instanceof Conventions); // property is not available on interface

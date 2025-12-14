@@ -7,7 +7,10 @@ declare(strict_types=1);
 
 namespace App\Model\Configuration\Fields;
 
+use Override;
+
 class PhoneField extends Field {
+	#[Override]
 	public function getType(): string {
 		return 'phone';
 	}

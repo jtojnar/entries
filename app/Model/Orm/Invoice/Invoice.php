@@ -22,9 +22,9 @@ use Nextras\Orm\Entity\Entity;
  * @phpstan-property self::STATUS_* $status
  */
 final class Invoice extends Entity {
-	public const STATUS_CANCELLED = 'cancelled';
-	public const STATUS_NEW = 'new';
-	public const STATUS_PAID = 'paid';
+	public const string STATUS_CANCELLED = 'cancelled';
+	public const string STATUS_NEW = 'new';
+	public const string STATUS_PAID = 'paid';
 
 	public function createItem(string $name, Money $price): self {
 		$items = $this->items;

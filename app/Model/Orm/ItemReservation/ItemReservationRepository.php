@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\Orm\ItemReservation;
 
 use Nextras\Orm\Repository\Repository;
+use Override;
 
 /**
  * @extends Repository<ItemReservation>
@@ -12,6 +13,7 @@ use Nextras\Orm\Repository\Repository;
  * @property ItemReservationMapper $mapper
  */
 final class ItemReservationRepository extends Repository {
+	#[Override]
 	public static function getEntityClassNames(): array {
 		return [ItemReservation::class];
 	}

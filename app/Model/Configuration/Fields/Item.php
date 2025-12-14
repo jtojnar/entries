@@ -10,18 +10,20 @@ namespace App\Model\Configuration\Fields;
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Money\Money;
+use Override;
 
-final class Item implements LimitableField {
+final readonly class Item implements LimitableField {
 	public function __construct(
-		public readonly string $name,
-		public readonly string|Translated|NotTranslate $label,
-		public readonly bool $disabled,
-		public readonly ?bool $default,
-		public readonly ?string $limitName,
-		public readonly ?Money $fee,
+		public string $name,
+		public string|Translated|NotTranslate $label,
+		public bool $disabled,
+		public ?bool $default,
+		public ?string $limitName,
+		public ?Money $fee,
 	) {
 	}
 
+	#[Override]
 	public function getLimitName(): ?string {
 		return $this->limitName;
 	}

@@ -10,6 +10,7 @@ namespace App\Model\Configuration\Fields;
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Money\Money;
+use Override;
 
 class CheckboxField extends Field implements LimitableField {
 	/**
@@ -36,10 +37,12 @@ class CheckboxField extends Field implements LimitableField {
 		);
 	}
 
+	#[Override]
 	public function getLimitName(): ?string {
 		return $this->limitName;
 	}
 
+	#[Override]
 	public function getType(): string {
 		return 'checkbox';
 	}

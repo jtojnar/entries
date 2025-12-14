@@ -7,11 +7,13 @@ namespace App\Model\Orm\Token;
 use App\Model\Orm\Team\Team;
 use Nette\Utils\Random;
 use Nextras\Orm\Repository\Repository;
+use Override;
 
 /**
  * @extends Repository<Token>
  */
 final class TokenRepository extends Repository {
+	#[Override]
 	public static function getEntityClassNames(): array {
 		return [Token::class];
 	}

@@ -9,6 +9,7 @@ namespace App\Model\Configuration\Fields;
 
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
+use Override;
 
 class CountryField extends Field {
 	/**
@@ -33,6 +34,7 @@ class CountryField extends Field {
 		);
 	}
 
+	#[Override]
 	public function getType(): string {
 		return 'country';
 	}
