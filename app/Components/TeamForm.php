@@ -177,6 +177,7 @@ final class TeamForm extends UI\Form {
 	}
 
 	/**
+	 * @param array<string, Field> $fields
 	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder
 	 */
 	private function addCustomFields(array $fields, Container $container, callable $whenNotPlaceholder): void {

@@ -84,6 +84,9 @@ final readonly class Category {
 		'some' => Constraints\Quantifier::Some,
 	];
 
+	/**
+	 * @return Constraints\Constraint[]
+	 */
 	private static function parseConstraints(array $constraints, DateTimeInterface $eventDate): array {
 		return array_map(function(string $constraint) use ($eventDate): Constraints\Constraint {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match) === 1) {
