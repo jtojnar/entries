@@ -333,10 +333,10 @@ final class CommunicationPresenter extends BasePresenter {
 		$identity = $this->user->identity;
 
 		if ($id === null) {
-			$this->redirect('this', ['id' => $identity->id]);
+			$this->redirect('this', ['id' => $identity->getId()]);
 		}
 
-		if (!$this->user->isInRole('admin') && $identity->id !== $id) {
+		if (!$this->user->isInRole('admin') && $identity->getId() !== $id) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}
@@ -370,7 +370,7 @@ final class CommunicationPresenter extends BasePresenter {
 			if ($this->user->isInRole('admin')) {
 				$authorizedTeams[] = $message->team->id;
 			} else {
-				$authorizedTeams[] = $identity->id;
+				$authorizedTeams[] = $identity->getId();
 			}
 		}
 
