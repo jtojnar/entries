@@ -90,6 +90,17 @@ final class Helpers {
 	}
 
 	/**
+	 * @return array<mixed>
+	 */
+	public static function ensureArray(string $context, mixed $value): array {
+		if (!\is_array($value)) {
+			throw new InvalidConfigurationException("Expected array for {$context}.");
+		}
+
+		return $value;
+	}
+
+	/**
 	 * @return array<string, array>
 	 */
 	public static function ensureFields(string $context, mixed $fields): array {
