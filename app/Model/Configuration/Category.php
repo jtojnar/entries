@@ -36,10 +36,11 @@ final readonly class Category {
 
 	public static function from(
 		string $key,
-		array $category,
+		mixed $category,
 		Fees $parentFees,
 		DateTimeInterface $eventDate,
 	): self {
+		$category = Helpers::ensureArray("categories.$key", $category);
 		$fees = Fees::from("categories.$key", $category['fees'] ?? [], $parentFees);
 		if ($fees->person === null) {
 			throw new InvalidConfigurationException("No person fee set for category “{$key}”");
@@ -49,6 +50,7 @@ final readonly class Category {
 			name: $key,
 			fees: $fees,
 			constraints: self::parseConstraints(
+				"categories.$key.constraints",
 				$category['constraints'] ?? [],
 				$eventDate,
 			),
@@ -87,7 +89,9 @@ final readonly class Category {
 	/**
 	 * @return Constraints\Constraint[]
 	 */
-	private static function parseConstraints(array $constraints, DateTimeInterface $eventDate): array {
+	private static function parseConstraints(string $context, mixed $constraints, DateTimeInterface $eventDate): array {
+		$constraints = Helpers::ensureStringListMaybe($context, $constraints);
+
 		return array_map(function(string $constraint) use ($eventDate): Constraints\Constraint {
 			if (preg_match(self::CONSTRAINT_REGEX, $constraint, $match) === 1) {
 				['quant' => $quant, 'key' => $key, 'op' => $op, 'val' => $val] = $match;

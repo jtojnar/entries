@@ -16,7 +16,7 @@ use DateTimeInterface;
  */
 function are_categories_nested(array $categories): bool {
 	foreach ($categories as $category) {
-		return isset($category['categories']);
+		return \is_array($category) && isset($category['categories']);
 	}
 }
 
