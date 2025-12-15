@@ -23,6 +23,8 @@
         importComposerPackage = path: (import path {
           inherit system pkgs;
           noDev = true;
+          php = pkgs.php83;
+          phpPackages = pkgs.php83Packages;
         }).override {
           executable = true;
         };
@@ -50,7 +52,7 @@
                   nette-code-checker
                   update-php-extradeps
                   pkgs.nodejs
-                  pkgs.nodePackages.prettier
+                  pkgs.prettier
                   pkgs.phpactor
                 ] ++ (with php.packages; [
                   composer
