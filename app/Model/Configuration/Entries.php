@@ -48,17 +48,17 @@ final readonly class Entries {
 		$allLocales = $entries['supportedLocales'] ?? ['en', 'cs'];
 		$fees = Fees::fromRoot($entries['fees'] ?? []);
 		$eventDate = $entries['eventDate'];
-		$minMembers = $entries['minMembers'] ?? 0;
+		$minMembers = Helpers::ensureIntMaybe('minMembers', $entries['minMembers'] ?? 0);
 		$personFieldsRaw = Helpers::ensureFields('person', $entries['fields']['person'] ?? []);
 		$personFieldsKeys = array_keys($personFieldsRaw);
 		$teamFieldsRaw = Helpers::ensureFields('team', $entries['fields']['team'] ?? []);
 		$teamFieldsKeys = array_keys($teamFieldsRaw);
 
 		return new self(
-			initialMembers: $entries['initialMembers'] ?? $minMembers,
+			initialMembers: Helpers::ensureIntMaybe('initialMembers', $entries['initialMembers'] ?? $minMembers),
 			minMembers: $minMembers,
-			maxMembers: $entries['maxMembers'] ?? null,
-			allowPlaceholders: $entries['allowPlaceholders'] ?? false,
+			maxMembers: Helpers::ensureIntMaybe('maxMembers', $entries['maxMembers'] ?? null),
+			allowPlaceholders: Helpers::ensureBool('allowPlaceholders', $entries['allowPlaceholders'] ?? false),
 			eventDate: $eventDate,
 			allowLateRegistrationsByEmail: $entries['allowLateRegistrationsByEmail'] ?? false,
 			recommendedCardCapacity: $entries['recommendedCardCapacity'] ?? 0,

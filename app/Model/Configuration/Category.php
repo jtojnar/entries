@@ -54,8 +54,8 @@ final readonly class Category {
 				$category['constraints'] ?? [],
 				$eventDate,
 			),
-			minMembers: $category['minMembers'] ?? null,
-			maxMembers: $category['maxMembers'] ?? null,
+			minMembers: Helpers::ensureIntMaybe('minMembers', $category['minMembers'] ?? null),
+			maxMembers: Helpers::ensureIntMaybe('maxMembers', $category['maxMembers'] ?? null),
 		);
 	}
 
