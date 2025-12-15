@@ -42,8 +42,9 @@ final readonly class Entries {
 	}
 
 	public static function from(
-		array $entries,
+		mixed $entries,
 	): self {
+		$entries = Helpers::ensureFields('entries', $entries);
 		$allLocales = $entries['supportedLocales'] ?? ['en', 'cs'];
 		$fees = Fees::fromRoot($entries['fees'] ?? []);
 		$eventDate = $entries['eventDate'];
