@@ -41,9 +41,7 @@
         devShells = {
           default =
             let
-              php = pkgs.php82.withExtensions ({ enabled, all }: with all; enabled ++ [
-                intl
-              ]);
+              php = pkgs.php82;
             in
               pkgs.mkShell {
                 nativeBuildInputs = [
