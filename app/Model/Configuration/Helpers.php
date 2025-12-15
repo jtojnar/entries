@@ -10,6 +10,7 @@ namespace App\Model\Configuration;
 use App\Locale\Translated;
 use App\Model\Configuration\Fields\Field;
 use Contributte\Translation\Wrappers\NotTranslate;
+use DateTimeImmutable;
 use Money\Money;
 use Rikudou\Iban\Iban\CzechIbanAdapter;
 use Rikudou\Iban\Iban\IBAN;
@@ -135,6 +136,18 @@ final class Helpers {
 
 		if (!\is_bool($value)) {
 			throw new InvalidConfigurationException("Expected boolean for {$context}.");
+		}
+
+		return $value;
+	}
+
+	public static function ensureDateTimeImmutableMaybe(string $context, mixed $value): ?DateTimeImmutable {
+		if ($value === null) {
+			return $value;
+		}
+
+		if (!$value instanceof DateTimeImmutable) {
+			throw new InvalidConfigurationException("Expected date time for {$context}.");
 		}
 
 		return $value;
