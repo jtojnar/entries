@@ -5,20 +5,20 @@ let
     "latte/latte" = {
       targetDir = "";
       src = composerEnv.buildZipPackage {
-        name = "latte-latte-462444d669809528b6f6ce191b616d747c9b4bfc";
+        name = "latte-latte-bab49c360354f5e7e57c07ec1b1c9b2870a9bda4";
         src = fetchurl {
-          url = "https://api.github.com/repos/nette/latte/zipball/462444d669809528b6f6ce191b616d747c9b4bfc";
-          sha256 = "0cd48vrxynf9h0a5q63x71qsj3k6701icp8admz6ahil43wnnlxg";
+          url = "https://api.github.com/repos/nette/latte/zipball/bab49c360354f5e7e57c07ec1b1c9b2870a9bda4";
+          sha256 = "0k3pi7zrzbhkd2fl0i09aqml5hf31dl4a43q362rgsrcqx7agpid";
         };
       };
     };
     "nette/application" = {
       targetDir = "";
       src = composerEnv.buildZipPackage {
-        name = "nette-application-0729ede7e66fad642046a3eb670d368845272573";
+        name = "nette-application-f50364147ca80d9fbcf4d6571cf216ced874d4f9";
         src = fetchurl {
-          url = "https://api.github.com/repos/nette/application/zipball/0729ede7e66fad642046a3eb670d368845272573";
-          sha256 = "080g0j8jzlsgds1viip2mabliaqibz1wnhy6zc63fgsga69k3ds8";
+          url = "https://api.github.com/repos/nette/application/zipball/f50364147ca80d9fbcf4d6571cf216ced874d4f9";
+          sha256 = "1k2pvi2npqz6gfkvz8g80p7lbb593fm7gvxw95pyydrs9a68vawy";
         };
       };
     };
@@ -45,10 +45,10 @@ let
     "nette/command-line" = {
       targetDir = "";
       src = composerEnv.buildZipPackage {
-        name = "nette-command-line-54335732059354fc35315774f33847253f10aa56";
+        name = "nette-command-line-4c67c727866f01983853cbb6dfca8666789f104c";
         src = fetchurl {
-          url = "https://api.github.com/repos/nette/command-line/zipball/54335732059354fc35315774f33847253f10aa56";
-          sha256 = "0rvc23wh3zx715fx9pyz1nzj0pkwjzfa3rh2d6n7gh0jd7fbjgk8";
+          url = "https://api.github.com/repos/nette/command-line/zipball/4c67c727866f01983853cbb6dfca8666789f104c";
+          sha256 = "01ckybl0cgd27hi5hj4wrz8nykbkql73qvi6i3xrncssr31vjq7j";
         };
       };
     };
@@ -95,10 +95,10 @@ let
     "nette/neon" = {
       targetDir = "";
       src = composerEnv.buildZipPackage {
-        name = "nette-neon-457bfbf0560f600b30d9df4233af382a478bb44d";
+        name = "nette-neon-36e3f4f89fd8a7b89ada74c7a678baa9f7cc7719";
         src = fetchurl {
-          url = "https://api.github.com/repos/nette/neon/zipball/457bfbf0560f600b30d9df4233af382a478bb44d";
-          sha256 = "06rfsyi8692fdnxvay949kvp6iyl28lldsrhclqxvr6i2ja99q38";
+          url = "https://api.github.com/repos/nette/neon/zipball/36e3f4f89fd8a7b89ada74c7a678baa9f7cc7719";
+          sha256 = "144qah5gvc5h4k020gdhsgcbxnjxx1cri4k3gmr49dxw0zwprxlb";
         };
       };
     };
