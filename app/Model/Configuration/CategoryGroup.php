@@ -23,10 +23,11 @@ final readonly class CategoryGroup {
 	public static function from(
 		string $key,
 		string|Translated|NotTranslate $label,
-		array $group,
+		mixed $group,
 		Fees $parentFees,
 		DateTimeInterface $eventDate,
 	): self {
+		$group = Helpers::ensureArray("categories.$key", $group);
 		$fees = Fees::from("categories.$key", $group['fees'] ?? [], $parentFees);
 
 		if (!isset($group['categories']) || !\is_array($group['categories']) || \count($group['categories']) === 0) {
@@ -36,7 +37,7 @@ final readonly class CategoryGroup {
 		$categoriesRaw = $group['categories'];
 
 		$categories = array_map(
-			fn(string $categoryKey, array $category): Category => Category::from(
+			fn(string $categoryKey, mixed $category): Category => Category::from(
 				$categoryKey,
 				$category,
 				$fees,
