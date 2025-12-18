@@ -237,10 +237,4 @@ parameters:
 								en: 'Sunday vegetable risotto (139 CZK, available between 13:00 and 14:30)'
 								cs: 'Nedělní zeleninové rizoto (139 Kč, odběr mezi 13:00 až 14:30)'
 							fee: 139
-				concert:
-					type: checkbox
-					label:
-						en: 'Saturday concert in the event centre (150 CZK, from 20:00)'
-						cs: 'Sobotní koncert v závodním centru (150 Kč, od 20:00)'
-					fee: 150
 	webmasterEmail: "jan.tojnar@rogaining.cz"
