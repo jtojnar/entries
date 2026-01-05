@@ -27,7 +27,7 @@ parameters:
 			person: 0
 		limits:
 			osecka: 14
-			satlava: 29
+			satlava: 25
 			matraska: 15
 		categories:
 			MJ:
