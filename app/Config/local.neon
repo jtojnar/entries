@@ -26,7 +26,7 @@ parameters:
 			currency: CZK
 			person: 0
 		limits:
-			osecka: 14
+			osecka: 20
 			satlava: 25
 			matraska: 15
 		categories:
