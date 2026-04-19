@@ -161,6 +161,7 @@ parameters:
 						en: 'Boarding must be ordered and paid until Monday April 13, 2026'
 						cs: 'Stravování se musí objednat a zaplatit do pondělí 13. 4. 2026'
 					type: checkboxlist
+					disabled: true
 					items:
 						fri-soup:
 							label:
