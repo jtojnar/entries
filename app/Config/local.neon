@@ -19,7 +19,7 @@ parameters:
 		maxMembers: 2
 		eventDate: 2026-12-31 # used for age calculations
 		opening: 2025-12-14T00:00:00
-		closing: 2026-04-25T12:00:00
+		closing: 2026-04-23T12:00:00
 		accountNumber: '2800039826/2010'
 		invoiceModifier: App\Config\CustomInvoiceModifier
 		fees:
