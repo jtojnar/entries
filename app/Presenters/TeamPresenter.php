@@ -22,6 +22,7 @@ use Nette;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
+use Nette\Forms\Container;
 use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\Html;
@@ -324,8 +325,8 @@ final class TeamPresenter extends BasePresenter {
 
 		/** @var App\Components\TeamForm $form */
 		$form = $button->form;
-		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
-		$values = $form->getValues();
+		/** @var array */
+		$values = $form->getValues(Container::Array);
 		/** @var string $password */
 		$password = null;
 
@@ -820,12 +821,13 @@ final class TeamPresenter extends BasePresenter {
 	}
 
 	private function listActionSubmitMessage(Controls\SubmitButton $button): void {
-		$values = $button->form->getValues();
+		/** @var array */
+		$values = $button->form->getValues(Container::Array);
 		$selectedTeamIds = array_map(
 			static fn($name): string => substr((string) $name, \strlen('team_')),
 			array_keys(
 				array_filter(
-					(array) $values,
+					$values,
 					static fn($value, $name): bool => str_starts_with((string) $name, 'team_') && \is_bool($value) && $value,
 					\ARRAY_FILTER_USE_BOTH
 				)

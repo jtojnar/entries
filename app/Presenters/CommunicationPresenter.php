@@ -15,6 +15,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
+use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use Throwable;
@@ -96,8 +97,8 @@ final class CommunicationPresenter extends BasePresenter {
 
 		$form = $button->form;
 
-		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
-		$values = $form->getValues();
+		/** @var array */
+		$values = $form->getValues(Container::Array);
 
 		$teamsIds = explode(',', (string) $values['recipients']);
 		$teamsIds = array_map(
@@ -177,8 +178,8 @@ final class CommunicationPresenter extends BasePresenter {
 
 		$form = $button->form;
 
-		/** @var array */ // actually \ArrayAccess but PHPStan does not handle that very well.
-		$values = $form->getValues();
+		/** @var array */
+		$values = $form->getValues(Container::Array);
 		$subject = $values['subject'];
 
 		$teamsIds = explode(',', (string) $values['recipients']);
