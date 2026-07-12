@@ -125,7 +125,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$nullTeamIds = array_keys(
 			array_filter(
 				$teams,
-				fn(?Team $team): bool => $team === null
+				static fn(?Team $team): bool => $team === null
 			)
 		);
 
@@ -207,7 +207,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$nullTeamIds = array_keys(
 			array_filter(
 				$teams,
-				fn(?Team $team): bool => $team === null
+				static fn(?Team $team): bool => $team === null
 			)
 		);
 

@@ -60,7 +60,7 @@ final class CsvExporter implements IExporter {
 			if ($field instanceof Fields\CheckboxlistField) {
 				$writer->addColumns(
 					array_map(
-						fn(string $itemKey): string => $field->name . '-' . $itemKey,
+						static fn(string $itemKey): string => $field->name . '-' . $itemKey,
 						array_keys($field->items),
 					)
 				);
@@ -80,7 +80,7 @@ final class CsvExporter implements IExporter {
 				if ($field instanceof Fields\CheckboxlistField) {
 					$writer->addColumns(
 						array_map(
-							fn(string $itemKey): string => 'm' . $i . $field->name . '-' . $itemKey,
+							static fn(string $itemKey): string => 'm' . $i . $field->name . '-' . $itemKey,
 							array_keys($field->items),
 						)
 					);

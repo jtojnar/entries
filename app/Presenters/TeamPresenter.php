@@ -822,11 +822,11 @@ final class TeamPresenter extends BasePresenter {
 	private function listActionSubmitMessage(Controls\SubmitButton $button): void {
 		$values = $button->form->getValues();
 		$selectedTeamIds = array_map(
-			fn($name): string => substr((string) $name, \strlen('team_')),
+			static fn($name): string => substr((string) $name, \strlen('team_')),
 			array_keys(
 				array_filter(
 					(array) $values,
-					fn($value, $name): bool => str_starts_with((string) $name, 'team_') && \is_bool($value) && $value,
+					static fn($value, $name): bool => str_starts_with((string) $name, 'team_') && \is_bool($value) && $value,
 					\ARRAY_FILTER_USE_BOTH
 				)
 			)

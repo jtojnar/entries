@@ -82,7 +82,7 @@ function testMap(): void {
 	);
 	Assert::same(
 		[1, 4, 9],
-		iterator_to_array(Iter::map(fn($v) => $v * $v, new ArrayIterator([1, 2, 3]))),
+		iterator_to_array(Iter::map(static fn($v) => $v * $v, new ArrayIterator([1, 2, 3]))),
 	);
 	Assert::same(
 		['a' => 0, 'b' => 1, 'c' => 2],
@@ -93,14 +93,14 @@ function testMap(): void {
 		iterator_to_array(Iter::map(strtoupper(...), [])),
 	);
 
-	$range = function($min, $max) {
+	$range = static function($min, $max) {
 		for ($i = $min; $i <= $max; ++$i) {
 			yield $i;
 		}
 	};
 	Assert::same(
 		[1, 4, 9],
-		iterator_to_array(Iter::map(fn($v) => $v * $v, $range(1, 3))),
+		iterator_to_array(Iter::map(static fn($v) => $v * $v, $range(1, 3))),
 	);
 }
 testMap();
@@ -112,10 +112,10 @@ function testLast(): void {
 testLast();
 
 function testReduce(): void {
-	Assert::same(6, Iter::reduce([1, 2, 3], fn($a, $b) => $a + $b));
-	Assert::same('abc', Iter::reduce(new ArrayIterator(['a', 'b', 'c']), fn($a, $b) => $a . $b, ''));
+	Assert::same(6, Iter::reduce([1, 2, 3], static fn($a, $b) => $a + $b));
+	Assert::same('abc', Iter::reduce(new ArrayIterator(['a', 'b', 'c']), static fn($a, $b) => $a . $b, ''));
 	Assert::same(64, Iter::reduce(['a' => 3, 'b' => 2, 'c' => 1], 'pow', 2));
-	Assert::same(0, Iter::reduce([], fn($a, $b) => $a * $b, 0));
-	Assert::same(1, Iter::reduce([], fn($a, $b) => $a * $b, 1));
+	Assert::same(0, Iter::reduce([], static fn($a, $b) => $a * $b, 0));
+	Assert::same(1, Iter::reduce([], static fn($a, $b) => $a * $b, 1));
 }
 testReduce();

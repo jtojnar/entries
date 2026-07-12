@@ -18,7 +18,7 @@ require __DIR__ . '/../../bootstrap.php';
 class BasicReadTest extends TestCase {
 	public function testNoCategories(): void {
 		Assert::exception(
-			function(): void {
+			static function(): void {
 				$entries = Entries::from([
 					'eventDate' => new DateTimeImmutable('2050-12-07'),
 					'categories' => [],
@@ -31,7 +31,7 @@ class BasicReadTest extends TestCase {
 
 	public function testFlatCategoriesNoFees(): void {
 		Assert::exception(
-			function(): void {
+			static function(): void {
 				$entries = Entries::from([
 					'eventDate' => new DateTimeImmutable('2050-12-07'),
 					'categories' => [

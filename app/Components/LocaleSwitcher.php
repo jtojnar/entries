@@ -23,7 +23,7 @@ final class LocaleSwitcher extends Control {
 		} else {
 			$this->locales = array_filter(
 				$locales,
-				fn(string $code): bool => \in_array($code, $allowedLocales, true),
+				static fn(string $code): bool => \in_array($code, $allowedLocales, true),
 				\ARRAY_FILTER_USE_KEY
 			);
 		}

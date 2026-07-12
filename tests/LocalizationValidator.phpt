@@ -23,7 +23,7 @@ foreach (['en', 'cs'] as $locale) {
 		$messageHasVariables = preg_match_all('/\{(?P<var>[^},]+)(?:,(?P<type>[^},]+))?/', $message, $varMatches, \PREG_SET_ORDER | \PREG_UNMATCHED_AS_NULL);
 
 		if (!$messageHasVariables) {
-			Assert::noError(function() use ($translator, $key): void {
+			Assert::noError(static function() use ($translator, $key): void {
 				$translator->translate('messages.' . $key);
 			});
 
@@ -53,7 +53,7 @@ foreach (['en', 'cs'] as $locale) {
 		// Try to translate the message.
 		$assignments = Iter::cartesianProduct($variables);
 		foreach ($assignments as $assignment) {
-			Assert::noError(function() use ($translator, $key, $assignment): void {
+			Assert::noError(static function() use ($translator, $key, $assignment): void {
 				$translator->translate('messages.' . $key, $assignment);
 			});
 		}

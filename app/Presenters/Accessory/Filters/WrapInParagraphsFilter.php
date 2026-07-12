@@ -12,7 +12,7 @@ final class WrapInParagraphsFilter {
 		return implode(
 			'',
 			array_map(
-				fn($e): string => '<p>' . $e . '</p>',
+				static fn($e): string => '<p>' . $e . '</p>',
 				$arr
 			)
 		);

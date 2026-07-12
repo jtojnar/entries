@@ -77,7 +77,7 @@ final class TeamForm extends UI\Form {
 		$this->addCustomFields(
 			$fields,
 			$this,
-			fn(BaseControl $control): BaseControl => $control,
+			static fn(BaseControl $control): BaseControl => $control,
 		);
 
 		$this->addTextArea('message', 'messages.team.message.label');
@@ -119,10 +119,10 @@ final class TeamForm extends UI\Form {
 				$group->setOption('label', new Message('messages.team.person.label', $i));
 				$container->setCurrentGroup($group);
 
-				$whenNotPlaceholder = fn(BaseControl $control): BaseControl => $control;
+				$whenNotPlaceholder = static fn(BaseControl $control): BaseControl => $control;
 				if ($this->entries->allowPlaceholders) {
 					$placeholder = $container->addCheckbox('placeholder', 'messages.team.person.is_placeholder.label');
-					$whenNotPlaceholder = fn(BaseControl $control): Rules => $control->addConditionOn($placeholder, self::Equal, false);
+					$whenNotPlaceholder = static fn(BaseControl $control): Rules => $control->addConditionOn($placeholder, self::Equal, false);
 				}
 
 				$firstname = $container->addText('firstname', 'messages.team.person.name.first.label');
@@ -289,11 +289,11 @@ final class TeamForm extends UI\Form {
 	private function addEnum(string $name, Container $container, Fields\EnumField $field): BootstrapRadioList {
 		$options = array_combine(
 			array_map(
-				fn(Fields\Item $option): string => $option->name,
+				static fn(Fields\Item $option): string => $option->name,
 				$field->options,
 			),
 			array_map(
-				fn(Fields\Item $option): Translated|NotTranslate|string => $option->label,
+				static fn(Fields\Item $option): Translated|NotTranslate|string => $option->label,
 				$field->options,
 			),
 		);

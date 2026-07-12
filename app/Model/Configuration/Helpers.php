@@ -243,7 +243,7 @@ final class Helpers {
 		return array_combine(
 			array_keys($items),
 			array_map(
-				function(string $name, mixed $item) use ($allLocales, $context, $disabled, $fallbackFee, $fees, $limitName): Fields\Item {
+				static function(string $name, mixed $item) use ($allLocales, $context, $disabled, $fallbackFee, $fees, $limitName): Fields\Item {
 					if (!\is_array($item)) {
 						throw new InvalidConfigurationException("Item {$name} inside {$context} must be an array.");
 					}
@@ -306,7 +306,7 @@ final class Helpers {
 				applicableCategories: self::ensureStringListMaybe("applicableCategories of {$name}", $field['applicableCategories'] ?? null),
 				fee: self::makeFee("fee of {$name} field", $field['fee'] ?? null, $fees),
 			),
-			'enum' => (function() use ($name, $field, $allLocales, $fees): Field {
+			'enum' => (static function() use ($name, $field, $allLocales, $fees): Field {
 				$fee = self::makeFee("fee of {$name} field", $field['fee'] ?? null, $fees);
 				$disabled = self::ensureBool("disabled of {$name} field", $field['disabled'] ?? false);
 				$limitName = self::ensureStringMaybe("limit of {$name} field", $field['limit'] ?? null);
@@ -346,7 +346,7 @@ final class Helpers {
 					$fees,
 				),
 			),
-			'checkboxlist' => (function() use ($name, $field, $allLocales, $fees): Field {
+			'checkboxlist' => (static function() use ($name, $field, $allLocales, $fees): Field {
 				$fee = self::makeFee("fee of {$name} field", $field['fee'] ?? null, $fees);
 				$disabled = self::ensureBool("disabled of {$name} field", $field['disabled'] ?? false);
 				$limitName = self::ensureStringMaybe("limit of {$name} field", $field['limit'] ?? null);

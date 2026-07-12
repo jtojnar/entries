@@ -55,7 +55,7 @@ final class CsvWriter {
 
 		$result = $this->file->fputcsv(
 			array_map(
-				fn($column) => $data[$column] ?? '',
+				static fn($column) => $data[$column] ?? '',
 				$this->columns
 			)
 		);

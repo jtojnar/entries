@@ -41,7 +41,7 @@ final class InvoiceMapper extends BaseMapper {
 			 *
 			 * @return InvoiceItem[]
 			 */
-			function(mixed $value, string $newKey) use ($processor, $itemsSchema): array {
+			static function(mixed $value, string $newKey) use ($processor, $itemsSchema): array {
 				\assert(\is_string($value)); // For PHPStan.
 				$data = Json::decode($value, Json::FORCE_ARRAY);
 
@@ -66,7 +66,7 @@ final class InvoiceMapper extends BaseMapper {
 			 *
 			 * @param InvoiceItem[] $value
 			 */
-			function(mixed $value, string $newKey): string {
+			static function(mixed $value, string $newKey): string {
 				\assert(\is_array($value)); // For PHPStan.
 
 				return Json::encode(array_values($value));

@@ -32,7 +32,7 @@ class AccountNumberTest extends TestCase {
 
 	public function testCzechInvalid(): void {
 		Assert::exception(
-			function(): void {
+			static function(): void {
 				Helpers::parseAccountNumber('123456/1234');
 			},
 			InvalidConfigurationException::class,
@@ -52,7 +52,7 @@ class AccountNumberTest extends TestCase {
 
 	public function testIbanInvalid(): void {
 		Assert::exception(
-			function(): void {
+			static function(): void {
 				Helpers::parseAccountNumber('CZ1327000000000500114005');
 			},
 			InvalidConfigurationException::class,
@@ -62,7 +62,7 @@ class AccountNumberTest extends TestCase {
 
 	public function testInvalid(): void {
 		Assert::exception(
-			function(): void {
+			static function(): void {
 				Helpers::parseAccountNumber('foo');
 			},
 			InvalidConfigurationException::class,

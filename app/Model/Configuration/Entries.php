@@ -71,7 +71,7 @@ final class Entries {
 			personFields: array_combine(
 				$personFieldsKeys,
 				array_map(
-					fn(string $name, array $field): Field => Helpers::makeField($name, $field, $allLocales, $fees),
+					static fn(string $name, array $field): Field => Helpers::makeField($name, $field, $allLocales, $fees),
 					$personFieldsKeys,
 					$personFieldsRaw,
 				),
@@ -79,7 +79,7 @@ final class Entries {
 			teamFields: array_combine(
 				$teamFieldsKeys,
 				array_map(
-					fn(string $name, array $field): Field => Helpers::makeField($name, $field, $allLocales, $fees),
+					static fn(string $name, array $field): Field => Helpers::makeField($name, $field, $allLocales, $fees),
 					$teamFieldsKeys,
 					$teamFieldsRaw,
 				),

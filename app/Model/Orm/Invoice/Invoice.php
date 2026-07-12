@@ -73,14 +73,14 @@ final class Invoice extends Entity {
 			? $this->items
 			: array_filter(
 				$this->items,
-				fn(string $name): bool => \in_array($name, $filter, true),
+				static fn(string $name): bool => \in_array($name, $filter, true),
 				\ARRAY_FILTER_USE_KEY
 			);
 
 		return Money::sum(
 			...array_values(
 				array_map(
-					fn(InvoiceItem $item): Money => $item->getPrice()->multiply($item->getAmount()),
+					static fn(InvoiceItem $item): Money => $item->getPrice()->multiply($item->getAmount()),
 					$relevantItems
 				)
 			)
