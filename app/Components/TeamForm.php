@@ -15,6 +15,7 @@ use Contributte\Translation\Wrappers\NotTranslate;
 use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette\Application\UI;
 use Nette\Forms\Container;
+use Nette\Forms\Control;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Rules;
@@ -54,7 +55,8 @@ final class TeamForm extends UI\Form {
 		$this['category'] = $category;
 
 		$rule = $category->addCondition(true); // not to block the export of rules to JS
-		$rule->addRule(function(CategoryEntry $entry) use ($defaultMaxMembers): bool {
+		$rule->addRule(function(Control $entry) use ($defaultMaxMembers): bool {
+			\assert($entry instanceof CategoryEntry); // For PHPStan
 			$category = $entry->getValue();
 			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
 			/** @var ReplicatorContainer */
@@ -64,7 +66,8 @@ final class TeamForm extends UI\Form {
 		}, 'messages.team.error.too_many_members_simple'); // TODO: add params like in add/remove buttons
 
 		$rule = $category->addCondition(true); // not to block the export of rules to JS
-		$rule->addRule(function(CategoryEntry $entry) use ($defaultMinMembers): bool {
+		$rule->addRule(function(Control $entry) use ($defaultMinMembers): bool {
+			\assert($entry instanceof CategoryEntry); // For PHPStan
 			$category = $entry->getValue();
 			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
 			/** @var ReplicatorContainer */
