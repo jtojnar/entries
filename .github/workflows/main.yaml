@@ -11,10 +11,12 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v25
+      uses: cachix/install-nix-action@v31
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.34.8/install
 
     - name: Set outputs
       id: vars
