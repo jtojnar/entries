@@ -3,8 +3,6 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-  inputs.utils.url = "github:numtide/flake-utils";
-
   inputs.composer2nixRepo = {
     url = "github:svanderburg/composer2nix";
     flake = false;
@@ -19,39 +17,41 @@
     {
       self,
       nixpkgs,
-      utils,
       flake-compat,
       composer2nixRepo,
     }:
 
-    utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
+    let
+      forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed;
+    in
+    {
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
 
-        importComposerPackage =
-          path:
-          (import path {
-            inherit system pkgs;
-            noDev = true;
-            php = pkgs.php83;
-            phpPackages = pkgs.php83Packages;
-          }).override
-            { executable = true; };
+          importComposerPackage =
+            path:
+            (import path {
+              inherit system pkgs;
+              noDev = true;
+              php = pkgs.php83;
+              phpPackages = pkgs.php83Packages;
+            }).override
+              { executable = true; };
 
-        composer2nix = importComposerPackage composer2nixRepo.outPath;
+          composer2nix = importComposerPackage composer2nixRepo.outPath;
 
-        nette-code-checker = importComposerPackage ./.github/workflows/nix/code-checker;
+          nette-code-checker = importComposerPackage ./.github/workflows/nix/code-checker;
 
-        update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
-          pushd .github/workflows/nix/code-checker
-          composer update
-          env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
-          popd
-        '';
-      in
-      {
-        devShells = {
+          update-php-extradeps = pkgs.writeShellScriptBin "update-php-extradeps" ''
+            pushd .github/workflows/nix/code-checker
+            composer update
+            env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
+            popd
+          '';
+        in
+        {
           default =
             let
               php = pkgs.php82;
@@ -71,7 +71,7 @@
                 psalm
               ]);
             };
-        };
-      }
-    );
+        }
+      );
+    };
 }
