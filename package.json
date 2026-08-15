@@ -4,8 +4,8 @@
 	"private": true,
 	"dependencies": {
 		"@codemirror/lang-html": "^6.0.0",
-		"@fortawesome/fontawesome-svg-core": "^6.1.0",
-		"@fortawesome/free-solid-svg-icons": "^6.1.0",
+		"@fortawesome/fontawesome-svg-core": "^7.0.0",
+		"@fortawesome/free-solid-svg-icons": "^7.0.0",
 		"@popperjs/core": "^2.9.2",
 		"bootstrap": "^5.0.1",
 		"codemirror": "^6.0.0",
