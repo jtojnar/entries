@@ -56,16 +56,17 @@ jobs:
         if-no-files-found: error
         path: entries-${{ steps.vars.outputs.sha_short }}.zip
 
-    - name: Upload the zipball to Cloudsmith
-      uses: cloudsmith-io/action@v0.5.3
+    - name: Install Cloudsmith CLI
+      uses: cloudsmith-io/cloudsmith-cli-action@v2.0.3
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
         api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
-        command: "push"
-        format: "raw"
-        owner: "entries-for-rogaining"
-        repo: "entries"
-        file: entries-${{ steps.vars.outputs.sha_short }}.zip
-        name: entries.zip
-        version: ${{ steps.vars.outputs.sha_short }}
-        extra: '--tags version:latest'
+
+    - name: Upload the zipball to Cloudsmith
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      run: |
+        cloudsmith push raw entries-for-rogaining/entries \
+          "entries-${{ steps.vars.outputs.sha_short }}.zip" \
+          --name=entries.zip \
+          --version="${{ steps.vars.outputs.sha_short }}" \
+          --tags version:latest
