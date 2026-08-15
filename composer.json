@@ -16,7 +16,7 @@
 		"ext-intl": "*",
 		"68publishers/asset": "^3.3",
 		"bacon/bacon-qr-code": "^3.0",
-		"contributte/mail": "^0.8.0",
+		"contributte/mail": "^0.9.0",
 		"contributte/translation": "^2.0",
 		"kdyby/forms-replicator": "^3.0",
 		"latte/latte": "~3.0",
