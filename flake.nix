@@ -15,19 +15,29 @@
     flake = false;
   };
 
-  outputs = { self, nixpkgs, utils, flake-compat, composer2nixRepo }:
-    utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      utils,
+      flake-compat,
+      composer2nixRepo,
+    }:
+
+    utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        importComposerPackage = path: (import path {
-          inherit system pkgs;
-          noDev = true;
-          php = pkgs.php83;
-          phpPackages = pkgs.php83Packages;
-        }).override {
-          executable = true;
-        };
+        importComposerPackage =
+          path:
+          (import path {
+            inherit system pkgs;
+            noDev = true;
+            php = pkgs.php83;
+            phpPackages = pkgs.php83Packages;
+          }).override
+            { executable = true; };
 
         composer2nix = importComposerPackage composer2nixRepo.outPath;
 
@@ -39,26 +49,28 @@
           env NIX_PATH=nixpkgs=${nixpkgs.outPath} ${composer2nix}/bin/composer2nix -p nette/code-checker
           popd
         '';
-      in {
+      in
+      {
         devShells = {
           default =
             let
               php = pkgs.php82;
             in
-              pkgs.mkShell {
-                nativeBuildInputs = [
-                  php
-                  pkgs.python3 # for create-zipball.py
-                  nette-code-checker
-                  update-php-extradeps
-                  pkgs.nodejs
-                  pkgs.prettier
-                  pkgs.phpactor
-                ] ++ (with php.packages; [
-                  composer
-                  psalm
-                ]);
-              };
+            pkgs.mkShell {
+              nativeBuildInputs = [
+                php
+                pkgs.python3 # for create-zipball.py
+                nette-code-checker
+                update-php-extradeps
+                pkgs.nodejs
+                pkgs.prettier
+                pkgs.phpactor
+              ]
+              ++ (with php.packages; [
+                composer
+                psalm
+              ]);
+            };
         };
       }
     );
