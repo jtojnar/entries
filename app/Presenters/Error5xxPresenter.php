@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Exceptions\LimitedAccessException;
 use Nette;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\Responses;
@@ -16,7 +15,7 @@ use Tracy\ILogger;
  * Handles uncaught exceptions and errors, and logs them.
  */
 #[Requires(forward: true)]
-final readonly class ErrorPresenter implements Nette\Application\IPresenter {
+final readonly class Error5xxPresenter implements Nette\Application\IPresenter {
 	public function __construct(
 		private ILogger $logger,
 	) {
@@ -25,21 +24,6 @@ final readonly class ErrorPresenter implements Nette\Application\IPresenter {
 	#[Override]
 	public function run(Nette\Application\Request $request): Nette\Application\Response {
 		$exception = $request->getParameter('exception');
-
-		if ($exception instanceof LimitedAccessException) {
-			[$module, , $sep] = Nette\Application\Helpers::splitName($request->getPresenterName());
-			$errorPresenter = $module . $sep . 'ErrorAccess';
-
-			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
-		}
-
-		// If the exception is a 4xx HTTP error, forward to the Error4xxPresenter
-		if ($exception instanceof Nette\Application\BadRequestException) {
-			[$module, , $sep] = Nette\Application\Helpers::splitName($request->getPresenterName());
-			$errorPresenter = $module . $sep . 'Error4xx';
-
-			return new Responses\ForwardResponse($request->setPresenterName($errorPresenter));
-		}
 
 		// Log the exception and display a generic error message to the user
 		$this->logger->log($exception, ILogger::EXCEPTION);
