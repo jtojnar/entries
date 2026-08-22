@@ -84,7 +84,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$enquee->onClick[] = $this->composeFormEnqueue(...);
 
 		/** @var Bs5FormRenderer */
-		$renderer = $form->renderer;
+		$renderer = $form->getRenderer();
 		$renderer->primaryButton = $enquee;
 
 		return $form;

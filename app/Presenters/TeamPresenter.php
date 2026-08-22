@@ -83,7 +83,7 @@ final class TeamPresenter extends BasePresenter {
 	public Nette\DI\Container $context;
 
 	public function startup(): void {
-		if (($this->action === 'register' || $this->action === 'edit') && !$this->user->isInRole('admin')) {
+		if (($this->getAction() === 'register' || $this->getAction() === 'edit') && !$this->user->isInRole('admin')) {
 			$today = new DateTimeImmutable();
 			if ($this->entries->closing !== null && $this->entries->closing < $today) {
 				throw new App\Exceptions\TooLateForAccessException();
@@ -336,7 +336,7 @@ final class TeamPresenter extends BasePresenter {
 
 		$this->cleanNonApplicableFields($form);
 
-		if ($this->action === 'edit') {
+		if ($this->getAction() === 'edit') {
 			if (!$this->user->isLoggedIn()) {
 				throw new ForbiddenRequestException();
 			}
@@ -470,7 +470,7 @@ final class TeamPresenter extends BasePresenter {
 
 			$this->teams->persist($team);
 
-			if ($this->action === 'edit') {
+			if ($this->getAction() === 'edit') {
 				foreach ($team->persons as $person) {
 					foreach ($person->itemReservations as $reservation) {
 						--$reservationStats[$reservation->name];
@@ -626,7 +626,7 @@ final class TeamPresenter extends BasePresenter {
 			if (!$form->hasErrors()) {
 				$this->teams->flush();
 
-				if ($this->action === 'edit') {
+				if ($this->getAction() === 'edit') {
 					$this->flashMessage($this->translator->translate('messages.team.success.edit'));
 				} else {
 					/** @var Nette\Bridges\ApplicationLatte\DefaultTemplate $mtemplate */
@@ -716,7 +716,7 @@ final class TeamPresenter extends BasePresenter {
 			throw $e;
 		} catch (Exception $e) {
 			Debugger::log($e);
-			if ($this->action === 'edit') {
+			if ($this->getAction() === 'edit') {
 				$form->addError('messages.team.error.edit_general');
 			} else {
 				$form->addError('messages.team.error.add_general');
