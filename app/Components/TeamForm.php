@@ -46,7 +46,6 @@ final class TeamForm extends UI\Form {
 		// Handled in TeamPresenter::renderCreate.
 		$initialMembers = $this->entries->minMembers;
 
-		$this->addProtection();
 		$this->addGroup('messages.team.info.label');
 		$this->addText('name', 'messages.team.name.label')->setRequired();
 
