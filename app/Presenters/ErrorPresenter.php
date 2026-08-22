@@ -6,6 +6,7 @@ namespace App\Presenters;
 
 use App\Exceptions\LimitedAccessException;
 use Nette;
+use Nette\Application\Attributes\Requires;
 use Nette\Application\Responses;
 use Nette\Http;
 use Override;
@@ -14,6 +15,7 @@ use Tracy\ILogger;
 /**
  * Handles uncaught exceptions and errors, and logs them.
  */
+#[Requires(forward: true)]
 final readonly class ErrorPresenter implements Nette\Application\IPresenter {
 	public function __construct(
 		private ILogger $logger,
