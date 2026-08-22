@@ -13,7 +13,7 @@ use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 
 final class TeamManager implements Nette\Security\Authenticator {
-	public const EntryWithdrawn = 317806432;
+	public const int EntryWithdrawn = 317806432;
 
 	public function __construct(
 		/** @var string administrator password */

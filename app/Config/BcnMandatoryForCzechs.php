@@ -15,7 +15,7 @@ use Nette\Forms\Rules;
  * Makes the person’s `registry_bcn` field required if and only if their `country` field is Czechia.
  */
 final class BcnMandatoryForCzechs implements InputModifier {
-	private const COUNTRY_ID = 46; // Czechia
+	private const int COUNTRY_ID = 46; // Czechia
 
 	/**
 	 * @param callable(BaseControl): (BaseControl|Rules) $whenNotPlaceholder rules attached to the returned value will only be checked if the control passed as the argument to the `callable` does not belong to a placeholder person

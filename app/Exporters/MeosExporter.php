@@ -21,7 +21,7 @@ use SplFileObject;
  * Person row contains these values: full name, sportident card, club, category
  */
 final class MeosExporter implements IExporter {
-	public const DELIMITER = ';';
+	public const string DELIMITER = ';';
 
 	public function __construct(
 		/** @var ICollection<Team> */

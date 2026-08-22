@@ -15,14 +15,11 @@ use Nextras\FormComponents\Fragments\UIComponent\BaseControl as NextrasBaseContr
 use stdClass;
 
 final class SportidentControl extends NextrasBaseControl {
-	/** @var string */
-	public const NAME_CARD_ID = 'cardId';
+	public const string NAME_CARD_ID = 'cardId';
 
-	/** @var string */
-	public const NAME_NEEDED = 'needed';
+	public const string NAME_NEEDED = 'needed';
 
-	/** @var string */
-	private const SI_PATTERN = '[0-9]+';
+	private const string SI_PATTERN = '[0-9]+';
 
 	/** @var TextInput cardIdControl entry for card id */
 	protected TextInput $cardIdControl;

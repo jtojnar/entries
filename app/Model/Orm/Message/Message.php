@@ -22,7 +22,7 @@ use Nextras\Orm\Entity\Entity;
  * @property-phpstan self::STATUS_* $status
  */
 final class Message extends Entity {
-	public const STATUS_QUEUED = 'queued';
-	public const STATUS_CANCELLED = 'cancelled';
-	public const STATUS_SENT = 'sent';
+	public const string STATUS_QUEUED = 'queued';
+	public const string STATUS_CANCELLED = 'cancelled';
+	public const string STATUS_SENT = 'sent';
 }
