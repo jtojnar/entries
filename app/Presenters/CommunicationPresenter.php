@@ -331,12 +331,11 @@ final class CommunicationPresenter extends BasePresenter {
 	public function actionList(?int $id = null): void {
 		$userId = $this->user->getId();
 
-		if ($userId === null) {
-			$backlink = $this->storeRequest('+ 48 hours');
-			$this->redirect('Sign:in', ['backlink' => $backlink]);
-		}
-
 		if ($id === null) {
+			if (!\is_int($userId)) {
+				throw new BadRequestException();
+			}
+
 			$this->redirect('this', ['id' => $userId]);
 		}
 

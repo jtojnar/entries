@@ -19,6 +19,7 @@ use DateTimeImmutable;
 use Exception;
 use Kdyby\Replicator\Container as ReplicatorContainer;
 use Nette;
+use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
@@ -143,12 +144,11 @@ final class TeamPresenter extends BasePresenter {
 		} else {
 			$userId = $this->user->getId();
 
-			if ($userId === null) {
-				$backlink = $this->storeRequest('+ 48 hours');
-				$this->redirect('Sign:in', ['backlink' => $backlink]);
-			}
-
 			if ($id === null) {
+				if (!\is_int($userId)) {
+					throw new BadRequestException();
+				}
+
 				$this->redirect('edit', ['id' => $userId]);
 			}
 			if (!$this->user->isInRole('admin') && $userId !== $id) {
