@@ -329,18 +329,18 @@ final class CommunicationPresenter extends BasePresenter {
 	}
 
 	public function actionList(?int $id = null): void {
-		$identity = $this->user->identity;
+		$userId = $this->user->getId();
 
-		if ($identity === null) {
+		if ($userId === null) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}
 
 		if ($id === null) {
-			$this->redirect('this', ['id' => $identity->getId()]);
+			$this->redirect('this', ['id' => $userId]);
 		}
 
-		if (!$this->user->isInRole('admin') && $identity->getId() !== $id) {
+		if (!$this->user->isInRole('admin') && $userId !== $id) {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		}
@@ -368,12 +368,12 @@ final class CommunicationPresenter extends BasePresenter {
 		}
 
 		if ($this->user->isLoggedIn()) {
-			$identity = $this->user->identity;
+			$userId = $this->user->getId();
 
 			if ($this->user->isInRole('admin')) {
 				$authorizedTeams[] = $message->team->id;
-			} elseif ($identity?->getId() !== null) {
-				$authorizedTeams[] = $identity->getId();
+			} elseif ($userId !== null) {
+				$authorizedTeams[] = $userId;
 			}
 		}
 

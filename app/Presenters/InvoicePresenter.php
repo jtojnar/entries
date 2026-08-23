@@ -48,12 +48,12 @@ final class InvoicePresenter extends BasePresenter {
 		}
 
 		if ($this->user->isLoggedIn()) {
-			$identity = $this->user->identity;
+			$userId = $this->user->getId();
 
 			if ($this->user->isInRole('admin')) {
 				$authorizedTeams[] = $template->invoice->team->id;
-			} elseif ($identity?->getId() !== null) {
-				$authorizedTeams[] = $identity->getId();
+			} elseif ($userId !== null) {
+				$authorizedTeams[] = $userId;
 			}
 		}
 

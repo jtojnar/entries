@@ -41,10 +41,10 @@ final class HomepagePresenter extends BasePresenter {
 		$template->status = null;
 
 		if ($this->user->isLoggedIn()) {
-			$identity = $this->user->identity;
+			$userId = $this->user->getId();
 
 			if (!$this->user->isInRole('admin')) {
-				$team = $this->teams->getById($identity?->getId());
+				$team = $this->teams->getById($userId);
 				if ($team === null) {
 					$this->user->logout(true);
 				} else {

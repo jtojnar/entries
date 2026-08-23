@@ -141,17 +141,17 @@ final class TeamPresenter extends BasePresenter {
 			$backlink = $this->storeRequest('+ 48 hours');
 			$this->redirect('Sign:in', ['backlink' => $backlink]);
 		} else {
-			$identity = $this->user->identity;
+			$userId = $this->user->getId();
 
-			if ($identity === null) {
+			if ($userId === null) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
 
 			if ($id === null) {
-				$this->redirect('edit', ['id' => $identity->getId()]);
+				$this->redirect('edit', ['id' => $userId]);
 			}
-			if (!$this->user->isInRole('admin') && $identity->getId() !== $id) {
+			if (!$this->user->isInRole('admin') && $userId !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
@@ -346,7 +346,7 @@ final class TeamPresenter extends BasePresenter {
 			$id = (int) $idParam;
 			$team = $this->teams->getById($id);
 
-			$identity = $this->user->identity;
+			$userId = $this->user->getId();
 
 			if ($team === null) {
 				$form->addError('messages.team.edit.error.404');
@@ -359,7 +359,7 @@ final class TeamPresenter extends BasePresenter {
 						Team::STATUS_WITHDRAWN => 'messages.team.error.withdrawn',
 					}
 				);
-			} elseif (!$this->user->isInRole('admin') && $identity?->getId() !== $id) {
+			} elseif (!$this->user->isInRole('admin') && $userId !== $id) {
 				$backlink = $this->storeRequest('+ 48 hours');
 				$this->redirect('Sign:in', ['backlink' => $backlink]);
 			}
