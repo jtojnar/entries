@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Components;
 
+use App\Forms\TeamFormValues;
 use App\Helpers\Iter;
 use App\Locale\Translated;
 use App\Model\Configuration\Entries;
@@ -88,7 +89,9 @@ final class TeamForm extends UI\Form {
 		$this->setCurrentGroup();
 		$this->addSubmit('save', $isEditing ? 'messages.team.action.edit' : 'messages.team.action.register');
 		$this->addSubmit('add', 'messages.team.action.add')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMaxMembers): void {
-			$category = $button->form->getUnsafeValues(null)['category'];
+			$values = $button->form->getUnsafeValues(TeamFormValues::class);
+			\assert($values instanceof TeamFormValues); // For PHPStan
+			$category = $values->category;
 			$maxMembers = $this->entries->categories->allCategories[$category]->maxMembers ?? $defaultMaxMembers;
 			/** @var ReplicatorContainer */
 			$replicator = $button->form['persons'];
@@ -99,7 +102,9 @@ final class TeamForm extends UI\Form {
 			}
 		};
 		$this->addSubmit('remove', 'messages.team.action.remove')->setValidationScope([])->onClick[] = function(SubmitButton $button) use ($defaultMinMembers): void {
-			$category = $button->form->getUnsafeValues(null)['category'];
+			$values = $button->form->getUnsafeValues(TeamFormValues::class);
+			\assert($values instanceof TeamFormValues); // For PHPStan
+			$category = $values->category;
 			$minMembers = $this->entries->categories->allCategories[$category]->minMembers ?? $defaultMinMembers;
 			/** @var ReplicatorContainer */ // For PHPStan.
 			$replicator = $button->form['persons'];
