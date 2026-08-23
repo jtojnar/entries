@@ -20,6 +20,10 @@ use Rikudou\Iban\Iban\IbanInterface;
  * Holds information about the event pertaining to registration.
  */
 final class Helpers {
+	/**
+	 * @param array<string, string> $translated
+	 * @param array<string> $allLocales
+	 */
 	public static function checkAllLocalesPresent(string $context, array $translated, array $allLocales): void {
 		$translations = array_keys($translated);
 		foreach ($allLocales as $locale) {
@@ -29,6 +33,9 @@ final class Helpers {
 		}
 	}
 
+	/**
+	 * @param array<string> $allLocales
+	 */
 	public static function parseTranslatable(string $context, mixed $translatable, array $allLocales): Translated|NotTranslate {
 		if (\is_array($translatable)) {
 			self::checkAllLocalesPresent($context, $translatable, $allLocales);
@@ -52,6 +59,7 @@ final class Helpers {
 
 	/**
 	 * @param array<string, mixed> $field
+	 * @param array<string> $allLocales
 	 */
 	public static function parseLabel(string $context, array $field, array $allLocales, ?string $fallback = null): Translated|NotTranslate|string {
 		if (isset($field['label'])) {
@@ -292,6 +300,10 @@ final class Helpers {
 		);
 	}
 
+	/**
+	 * @param array<string, mixed> $field
+	 * @param array<string> $allLocales
+	 */
 	public static function makeField(string $name, array $field, array $allLocales, Fees $fees): Field {
 		foreach ($field as $key => $property) {
 			if (!\is_string($key)) {
