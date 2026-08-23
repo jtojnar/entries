@@ -8,57 +8,49 @@ use App\Model\Configuration\Helpers;
 use Rikudou\Iban\Iban\IbanInterface;
 
 final readonly class Parameters {
-	public ?string $accountNumber;
 	public ?IbanInterface $accountNumberIban;
 
+	/**
+	 * @param array<mixed> $siteTitle
+	 * @param array<mixed> $siteTitleShort
+	 * @param array<mixed> $locales
+	 */
 	public function __construct(
-		private array $parameters,
+		public string $appDir,
+		public string $tempDir,
+		/** @var array<string, string> */
+		public array $siteTitle,
+		/** @var array<string, string> */
+		public array $siteTitleShort,
+		/**
+		 * @var array<string, string>
+		 * Array of code => name for supported locales
+		 */
+		public array $locales,
+		/**
+		 * The the organizers’ e-mail address.
+		 */
+		public string $webmasterEmail,
+		public ?string $accountNumber,
 	) {
-		$this->accountNumber = $parameters['accountNumber'] ?? null;
 		$this->accountNumberIban = Helpers::parseAccountNumber($this->accountNumber);
-	}
-
-	/**
-	 * Get the the path to the app directory.
-	 */
-	public function getAppDir(): string {
-		return $this->parameters['appDir'];
-	}
-
-	/**
-	 * Get the the path to the directory for temporary files.
-	 */
-	public function getTempDir(): string {
-		return $this->parameters['tempDir'];
 	}
 
 	/**
 	 * Get the event name for the given locale, if defined.
 	 */
 	public function getSiteTitle(string $locale): ?string {
-		return $this->parameters['siteTitle'][$locale] ?? null;
+		return $this->siteTitle[$locale] ?? null;
 	}
 
 	/**
 	 * Get the short event name for the given locale, if defined.
 	 */
 	public function getSiteTitleShort(string $locale): ?string {
-		return $this->parameters['siteTitleShort'][$locale] ?? null;
+		return $this->siteTitleShort[$locale] ?? null;
 	}
 
-	/**
-	 * Get the array of code => name for supported locales.
-	 *
-	 * @return array<string, string>
-	 */
-	public function getLocales(): array {
-		return $this->parameters['locales'];
-	}
-
-	/**
-	 * Get the the organizers’ e-mail address.
-	 */
 	public function getWebmasterEmail(): string {
-		return $this->parameters['webmasterEmail'];
+		return $this->webmasterEmail;
 	}
 }

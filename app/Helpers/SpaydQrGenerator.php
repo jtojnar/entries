@@ -29,7 +29,7 @@ final readonly class SpaydQrGenerator {
 	 * @return string FS path where the generated images will be stored
 	 */
 	public function getStoragePath(): string {
-		return $this->parameters->getTempDir() . '/qrcodes';
+		return $this->parameters->tempDir . '/qrcodes';
 	}
 
 	/**

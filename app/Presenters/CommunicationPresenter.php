@@ -66,7 +66,7 @@ final class CommunicationPresenter extends BasePresenter {
 		$form->addText('subject', 'messages.communication.compose.subject.label')
 			->setRequired('messages.communication.compose.subject.error.empty');
 
-		$organiserMail = $this->parameters->getWebmasterEmail();
+		$organiserMail = $this->parameters->webmasterEmail;
 		$form->addEmail('sender', 'messages.communication.compose.sender.label')
 			->setRequired('messages.communication.compose.sender.error.empty')
 			->setDefaultValue($organiserMail);
@@ -280,7 +280,7 @@ final class CommunicationPresenter extends BasePresenter {
 				name: iterator_to_array($team->persons)[0]->firstname
 				?? throw new \PHPStan\ShouldNotHappenException(),
 				invoice: $team->lastInvoice,
-				organiserMail: $this->parameters->getWebmasterEmail(),
+				organiserMail: $this->parameters->webmasterEmail,
 				subject: $subject,
 				grant: $grant,
 			),

@@ -1,4 +1,6 @@
 parameters:
+	siteTitleShort: []
+	accountNumber: null
 	entries:
 		minMembers: 0
 		maxMembers: 0
@@ -61,7 +63,15 @@ orm:
 
 services:
 	- App\Helpers\EmailFactory(%appDir%)
-	- App\Helpers\Parameters(@container::getParameters())
+	- App\Helpers\Parameters(
+		appDir: %appDir%,
+		tempDir: %tempDir%,
+		siteTitle: %siteTitle%,
+		siteTitleShort: %siteTitleShort%,
+		locales: %locales%,
+		webmasterEmail: %webmasterEmail%,
+		accountNumber: %accountNumber%,
+	)
 	- App\Helpers\SpaydQrGenerator
 	- App\Model\Configuration\Entries::from(%entries%)
 	- App\Model\TeamManager(%adminPassword%)
