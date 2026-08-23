@@ -227,7 +227,6 @@ final class TeamForm extends UI\Form {
 
 			$isDisabled = $field->disabled;
 			if ($field instanceof Fields\CheckboxlistField || $field instanceof Fields\EnumField) {
-				\assert($input instanceof BootstrapCheckboxList || $input instanceof BootstrapRadioList);
 				$options = $field instanceof Fields\EnumField ? $field->options : $field->items;
 				$disabledFields = array_keys(
 					array_filter(
