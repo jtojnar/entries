@@ -329,8 +329,12 @@ final class CommunicationPresenter extends BasePresenter {
 	}
 
 	public function actionList(?int $id = null): void {
-		/** @var Nette\Security\SimpleIdentity $identity */
 		$identity = $this->user->identity;
+
+		if ($identity === null) {
+			$backlink = $this->storeRequest('+ 48 hours');
+			$this->redirect('Sign:in', ['backlink' => $backlink]);
+		}
 
 		if ($id === null) {
 			$this->redirect('this', ['id' => $identity->getId()]);
@@ -364,12 +368,11 @@ final class CommunicationPresenter extends BasePresenter {
 		}
 
 		if ($this->user->isLoggedIn()) {
-			/** @var Nette\Security\SimpleIdentity $identity */
 			$identity = $this->user->identity;
 
 			if ($this->user->isInRole('admin')) {
 				$authorizedTeams[] = $message->team->id;
-			} else {
+			} elseif ($identity?->getId() !== null) {
 				$authorizedTeams[] = $identity->getId();
 			}
 		}
