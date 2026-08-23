@@ -10,6 +10,7 @@ use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;
 use Override;
 use SplFileObject;
+use stdClass;
 
 /**
  * Exporter to MeOS format or something.
@@ -36,6 +37,9 @@ final readonly class MeosExporter implements IExporter {
 		return 'text/plain';
 	}
 
+	/**
+	 * @param string[] $row
+	 */
 	private function outputRow(SplFileObject $file, array $row): void {
 		$file->fwrite(Strings::toAscii(implode(self::DELIMITER, $row)) . \PHP_EOL);
 	}
@@ -51,11 +55,25 @@ final readonly class MeosExporter implements IExporter {
 			foreach ($team->persons as $person) {
 				$additionalData = $person->getJsonData();
 				$fullName = $person->lastname . ' ' . $person->firstname;
-				$sportident = $additionalData->sportident->cardId ?? '';
+				$sportident = self::siCardId($additionalData);
 				$club = '';
 				$this->outputRow($file, [$fullName, $sportident, $club, $category]);
 			}
 		}
 		exit;
+	}
+
+	private static function siCardId(stdClass $data): string {
+		$sportident = $data->sportident;
+
+		if (!$sportident instanceof stdClass) {
+			return '';
+		}
+
+		if (($cardId = $sportident->cardId ?? null) === null) {
+			return '';
+		}
+
+		return \is_string($cardId) ? $cardId : '';
 	}
 }
