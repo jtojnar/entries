@@ -6,6 +6,7 @@ namespace App\Presenters;
 
 use App;
 use App\Components\SportidentControl;
+use App\Components\TeamForm;
 use App\Exporters;
 use App\Forms\TeamListActionFormValues;
 use App\Helpers\EmailFactory;
@@ -29,6 +30,7 @@ use Nette\Forms\Controls;
 use Nette\Mail\Message;
 use Nette\Utils\Html;
 use Nextras\FormsRendering\Renderers\FormLayout;
+use Nextras\Orm\Relationships\OneHasMany;
 use Override;
 use stdClass;
 use Tracy\Debugger;
@@ -330,7 +332,7 @@ final class TeamPresenter extends BasePresenter {
 			}
 		}
 
-		/** @var App\Components\TeamForm $form */
+		/** @var TeamForm $form */
 		$form = $button->form;
 		/** @var array */
 		$values = $form->getValues(Container::Array);
@@ -392,84 +394,8 @@ final class TeamPresenter extends BasePresenter {
 				$this->itemReservations->remove($reservation);
 			}
 
-			$jsonData = [];
+			$jsonData = $this->processFields('team', $form, $form, $fields, $values, $limits, $team->itemReservations, $reservationStats, $invoice);
 
-			foreach ($fields as $field) {
-				$name = $field->name;
-				$outputValue = $values[$name];
-				$jsonData[$name] = $outputValue;
-
-				if ($field instanceof Fields\SportidentField && $field->fee !== null && (($outputValue ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
-					$invoice->addItem(self::serializeInvoiceItem([
-						'type' => $field->getType(),
-						'scope' => 'team',
-						'key' => $name,
-					]), $field->fee);
-				} elseif ($field instanceof Fields\CheckboxField && $outputValue) {
-					if ($field->fee !== null) {
-						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $field->getType(),
-							'scope' => 'team',
-							'key' => $name,
-						]), $field->fee);
-					}
-
-					if ($field->getLimitName() !== null) {
-						$limitName = $field->getLimitName();
-						$team->itemReservations->add(new ItemReservation($limitName));
-						$reservationStats[$limitName] ??= 0;
-						if (++$reservationStats[$limitName] > $limits[$limitName]) {
-							/** @var Controls\BaseControl */
-							$control = $form[$name];
-							$control->addError('messages.team.field.error.no_longer_available');
-						}
-					}
-				} elseif ($field instanceof Fields\EnumField && isset($field->options[$outputValue]) && $outputValue) {
-					$option = $field->options[$outputValue];
-					if ($option->fee !== null) {
-						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $field->getType(),
-							'scope' => 'team',
-							'key' => $name,
-							'value' => $outputValue,
-						]), $option->fee);
-					}
-
-					if ($option->getLimitName() !== null) {
-						$limitName = $option->getLimitName();
-						$team->itemReservations->add(new ItemReservation($limitName));
-						$reservationStats[$limitName] ??= 0;
-						if (++$reservationStats[$limitName] > $limits[$limitName]) {
-							/** @var Controls\BaseControl */
-							$control = $form[$name];
-							$control->addError('messages.team.field.error.no_longer_available');
-						}
-					}
-				} elseif ($field instanceof Fields\CheckboxlistField) {
-					foreach ($outputValue as $item) {
-						$option = $field->items[$item];
-						if ($option->fee !== null) {
-							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $field->getType(),
-								'scope' => 'team',
-								'key' => $name,
-								'value' => $item,
-							]), $option->fee);
-						}
-
-						if ($option->getLimitName() !== null) {
-							$limitName = $option->getLimitName();
-							$team->itemReservations->add(new ItemReservation($limitName));
-							$reservationStats[$limitName] ??= 0;
-							if (++$reservationStats[$limitName] > $limits[$limitName]) {
-								/** @var Controls\BaseControl */
-								$control = $form[$name];
-								$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $this->translator->translate($option->label)]), false);
-							}
-						}
-					}
-				}
-			}
 			$team->setJsonData($jsonData);
 
 			$this->teams->persist($team);
@@ -525,84 +451,7 @@ final class TeamPresenter extends BasePresenter {
 				$person->placeholder = $this->entries->allowPlaceholders && $member['placeholder'];
 				$person->team = $team;
 
-				$jsonData = [];
-				foreach ($fields as $field) {
-					$name = $field->name;
-					$value = $member[$name] ?? null;
-					$outputValue = (!$this->user->isInRole('admin') && $field->disabled) ? $form->getDefaultFieldValue($field) : $value;
-					$jsonData[$name] = $outputValue;
-
-					if ($field instanceof Fields\SportidentField && $field->fee !== null && (($outputValue ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
-						$invoice->addItem(self::serializeInvoiceItem([
-							'type' => $field->getType(),
-							'scope' => 'person',
-							'key' => $name,
-						]), $field->fee);
-					} elseif ($field instanceof Fields\CheckboxField && $outputValue) {
-						if ($field->fee !== null) {
-							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $field->getType(),
-								'scope' => 'person',
-								'key' => $name,
-							]), $field->fee);
-						}
-
-						if ($field->getLimitName() !== null) {
-							$limitName = $field->getLimitName();
-							$person->itemReservations->add(new ItemReservation($limitName));
-							$reservationStats[$limitName] ??= 0;
-							if (++$reservationStats[$limitName] > $limits[$limitName]) {
-								/** @var Controls\BaseControl */
-								$control = $personContainer[$name];
-								$control->addError('messages.team.field.error.no_longer_available');
-							}
-						}
-					} elseif ($field instanceof Fields\EnumField && isset($field->options[$value]) && $outputValue) {
-						$option = $field->options[$value];
-						if ($option->fee !== null) {
-							$invoice->addItem(self::serializeInvoiceItem([
-								'type' => $field->getType(),
-								'scope' => 'person',
-								'key' => $name,
-								'value' => $value,
-							]), $option->fee);
-						}
-
-						if ($option->getLimitName() !== null) {
-							$limitName = $option->getLimitName();
-							$person->itemReservations->add(new ItemReservation($limitName));
-							$reservationStats[$limitName] ??= 0;
-							if (++$reservationStats[$limitName] > $limits[$limitName]) {
-								/** @var Controls\BaseControl */
-								$control = $personContainer[$name];
-								$control->addError('messages.team.field.error.no_longer_available');
-							}
-						}
-					} elseif ($field instanceof Fields\CheckboxlistField) {
-						foreach ($outputValue as $item) {
-							$option = $field->items[$item];
-							if ($option->fee !== null) {
-								$invoice->addItem(self::serializeInvoiceItem([
-									'type' => $field->getType(),
-									'scope' => 'person',
-									'key' => $name,
-									'value' => $item,
-								]), $option->fee);
-							}
-
-							if ($option->getLimitName() !== null) {
-								$limitName = $option->getLimitName();
-								$person->itemReservations->add(new ItemReservation($limitName));
-								$reservationStats[$limitName] ??= 0;
-								if (++$reservationStats[$limitName] > $limits[$limitName]) {
-									/** @var Controls\BaseControl */
-									$control = $personContainer[$name];
-									$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $this->translator->translate($option->label)]), false);
-								}
-							}
-						}
-					}
-				}
+				$jsonData = $this->processFields('person', $form, $personContainer, $fields, $member, $limits, $person->itemReservations, $reservationStats, $invoice);
 
 				$person->setJsonData($jsonData);
 
@@ -727,6 +576,124 @@ final class TeamPresenter extends BasePresenter {
 				$form->addError('messages.team.error.add_general');
 			}
 		}
+	}
+
+	/**
+	 * @param array<Fields\Field> $fields
+	 * @param array<string, mixed> $values
+	 * @param array<string, int> $limits
+	 * @param OneHasMany<ItemReservation> $itemReservations
+	 * @param array<string, int> $reservationStats
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function processFields(
+		string $scope,
+		TeamForm $form,
+		Container $container,
+		array $fields,
+		array $values,
+		array $limits,
+		OneHasMany $itemReservations,
+		array &$reservationStats,
+		Invoice $invoice,
+	): array {
+		$jsonData = [];
+		foreach ($fields as $field) {
+			$name = $field->name;
+			$value = $values[$name] ?? null;
+			$outputValue = (!$this->user->isInRole('admin') && $field->disabled) ? $form->getDefaultFieldValue($field) : $value;
+			$jsonData[$name] = $outputValue;
+
+			if ($field instanceof Fields\SportidentField) {
+				if ($field->fee === null || !\is_array($outputValue) || ($outputValue[SportidentControl::NAME_NEEDED] ?? null) !== true) {
+					continue;
+				}
+
+				$invoice->addItem(self::serializeInvoiceItem([
+					'type' => $field->getType(),
+					'scope' => $scope,
+					'key' => $name,
+				]), $field->fee);
+			} elseif ($field instanceof Fields\CheckboxField) {
+				if (!$outputValue) {
+					continue;
+				}
+
+				if ($field->fee !== null) {
+					$invoice->addItem(self::serializeInvoiceItem([
+						'type' => $field->getType(),
+						'scope' => $scope,
+						'key' => $name,
+					]), $field->fee);
+				}
+
+				if ($field->getLimitName() !== null) {
+					$limitName = $field->getLimitName();
+					$itemReservations->add(new ItemReservation($limitName));
+					$reservationStats[$limitName] ??= 0;
+					if (++$reservationStats[$limitName] > $limits[$limitName]) {
+						/** @var Controls\BaseControl */
+						$control = $container[$name];
+						$control->addError('messages.team.field.error.no_longer_available');
+					}
+				}
+			} elseif ($field instanceof Fields\EnumField) {
+				if (!\is_string($value) || !isset($field->options[$value]) || !$outputValue) {
+					continue;
+				}
+
+				$option = $field->options[$value];
+				if ($option->fee !== null) {
+					$invoice->addItem(self::serializeInvoiceItem([
+						'type' => $field->getType(),
+						'scope' => $scope,
+						'key' => $name,
+						'value' => $value,
+					]), $option->fee);
+				}
+
+				if ($option->getLimitName() !== null) {
+					$limitName = $option->getLimitName();
+					$itemReservations->add(new ItemReservation($limitName));
+					$reservationStats[$limitName] ??= 0;
+					if (++$reservationStats[$limitName] > $limits[$limitName]) {
+						/** @var Controls\BaseControl */
+						$control = $container[$name];
+						$control->addError('messages.team.field.error.no_longer_available');
+					}
+				}
+			} elseif ($field instanceof Fields\CheckboxlistField) {
+				if (!\is_array($outputValue)) {
+					continue;
+				}
+
+				foreach ($outputValue as $item) {
+					$option = $field->items[$item];
+					if ($option->fee !== null) {
+						$invoice->addItem(self::serializeInvoiceItem([
+							'type' => $field->getType(),
+							'scope' => $scope,
+							'key' => $name,
+							'value' => $item,
+						]), $option->fee);
+					}
+
+					if ($option->getLimitName() !== null) {
+						$limitName = $option->getLimitName();
+						$itemReservations->add(new ItemReservation($limitName));
+						$reservationStats[$limitName] ??= 0;
+						if (++$reservationStats[$limitName] > $limits[$limitName]) {
+							/** @var Controls\BaseControl */
+							$control = $container[$name];
+							$control->addError($this->translator->translate('messages.team.field.error.named_no_longer_available', null, ['item' => $this->translator->translate($option->label)]), false);
+						}
+					}
+				}
+			}
+		}
+
+		return $jsonData;
 	}
 
 	public function cleanNonApplicableFields(Nette\Forms\Form $form): void {
