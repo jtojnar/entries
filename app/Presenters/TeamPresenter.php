@@ -396,15 +396,16 @@ final class TeamPresenter extends BasePresenter {
 
 			foreach ($fields as $field) {
 				$name = $field->name;
-				$jsonData[$name] = $values[$name];
+				$outputValue = $values[$name];
+				$jsonData[$name] = $outputValue;
 
-				if ($field instanceof Fields\SportidentField && $field->fee !== null && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
+				if ($field instanceof Fields\SportidentField && $field->fee !== null && (($outputValue ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 					$invoice->addItem(self::serializeInvoiceItem([
 						'type' => $field->getType(),
 						'scope' => 'team',
 						'key' => $name,
 					]), $field->fee);
-				} elseif ($field instanceof Fields\CheckboxField && $jsonData[$name]) {
+				} elseif ($field instanceof Fields\CheckboxField && $outputValue) {
 					if ($field->fee !== null) {
 						$invoice->addItem(self::serializeInvoiceItem([
 							'type' => $field->getType(),
@@ -423,14 +424,14 @@ final class TeamPresenter extends BasePresenter {
 							$control->addError('messages.team.field.error.no_longer_available');
 						}
 					}
-				} elseif ($field instanceof Fields\EnumField && isset($field->options[$values[$name]]) && $jsonData[$name]) {
-					$option = $field->options[$values[$name]];
+				} elseif ($field instanceof Fields\EnumField && isset($field->options[$outputValue]) && $outputValue) {
+					$option = $field->options[$outputValue];
 					if ($option->fee !== null) {
 						$invoice->addItem(self::serializeInvoiceItem([
 							'type' => $field->getType(),
 							'scope' => 'team',
 							'key' => $name,
-							'value' => $values[$name],
+							'value' => $outputValue,
 						]), $option->fee);
 					}
 
@@ -445,7 +446,7 @@ final class TeamPresenter extends BasePresenter {
 						}
 					}
 				} elseif ($field instanceof Fields\CheckboxlistField) {
-					foreach ($jsonData[$name] as $item) {
+					foreach ($outputValue as $item) {
 						$option = $field->items[$item];
 						if ($option->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
@@ -527,16 +528,17 @@ final class TeamPresenter extends BasePresenter {
 				$jsonData = [];
 				foreach ($fields as $field) {
 					$name = $field->name;
-					$member[$name] ??= null;
-					$jsonData[$name] = (!$this->user->isInRole('admin') && $form->isFieldDisabled($field)) ? $form->getDefaultFieldValue($field) : $member[$name];
+					$value = $member[$name] ?? null;
+					$outputValue = (!$this->user->isInRole('admin') && $form->isFieldDisabled($field)) ? $form->getDefaultFieldValue($field) : $value;
+					$jsonData[$name] = $outputValue;
 
-					if ($field instanceof Fields\SportidentField && $field->fee !== null && (($jsonData[$name] ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
+					if ($field instanceof Fields\SportidentField && $field->fee !== null && (($outputValue ?? [])[SportidentControl::NAME_NEEDED] ?? null) === true) {
 						$invoice->addItem(self::serializeInvoiceItem([
 							'type' => $field->getType(),
 							'scope' => 'person',
 							'key' => $name,
 						]), $field->fee);
-					} elseif ($field instanceof Fields\CheckboxField && $jsonData[$name]) {
+					} elseif ($field instanceof Fields\CheckboxField && $outputValue) {
 						if ($field->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
 								'type' => $field->getType(),
@@ -555,14 +557,14 @@ final class TeamPresenter extends BasePresenter {
 								$control->addError('messages.team.field.error.no_longer_available');
 							}
 						}
-					} elseif ($field instanceof Fields\EnumField && isset($field->options[$member[$name]]) && $jsonData[$name]) {
-						$option = $field->options[$member[$name]];
+					} elseif ($field instanceof Fields\EnumField && isset($field->options[$value]) && $outputValue) {
+						$option = $field->options[$value];
 						if ($option->fee !== null) {
 							$invoice->addItem(self::serializeInvoiceItem([
 								'type' => $field->getType(),
 								'scope' => 'person',
 								'key' => $name,
-								'value' => $member[$name],
+								'value' => $value,
 							]), $option->fee);
 						}
 
@@ -577,7 +579,7 @@ final class TeamPresenter extends BasePresenter {
 							}
 						}
 					} elseif ($field instanceof Fields\CheckboxlistField) {
-						foreach ($jsonData[$name] as $item) {
+						foreach ($outputValue as $item) {
 							$option = $field->items[$item];
 							if ($option->fee !== null) {
 								$invoice->addItem(self::serializeInvoiceItem([
