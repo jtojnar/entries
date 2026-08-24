@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Forms\ComposeFormValues;
 use App\Helpers\EmailFactory;
 use App\Model\Configuration\Entries;
 use App\Model\Orm\Team\Team;
@@ -15,7 +16,6 @@ use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
 use Nette\DI\Attributes\Inject;
-use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use Throwable;
@@ -97,23 +97,9 @@ final class CommunicationPresenter extends BasePresenter {
 
 		$form = $button->form;
 
-		/** @var array */
-		$values = $form->getValues(Container::Array);
+		$values = $form->getValues(ComposeFormValues::class);
 
-		$teamsIds = explode(',', (string) $values['recipients']);
-		$teamsIds = array_map(
-			trim(...),
-			$teamsIds,
-		);
-		$teamsIds = array_filter(
-			$teamsIds,
-			static fn(string $id): bool => $id !== '',
-		);
-		/** @var int[] */
-		$teamsIds = array_map(
-			static fn(string $id): int => (int) $id,
-			$teamsIds,
-		);
+		$teamsIds = $values->recipients;
 
 		$teams = array_combine(
 			$teamsIds,
@@ -151,9 +137,9 @@ final class CommunicationPresenter extends BasePresenter {
 				$grant = $this->tokens->createForTeam($team);
 				$this->template->previewMessage = $this->_renderMessageBody(
 					team: $team,
-					subject: $values['subject'],
+					subject: $values->subject,
 					grant: $grant,
-					body: $values['body'],
+					body: $values->body,
 				);
 				break;
 			}
@@ -178,24 +164,10 @@ final class CommunicationPresenter extends BasePresenter {
 
 		$form = $button->form;
 
-		/** @var array */
-		$values = $form->getValues(Container::Array);
-		$subject = $values['subject'];
+		$values = $form->getValues(ComposeFormValues::class);
+		$subject = $values->subject;
 
-		$teamsIds = explode(',', (string) $values['recipients']);
-		$teamsIds = array_map(
-			trim(...),
-			$teamsIds,
-		);
-		$teamsIds = array_filter(
-			$teamsIds,
-			static fn(string $id): bool => $id !== '',
-		);
-		/** @var int[] */
-		$teamsIds = array_map(
-			static fn(string $id): int => (int) $id,
-			$teamsIds,
-		);
+		$teamsIds = $values->recipients;
 
 		$teams = array_combine(
 			$teamsIds,
@@ -236,13 +208,13 @@ final class CommunicationPresenter extends BasePresenter {
 					team: $team,
 					subject: $subject,
 					grant: $grant,
-					body: $values['body'],
+					body: $values->body,
 				);
 
 				$message = new App\Model\Orm\Message\Message();
 				$message->team = $team;
 				$message->subject = $subject;
-				$message->sender = $values['sender'];
+				$message->sender = $values->sender;
 				$message->body = $body;
 				$this->messages->persist($message);
 			}
