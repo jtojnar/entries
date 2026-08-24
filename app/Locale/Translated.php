@@ -17,6 +17,6 @@ abstract class Translated implements Stringable {
 	#[Override]
 	public function __toString(): string {
 		// We rely on custom Translator to call getMessage instead.
-		throw new Exception(__CLASS__ . ' should not be Stringified');
+		throw new Exception(self::class . ' should not be Stringified');
 	}
 }
