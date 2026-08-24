@@ -12,6 +12,7 @@ use Nette\Forms\Form;
 use Nette\Forms\Helpers;
 use Nette\Forms\Rules;
 use Nextras\FormComponents\Fragments\UIComponent\BaseControl as NextrasBaseControl;
+use Override;
 use stdClass;
 
 final class SportidentControl extends NextrasBaseControl {
@@ -79,6 +80,7 @@ final class SportidentControl extends NextrasBaseControl {
 	/**
 	 * @param array|stdClass|null $value
 	 */
+	#[Override]
 	public function setValue($value): self {
 		if ($value === null) {
 			$this->cardIdControl->setValue('');
@@ -108,25 +110,30 @@ final class SportidentControl extends NextrasBaseControl {
 		return $this;
 	}
 
+	#[Override]
 	public function getValue(): array {
 		return $this->neededControl->getValue() ? [self::NAME_NEEDED => true] : [self::NAME_CARD_ID => $this->cardIdControl->getValue()];
 	}
 
+	#[Override]
 	public function loadHttpData(): void {
 		$this->cardIdControl->loadHttpData();
 		$this->neededControl->loadHttpData();
 	}
 
+	#[Override]
 	public function isFilled(): bool {
 		return !empty($this->cardIdControl->getValue()) || $this->neededControl->getValue() === true;
 	}
 
+	#[Override]
 	public function getControl(): string {
 		$this->setOption('rendered', true);
 
 		return $this->getControlPart(static::NAME_CARD_ID) . $this->getControlPart(static::NAME_NEEDED);
 	}
 
+	#[Override]
 	public function getControlPart(?string $key = null): Nette\Utils\Html {
 		if ($key === static::NAME_CARD_ID) {
 			return $this->cardIdControl->getControl();
@@ -137,6 +144,7 @@ final class SportidentControl extends NextrasBaseControl {
 		throw new Nette\InvalidArgumentException('Part ' . ($key ?: 'null') . ' does not exist');
 	}
 
+	#[Override]
 	public function validate(?array $controls = null): void {
 		$this->cardIdControl->validate();
 		$this->neededControl->validate();

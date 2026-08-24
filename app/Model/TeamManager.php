@@ -11,6 +11,7 @@ use Nette\Security\AuthenticationException;
 use Nette\Security\IIdentity;
 use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
+use Override;
 
 final class TeamManager implements Nette\Security\Authenticator {
 	public const int EntryWithdrawn = 317806432;
@@ -28,6 +29,7 @@ final class TeamManager implements Nette\Security\Authenticator {
 	 *
 	 * @throws AuthenticationException
 	 */
+	#[Override]
 	public function authenticate(string $teamId, string $password): IIdentity {
 		if ($teamId === 'admin') {
 			if ($password === $this->adminPassword) {

@@ -8,6 +8,7 @@ use App\Exceptions\LimitedAccessException;
 use Nette;
 use Nette\Application\Responses;
 use Nette\Http;
+use Override;
 use Tracy\ILogger;
 
 /**
@@ -19,6 +20,7 @@ final class ErrorPresenter implements Nette\Application\IPresenter {
 	) {
 	}
 
+	#[Override]
 	public function run(Nette\Application\Request $request): Nette\Application\Response {
 		$exception = $request->getParameter('exception');
 

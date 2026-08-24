@@ -12,6 +12,7 @@ use App\Model\Orm\Person\Person;
 use App\Model\Orm\Team\Team;
 use App\Presenters\Accessory\Filters\CategoryFormatFilter;
 use Nextras\Orm\Collection\ICollection;
+use Override;
 use SplFileObject;
 
 /**
@@ -42,10 +43,12 @@ final class CsvExporter implements IExporter {
 	) {
 	}
 
+	#[Override]
 	public function getMimeType(): string {
 		return 'text/csv';
 	}
 
+	#[Override]
 	public function output(): void {
 		$file = new SplFileObject('php://output', 'a');
 		$writer = new CsvWriter($file);

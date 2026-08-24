@@ -6,12 +6,14 @@ namespace App\Components;
 
 use Nette\Forms\Controls;
 use Nette\Utils\Html;
+use Override;
 
 /**
  * Checkbox input that renders HTML properly for Bootstrap 5.
  * Because Bs5FormRenderer only gets us so far.
  */
 final class BootstrapCheckbox extends Controls\Checkbox {
+	#[Override]
 	public function getControl(): Html {
 		if ($this->hasErrors()) {
 			$this->getControlPrototype()->addClass('is-invalid');

@@ -9,6 +9,7 @@ namespace App\Model\Configuration\Constraints;
 
 use App\Helpers\Iter;
 use ArrayAccess;
+use Override;
 
 class QuantifiedSexConstraint implements Constraint {
 	public function __construct(
@@ -18,6 +19,7 @@ class QuantifiedSexConstraint implements Constraint {
 	) {
 	}
 
+	#[Override]
 	public function admits(iterable $members): bool {
 		$sexes = Iter::map(
 			static fn(ArrayAccess $member): ?Sex => \is_string($member['gender']) ? Sex::from($member['gender']) : null,
@@ -28,6 +30,7 @@ class QuantifiedSexConstraint implements Constraint {
 		return ($this->quantifier)(fn(Sex $sex): bool => ($this->operator)($sex, $this->targetSex), $sexes);
 	}
 
+	#[Override]
 	public function getErrorMessage(): string {
 		return 'messages.team.error.gender_mismatch';
 	}

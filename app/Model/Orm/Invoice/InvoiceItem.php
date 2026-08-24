@@ -6,6 +6,7 @@ namespace App\Model\Orm\Invoice;
 
 use JsonSerializable;
 use Money\Money;
+use Override;
 
 /**
  * Immutable invoice item.
@@ -42,6 +43,7 @@ final class InvoiceItem implements JsonSerializable {
 		return $this->withAmount($this->amount + $amount);
 	}
 
+	#[Override]
 	public function jsonSerialize(): array {
 		return [
 			'name' => $this->getName(),

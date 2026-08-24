@@ -8,6 +8,7 @@ use App\Model\Orm\Team\Team;
 use App\Presenters\Accessory\Filters\CategoryFormatFilter;
 use Nette\Utils\Strings;
 use Nextras\Orm\Collection\ICollection;
+use Override;
 use SplFileObject;
 
 /**
@@ -30,6 +31,7 @@ final class MeosExporter implements IExporter {
 	) {
 	}
 
+	#[Override]
 	public function getMimeType(): string {
 		return 'text/plain';
 	}
@@ -38,6 +40,7 @@ final class MeosExporter implements IExporter {
 		$file->fwrite(Strings::toAscii(implode(self::DELIMITER, $row)) . \PHP_EOL);
 	}
 
+	#[Override]
 	public function output(): void {
 		$file = new SplFileObject('php://output', 'a');
 		foreach ($this->teams as $team) {

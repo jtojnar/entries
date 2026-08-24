@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters\Accessory;
 
 use Latte\Extension;
+use Override;
 
 final class LatteExtension extends Extension {
 	public function __construct(
@@ -15,6 +16,7 @@ final class LatteExtension extends Extension {
 	) {
 	}
 
+	#[Override]
 	public function getFilters(): array {
 		return [
 			'categoryFormat' => $this->categoryFormatFilter,

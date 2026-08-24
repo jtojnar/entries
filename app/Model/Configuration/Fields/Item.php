@@ -10,6 +10,7 @@ namespace App\Model\Configuration\Fields;
 use App\Locale\Translated;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Money\Money;
+use Override;
 
 final class Item implements LimitableField {
 	public function __construct(
@@ -22,6 +23,7 @@ final class Item implements LimitableField {
 	) {
 	}
 
+	#[Override]
 	public function getLimitName(): ?string {
 		return $this->limitName;
 	}
