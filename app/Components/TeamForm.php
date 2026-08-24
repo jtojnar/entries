@@ -311,10 +311,6 @@ final class TeamForm extends UI\Form {
 		return $input;
 	}
 
-	public function isFieldDisabled(Field $field): bool {
-		return $field->disabled ?? false;
-	}
-
 	/**
 	 * @return ?mixed
 	 */
