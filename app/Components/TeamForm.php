@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Components;
 
+use App\Forms\TeamFormPersonValues;
 use App\Forms\TeamFormValues;
 use App\Helpers\Iter;
 use App\Locale\Translated;
@@ -21,10 +22,8 @@ use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Rules;
 use Nette\Localization\Translator;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nextras\FormComponents\Controls\DateControl;
-use stdClass;
 
 /**
  * Form for creating and editing teams.
@@ -122,6 +121,7 @@ final class TeamForm extends UI\Form {
 				$group = $this->addGroup();
 				$group->setOption('label', new Message('messages.team.person.label', $i));
 				$container->setCurrentGroup($group);
+				$container->setMappedType(TeamFormPersonValues::class);
 
 				$whenNotPlaceholder = static fn(BaseControl $control): BaseControl => $control;
 				if ($this->entries->allowPlaceholders) {
@@ -341,7 +341,7 @@ final class TeamForm extends UI\Form {
 		}
 	}
 
-	private function checkCategoryConstraints(self $form, stdClass $data): void {
+	private function checkCategoryConstraints(self $form, TeamFormValues $data): void {
 		// If submitter is `true`, no specific submit button was pressed but let’s check the form.
 		// Since `onValidate` is only called on form submission, it cannot be `false` but we will use `is_bool` to satisfy PHPStan.
 		$validationScope = \is_bool($form->isSubmitted()) ? null : $form->isSubmitted()->getValidationScope();
@@ -353,8 +353,7 @@ final class TeamForm extends UI\Form {
 
 		$categoryField = $form->getComponent('category');
 		$constraints = $this->entries->categories->allCategories[$data->category]->constraints;
-		/** @var ArrayHash<ArrayHash<string, mixed>> */
-		$persons = $data->persons;
+		$persons = $data->persons->values;
 		foreach ($constraints as $constraint) {
 			if (!$constraint->admits($persons)) {
 				$categoryField->addError($constraint->getErrorMessage());

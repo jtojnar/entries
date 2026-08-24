@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace App\Model\Configuration\Constraints;
 
+use App\Forms\TeamFormPersonValues;
 use App\Helpers\Iter;
-use ArrayAccess;
 use Override;
 
 class QuantifiedSexConstraint implements Constraint {
@@ -22,7 +22,7 @@ class QuantifiedSexConstraint implements Constraint {
 	#[Override]
 	public function admits(iterable $members): bool {
 		$sexes = Iter::map(
-			static fn(ArrayAccess $member): ?Sex => \is_string($member['gender']) ? Sex::from($member['gender']) : null,
+			static fn(TeamFormPersonValues $member): Sex => Sex::from($member->gender),
 			$members,
 		);
 		$sexes = Iter::filterNull($sexes);

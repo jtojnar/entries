@@ -8,6 +8,7 @@ use App;
 use App\Components\SportidentControl;
 use App\Components\TeamForm;
 use App\Exporters;
+use App\Forms\TeamFormValues;
 use App\Forms\TeamListActionFormValues;
 use App\Helpers\EmailFactory;
 use App\Helpers\SpaydQrGenerator;
@@ -334,12 +335,11 @@ final class TeamPresenter extends BasePresenter {
 
 		/** @var TeamForm $form */
 		$form = $button->form;
-		/** @var array */
-		$values = $form->getValues(Container::Array);
+		$values = $form->getValues(TeamFormValues::class);
 		/** @var string $password */
 		$password = null;
 
-		$this->cleanNonApplicableFields($form);
+		$this->cleanNonApplicableFields($form, $values);
 
 		if ($this->getAction() === 'edit') {
 			if (!$this->user->isLoggedIn()) {
@@ -381,9 +381,9 @@ final class TeamPresenter extends BasePresenter {
 			$invoice->team = $team;
 			$invoice->items = [];
 
-			$team->name = $values['name'];
-			$team->message = $values['message'];
-			$team->category = $values['category'];
+			$team->name = $values->name;
+			$team->message = $values->message;
+			$team->category = $values->category;
 
 			$fields = $this->entries->teamFields;
 
@@ -394,7 +394,7 @@ final class TeamPresenter extends BasePresenter {
 				$this->itemReservations->remove($reservation);
 			}
 
-			$jsonData = $this->processFields('team', $form, $form, $fields, $values, $limits, $team->itemReservations, $reservationStats, $invoice);
+			$jsonData = $this->processFields('team', $form, $form, $fields, $values->extraFields, $limits, $team->itemReservations, $reservationStats, $invoice);
 
 			$team->setJsonData($jsonData);
 
@@ -431,27 +431,27 @@ final class TeamPresenter extends BasePresenter {
 			/** @var ReplicatorContainer */
 			$replicator = $form['persons'];
 			$personContainers = iterator_to_array($replicator->getContainers());
-			foreach ($values['persons'] as $personKey => $member) {
+			foreach ($values->persons->values as $personKey => $member) {
 				$personContainer = $personContainers[$personKey];
-				$firstname = $member['firstname'];
+				$firstname = $member->firstname;
 				if ($firstMemberAddress === null) {
-					$firstMemberAddress = $member['email'];
+					$firstMemberAddress = $member->email;
 				}
 				if ($firstMemberName === null) {
-					$firstMemberName = $member['firstname'] . ' ' . $member['lastname'];
+					$firstMemberName = $member->firstname . ' ' . $member->lastname;
 				}
 				$person = new App\Model\Orm\Person\Person();
 
 				$person->firstname = $firstname;
-				$person->lastname = $member['lastname'];
-				$person->gender = $member['gender'];
-				$person->birth = $member['birth'];
-				$person->email = $member['email'];
+				$person->lastname = $member->lastname;
+				$person->gender = $member->gender;
+				$person->birth = $member->birth;
+				$person->email = $member->email;
 				$person->contact = \count($team->persons) === 0;
-				$person->placeholder = $this->entries->allowPlaceholders && $member['placeholder'];
+				$person->placeholder = $this->entries->allowPlaceholders && $member->extraFields['placeholder'];
 				$person->team = $team;
 
-				$jsonData = $this->processFields('person', $form, $personContainer, $fields, $member, $limits, $person->itemReservations, $reservationStats, $invoice);
+				$jsonData = $this->processFields('person', $form, $personContainer, $fields, $member->extraFields, $limits, $person->itemReservations, $reservationStats, $invoice);
 
 				$person->setJsonData($jsonData);
 
@@ -553,6 +553,7 @@ final class TeamPresenter extends BasePresenter {
 					\assert($mailHtml !== '');
 					$mailHtml = $this->emailFactory->create($mailHtml);
 
+					\assert($firstMemberAddress !== null);
 					$mail = new Message();
 					$mail
 						->setFrom($mtemplate->organiserMail)
@@ -696,8 +697,8 @@ final class TeamPresenter extends BasePresenter {
 		return $jsonData;
 	}
 
-	public function cleanNonApplicableFields(Nette\Forms\Form $form): void {
-		$category = $form->values['category'];
+	public function cleanNonApplicableFields(Nette\Forms\Form $form, TeamFormValues $values): void {
+		$category = $values->category;
 
 		$teamFields = $this->entries->teamFields;
 		foreach ($teamFields as $field) {
@@ -710,8 +711,7 @@ final class TeamPresenter extends BasePresenter {
 		}
 
 		$personFields = $this->entries->personFields;
-		$members = $form->values['persons'];
-		\assert(is_iterable($members)); // For PHPStan.
+		$members = $values->persons->values;
 		foreach ($members as $member) {
 			foreach ($personFields as $field) {
 				$name = $field->name;

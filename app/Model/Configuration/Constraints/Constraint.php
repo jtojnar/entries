@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace App\Model\Configuration\Constraints;
 
-use ArrayAccess;
+use App\Forms\TeamFormPersonValues;
 
 interface Constraint {
 	/**
-	 * @param iterable<ArrayAccess<string, mixed>> $members
+	 * @param iterable<TeamFormPersonValues> $members
 	 */
 	public function admits(iterable $members): bool;
 

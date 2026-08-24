@@ -17,6 +17,3 @@ parameters:
 		- '(Property Nette\\Forms\\Container::\$onValidate \(array<callable\(App\\Components\\TeamForm, mixed\): void>\) does not accept non-empty-array<\(callable\(App\\Components\\TeamForm, mixed\): void\)|\(Closure\(App\\Components\\TeamForm, stdClass\): void\)>.)'
 		-
 			identifier: missingType.iterableValue
-
-		-
-			identifier: missingType.generics

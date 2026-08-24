@@ -7,16 +7,11 @@ declare(strict_types=1);
 
 namespace App\Model\Configuration\Constraints;
 
-use ArrayAccess;
-use DateTimeInterface;
+use App\Forms\TeamFormPersonValues;
 
 trait AgeCalculator {
-	private function getAgeFromPerson(ArrayAccess $person): ?int {
-		if (!$person['birth'] instanceof DateTimeInterface) {
-			return null;
-		}
-
-		$age = $person['birth']->diff($this->eventDate, true)->y;
+	private function getAgeFromPerson(TeamFormPersonValues $person): ?int {
+		$age = $person->birth?->diff($this->eventDate, true)->y;
 
 		return $age;
 	}
