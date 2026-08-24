@@ -7,6 +7,7 @@ namespace App\Presenters;
 use App;
 use App\Components\SportidentControl;
 use App\Exporters;
+use App\Forms\TeamListActionFormValues;
 use App\Helpers\EmailFactory;
 use App\Helpers\SpaydQrGenerator;
 use App\Model\Configuration\Entries;
@@ -818,6 +819,8 @@ final class TeamPresenter extends BasePresenter {
 			$form->addCheckbox('team_' . $team->id);
 		}
 
+		$form->addHidden('_hack', 'hack');
+
 		$submit = $form->addSubmit('send_message', 'messages.team.list.action.send_message.label');
 
 		$submit->onClick[] = $this->listActionSubmitMessage(...);
@@ -826,23 +829,12 @@ final class TeamPresenter extends BasePresenter {
 	}
 
 	private function listActionSubmitMessage(Controls\SubmitButton $button): void {
-		/** @var array */
-		$values = $button->form->getValues(Container::Array);
-		$selectedTeamIds = array_map(
-			static fn($name): string => substr((string) $name, \strlen('team_')),
-			array_keys(
-				array_filter(
-					$values,
-					static fn($value, $name): bool => str_starts_with((string) $name, 'team_') && \is_bool($value) && $value,
-					\ARRAY_FILTER_USE_BOTH
-				)
-			)
-		);
+		$values = $button->form->getValues(TeamListActionFormValues::class);
 
-		if (\count($selectedTeamIds) === 0) {
+		if (\count($values->selectedTeamIds) === 0) {
 			$this->redirect('this');
 		} else {
-			$this->redirect('Communication:compose', ['ids' => implode(', ', $selectedTeamIds)]);
+			$this->redirect('Communication:compose', ['ids' => implode(', ', $values->selectedTeamIds)]);
 		}
 	}
 
