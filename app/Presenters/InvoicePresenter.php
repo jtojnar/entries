@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
+use App\Locale\Translated;
 use App\Model\Configuration\Entries;
 use App\Model\Configuration\Fields;
 use App\Model\Orm\Invoice\Invoice;
@@ -12,6 +13,7 @@ use Nette;
 use Nette\Application\BadRequestException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\DI\Attributes\Inject;
+use Override;
 
 /**
  * Presenter for displaying invoices.
@@ -84,7 +86,18 @@ final class InvoicePresenter extends BasePresenter {
 		$fields = $scope == 'team' ? $this->entries->teamFields : $this->entries->personFields;
 		$field = $fields[$key] ?? null;
 
-		if ($field !== null && $field->label !== null) {
+		if ($item === 'all_stages_discount') {
+			return $this->translator->translate(new class extends Translated {
+				#[Override]
+				public function getMessage(string $locale): string {
+					return match ($locale) {
+						'cs' => 'Sleva obě etapy',
+						'en' => 'Both stages discount',
+						default => throw new Exception('Unsupported language ' . $locale),
+					};
+				}
+			});
+		} elseif ($field !== null && $field->label !== null) {
 			$label = $this->translator->translate($field->label);
 		} else {
 			$label = $key;
