@@ -23,14 +23,14 @@ function parse_value(string $type, string $value): int|Constraints\Sex {
 	};
 }
 
-final class Category {
+final readonly class Category {
 	private function __construct(
-		public readonly string $name,
-		public readonly ?int $minMembers,
-		public readonly ?int $maxMembers,
+		public string $name,
+		public ?int $minMembers,
+		public ?int $maxMembers,
 		/** @var array<Constraints\Constraint> */
-		public readonly array $constraints,
-		public readonly Fees $fees,
+		public array $constraints,
+		public Fees $fees,
 	) {
 	}
 

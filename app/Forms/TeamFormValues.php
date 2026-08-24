@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Forms;
 
-final class TeamFormValues {
+final readonly class TeamFormValues {
 	/** @var array<array-key, mixed> */
-	public readonly array $extraFields;
+	public array $extraFields;
 
 	public function __construct(
-		public readonly string $name,
-		public readonly string $category,
+		public string $name,
+		public string $category,
 		mixed ...$extraFields,
 	) {
 		$this->extraFields = $extraFields;

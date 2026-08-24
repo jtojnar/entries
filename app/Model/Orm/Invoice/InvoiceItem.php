@@ -11,11 +11,11 @@ use Override;
 /**
  * Immutable invoice item.
  */
-final class InvoiceItem implements JsonSerializable {
+final readonly class InvoiceItem implements JsonSerializable {
 	public function __construct(
-		private readonly string $name,
-		private readonly Money $price,
-		private readonly int $amount,
+		private string $name,
+		private Money $price,
+		private int $amount,
 	) {
 	}
 

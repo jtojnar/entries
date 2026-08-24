@@ -13,14 +13,14 @@ use Nette\Security\Passwords;
 use Nette\Security\SimpleIdentity;
 use Override;
 
-final class TeamManager implements Nette\Security\Authenticator {
+final readonly class TeamManager implements Nette\Security\Authenticator {
 	public const int EntryWithdrawn = 317806432;
 
 	public function __construct(
 		/** @var string administrator password */
-		private readonly string $adminPassword,
-		private readonly TeamRepository $teams,
-		private readonly Passwords $passwords,
+		private string $adminPassword,
+		private TeamRepository $teams,
+		private Passwords $passwords,
 	) {
 	}
 

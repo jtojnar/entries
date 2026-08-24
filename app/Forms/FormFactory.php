@@ -9,9 +9,9 @@ use Nette\Localization\Translator;
 use Nextras\FormsRendering\Renderers\Bs5FormRenderer;
 use Nextras\FormsRendering\Renderers\FormLayout;
 
-final class FormFactory {
+final readonly class FormFactory {
 	public function __construct(
-		private readonly Translator $translator,
+		private Translator $translator,
 	) {
 	}
 

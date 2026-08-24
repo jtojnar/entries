@@ -9,10 +9,10 @@ use Override;
 
 final class LatteExtension extends Extension {
 	public function __construct(
-		private Filters\CategoryFormatFilter $categoryFormatFilter,
-		private Filters\CurrencyExchangeFilter $currencyExchangeFilter,
-		private Filters\PriceFilter $priceFilter,
-		private Filters\WrapInParagraphsFilter $wrapInParagraphsFilter,
+		private readonly Filters\CategoryFormatFilter $categoryFormatFilter,
+		private readonly Filters\CurrencyExchangeFilter $currencyExchangeFilter,
+		private readonly Filters\PriceFilter $priceFilter,
+		private readonly Filters\WrapInParagraphsFilter $wrapInParagraphsFilter,
 	) {
 	}
 
