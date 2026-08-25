@@ -14,7 +14,7 @@ If you create a `verification.$lang.latte` file in the `app/Config/mail/` direct
 {/block}
 
 {block payment}
-<p>Please pay <strong>{$invoice->getTotal()|price}</strong> at the registration desk.</p>
+<p n:if="$invoice->getTotal() !== null">Please pay <strong>{$invoice->getTotal()|price}</strong> at the registration desk.</p>
 {/block}
 ```
 

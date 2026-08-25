@@ -14,6 +14,6 @@
 <tr n:foreach="$invoice->items as $name => $item"><td>{$name|itemLabel}</td><td>{$item->getPrice()|price}</td><td>{$item->getAmount()}</td><td>{$item->getPrice()->multiply($item->getAmount())|price}</td></tr>
 </tbody>
 <tfoot>
-<tr><td colspan="3"><strong>{_messages.billing.invoice.total_price}</strong></td><td><strong>{$invoice->getTotal()|price}</strong></td></tr>
+<tr><td colspan="3"><strong>{_messages.billing.invoice.total_price}</strong></td><td><strong>{$invoice->getTotal()?|price}</strong></td></tr>
 </tfoot>
 </table>

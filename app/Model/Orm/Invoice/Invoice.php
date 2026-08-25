@@ -67,7 +67,7 @@ final class Invoice extends Entity {
 		return $this->addItem('person');
 	}
 
-	public function getTotal(?array $filter = null): Money {
+	public function getTotal(?array $filter = null): ?Money {
 		$relevantItems =
 			$filter === null
 			? $this->items
@@ -76,6 +76,10 @@ final class Invoice extends Entity {
 				static fn(string $name): bool => \in_array($name, $filter, true),
 				\ARRAY_FILTER_USE_KEY
 			);
+
+		if (\count($relevantItems) === 0) {
+			return null;
+		}
 
 		return Money::sum(
 			...array_values(

@@ -12,7 +12,7 @@
 <p>Prosíme, abyste si v <a href="{link //Team:list}">seznamu přihlášek</a> zkontrolovali správnost registračních údajů. Až do zaplacení můžete svou <a n:href="//Team:edit $id">přihlášku editovat</a> pomocí ID a hesla, které naleznete níže.</p>
 
 {block payment}
-<p n:ifset="$accountNumber">Po zaplacení částky <strong>{$invoice->getTotal()|price}</strong> s variabilním symbolem <strong>{$id}</strong> na účet číslo <strong>{$accountNumber}</strong> bude přihláška plně akceptována.</p>
+<p n:ifset="$accountNumber" n:if="$invoice->getTotal() !== null">Po zaplacení částky <strong>{$invoice->getTotal()|price}</strong> s variabilním symbolem <strong>{$id}</strong> na účet číslo <strong>{$accountNumber}</strong> bude přihláška plně akceptována.</p>
 
 {ifset $qrCode}
 <p>Platbu je možné provést také pomocí následujícího QR kódu:</p>

@@ -535,14 +535,15 @@ final class TeamPresenter extends BasePresenter {
 					$mtemplate->password = $password;
 					$mtemplate->invoice = $invoice;
 					$mtemplate->organiserMail = $this->parameters->getWebmasterEmail();
+					$total = $invoice->getTotal();
 					$mtemplate->qrCode =
-						$this->parameters->accountNumberIban !== null
+						$this->parameters->accountNumberIban !== null && $total !== null
 						? Html::el(
 							'img',
 							[
 								'src' => $this->spaydQrGenerator->generate(
 									accountNumber: $this->parameters->accountNumberIban,
-									amount: $invoice->getTotal(),
+									amount: $total,
 									eventName: $mtemplate->eventNameShort,
 									teamId: $team->id,
 								),

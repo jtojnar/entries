@@ -40,7 +40,7 @@
 				N/A
 		{/switch}
 	</td>
-	<td n:if="$user->isInRole('admin')"><a n:href="Invoice:show $team->lastInvoice->id"><s n:tag-if="$team->status === $team::STATUS_PAID">{$team->lastInvoice->getTotal()|price}</s></a></td>
+	<td n:if="$user->isInRole('admin')"><a n:href="Invoice:show $team->lastInvoice->id"><s n:tag-if="$team->status === $team::STATUS_PAID">{if $team->lastInvoice->getTotal() !== null}{$team->lastInvoice->getTotal()|price}{else}0{/if}</s></a></td>
 	<td n:if="$user->isInRole('admin')">
 		{if $team->status === $team::STATUS_REGISTERED}
 			<a n:href="confirm $team->id">{_messages.team.list.entry.action.confirm}</a>
