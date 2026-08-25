@@ -41,9 +41,6 @@ final readonly class Category {
 		DateTimeInterface $eventDate,
 	): self {
 		$fees = Fees::from("categories.$key", $category['fees'] ?? [], $parentFees);
-		if ($fees->person === null) {
-			throw new InvalidConfigurationException("No person fee set for category “{$key}”");
-		}
 
 		return new self(
 			name: $key,

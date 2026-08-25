@@ -455,10 +455,12 @@ final class TeamPresenter extends BasePresenter {
 
 				$person->setJsonData($jsonData);
 
-				$invoice->addItem(self::serializeInvoiceItem([
-					'type' => '~entry',
-					'scope' => 'person',
-				]));
+				if ($personFee !== null) {
+					$invoice->addItem(self::serializeInvoiceItem([
+						'type' => '~entry',
+						'scope' => 'person',
+					]));
+				}
 				$this->persons->persist($person);
 			}
 
