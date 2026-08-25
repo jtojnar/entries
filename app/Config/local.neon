@@ -27,7 +27,6 @@ parameters:
 		closing: 2026-10-07T12:00:00
 		fees:
 			currency: CZK
-			person: 0
 		limits:
 			postel: 73
 		categories:
@@ -47,33 +46,29 @@ parameters:
 			MO:
 				constraints:
 					- 'all(gender=male)'
+			WO:
+				constraints:
+					- 'all(gender=female)'
 			XO:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
-			WO:
-				constraints:
-					- 'all(gender=female)'
 			MV:
 				constraints:
 					- 'all(gender=male)'
+					- 'all(age>=45)'
+			WV:
+				constraints:
+					- 'all(gender=female)'
 					- 'all(age>=45)'
 			XV:
 				constraints:
 					- 'some(gender=male)'
 					- 'some(gender=female)'
 					- 'all(age>=45)'
-			WV:
-				constraints:
-					- 'all(gender=female)'
-					- 'all(age>=45)'
-			C:
-				constraints:
+
 		fields:
 			team:
-				sportident:
-					type: sportident
-					fee: 70
 				saturday5h:
 					type: enum
 					label:
@@ -170,7 +165,6 @@ parameters:
 							label:
 								en: 'None'
 								cs: 'Žádné'
-							fee: 0
 				boarding:
 					label:
 						en: 'Boarding must be ordered and paid until Wednesday October 7, 2026'

@@ -27,6 +27,14 @@ final class CustomInvoiceModifier implements InvoiceModifier {
 	private static function fixPersonItemAmounts(Invoice $invoice, int $personCount): void {
 		$items = $invoice->items;
 
+		if (isset($items['team:enum:saturday5h:yes'])) {
+			$items['team:enum:saturday5h:yes'] = $items['team:enum:saturday5h:yes']->withAmount($personCount);
+		}
+
+		if (isset($items['team:enum:sunday4h:yes'])) {
+			$items['team:enum:sunday4h:yes'] = $items['team:enum:sunday4h:yes']->withAmount($personCount);
+		}
+
 		if (isset($items['all_stages_discount'])) {
 			$items['all_stages_discount'] = $items['all_stages_discount']->withAmount($personCount);
 		}
