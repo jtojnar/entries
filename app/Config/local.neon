@@ -180,7 +180,7 @@ parameters:
 							label:
 								en: 'Saturday supper – soup, beef goulash with dumplings (135 Kč)'
 								cs: 'Sobotní večeře – polévka, hovězí guláš s knedlíkem (135 Kč)'
-							fee: 165
+							fee: 135
 						sat-hli-goulash:
 							label:
 								en: 'Saturday supper – soup, oyster mushrooms goulash, with dumplings (135 Kč)'
