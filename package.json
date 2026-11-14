@@ -7,10 +7,10 @@
 		"@fortawesome/fontawesome-svg-core": "^7.0.0",
 		"@fortawesome/free-solid-svg-icons": "^7.0.0",
 		"@popperjs/core": "^2.9.2",
-		"bootstrap": "^5.0.1",
+		"bootstrap": "^5.3.9",
 		"codemirror": "^6.0.0",
-		"flag-icons": "^7.1.0",
-		"nette-forms": "^3.0.4",
+		"flag-icons": "^7.6.0",
+		"nette-forms": "^3.5.4",
 		"select-parent": "^1.0.1"
 	},
 	"devDependencies": {
